@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>농약사·제조공급업체 찾기 - kfarmai</title>
+    <style>
+        :root {
+            --green: #1a5c2a;
+            --green-dark: #123f1d;
+            --green-pale: #e8f5ec;
+            --black: #111;
+            --gray: #666;
+            --border: #e5e7eb;
+            --surface: #f7f7f5;
+            --white: #fff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--black);
+            background: var(--white);
+            padding-bottom: 58px;
+        }
+
+        .site-top {
+            position: sticky;
+            top: 0;
+            z-index: 120;
+            background: var(--white);
+            box-shadow: 0 1px 10px rgba(0,0,0,0.08);
+        }
+
+        header {
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--black);
+            text-decoration: none;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--green);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+        }
+
+        .logo-text span { color: var(--green); }
+
+        nav {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 8px 14px;
+            scrollbar-width: none;
+        }
+
+        nav::-webkit-scrollbar { display: none; }
+
+        nav a {
+            flex-shrink: 0;
+            padding: 7px 12px;
+            border-radius: 999px;
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        nav a.active {
+            background: var(--green);
+            color: white;
+        }
+
+        .search-shell {
+            position: sticky;
+            top: 101px;
+            z-index: 110;
+            background: rgba(247,247,245,0.97);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 16px;
+        }
+
+        .search-bar {
+            width: min(720px, 100%);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 150px 150px minmax(220px, 1fr) auto auto;
+            gap: 8px;
+            align-items: center;
+            position: relative;
+            overflow: visible;
+        }
+
+        .search-bar select,
+        .search-bar input {
+            height: 40px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0 12px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .keyword-wrap {
+            position: relative;
+            min-width: 0;
+        }
+
+        .keyword-wrap input {
+            width: 100%;
+        }
+
+        .suggestions {
+            display: none;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 44px;
+            max-height: 320px;
+            overflow-y: auto;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+            z-index: 300;
+        }
+
+        .suggestions.open { display: block; }
+
+        .suggestion-item {
+            width: 100%;
+            border: 0;
+            background: white;
+            text-align: left;
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .suggestion-item:hover { background: var(--green-pale); }
+        .suggestion-item:last-child { border-bottom: 0; }
+        .suggestion-title { display: block; font-size: 14px; font-weight: 800; color: var(--black); }
+        .suggestion-meta { display: block; margin-top: 2px; font-size: 12px; color: var(--gray); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .search-bar button {
+            height: 40px;
+            padding: 0 16px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--green);
+            color: white;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .search-bar .reset-btn { background: #737373; }
+
+        .status-row {
+            width: min(720px, 100%);
+            margin: 8px auto 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        #map { width: 100%; height: calc(100vh - 190px); min-height: 460px; }
+
+        .info-footer {
+            padding: 7px 15px;
+            font-size: 11px;
+            color: #777;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .top-btn {
+            position: fixed;
+            right: 16px;
+            bottom: 74px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: white;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.16);
+            cursor: pointer;
+            z-index: 130;
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            background: white;
+            border-top: 1px solid var(--border);
+            z-index: 130;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 7px 0 8px;
+            color: var(--gray);
+            font-size: 10px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .nav-item.active { color: var(--green); }
+        .nav-item-icon { font-size: 19px; line-height: 1; }
+
+        @media (max-width: 820px) {
+            .search-shell { top: 101px; }
+            .search-bar {
+                width: 100%;
+                grid-template-columns: 1fr 1fr;
+            }
+            .keyword-wrap { grid-column: 1 / -1; }
+            .search-bar button { width: 100%; }
+            .status-row { width: 100%; }
+            #map { height: calc(100vh - 282px); min-height: 360px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="site-top">
+        <header>
+            <a href="index.html" class="logo">
+                <div class="logo-mark">kf</div>
+                <span class="logo-text">kfarm<span>ai</span></span>
+            </a>
+        </header>
+        <nav>
+            <a href="index.html">홈</a>
+            <a href="index.html#subsidy">보조사업</a>
+            <a href="map.html" class="active">농약사·제조공급업체</a>
+            <a href="index.html">상토회사</a>
+            <a href="index.html">농업뉴스</a>
+        </nav>
+    </div>
+
+    <div class="search-shell">
+        <div class="search-bar">
+            <select id="type" onchange="searchMap()">
+                <option value="all">전체</option>
+                <option value="dealer">농약사</option>
+                <option value="manufacturer">제조공급업체</option>
+            </select>
+            <select id="sido" onchange="searchMap()">
+                <option value="">시도 전체</option>
+                <option>서울특별시</option>
+                <option>경기도</option>
+                <option>전북특별자치도</option>
+                <option>충청남도</option>
+                <option>경상남도</option>
+                <option>경상북도</option>
+                <option>충청북도</option>
+                <option>전라남도</option>
+                <option>강원특별자치도</option>
+                <option>제주특별자치도</option>
+                <option>부산광역시</option>
+                <option>대구광역시</option>
+                <option>인천광역시</option>
+                <option>광주광역시</option>
+                <option>대전광역시</option>
+            </select>
+            <div class="keyword-wrap">
+                <input type="text" id="keyword" placeholder="상호명·회사명·주소 검색" autocomplete="off">
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+            <button onclick="searchMap()">검색</button>
+            <button class="reset-btn" onclick="resetMap()">초기화</button>
+        </div>
+        <div class="status-row">
+            <span id="count"></span>
+            <span id="geocodeStatus"></span>
+        </div>
+    </div>
+
+    <div id="map"></div>
+    <div class="info-footer">데이터 출처: 공공데이터포털 전국농약및비료판매업표준데이터, 한국작물보호협회 회원사 공개 정보 | © 2026 kfarmai.com</div>
+
+    <button class="top-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">
+            <span class="nav-item-icon">🏠</span>
+            <span>홈</span>
+        </a>
+        <a href="index.html#subsidy" class="nav-item">
+            <span class="nav-item-icon">📋</span>
+            <span>보조사업</span>
+        </a>
+        <a href="map.html" class="nav-item active">
+            <span class="nav-item-icon">🗺️</span>
+            <span>지도</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <span class="nav-item-icon">🌾</span>
+            <span>상토</span>
+        </a>
+        <a href="index.html" class="nav-item">
+            <span class="nav-item-icon">📰</span>
+            <span>뉴스</span>
+        </a>
+    </div>
+
+    <script src="static/pesticide_data.js"></script>
+    <script src="static/cpa_data.js"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services"></script>
+    <script>
+    const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    const SIDO_ALIASES = {
+        '서울시': '서울특별시',
+        '서울': '서울특별시',
+        '경기': '경기도',
+        '전북': '전북특별자치도',
+        '강원': '강원특별자치도',
+        '제주': '제주특별자치도',
+        '충남': '충청남도',
+        '충북': '충청북도',
+        '경남': '경상남도',
+        '경북': '경상북도',
+        '전남': '전라남도',
+        '부산': '부산광역시',
+        '대구': '대구광역시',
+        '인천': '인천광역시',
+        '광주': '광주광역시',
+        '대전': '대전광역시'
+    };
+
+    function getInitials(text) {
+        return String(text || '').split('').map(function(ch) {
+            const code = ch.charCodeAt(0) - 44032;
+            if (code >= 0 && code <= 11171) return CHO[Math.floor(code / 588)];
+            return ch;
+        }).join('');
+    }
+
+    function normalizeText(text) {
+        return String(text || '').toLowerCase().replace(/\s+/g, '');
+    }
+
+    function normalizeSido(addrOrSido) {
+        const value = String(addrOrSido || '').trim();
+        if (!value) return '';
+        const first = value.split(/\s+/)[0];
+        return SIDO_ALIASES[first] || first;
+    }
+
+    function itemMatchesKeyword(item, keyword) {
+        if (!keyword) return true;
+        const needle = normalizeText(keyword);
+        const haystack = normalizeText([item.name, item.addr, item.tel, item.item, item.homepage].join(' '));
+        const initials = normalizeText(getInitials(item.name));
+        return haystack.includes(needle) || initials.includes(needle);
+    }
+
+    function getTypeLabel(type) {
+        return type === 'manufacturer' ? '제조공급업체' : '농약사';
+    }
+
+    const pesticideSource = typeof data !== 'undefined' ? data : [];
+    const cpaSource = typeof cpaData !== 'undefined' ? cpaData : [];
+
+    const dealers = pesticideSource.map(function(item, index) {
+        return {
+            id: 'dealer-' + index,
+            type: 'dealer',
+            name: item.name,
+            sido: normalizeSido(item.sido || item.addr),
+            addr: item.addr || '',
+            tel: item.tel || '',
+            item: item.item || '농약·비료 판매',
+            homepage: '',
+            lat: Number(item.lat),
+            lot: Number(item.lot)
+        };
+    });
+
+    const manufacturers = cpaSource.map(function(item, index) {
+        return {
+            id: 'manufacturer-' + index,
+            type: 'manufacturer',
+            name: item.company,
+            sido: normalizeSido(item.addr),
+            addr: item.addr || '',
+            tel: item.tel || '',
+            item: item.grade ? '작물보호제 제조공급 ' + item.grade : '작물보호제 제조공급',
+            homepage: item.homepage || '',
+            ceo: item.ceo || '',
+            lat: Number(item.lat || 0),
+            lot: Number(item.lot || 0)
+        };
+    });
+
+    const allItems = dealers.concat(manufacturers);
+    const geocodeCache = JSON.parse(sessionStorage.getItem('kfarmai-geocode-cache') || '{}');
+
+    kakao.maps.load(function() {
+        const mapContainer = document.getElementById('map');
+        const map = new kakao.maps.Map(mapContainer, {
+            center: new kakao.maps.LatLng(36.5, 127.8),
+            level: 13
+        });
+        const geocoder = new kakao.maps.services.Geocoder();
+        const markers = [];
+        const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+        let activeList = [];
+        let searchToken = 0;
+
+        kakao.maps.event.addListener(map, 'click', function() {
+            infowindow.close();
+        });
+
+        function clearMarkers() {
+            markers.forEach(function(marker) { marker.setMap(null); });
+            markers.length = 0;
+            infowindow.close();
+        }
+
+        function infoContent(item) {
+            const homepage = item.homepage
+                ? '<br><a href="' + item.homepage + '" target="_blank" style="color:#1a5c2a;font-weight:700;">홈페이지 열기</a>'
+                : '';
+            const ceo = item.ceo ? '<br>대표: ' + item.ceo : '';
+            return '<div style="padding:11px 12px;font-size:13px;min-width:220px;max-width:300px;line-height:1.75;">' +
+                '<b style="font-size:14px;color:#1a5c2a;">' + item.name + '</b>' +
+                '<div style="margin:3px 0;color:#666;font-size:12px;">' + getTypeLabel(item.type) + '</div>' +
+                '<span style="color:#555;font-size:12px;">' + item.addr + '</span><br>' +
+                (item.tel ? '☎ ' + item.tel + '<br>' : '') +
+                '구분: ' + item.item +
+                ceo +
+                homepage +
+                '</div>';
+        }
+
+        function addMarker(item) {
+            if (!item.lat || !item.lot) return null;
+            const marker = new kakao.maps.Marker({
+                map: map,
+                position: new kakao.maps.LatLng(item.lat, item.lot)
+            });
+            kakao.maps.event.addListener(marker, 'click', function() {
+                infowindow.setContent(infoContent(item));
+                infowindow.open(map, marker);
+            });
+            markers.push(marker);
+            return marker;
+        }
+
+        function fitMapToBounds(list) {
+            const withCoords = list.filter(function(item) { return item.lat && item.lot; });
+            if (!withCoords.length) return;
+            if (withCoords.length === 1) {
+                map.setCenter(new kakao.maps.LatLng(withCoords[0].lat, withCoords[0].lot));
+                map.setLevel(5);
+                return;
+            }
+            const bounds = new kakao.maps.LatLngBounds();
+            withCoords.forEach(function(item) {
+                bounds.extend(new kakao.maps.LatLng(item.lat, item.lot));
+            });
+            map.setBounds(bounds);
+        }
+
+        function geocodeItem(item, token, done) {
+            if (item.lat && item.lot) {
+                done(true);
+                return;
+            }
+            if (!item.addr) {
+                done(false);
+                return;
+            }
+            if (geocodeCache[item.addr]) {
+                item.lat = geocodeCache[item.addr].lat;
+                item.lot = geocodeCache[item.addr].lot;
+                done(true);
+                return;
+            }
+            geocoder.addressSearch(item.addr, function(result, status) {
+                if (token !== searchToken) return;
+                if (status === kakao.maps.services.Status.OK && result[0]) {
+                    item.lat = Number(result[0].y);
+                    item.lot = Number(result[0].x);
+                    geocodeCache[item.addr] = { lat: item.lat, lot: item.lot };
+                    sessionStorage.setItem('kfarmai-geocode-cache', JSON.stringify(geocodeCache));
+                    done(true);
+                } else {
+                    done(false);
+                }
+            });
+        }
+
+        function displayMarkers(list, moveMap) {
+            searchToken += 1;
+            const token = searchToken;
+            clearMarkers();
+            activeList = list;
+
+            let pending = list.filter(function(item) { return item.type === 'manufacturer' && (!item.lat || !item.lot); }).length;
+            let resolved = 0;
+            const statusEl = document.getElementById('geocodeStatus');
+            const countEl = document.getElementById('count');
+
+            list.forEach(addMarker);
+            countEl.textContent = list.length + '개 검색됨';
+            statusEl.textContent = pending ? '제조공급업체 주소 확인중...' : '';
+
+            if (!pending) {
+                if (moveMap) fitMapToBounds(list);
+                return;
+            }
+
+            list.forEach(function(item) {
+                if (item.type !== 'manufacturer' || item.lat || item.lot) return;
+                geocodeItem(item, token, function(ok) {
+                    if (token !== searchToken) return;
+                    resolved += 1;
+                    if (ok) addMarker(item);
+                    statusEl.textContent = resolved < pending ? '제조공급업체 주소 확인중 ' + resolved + '/' + pending : '';
+                    if (resolved === pending && moveMap) fitMapToBounds(list);
+                });
+            });
+
+            if (moveMap) fitMapToBounds(list);
+        }
+
+        function getFilteredItems() {
+            const type = document.getElementById('type').value;
+            const sido = document.getElementById('sido').value;
+            const keyword = document.getElementById('keyword').value.trim();
+            return allItems.filter(function(item) {
+                return (type === 'all' || item.type === type) &&
+                    (!sido || item.sido === sido) &&
+                    itemMatchesKeyword(item, keyword);
+            });
+        }
+
+        function showSuggestions() {
+            const keyword = document.getElementById('keyword').value.trim();
+            const box = document.getElementById('suggestions');
+            if (!keyword) {
+                box.classList.remove('open');
+                box.innerHTML = '';
+                return;
+            }
+            const list = getFilteredItems().slice(0, 10);
+            if (!list.length) {
+                box.classList.remove('open');
+                box.innerHTML = '';
+                return;
+            }
+            box.innerHTML = list.map(function(item, index) {
+                return '<button type="button" class="suggestion-item" data-index="' + index + '">' +
+                    '<span class="suggestion-title">' + item.name + '</span>' +
+                    '<span class="suggestion-meta">' + getTypeLabel(item.type) + ' · ' + item.addr + '</span>' +
+                    '</button>';
+            }).join('');
+            box.querySelectorAll('.suggestion-item').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const item = list[Number(button.dataset.index)];
+                    document.getElementById('keyword').value = item.name;
+                    box.classList.remove('open');
+                    displayMarkers([item], true);
+                });
+            });
+            box.classList.add('open');
+        }
+
+        window.searchMap = function() {
+            document.getElementById('suggestions').classList.remove('open');
+            displayMarkers(getFilteredItems(), true);
+        };
+
+        window.resetMap = function() {
+            document.getElementById('type').value = 'all';
+            document.getElementById('sido').value = '';
+            document.getElementById('keyword').value = '';
+            document.getElementById('suggestions').classList.remove('open');
+            map.setCenter(new kakao.maps.LatLng(36.5, 127.8));
+            map.setLevel(13);
+            displayMarkers(allItems, false);
+        };
+
+        document.getElementById('keyword').addEventListener('input', showSuggestions);
+        document.getElementById('keyword').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') searchMap();
+            if (event.key === 'Escape') document.getElementById('suggestions').classList.remove('open');
+        });
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.keyword-wrap')) {
+                document.getElementById('suggestions').classList.remove('open');
+            }
+        });
+
+        const params = new URLSearchParams(location.search);
+        const q = params.get('q');
+        const type = params.get('type');
+        if (type && document.querySelector('#type option[value="' + type + '"]')) {
+            document.getElementById('type').value = type;
+        }
+        if (q) document.getElementById('keyword').value = q;
+
+        displayMarkers(q ? getFilteredItems() : allItems, Boolean(q));
+    });
+    </script>
+</body>
+</html>
