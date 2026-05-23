@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관련소식 - kfarmai</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.subsidy-card { background:white;border:1.5px solid #e8e8e8;border-radius:10px;padding:14px;margin-bottom:10px;position:relative; }
+.subsidy-card::before { content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:#1e6b2e;border-radius:4px 0 0 4px; }
+.subsidy-region { font-size:11px;font-weight:700;color:#1e6b2e;background:#eaf5ec;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:6px; }
+.subsidy-title { font-size:13px;font-weight:700;margin-bottom:4px; }
+.subsidy-date { font-size:11px;color:#666; }
+.subsidy-link { font-size:12px;color:#1e6b2e;font-weight:600;float:right; }
+
+.news-row { padding:13px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:10px;align-items:flex-start; }
+.news-row:last-child { border-bottom:none; }
+.news-source-tag { font-size:10px;font-weight:700;color:#1e6b2e;margin-bottom:3px; }
+.news-title-t { font-size:13px;font-weight:600;line-height:1.4;margin-bottom:3px; }
+.news-date-t { font-size:11px;color:#999; }
+</style>
+</head>
+<body>
+<header class="kf-header">
+  <a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a>
+  <div class="kf-header-icons"><button class="kf-icon-btn" onclick="openMenu()">☰</button></div>
+</header>
+
+<div style="padding:14px 16px 0;border-bottom:1px solid #e8e8e8;">
+  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">NEWS & SUBSIDY</div>
+  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">관련소식</div>
+  <div class="kf-tabs" style="padding:12px 0 0;">
+    <button class="kf-tab active" onclick="switchTab('subsidy',this)">📋 정부보조사업</button>
+    <button class="kf-tab" onclick="switchTab('news',this)">📰 농업뉴스</button>
+  </div>
+</div>
+
+<!-- 보조사업 탭 -->
+<div id="tab-subsidy" style="padding:14px 16px;">
+  <div style="background:#eaf5ec;border-radius:10px;padding:12px;margin-bottom:14px;border:1.5px dashed #2d8a40;">
+    <div style="font-size:13px;font-weight:700;color:#0d3d18;margin-bottom:3px;">📢 수도용 상토 보조사업 공고 수집 중</div>
+    <div style="font-size:12px;color:#1e6b2e;line-height:1.6;">전국 지자체별 보조사업 정보를 수집 중입니다. 2026년 하반기 서비스 예정.</div>
+  </div>
+  <div class="subsidy-card">
+    <span class="subsidy-region">충청남도 홍성군</span>
+    <a href="https://www.hongseong.go.kr" target="_blank" class="subsidy-link">공고문 →</a>
+    <div class="subsidy-title">2026년 수도용 상토 보조사업 공고</div>
+    <div class="subsidy-date">신청기간: 2026.01.15 ~ 02.28</div>
+  </div>
+  <div class="subsidy-card">
+    <span class="subsidy-region">충청남도 부여군</span>
+    <a href="https://www.buyeo.go.kr" target="_blank" class="subsidy-link">공고문 →</a>
+    <div class="subsidy-title">2026년 수도용 상토 구입비 지원사업</div>
+    <div class="subsidy-date">신청기간: 2026.01.20 ~ 03.10</div>
+  </div>
+</div>
+
+<!-- 농업뉴스 탭 -->
+<div id="tab-news" style="display:none;">
+  <div style="padding:12px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;">
+    <div style="font-size:12px;color:#666;">제목 클릭 시 해당 신문사 홈페이지로 이동합니다</div>
+  </div>
+  <a href="https://www.nongmin.com" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🌾</div>
+    <div><div class="news-source-tag">농민신문</div><div class="news-title-t">농민신문 바로가기</div><div class="news-date-t">www.nongmin.com</div></div>
+  </a>
+  <a href="https://www.agrinet.co.kr" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📰</div>
+    <div><div class="news-source-tag">한국농어민신문</div><div class="news-title-t">한국농어민신문 바로가기</div><div class="news-date-t">www.agrinet.co.kr</div></div>
+  </a>
+  <a href="https://www.newsfarm.co.kr" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📰</div>
+    <div><div class="news-source-tag">한국농업신문</div><div class="news-title-t">한국농업신문 바로가기</div><div class="news-date-t">www.newsfarm.co.kr</div></div>
+  </a>
+  <a href="http://www.nongup.net" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📰</div>
+    <div><div class="news-source-tag">농업정보신문</div><div class="news-title-t">농업정보신문 바로가기</div><div class="news-date-t">www.nongup.net</div></div>
+  </a>
+  <a href="http://www.newsam.co.kr" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🧪</div>
+    <div><div class="news-source-tag">농기자재신문</div><div class="news-title-t">농기자재신문 바로가기</div><div class="news-date-t">www.newsam.co.kr</div></div>
+  </a>
+  <a href="https://www.newsfm.kr" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#fff3e0;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🧪</div>
+    <div><div class="news-source-tag">영농자재신문</div><div class="news-title-t">영농자재신문 바로가기</div><div class="news-date-t">www.newsfm.kr</div></div>
+  </a>
+  <a href="https://www.nongupin.co.kr" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">👨‍🌾</div>
+    <div><div class="news-source-tag">농업인신문</div><div class="news-title-t">농업인신문 바로가기</div><div class="news-date-t">www.nongupin.co.kr</div></div>
+  </a>
+  <a href="https://www.aflnews.co.kr" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🐄</div>
+    <div><div class="news-source-tag">농수축산신문</div><div class="news-title-t">농수축산신문 바로가기</div><div class="news-date-t">www.aflnews.co.kr</div></div>
+  </a>
+  <a href="http://www.ikpnews.net" target="_blank" class="news-row" style="text-decoration:none;color:inherit;display:flex;">
+    <div style="width:42px;height:42px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">📋</div>
+    <div><div class="news-source-tag">한국농정신문</div><div class="news-title-t">한국농정신문 바로가기</div><div class="news-date-t">www.ikpnews.net</div></div>
+  </a>
+</div>
+
+<nav class="kf-bottom-nav">
+  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
+  <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
+  <a href="mfg.html" class="kf-nav-item"><span class="kf-nav-icon">🏭</span><span>제조공급</span></a>
+  <a href="news_sub.html" class="kf-nav-item active"><span class="kf-nav-icon">📰</span><span>소식</span></a>
+  <a href="links.html" class="kf-nav-item"><span class="kf-nav-icon">🔗</span><span>사이트</span></a>
+</nav>
+<div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="kf-menu" id="menu">
+  <div class="kf-menu-header"><a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
+  <a href="index.html" class="kf-menu-item">🏠 홈</a>
+  <a href="agri_map.html" class="kf-menu-item">🗺️ 전국농약사</a>
+  <a href="mfg.html" class="kf-menu-item">🏭 제조·공급업체</a>
+  <a href="news_sub.html" class="kf-menu-item">📰 관련소식</a>
+  <a href="links.html" class="kf-menu-item">🔗 농업관련 사이트</a>
+</div>
+
+<script>
+function switchTab(tab, el) {
+  document.querySelectorAll('.kf-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-subsidy').style.display = tab==='subsidy'?'block':'none';
+  document.getElementById('tab-news').style.display = tab==='news'?'block':'none';
+}
+function openMenu() { document.getElementById('overlay').classList.add('open'); document.getElementById('menu').classList.add('open'); }
+function closeMenu() { document.getElementById('overlay').classList.remove('open'); document.getElementById('menu').classList.remove('open'); }
+</script>
+</body>
+</html>

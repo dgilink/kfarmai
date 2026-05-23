@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>검색결과 - kFarmAI</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* CI 로고 */
+.ci-wrap { display:flex;align-items:center;gap:10px;text-decoration:none; }
+.ci-leaf { width:32px;height:32px;flex-shrink:0; }
+.ci-wordmark { font-size:18px;font-weight:900;letter-spacing:-1px; }
+.ci-wordmark .kf { color:#1e6b2e; }
+.ci-wordmark .ai { color:#f06400; }
+
+/* 헤더 검색바 */
+.hd-search {
+  padding:10px 14px;background:#f0f9f2;border-bottom:2px solid #c0e0c8;
+  display:flex;gap:8px;align-items:center;
+}
+.hd-input {
+  flex:1;padding:10px 14px;border:1.5px solid #b0d8b8;border-radius:24px;
+  font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;
+  background:white;
+}
+.hd-input:focus { border-color:#1e6b2e; }
+.hd-btn {
+  background:#1e6b2e;color:white;border:none;border-radius:20px;
+  padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;flex-shrink:0;
+}
+
+/* 탭 */
+.tab-bar {
+  display:flex;background:white;border-bottom:2px solid #e8e8e8;
+  overflow-x:auto;scrollbar-width:none;
+}
+.tab-bar::-webkit-scrollbar { display:none; }
+.tab-btn {
+  flex-shrink:0;padding:12px 18px;font-size:14px;font-weight:600;
+  border:none;background:none;cursor:pointer;color:#888;
+  border-bottom:3px solid transparent;margin-bottom:-2px;
+  font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;
+  white-space:nowrap;
+}
+.tab-btn.active { color:#1e6b2e;border-bottom-color:#1e6b2e; }
+
+/* 결과 카드 */
+.result-list { padding:14px 16px; }
+.r-card {
+  background:white;border:1.5px solid #e0e8e2;border-radius:12px;
+  padding:14px 16px;margin-bottom:10px;
+  border-left:4px solid #1e6b2e;
+  transition:box-shadow 0.2s;
+}
+.r-card:hover { box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.r-card.seed { border-left-color:#4a90d9; }
+.r-card.cpa { border-left-color:#c0392b; }
+.r-card.fert { border-left-color:#e65100; }
+.r-cat-badge {
+  display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;
+  border-radius:8px;margin-bottom:6px;background:#eaf5ec;color:#1e6b2e;
+}
+.r-cat-badge.seed { background:#eef4fb;color:#4a90d9; }
+.r-cat-badge.cpa { background:#fff0f0;color:#c0392b; }
+.r-cat-badge.fert { background:#fff3e0;color:#e65100; }
+.r-name { font-size:16px;font-weight:800;color:#111;margin-bottom:6px; }
+.r-info { font-size:13px;color:#666;line-height:1.8; }
+.r-info a { color:#1e6b2e;font-weight:700; }
+.r-map-link {
+  display:inline-flex;align-items:center;gap:5px;margin-top:8px;
+  font-size:12px;color:#1e6b2e;font-weight:700;cursor:pointer;
+  background:#eaf5ec;padding:5px 10px;border-radius:8px;border:none;
+  font-family:'Noto Sans KR',sans-serif;
+}
+
+/* 지도 패널 */
+.map-panel { position:relative; }
+.map-panel-title {
+  padding:10px 16px;background:#1e6b2e;color:white;
+  font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;
+}
+#resultMap { width:100%;height:300px; }
+.map-no-result {
+  height:200px;background:#f0f9f2;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;color:#888;
+  font-size:14px;
+}
+
+/* 빈 결과 */
+.empty-result {
+  padding:40px 20px;text-align:center;
+}
+.empty-result .icon { font-size:48px;margin-bottom:12px; }
+.empty-result h3 { font-size:18px;font-weight:800;color:#111;margin-bottom:8px; }
+.empty-result p { font-size:14px;color:#888;line-height:1.7; }
+
+/* 카운트 헤더 */
+.result-header {
+  padding:12px 16px;background:#f8f8f6;border-bottom:1px solid #e8e8e8;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.result-header span { font-size:14px;color:#666; }
+.result-header strong { color:#1e6b2e;font-size:16px; }
+</style>
+</head>
+<body>
+
+<!-- 헤더 -->
+<header style="position:sticky;top:0;z-index:100;background:white;border-bottom:1px solid #e8e8e8;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;">
+  <a href="index.html" class="ci-wrap">
+    <svg class="ci-leaf" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 3 C10 3 4 9 4 17 C4 23 7 27 12 30 L18 33 L24 30 C29 27 32 23 32 17 C32 9 26 3 18 3Z" fill="#1e6b2e"/>
+      <path d="M18 30 L18 10" stroke="#7ec850" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M18 14 L24 14 L24 10" stroke="#7ec850" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <path d="M18 18 L26 18" stroke="#7ec850" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <path d="M18 22 L24 22 L24 26" stroke="#7ec850" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <path d="M18 14 L12 14 L12 10" stroke="#a0d870" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <path d="M18 20 L10 20" stroke="#a0d870" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <path d="M18 24 L13 24 L13 27" stroke="#a0d870" stroke-width="1" stroke-linecap="round" fill="none"/>
+      <circle cx="24" cy="10" r="1.5" fill="#f5d442"/>
+      <circle cx="12" cy="10" r="1.5" fill="#f5d442"/>
+      <circle cx="26" cy="18" r="1.5" fill="#f5d442"/>
+      <circle cx="10" cy="20" r="1.5" fill="#f5d442"/>
+      <circle cx="24" cy="26" r="1.5" fill="#f5d442"/>
+      <circle cx="13" cy="27" r="1.5" fill="#f5d442"/>
+      <text x="18" y="20" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="8" font-weight="900" fill="white" opacity="0.9">k</text>
+    </svg>
+    <span class="ci-wordmark"><span class="kf">kFarm</span><span class="ai">AI</span></span>
+  </a>
+  <a href="index.html" style="font-size:13px;color:#1e6b2e;font-weight:700;">← 홈</a>
+</header>
+
+<!-- 헤더 검색바 -->
+<div class="hd-search">
+  <input class="hd-input" id="hdSearch" type="text" placeholder="다시 검색..."
+         onkeydown="if(event.key==='Enter') reSearch()">
+  <button class="hd-btn" onclick="reSearch()">검색</button>
+</div>
+
+<!-- 탭 -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('all',this)" id="tab-all">전체</button>
+  <button class="tab-btn" onclick="switchTab('map',this)" id="tab-map">🗺️ 농약사</button>
+  <button class="tab-btn" onclick="switchTab('santo',this)" id="tab-santo">🌱 상토</button>
+  <button class="tab-btn" onclick="switchTab('seed',this)" id="tab-seed">🌾 종자</button>
+  <button class="tab-btn" onclick="switchTab('cpa',this)" id="tab-cpa">🧪 작물보호제</button>
+  <button class="tab-btn" onclick="switchTab('fert',this)" id="tab-fert">🌿 비료</button>
+</div>
+
+<!-- 결과 카운트 헤더 -->
+<div class="result-header">
+  <span id="resultCount">검색 중...</span>
+</div>
+
+<!-- 지도 (농약사 결과 있을 때만 표시) -->
+<div class="map-panel" id="mapPanel" style="display:none;">
+  <div class="map-panel-title">📍 지도에서 위치 확인</div>
+  <div id="resultMap"></div>
+</div>
+
+<!-- 결과 리스트 -->
+<div class="result-list" id="resultList"></div>
+
+<!-- 푸터 -->
+<div style="padding:16px;text-align:center;font-size:12px;color:#aaa;border-top:1px solid #e8e8e8;margin-top:8px;">
+  © 2026 kFarmAI (kfarmai.com). 무단복제 금지.
+</div>
+
+<!-- 바텀 네비 -->
+<nav style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8e8e8;display:flex;z-index:100;">
+  <a href="index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏠</span><span>홈</span></a>
+  <a href="agri_map.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🗺️</span><span>농약사</span></a>
+  <a href="mfg.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏭</span><span>제조공급</span></a>
+  <a href="news_sub.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">📰</span><span>소식</span></a>
+  <a href="links.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🔗</span><span>사이트</span></a>
+</nav>
+
+<!-- 데이터 -->
+<script src="static/pesticide_data.js"></script>
+<script src="static/santo_data.js"></script>
+<script src="static/seed_data.js"></script>
+<script src="static/cpa_data.js"></script>
+<script src="static/fert_data.js"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false"></script>
+
+<script>
+/* ── 데이터 빌드 ── */
+let DB = [];
+let currentTab = 'all';
+let allResults = [];
+let kakaoMap = null;
+let markers = [];
+let infowindow = null;
+
+function buildDB() {
+  if (typeof data !== 'undefined')
+    data.forEach(d => DB.push({ name:d.name, cat:'농약사', catKey:'map', addr:d.addr, tel:d.tel, lat:d.lat, lot:d.lot, homepage:'' }));
+  if (typeof santoData !== 'undefined')
+    santoData.forEach(d => DB.push({ name:d.company, cat:'상토회사', catKey:'santo', addr:d.addr, tel:'', lat:null, lot:null, homepage:d.homepage||'' }));
+  if (typeof seedData !== 'undefined')
+    seedData.forEach(d => DB.push({ name:d.company, cat:'종자회사', catKey:'seed', addr:d.addr, tel:d.tel, lat:null, lot:null, homepage:d.homepage||'' }));
+  if (typeof cpaData !== 'undefined')
+    cpaData.forEach(d => DB.push({ name:d.company, cat:'작물보호제', catKey:'cpa', addr:d.addr, tel:d.tel, lat:null, lot:null, homepage:d.homepage||'' }));
+  if (typeof fertData !== 'undefined')
+    fertData.forEach(d => DB.push({ name:d.company, cat:'비료회사', catKey:'fert', addr:d.addr||'', tel:d.tel||'', lat:null, lot:null, homepage:d.homepage||'' }));
+}
+
+/* ── URL 파라미터 파싱 ── */
+function getQuery() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('q') || '';
+}
+
+/* ── 검색 ── */
+function doSearch(q) {
+  if (!q) return [];
+  return DB.filter(d =>
+    d.name.includes(q) ||
+    (d.addr && d.addr.includes(q)) ||
+    d.cat.includes(q)
+  );
+}
+
+/* ── 탭 전환 ── */
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderResults();
+}
+
+/* ── 결과 렌더링 ── */
+function renderResults() {
+  const q = document.getElementById('hdSearch').value.trim() || getQuery();
+  let filtered = allResults;
+  if (currentTab !== 'all') {
+    filtered = allResults.filter(r => r.catKey === currentTab);
+  }
+
+  // 카운트 표시
+  const countEl = document.getElementById('resultCount');
+  countEl.innerHTML = `"<strong>${q}</strong>" 검색결과 <strong style="color:#1e6b2e;">${filtered.length}</strong>건`;
+
+  // 지도 패널 (농약사 결과 있을 때)
+  const pestResults = filtered.filter(r => r.catKey === 'map' && r.lat && r.lot);
+  const mapPanel = document.getElementById('mapPanel');
+  if (pestResults.length > 0) {
+    mapPanel.style.display = 'block';
+    renderMap(pestResults);
+  } else {
+    mapPanel.style.display = 'none';
+  }
+
+  // 결과 카드
+  const listEl = document.getElementById('resultList');
+  if (!filtered.length) {
+    listEl.innerHTML = `
+      <div class="empty-result">
+        <div class="icon">🔍</div>
+        <h3>검색 결과 없음</h3>
+        <p>"${q}"에 해당하는 정보를 찾을 수 없습니다.<br>다른 키워드로 검색해보세요.</p>
+      </div>`;
+    return;
+  }
+
+  listEl.innerHTML = filtered.map((r, idx) => {
+    const cc = r.catKey === 'seed' ? 'seed' : r.catKey === 'cpa' ? 'cpa' : r.catKey === 'fert' ? 'fert' : '';
+    const hasMap = r.catKey === 'map' && r.lat && r.lot;
+    return `
+      <div class="r-card ${cc}" id="rcard-${idx}">
+        <span class="r-cat-badge ${cc}">${r.cat}</span>
+        <div class="r-name">${r.name}</div>
+        <div class="r-info">
+          ${r.addr ? `📍 ${r.addr}<br>` : ''}
+          ${r.tel ? `📞 ${r.tel}<br>` : ''}
+          ${r.homepage ? `<a href="${r.homepage}" target="_blank">🌐 홈페이지 →</a>` : ''}
+        </div>
+        ${hasMap ? `<button class="r-map-link" onclick="focusMarker(${r.lat},${r.lot},'${r.name.replace(/'/g,"\\'")}')">📍 지도에서 보기</button>` : ''}
+      </div>`;
+  }).join('');
+}
+
+/* ── 카카오맵 렌더링 ── */
+function renderMap(pestResults) {
+  kakao.maps.load(function() {
+    const container = document.getElementById('resultMap');
+    if (!kakaoMap) {
+      kakaoMap = new kakao.maps.Map(container, {
+        center: new kakao.maps.LatLng(36.5, 127.8),
+        level: 7
+      });
+      infowindow = new kakao.maps.InfoWindow({ zIndex:1 });
+      kakao.maps.event.addListener(kakaoMap, 'click', () => infowindow.close());
+    }
+
+    // 기존 마커 제거
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+
+    const bounds = new kakao.maps.LatLngBounds();
+    pestResults.forEach(r => {
+      if (!r.lat || !r.lot) return;
+      const pos = new kakao.maps.LatLng(r.lat, r.lot);
+      const marker = new kakao.maps.Marker({ map: kakaoMap, position: pos });
+      kakao.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(
+          `<div style="padding:10px;font-size:13px;min-width:180px;line-height:1.8;">
+            <b style="color:#1e6b2e;">${r.name}</b><br>
+            <span style="font-size:12px;color:#666;">${r.addr}</span><br>
+            ${r.tel ? `📞 ${r.tel}` : ''}
+          </div>`
+        );
+        infowindow.open(kakaoMap, marker);
+      });
+      markers.push(marker);
+      bounds.extend(pos);
+    });
+
+    if (pestResults.length === 1) {
+      kakaoMap.setCenter(new kakao.maps.LatLng(pestResults[0].lat, pestResults[0].lot));
+      kakaoMap.setLevel(5);
+    } else if (pestResults.length > 1) {
+      kakaoMap.setBounds(bounds);
+    }
+  });
+}
+
+/* ── 특정 마커 포커스 ── */
+function focusMarker(lat, lot, name) {
+  if (!kakaoMap) return;
+  kakaoMap.setCenter(new kakao.maps.LatLng(lat, lot));
+  kakaoMap.setLevel(4);
+  document.getElementById('mapPanel').scrollIntoView({ behavior:'smooth' });
+
+  // 해당 마커 인포윈도우 열기
+  markers.forEach(m => {
+    const pos = m.getPosition();
+    if (Math.abs(pos.getLat() - lat) < 0.0001 && Math.abs(pos.getLng() - lot) < 0.0001) {
+      infowindow.setContent(`<div style="padding:10px;font-size:13px;font-weight:700;color:#1e6b2e;">${name}</div>`);
+      infowindow.open(kakaoMap, m);
+    }
+  });
+}
+
+/* ── 재검색 ── */
+function reSearch() {
+  const q = document.getElementById('hdSearch').value.trim();
+  if (!q) return;
+  window.location.href = 'search_result.html?q=' + encodeURIComponent(q);
+}
+
+/* ── 초기화 ── */
+window.addEventListener('DOMContentLoaded', function() {
+  buildDB();
+  const q = getQuery();
+  if (q) {
+    document.getElementById('hdSearch').value = q;
+    allResults = doSearch(q);
+    renderResults();
+  }
+});
+
+document.getElementById('hdSearch').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') reSearch();
+});
+</script>
+</body>
+</html>

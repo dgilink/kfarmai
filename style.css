@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --green: #1e6b2e;
+  --green-light: #2d8a40;
+  --green-dark: #0d3d18;
+  --green-pale: #eaf5ec;
+  --green-mid: #c8e6cf;
+  --orange: #f06400;
+  --black: #111111;
+  --gray-dark: #444;
+  --gray: #666;
+  --gray-mid: #999;
+  --gray-light: #f7f7f5;
+  --border: #e8e8e8;
+  --white: #ffffff;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.07);
+  --shadow: 0 3px 12px rgba(0,0,0,0.1);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--white); color: var(--black);
+  font-size: 14px; line-height: 1.6; padding-bottom: 60px;
+}
+a { text-decoration: none; color: inherit; }
+button { font-family: 'Noto Sans KR', sans-serif; }
+
+/* 헤더 */
+.kf-header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white); border-bottom: 1px solid var(--border);
+  height: 54px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 16px;
+}
+.kf-logo { display: flex; align-items: center; gap: 8px; }
+.kf-logo-mark {
+  width: 32px; height: 32px; background: var(--green);
+  border-radius: 8px; display: flex; align-items: center;
+  justify-content: center; color: white; font-weight: 900;
+  font-size: 11px; letter-spacing: -0.5px;
+}
+.kf-logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.5px; }
+.kf-logo-text em { color: var(--green); font-style: normal; }
+.kf-header-icons { display: flex; gap: 4px; }
+.kf-icon-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: none; background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: background 0.2s;
+}
+.kf-icon-btn:hover { background: var(--gray-light); }
+
+/* 바텀 네비 */
+.kf-bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 1px solid var(--border);
+  display: flex; z-index: 100;
+}
+.kf-nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; padding: 7px 0 9px;
+  color: var(--gray-mid); font-size: 10px; gap: 2px;
+  cursor: pointer; transition: color 0.2s; text-decoration: none;
+}
+.kf-nav-item.active { color: var(--green); }
+.kf-nav-icon { font-size: 19px; }
+
+/* 검색바 */
+.kf-search-bar {
+  padding: 10px 16px; background: var(--gray-light);
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.kf-search-bar input, .kf-search-bar select {
+  padding: 8px 12px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); font-size: 14px;
+  font-family: 'Noto Sans KR', sans-serif; background: white; outline: none;
+  transition: border-color 0.2s;
+}
+.kf-search-bar input:focus, .kf-search-bar select:focus { border-color: var(--green); }
+.kf-btn {
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  border: none; cursor: pointer; font-size: 13px; font-weight: 600;
+  font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s;
+}
+.kf-btn-primary { background: var(--green); color: white; }
+.kf-btn-primary:hover { background: var(--green-light); }
+.kf-btn-orange { background: var(--orange); color: white; }
+.kf-btn-gray { background: #999; color: white; }
+
+/* 회사 카드 */
+.kf-company-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px; padding: 16px;
+}
+.kf-company-card {
+  background: white; border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow-sm);
+  border-top: 3px solid var(--green); transition: transform 0.2s, box-shadow 0.2s;
+}
+.kf-company-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.kf-company-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 10px; }
+.kf-company-name { font-size: 14px; font-weight: 700; color: var(--green-dark); line-height: 1.4; }
+.kf-homepage-btn {
+  flex-shrink: 0; padding: 4px 10px;
+  background: var(--green-pale); color: var(--green);
+  border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.kf-homepage-btn:hover { background: var(--green-mid); }
+.kf-company-info { font-size: 12px; color: var(--gray); line-height: 1.8; }
+.kf-company-info span { display: block; }
+.kf-products { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.kf-tag {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; margin: 2px 2px 2px 0;
+}
+.kf-tag-green { background: var(--green-pale); color: var(--green); }
+.kf-tag-blue { background: #eef4fb; color: #4a90d9; }
+.kf-tag-red { background: #fff0f0; color: #c0392b; }
+.kf-tag-orange { background: #fff3e0; color: #e65100; }
+
+/* 링크 그리드 */
+.kf-link-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 24px; }
+.kf-link-btn {
+  display: block; padding: 13px 8px;
+  background: white; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); text-align: center;
+  font-size: 12px; color: var(--gray-dark); font-weight: 500;
+  transition: all 0.2s; line-height: 1.4;
+}
+.kf-link-btn:hover { background: var(--green-pale); border-color: var(--green); color: var(--green); transform: translateY(-2px); }
+
+.kf-sec-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--green); }
+.kf-sec-bar { width: 4px; height: 18px; background: var(--green); border-radius: 2px; }
+.kf-sec-title { font-size: 15px; font-weight: 700; color: var(--green-dark); }
+
+/* 햄버거 메뉴 */
+.kf-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; }
+.kf-overlay.open { display: block; }
+.kf-menu { position: fixed; top: 0; right: -300px; width: 300px; height: 100%; background: white; z-index: 201; transition: right 0.3s; overflow-y: auto; }
+.kf-menu.open { right: 0; }
+.kf-menu-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.kf-menu-close { background: none; border: none; font-size: 22px; cursor: pointer; }
+.kf-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 22px; font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--gray-light); transition: background 0.2s; }
+.kf-menu-item:hover { background: var(--gray-light); }
+.kf-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+.kf-badge-soon { background: var(--gray-light); color: var(--gray); }
+.kf-badge-new { background: var(--orange); color: white; }
+
+/* 지도 */
+#map { width: 100%; height: calc(100vh - 118px); }
+
+/* 탭 */
+.kf-tabs { display: flex; gap: 8px; padding: 12px 16px 0; overflow-x: auto; scrollbar-width: none; }
+.kf-tabs::-webkit-scrollbar { display: none; }
+.kf-tab {
+  flex-shrink: 0; padding: 7px 18px; border-radius: 20px;
+  border: 1.5px solid var(--border); background: white;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  color: var(--gray); transition: all 0.2s; font-family: 'Noto Sans KR', sans-serif;
+}
+.kf-tab.active { background: var(--black); color: white; border-color: var(--black); }
+
+@media (max-width: 600px) {
+  .kf-company-grid { grid-template-columns: 1fr; padding: 12px; }
+  .kf-link-grid { grid-template-columns: repeat(2, 1fr); }
+}

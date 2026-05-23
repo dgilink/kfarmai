@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>제조·공급업체 - kfarmai</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="kf-header">
+  <a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a>
+  <div class="kf-header-icons"><button class="kf-icon-btn" onclick="openMenu()">☰</button></div>
+</header>
+<div style="padding:14px 16px 0;border-bottom:1px solid #e8e8e8;">
+  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">MANUFACTURERS</div>
+  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">제조·공급업체</div>
+  <div class="kf-tabs" style="padding:12px 0 0;">
+    <button class="kf-tab active" onclick="switchTab('all',this)">전체</button>
+    <button class="kf-tab" onclick="switchTab('santo',this)">상토회사</button>
+    <button class="kf-tab" onclick="switchTab('seed',this)">종자회사</button>
+    <button class="kf-tab" onclick="switchTab('cpa',this)">작물보호제</button>
+    <button class="kf-tab" onclick="switchTab('fert',this)">비료회사</button>
+  </div>
+</div>
+<div class="kf-search-bar">
+  <input type="text" id="keyword" placeholder="회사명·제품·지역 검색" onkeypress="if(event.keyCode==13) search()" style="flex:1;min-width:150px;">
+  <button class="kf-btn kf-btn-primary" onclick="search()">검색</button>
+  <button class="kf-btn kf-btn-gray" onclick="resetSearch()">초기화</button>
+  <span id="count" style="font-size:13px;color:#666;"></span>
+</div>
+<div class="kf-company-grid" id="grid"></div>
+<div style="text-align:center;padding:12px;font-size:11px;color:#aaa;">출처: 한국상토협회·한국종자협회·한국작물보호협회·한국비료협회 | © 2026 kfarmai.com</div>
+
+<nav class="kf-bottom-nav">
+  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
+  <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
+  <a href="mfg.html" class="kf-nav-item active"><span class="kf-nav-icon">🏭</span><span>제조공급</span></a>
+  <a href="news_sub.html" class="kf-nav-item"><span class="kf-nav-icon">📰</span><span>소식</span></a>
+  <a href="links.html" class="kf-nav-item"><span class="kf-nav-icon">🔗</span><span>사이트</span></a>
+</nav>
+<div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="kf-menu" id="menu">
+  <div class="kf-menu-header"><a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
+  <a href="index.html" class="kf-menu-item">🏠 홈</a>
+  <a href="agri_map.html" class="kf-menu-item">🗺️ 전국농약사</a>
+  <a href="santo.html" class="kf-menu-item">🌱 상토회사</a>
+  <a href="seed.html" class="kf-menu-item">🌾 종자회사</a>
+  <a href="cpa.html" class="kf-menu-item">🧪 작물보호제회사</a>
+  <a href="fert.html" class="kf-menu-item">🌿 비료회사</a>
+  <a href="news_sub.html" class="kf-menu-item">📰 관련소식</a>
+  <a href="links.html" class="kf-menu-item">🔗 농업관련 사이트</a>
+</div>
+
+<script src="static/santo_data.js"></script>
+<script src="static/seed_data.js"></script>
+<script src="static/cpa_data.js"></script>
+<script src="static/fert_data.js"></script>
+<script>
+let currentTab = 'all';
+
+function buildAll() {
+  const all = [];
+  if(typeof santoData!=='undefined') santoData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:'',homepage:d.homepage,products:d.products,cat:'상토회사',tagClass:'kf-tag-green'}));
+  if(typeof seedData!=='undefined') seedData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:d.tel,homepage:d.homepage,products:d.products,cat:'종자회사',tagClass:'kf-tag-blue'}));
+  if(typeof cpaData!=='undefined') cpaData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:d.tel,homepage:d.homepage,products:'',cat:'작물보호제회사('+d.grade+')',tagClass:'kf-tag-red'}));
+  if(typeof fertData!=='undefined') fertData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:d.tel,homepage:d.homepage,products:d.products,cat:'비료회사',tagClass:'kf-tag-orange'}));
+  return all;
+}
+
+function renderCards(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  list.forEach(item => {
+    const tags = item.products ? item.products.split(',').slice(0,5).map(p=>`<span class="kf-tag ${item.tagClass}">${p.trim()}</span>`).join('') : '';
+    const hp = item.homepage ? `<a href="${item.homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>` : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
+    const catColor = item.tagClass==='kf-tag-green'?'#1e6b2e':item.tagClass==='kf-tag-blue'?'#4a90d9':item.tagClass==='kf-tag-red'?'#c0392b':'#e65100';
+    grid.innerHTML += `<div class="kf-company-card" style="border-top-color:${catColor}">
+      <div style="margin-bottom:6px;"><span class="kf-tag ${item.tagClass}">${item.cat}</span></div>
+      <div class="kf-company-header"><div class="kf-company-name">${item.company}</div>${hp}</div>
+      <div class="kf-company-info">${item.tel?`<span>📞 ${item.tel}</span>`:''}<span>📍 ${item.addr||'-'}</span></div>
+      ${tags?`<div class="kf-products">${tags}</div>`:''}
+    </div>`;
+  });
+  document.getElementById('count').textContent = list.length + '개 업체';
+}
+
+function getFiltered() {
+  const kw = document.getElementById('keyword').value.trim();
+  let list = buildAll();
+  if(currentTab==='santo') list = list.filter(d=>d.cat==='상토회사');
+  else if(currentTab==='seed') list = list.filter(d=>d.cat==='종자회사');
+  else if(currentTab==='cpa') list = list.filter(d=>d.cat.includes('작물보호제'));
+  else if(currentTab==='fert') list = list.filter(d=>d.cat==='비료회사');
+  if(kw) list = list.filter(d=>d.company.includes(kw)||d.products.includes(kw)||d.addr.includes(kw));
+  return list;
+}
+
+function switchTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.kf-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderCards(getFiltered());
+}
+function search() { renderCards(getFiltered()); }
+function resetSearch() { document.getElementById('keyword').value=''; renderCards(getFiltered()); }
+function openMenu() { document.getElementById('overlay').classList.add('open'); document.getElementById('menu').classList.add('open'); }
+function closeMenu() { document.getElementById('overlay').classList.remove('open'); document.getElementById('menu').classList.remove('open'); }
+
+renderCards(buildAll());
+</script>
+</body>
+</html>

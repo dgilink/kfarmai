@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전국농약사 - kfarmai</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.region-tab-wrap { overflow-x:auto;scrollbar-width:none;padding:12px 16px 0; }
+.region-tab-wrap::-webkit-scrollbar { display:none; }
+.region-tabs { display:flex;gap:6px;min-width:max-content; }
+.rtab { flex-shrink:0;padding:6px 14px;border-radius:16px;border:1.5px solid #e8e8e8;background:white;font-size:12px;font-weight:500;cursor:pointer;color:#666;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s; }
+.rtab.active { background:#111;color:white;border-color:#111; }
+
+.list-header { padding:10px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center; }
+.list-count { font-size:13px;color:#666; }
+
+.shop-item { padding:13px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:10px;align-items:flex-start; }
+.shop-item:last-child { border-bottom:none; }
+.shop-alpha { width:34px;height:34px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#1e6b2e;flex-shrink:0; }
+.shop-name { font-size:14px;font-weight:700;margin-bottom:2px; }
+.shop-info { font-size:11px;color:#888;line-height:1.6; }
+.shop-tag { display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#eaf5ec;color:#1e6b2e;font-weight:600;margin-left:4px; }
+.shop-tag.user { background:#fff3e0;color:#e65100; }
+
+/* 자가등록 플로팅 버튼 */
+.reg-float-btn {
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+  background:#f06400;color:white;border:none;border-radius:24px;
+  padding:12px 24px;font-size:14px;font-weight:700;
+  font-family:'Noto Sans KR',sans-serif;cursor:pointer;
+  box-shadow:0 4px 16px rgba(240,100,0,0.4);z-index:50;
+  white-space:nowrap;transition:transform 0.2s;
+}
+.reg-float-btn:hover { transform:translateX(-50%) scale(1.03); }
+
+/* 등록 모달 */
+.modal-bg { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center; }
+.modal-bg.show { display:flex; }
+.modal { background:white;border-radius:16px;padding:24px 20px;width:90%;max-width:400px;max-height:90vh;overflow-y:auto; }
+.modal h3 { font-size:17px;font-weight:900;margin-bottom:16px;color:#0d3d18; }
+.modal label { font-size:13px;font-weight:600;color:#444;display:block;margin-bottom:4px;margin-top:12px; }
+.modal input, .modal select {
+  width:100%;padding:10px 12px;border:1.5px solid #e8e8e8;
+  border-radius:8px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;
+}
+.modal input:focus, .modal select:focus { border-color:#1e6b2e; }
+.modal-btns { display:flex;gap:10px;margin-top:20px; }
+.modal-btn { flex:1;padding:12px;border-radius:8px;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif; }
+.modal-btn-cancel { background:#f0f0f0;color:#666; }
+.modal-btn-submit { background:#1e6b2e;color:white; }
+.modal-notice { font-size:11px;color:#888;margin-top:12px;line-height:1.6;padding:10px;background:#f7f7f5;border-radius:8px; }
+.modal-success { text-align:center;padding:20px 0; }
+.modal-success .icon { font-size:48px;margin-bottom:12px; }
+.modal-success p { font-size:14px;color:#444;line-height:1.6; }
+
+/* 수정 모달 */
+.edit-modal-bg { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center; }
+.edit-modal-bg.show { display:flex; }
+</style>
+</head>
+<body>
+<header class="kf-header">
+  <a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a>
+  <div class="kf-header-icons"><button class="kf-icon-btn" onclick="openMenu()">☰</button></div>
+</header>
+
+<div style="padding:14px 16px 8px;border-bottom:1px solid #e8e8e8;">
+  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">PESTICIDE STORES</div>
+  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">전국농약사</div>
+</div>
+
+<div class="kf-search-bar">
+  <input type="text" id="keyword" placeholder="상호명·주소 검색" onkeypress="if(event.keyCode==13) doSearch()" style="flex:1;min-width:130px;">
+  <button class="kf-btn kf-btn-primary" onclick="doSearch()">검색</button>
+  <button class="kf-btn kf-btn-gray" onclick="resetAll()">초기화</button>
+</div>
+
+<div class="region-tab-wrap">
+  <div class="region-tabs" id="regionTabs"></div>
+</div>
+
+<div class="list-header">
+  <span class="list-count" id="listCount">로딩 중...</span>
+  <a href="map.html" style="font-size:12px;color:#1e6b2e;font-weight:600;">지도 보기 →</a>
+</div>
+
+<div id="shopList"></div>
+
+<!-- 자가등록 플로팅 버튼 -->
+<button class="reg-float-btn" onclick="openRegModal()">+ 농약사 정보 등록하기</button>
+
+<!-- 등록 모달 -->
+<div class="modal-bg" id="regModal">
+  <div class="modal">
+    <h3>🌿 농약사 정보 등록</h3>
+    <div id="regForm">
+      <label>상호명 *</label>
+      <input type="text" id="regName" placeholder="예) ○○농약사">
+      <label>주소 *</label>
+      <input type="text" id="regAddr" placeholder="예) 충남 홍성군 홍성읍 ○○로 123">
+      <label>전화번호</label>
+      <input type="text" id="regTel" placeholder="예) 041-000-0000">
+      <label>시도</label>
+      <select id="regSido">
+        <option value="">선택</option>
+        <option>서울특별시</option><option>경기도</option><option>인천광역시</option>
+        <option>충청남도</option><option>충청북도</option><option>전라남도</option>
+        <option>전북특별자치도</option><option>경상남도</option><option>경상북도</option>
+        <option>강원특별자치도</option><option>부산광역시</option><option>대구광역시</option>
+        <option>광주광역시</option><option>대전광역시</option><option>울산광역시</option>
+        <option>세종특별자치시</option><option>제주특별자치도</option>
+      </select>
+      <label>비밀번호 (수정 시 필요) *</label>
+      <input type="password" id="regPw" placeholder="4자리 이상">
+      <div class="modal-notice">입력하신 정보는 검토 없이 즉시 등록됩니다. 허위 정보 등록 시 삭제될 수 있습니다. 비밀번호는 나중에 정보 수정 시 사용됩니다.</div>
+      <div class="modal-btns">
+        <button class="modal-btn modal-btn-cancel" onclick="closeRegModal()">취소</button>
+        <button class="modal-btn modal-btn-submit" onclick="submitReg()">등록하기</button>
+      </div>
+    </div>
+    <div id="regSuccess" style="display:none;" class="modal-success">
+      <div class="icon">✅</div>
+      <p>등록되었습니다!<br>목록에서 바로 확인 가능합니다.</p>
+      <button class="modal-btn modal-btn-submit" style="margin-top:16px;" onclick="closeRegModal()">확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- 수정 모달 -->
+<div class="edit-modal-bg" id="editModal">
+  <div class="modal">
+    <h3>✏️ 정보 수정</h3>
+    <input type="hidden" id="editIdx">
+    <label>비밀번호 확인</label>
+    <input type="password" id="editPw" placeholder="등록 시 입력한 비밀번호">
+    <div id="editFields" style="display:none;">
+      <label>상호명</label>
+      <input type="text" id="editName">
+      <label>주소</label>
+      <input type="text" id="editAddr">
+      <label>전화번호</label>
+      <input type="text" id="editTel">
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeEditModal()">취소</button>
+      <button class="modal-btn modal-btn-submit" id="editBtn" onclick="verifyPw()">비밀번호 확인</button>
+    </div>
+  </div>
+</div>
+
+<nav class="kf-bottom-nav">
+  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
+  <a href="agri_map.html" class="kf-nav-item active"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
+  <a href="mfg.html" class="kf-nav-item"><span class="kf-nav-icon">🏭</span><span>제조공급</span></a>
+  <a href="news_sub.html" class="kf-nav-item"><span class="kf-nav-icon">📰</span><span>소식</span></a>
+  <a href="links.html" class="kf-nav-item"><span class="kf-nav-icon">🔗</span><span>사이트</span></a>
+</nav>
+<div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="kf-menu" id="menu">
+  <div class="kf-menu-header"><a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
+  <a href="index.html" class="kf-menu-item">🏠 홈</a>
+  <a href="agri_map.html" class="kf-menu-item">🗺️ 전국농약사</a>
+  <a href="map.html" class="kf-menu-item">📍 농약사 지도</a>
+  <a href="mfg.html" class="kf-menu-item">🏭 제조·공급업체</a>
+  <a href="news_sub.html" class="kf-menu-item">📰 관련소식</a>
+  <a href="links.html" class="kf-menu-item">🔗 농업관련 사이트</a>
+</div>
+
+<script src="static/pesticide_data.js"></script>
+<script>
+// 자가등록 데이터 (localStorage 사용 - 세션 내 유지)
+let userShops = JSON.parse(localStorage.getItem('kfarmai_shops') || '[]');
+let currentRegion = '전체';
+let currentKeyword = '';
+let editPwVerified = false;
+
+const REGIONS = ['전체','서울','경기','인천','충남','충북','전남','전북','경남','경북','강원','부산','대구','광주','대전','울산','세종','제주'];
+
+// 지역 탭 생성
+function buildRegionTabs() {
+  const wrap = document.getElementById('regionTabs');
+  REGIONS.forEach(r => {
+    const btn = document.createElement('button');
+    btn.className = 'rtab' + (r === '전체' ? ' active' : '');
+    btn.textContent = r;
+    btn.onclick = () => { currentRegion = r; document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderList(); };
+    wrap.appendChild(btn);
+  });
+}
+
+// 공공데이터 + 자가등록 통합
+function getAllShops() {
+  const pub = (typeof data !== 'undefined' ? data : []).map(d => ({
+    name: d.name, addr: d.addr, tel: d.tel, sido: d.sido, source: 'public', pw: ''
+  }));
+  return [...pub, ...userShops];
+}
+
+function filterShops() {
+  let list = getAllShops();
+  if (currentRegion !== '전체') {
+    list = list.filter(d => d.sido && d.sido.includes(currentRegion) || d.addr && d.addr.includes(currentRegion));
+  }
+  if (currentKeyword) {
+    list = list.filter(d => d.name.includes(currentKeyword) || d.addr.includes(currentKeyword));
+  }
+  // 가나다순 정렬
+  list.sort((a,b) => a.name.localeCompare(b.name, 'ko'));
+  return list;
+}
+
+function renderList() {
+  const list = filterShops();
+  const container = document.getElementById('shopList');
+  document.getElementById('listCount').textContent = list.length + '개 농약사';
+
+  if (!list.length) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:#999;">검색 결과가 없습니다</div>';
+    return;
+  }
+
+  let html = '';
+  let lastAlpha = '';
+  list.forEach((shop, idx) => {
+    const first = shop.name.charAt(0);
+    if (first !== lastAlpha) {
+      html += `<div style="padding:8px 16px;background:#f7f7f5;font-size:12px;font-weight:700;color:#444;border-bottom:1px solid #e8e8e8;">${first}</div>`;
+      lastAlpha = first;
+    }
+    const isUser = shop.source === 'user';
+    const userIdx = isUser ? userShops.findIndex(s=>s.name===shop.name&&s.addr===shop.addr) : -1;
+    html += `<div class="shop-item">
+      <div class="shop-alpha">${first}</div>
+      <div style="flex:1;">
+        <div class="shop-name">${shop.name}${isUser?'<span class="shop-tag user">자가등록</span>':''}</div>
+        <div class="shop-info">
+          ${shop.addr?`📍 ${shop.addr}<br>`:''}
+          ${shop.tel?`📞 ${shop.tel}`:''}
+        </div>
+      </div>
+      ${isUser?`<button onclick="openEditModal(${userIdx})" style="flex-shrink:0;background:none;border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;color:#666;">수정</button>`:''}
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function doSearch() { currentKeyword = document.getElementById('keyword').value.trim(); renderList(); }
+function resetAll() { currentKeyword=''; document.getElementById('keyword').value=''; currentRegion='전체'; document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active')); document.querySelector('.rtab').classList.add('active'); renderList(); }
+
+// 등록 모달
+function openRegModal() { document.getElementById('regModal').classList.add('show'); document.getElementById('regForm').style.display='block'; document.getElementById('regSuccess').style.display='none'; }
+function closeRegModal() { document.getElementById('regModal').classList.remove('show'); }
+function submitReg() {
+  const name = document.getElementById('regName').value.trim();
+  const addr = document.getElementById('regAddr').value.trim();
+  const tel = document.getElementById('regTel').value.trim();
+  const sido = document.getElementById('regSido').value;
+  const pw = document.getElementById('regPw').value;
+  if (!name || !addr) { alert('상호명과 주소는 필수입니다.'); return; }
+  if (!pw || pw.length < 4) { alert('비밀번호는 4자리 이상 입력해주세요.'); return; }
+  const newShop = { name, addr, tel, sido, source: 'user', pw };
+  userShops.push(newShop);
+  localStorage.setItem('kfarmai_shops', JSON.stringify(userShops));
+  document.getElementById('regForm').style.display='none';
+  document.getElementById('regSuccess').style.display='block';
+  renderList();
+}
+
+// 수정 모달
+function openEditModal(idx) {
+  editPwVerified = false;
+  document.getElementById('editIdx').value = idx;
+  document.getElementById('editPw').value = '';
+  document.getElementById('editFields').style.display='none';
+  document.getElementById('editBtn').textContent='비밀번호 확인';
+  document.getElementById('editModal').classList.add('show');
+}
+function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
+function verifyPw() {
+  const idx = parseInt(document.getElementById('editIdx').value);
+  const pw = document.getElementById('editPw').value;
+  if (!editPwVerified) {
+    if (userShops[idx].pw !== pw) { alert('비밀번호가 틀렸습니다.'); return; }
+    editPwVerified = true;
+    document.getElementById('editFields').style.display='block';
+    document.getElementById('editName').value = userShops[idx].name;
+    document.getElementById('editAddr').value = userShops[idx].addr;
+    document.getElementById('editTel').value = userShops[idx].tel;
+    document.getElementById('editBtn').textContent='저장하기';
+  } else {
+    userShops[idx].name = document.getElementById('editName').value.trim();
+    userShops[idx].addr = document.getElementById('editAddr').value.trim();
+    userShops[idx].tel = document.getElementById('editTel').value.trim();
+    localStorage.setItem('kfarmai_shops', JSON.stringify(userShops));
+    closeEditModal();
+    renderList();
+    alert('수정되었습니다.');
+  }
+}
+
+function openMenu() { document.getElementById('overlay').classList.add('open'); document.getElementById('menu').classList.add('open'); }
+function closeMenu() { document.getElementById('overlay').classList.remove('open'); document.getElementById('menu').classList.remove('open'); }
+
+buildRegionTabs();
+renderList();
+</script>
+</body>
+</html>

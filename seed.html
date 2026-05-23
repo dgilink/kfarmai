@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>종자회사 정보 - kfarmai</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.kf-company-card { border-top-color: #4a90d9; }
+.kf-homepage-btn { background: #eef4fb; color: #4a90d9; }
+.kf-homepage-btn:hover { background: #d8eaf8; }
+</style>
+</head>
+<body>
+
+<header class="kf-header">
+  <a href="index.html" class="kf-logo">
+    <div class="kf-logo-mark">kf</div>
+    <span class="kf-logo-text">kfarm<em>ai</em></span>
+  </a>
+  <div class="kf-header-right">
+    <button onclick="openMenu()">☰</button>
+  </div>
+</header>
+
+<div style="padding:16px 20px 8px;background:white;border-bottom:1px solid #e8e8e8;">
+  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">SEED INFO</div>
+  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">종자회사 정보</div>
+</div>
+
+<div class="kf-search-bar">
+  <input type="text" id="keyword" placeholder="회사명·품목·지역 검색"
+         onkeypress="if(event.keyCode==13) search()"
+         style="flex:1;min-width:150px;">
+  <button class="kf-btn kf-btn-primary" onclick="search()">검색</button>
+  <button class="kf-btn kf-btn-gray" onclick="resetSearch()">초기화</button>
+  <span id="count" style="font-size:13px;color:#666;"></span>
+</div>
+
+<div class="kf-company-grid" id="grid"></div>
+
+<div style="text-align:center;padding:12px;font-size:11px;color:#aaa;">
+  출처: 한국종자협회 (kosaseed.or.kr) | © 2026 kfarmai.com
+</div>
+
+<nav class="kf-bottom-nav">
+  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
+  <a href="index.html#subsidy" class="kf-nav-item"><span class="kf-nav-icon">📋</span><span>보조사업</span></a>
+  <a href="map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
+  <a href="santo.html" class="kf-nav-item"><span class="kf-nav-icon">🌱</span><span>상토</span></a>
+  <a href="seed.html" class="kf-nav-item active"><span class="kf-nav-icon">🌾</span><span>종자</span></a>
+</nav>
+
+<div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
+<div class="kf-menu" id="menu">
+  <div class="kf-menu-header">
+    <a href="index.html" class="kf-logo">
+      <div class="kf-logo-mark">kf</div>
+      <span class="kf-logo-text">kfarm<em>ai</em></span>
+    </a>
+    <button class="kf-menu-close" onclick="closeMenu()">✕</button>
+  </div>
+  <a href="index.html" class="kf-menu-item">홈</a>
+  <a href="index.html#subsidy" class="kf-menu-item">보조사업 공고</a>
+  <a href="map.html" class="kf-menu-item">농약사 찾기 🗺️</a>
+  <a href="santo.html" class="kf-menu-item">상토회사 정보 🌱</a>
+  <a href="seed.html" class="kf-menu-item">종자회사 정보 🌾</a>
+  <a href="links.html" class="kf-menu-item">농업관련 사이트 🔗</a>
+</div>
+
+<script src="static/seed_data.js"></script>
+<script>
+function renderCards(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  list.forEach(item => {
+    const prods = item.products.split(',').map(p => p.trim()).filter(p => p);
+    const tags = prods.slice(0, 7).map(p => `<span class="kf-tag kf-tag-blue">${p}</span>`).join('');
+    const more = prods.length > 7 ? `<span class="kf-tag kf-tag-blue">+${prods.length-7}</span>` : '';
+    const hp = item.homepage
+      ? `<a href="${item.homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>`
+      : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
+    grid.innerHTML += `
+      <div class="kf-company-card">
+        <div class="kf-company-header">
+          <div class="kf-company-name">${item.company}</div>
+          ${hp}
+        </div>
+        <div class="kf-company-info">
+          <span>👤 대표: ${item.ceo}</span>
+          <span>📞 ${item.tel}</span>
+          <span>📍 ${item.addr}</span>
+        </div>
+        <div class="kf-products">${tags}${more}</div>
+      </div>`;
+  });
+  document.getElementById('count').textContent = list.length + '개 회사';
+}
+function search() {
+  const kw = document.getElementById('keyword').value.trim();
+  renderCards(seedData.filter(d => !kw || d.company.includes(kw) || d.products.includes(kw) || d.addr.includes(kw)));
+}
+function resetSearch() {
+  document.getElementById('keyword').value = '';
+  renderCards(seedData);
+}
+function openMenu() {
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('menu').classList.add('open');
+}
+function closeMenu() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('menu').classList.remove('open');
+}
+renderCards(seedData);
+</script>
+</body>
+</html>
