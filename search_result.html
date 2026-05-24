@@ -230,6 +230,23 @@ function doSearch(q) {
       name: d.name, addr: d.address, cat: d.category,
       website: d.website
     }));
+    const intent = data.intent || "directory";
+    const bannerEl = document.getElementById("intentBanner");
+    if (bannerEl) {
+      const map = {
+        diagnosis: {text: "🌿 AI 진단 기능 준비 중입니다. 아래 관련 농약사를 참고하세요.", color: "#1e6b2e", bg: "#f0faf2"},
+        subsidy:   {text: "📋 보조금 정보 기능 준비 중입니다. 지역 농업기술센터에 문의하세요.", color: "#1a56a0", bg: "#f0f5ff"},
+        event:     {text: "🎪 행사 정보 기능 준비 중입니다.", color: "#7c3aed", bg: "#f5f0ff"},
+        directory: {text: "", color: "", bg: ""}
+      };
+      const info = map[intent] || map["directory"];
+      if (info.text) {
+        bannerEl.style.cssText = "display:block;background:" + info.bg + ";border-left:4px solid " + info.color + ";padding:12px 16px;margin-bottom:16px;border-radius:8px;color:" + info.color + ";font-weight:500;";
+        bannerEl.textContent = info.text;
+      } else {
+        bannerEl.style.display = "none";
+      }
+    }
     allResults = [...shops, ...companies];
     renderResults();
   })
