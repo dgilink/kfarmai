@@ -320,14 +320,13 @@ function renderMap(pestResults) {
   kakao.maps.load(function() {
     document.getElementById('mapPanel').style.display = 'block';
     const container = document.getElementById('resultMap');
-    if (!kakaoMap) {
-      kakaoMap = new kakao.maps.Map(container, {
-        center: new kakao.maps.LatLng(36.5, 127.8),
-        level: 7
-      });
-      infowindow = new kakao.maps.InfoWindow({ zIndex:1 });
-      kakao.maps.event.addListener(kakaoMap, 'click', () => infowindow.close());
-    }
+    kakaoMap = new kakao.maps.Map(container, {
+      center: new kakao.maps.LatLng(36.5, 127.8),
+      level: 7
+    });
+    infowindow = new kakao.maps.InfoWindow({ zIndex:1 });
+    kakao.maps.event.addListener(kakaoMap, 'click', () => infowindow.close());
+    kakaoMap.relayout();
 
     // 기존 마커 제거
     markers.forEach(m => m.setMap(null));
