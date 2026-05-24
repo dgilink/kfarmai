@@ -83,7 +83,8 @@
   padding:10px 16px;background:#1e6b2e;color:white;
   font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;
 }
-#resultMap { width:100%;height:300px; }
+#resultMap { width:100%;height:300px;min-height:300px; }
+#roadviewPanel { width:100%;height:300px;min-height:300px; }
 .map-no-result {
   height:200px;background:#f0f9f2;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:8px;color:#888;
@@ -148,11 +149,11 @@
 <div class="map-panel" id="mapPanel" style="display:none;">
   <div class="map-panel-title" style="display:flex;justify-content:space-between;align-items:center;">
     <span>📍 지도에서 위치 확인</span>
-    <button id="roadviewToggleBtn" onclick="toggleRoadview()" style="font-size:12px;padding:4px 10px;background:#1e6b2e;color:white;border:none;border-radius:6px;cursor:pointer;display:none;">🚶 로드뷰 보기</button>
+
   </div>
-  <div style="display:flex;gap:8px;">
-    <div id="resultMap" style="flex:1;min-height:220px;"></div>
-    <div id="roadviewPanel" style="flex:1;min-height:220px;display:none;border-radius:8px;overflow:hidden;"></div>
+  <div style="display:flex;gap:8px;height:300px;">
+    <div id="resultMap" style="flex:1;height:300px;"></div>
+    <div id="roadviewPanel" style="flex:1;height:300px;display:none;border-radius:8px;overflow:hidden;"></div>
   </div>
 </div>
 
@@ -311,7 +312,7 @@ function renderResults() {
           ${r.tel ? `📞 ${r.tel}<br>` : ''}
           ${r.homepage ? `<a href="${r.homepage}" target="_blank">🌐 홈페이지 →</a>` : ''}
         </div>
-        ${hasMap ? `<button class="r-map-link" onclick="focusMarker(${r.lat},${r.lot},'${r.name.replace(/'/g,"\\'")}')">📍 지도에서 보기</button>` : ''}
+        ${hasMap ? `<button class="r-map-link" onclick="focusMarker(${r.lat},${r.lot},'${r.name.replace(/'/g,"\\'")}')">📍 지도에서 보기</button><button class="r-map-link" onclick="focusMarker(${r.lat},${r.lot},'${r.name.replace(/'/g,"\\'")}');toggleRoadview();" style="background:#eef4fb;color:#1a5c9e;margin-left:6px;">🚶 로드뷰</button>` : ''}
       </div>`;
   }).join('');
 }
@@ -403,8 +404,6 @@ function showRoadview(lat, lng) {
 function focusMarker(lat, lot, name) {
   currentLat = lat;
   currentLng = lot;
-  const btn = document.getElementById('roadviewToggleBtn');
-  if (btn) btn.style.display = 'inline-block';
   if (!kakaoMap) return;
   kakaoMap.setCenter(new kakao.maps.LatLng(lat, lot));
   kakaoMap.setLevel(4);
