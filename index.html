@@ -427,7 +427,7 @@ document.getElementById('heroSearch').addEventListener('keydown', function(e) {
 function pickResult(name) {
   document.getElementById('heroSearch').value = name;
   closeDrop();
-  goSearch();
+  window.location.href = 'search_result.html?q=' + encodeURIComponent(name) + '&exact=true';
 }
 
 // ★ 핵심: 검색 → search_result.html?q=... 으로 페이지 이동

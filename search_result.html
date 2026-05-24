@@ -208,6 +208,11 @@ function buildDB() {
 }
 
 /* ── URL 파라미터 파싱 ── */
+function getExact() {
+  const p = new URLSearchParams(window.location.search);
+  return p.get('exact') === 'true';
+}
+
 function getQuery() {
   const params = new URLSearchParams(window.location.search);
   return params.get('q') || '';
@@ -219,7 +224,7 @@ function doSearch(q) {
   fetch("https://kfarmai.onrender.com/api/search", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({keyword: q})
+    body: JSON.stringify({keyword: q, exact: getExact()})
   })
   .then(r => r.json())
   .then(data => {
