@@ -151,10 +151,8 @@
     <span>📍 지도에서 위치 확인</span>
 
   </div>
-  <div style="display:flex;gap:8px;height:300px;">
-    <div id="resultMap" style="flex:1;height:300px;"></div>
-    <div id="roadviewPanel" style="flex:1;height:300px;display:none;border-radius:8px;overflow:hidden;"></div>
-  </div>
+  <div id="resultMap" style="width:100%;height:300px;"></div>
+  <div id="roadviewPanel" style="width:100%;height:300px;display:none;border-radius:8px;overflow:hidden;margin-top:8px;"></div>
 </div>
 
 <!-- 결과 리스트 -->
@@ -320,6 +318,7 @@ function renderResults() {
 /* ── 카카오맵 렌더링 ── */
 function renderMap(pestResults) {
   kakao.maps.load(function() {
+    document.getElementById('mapPanel').style.display = 'block';
     const container = document.getElementById('resultMap');
     if (!kakaoMap) {
       kakaoMap = new kakao.maps.Map(container, {
