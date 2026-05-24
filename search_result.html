@@ -146,8 +146,14 @@
 
 <!-- 지도 (농약사 결과 있을 때만 표시) -->
 <div class="map-panel" id="mapPanel" style="display:none;">
-  <div class="map-panel-title">📍 지도에서 위치 확인</div>
-  <div id="resultMap"></div>
+  <div class="map-panel-title" style="display:flex;justify-content:space-between;align-items:center;">
+    <span>📍 지도에서 위치 확인</span>
+    <button id="roadviewToggleBtn" onclick="toggleRoadview()" style="font-size:12px;padding:4px 10px;background:#1e6b2e;color:white;border:none;border-radius:6px;cursor:pointer;display:none;">🚶 로드뷰 보기</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <div id="resultMap" style="flex:1;min-height:220px;"></div>
+    <div id="roadviewPanel" style="flex:1;min-height:220px;display:none;border-radius:8px;overflow:hidden;"></div>
+  </div>
 </div>
 
 <!-- 결과 리스트 -->
@@ -173,7 +179,7 @@
 <script src="static/seed_data.js"></script>
 <script src="static/cpa_data.js"></script>
 <script src="static/fert_data.js"></script>
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,roadview"></script>
 
 <script>
 /* ── 데이터 빌드 ── */
@@ -356,7 +362,49 @@ function renderMap(pestResults) {
 }
 
 /* ── 특정 마커 포커스 ── */
+let roadviewClient = null;
+let currentLat = null;
+let currentLng = null;
+
+function toggleRoadview() {
+  const panel = document.getElementById('roadviewPanel');
+  const btn = document.getElementById('roadviewToggleBtn');
+  const mapEl = document.getElementById('resultMap');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    mapEl.style.flex = '1';
+    btn.textContent = '🗺️ 지도만 보기';
+    if (currentLat && currentLng) {
+      showRoadview(currentLat, currentLng);
+    }
+  } else {
+    panel.style.display = 'none';
+    btn.textContent = '🚶 로드뷰 보기';
+  }
+}
+
+function showRoadview(lat, lng) {
+  const roadviewContainer = document.getElementById('roadviewPanel');
+  roadviewContainer.style.display = 'block';
+  if (!roadviewClient) {
+    roadviewClient = new kakao.maps.RoadviewClient();
+  }
+  const roadview = new kakao.maps.Roadview(roadviewContainer);
+  const position = new kakao.maps.LatLng(lat, lng);
+  roadviewClient.getNearestPanoId(position, 50, function(panoId) {
+    if (panoId) {
+      roadview.setPanoId(panoId, position);
+    } else {
+      roadviewContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px;">이 위치의 로드뷰를<br>제공하지 않습니다.</div>';
+    }
+  });
+}
+
 function focusMarker(lat, lot, name) {
+  currentLat = lat;
+  currentLng = lot;
+  const btn = document.getElementById('roadviewToggleBtn');
+  if (btn) btn.style.display = 'inline-block';
   if (!kakaoMap) return;
   kakaoMap.setCenter(new kakao.maps.LatLng(lat, lot));
   kakaoMap.setLevel(4);
