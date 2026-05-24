@@ -272,7 +272,7 @@ function renderResults() {
   countEl.innerHTML = `"<strong>${q}</strong>" 검색결과 <strong style="color:#1e6b2e;">${filtered.length}</strong>건`;
 
   // 지도 패널 (농약사 결과 있을 때)
-  const pestResults = filtered.filter(r => r.catKey === 'map' && r.lat && r.lot);
+  const pestResults = filtered.filter(r => r.lat && r.lot);
   const mapPanel = document.getElementById('mapPanel');
   if (pestResults.length > 0) {
     mapPanel.style.display = 'block';
