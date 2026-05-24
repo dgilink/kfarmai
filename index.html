@@ -15,8 +15,8 @@
             --color-emerald-deep: #0F4C43;
             --color-neo-orange: #FF6B35;
         }
-        .search-wrap { position: relative; z-index: 9999; }
-        #searchDrop { position:fixed; background:white; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.15); overflow:hidden; z-index:99999; border:1px solid #f0f0f0; }
+        .search-wrap { position: relative; z-index: 99999; }
+        #searchDrop { position:absolute; top:calc(100% + 8px); left:0; right:0; background:white; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.15); overflow:hidden; z-index:99999; border:1px solid #f0f0f0; }
         .drop-hover { background:#f0faf2 !important; }
     </style>
 </head>
@@ -39,7 +39,7 @@
     </header>
 
     <!-- 히어로 섹션 -->
-    <section class="bg-[#0F4C43] text-white px-6 py-16 md:py-24 relative overflow-hidden">
+    <section class="bg-[#0F4C43] text-white px-6 py-16 md:py-24 relative">
         <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-white/5 blur-xl"></div>
         <div class="max-w-4xl mx-auto text-center relative" style="z-index:9999">
             <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-3 py-1.5 rounded-full text-xs font-semibold mb-6">
@@ -346,11 +346,7 @@
 
     function renderDrop(res, q) {
         const box = document.getElementById('searchDrop');
-        const input = document.getElementById('heroSearch');
-        const rect = input.getBoundingClientRect();
-        box.style.top = (rect.bottom + 8) + 'px';
-        box.style.left = rect.left + 'px';
-        box.style.width = rect.width + 'px';
+
         if (!res.length) {
             box.innerHTML = `<div style="padding:16px;text-align:center;font-size:13px;color:#9ca3af;">"${q}"에 대한 검색 결과가 없습니다.</div>`;
             box.style.display = 'block'; return;
