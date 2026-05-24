@@ -28,7 +28,7 @@
 .hero-sub { font-size:14px; opacity:0.82; margin-bottom:22px; line-height:1.7; }
 
 /* ══ 검색바 ══ */
-.search-wrap { position:relative; z-index:10; }
+.search-wrap { position:relative; z-index:9999; }
 .search-box {
   background:white; border-radius:30px;
   padding:0 6px 0 20px;
@@ -56,6 +56,7 @@
 .search-drop.open { display:block; }
 .drop-item { padding:12px 18px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; border-bottom:1px solid #f5f5f5; transition:background 0.15s; }
 .drop-item:last-child { border-bottom:none; }
+.drop-hover { background:#f0f7f2 !important; }
 .drop-item:hover { background:#f9f9f9; }
 .drop-cat { flex-shrink:0; font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px; margin-top:2px; background:#eaf5ec; color:#1e6b2e; }
 .drop-cat.seed { background:#eef4fb; color:#4a90d9; }
@@ -393,6 +394,33 @@ function renderDrop(res, q) {
 }
 
 function closeDrop() { document.getElementById('searchDrop').classList.remove('open'); }
+
+// 키보드 화살표 + 엔터 지원
+let dropIndex = -1;
+document.addEventListener('keydown', function(e) {
+  const box = document.getElementById('searchDrop');
+  if (!box.classList.contains('open')) return;
+  const items = box.querySelectorAll('.drop-item');
+  if (!items.length) return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    dropIndex = Math.min(dropIndex + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('drop-hover', i === dropIndex));
+    items[dropIndex].scrollIntoView({block:'nearest'});
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    dropIndex = Math.max(dropIndex - 1, 0);
+    items.forEach((el, i) => el.classList.toggle('drop-hover', i === dropIndex));
+    items[dropIndex].scrollIntoView({block:'nearest'});
+  } else if (e.key === 'Enter' && dropIndex >= 0) {
+    e.preventDefault();
+    items[dropIndex].click();
+    dropIndex = -1;
+  } else if (e.key === 'Escape') {
+    closeDrop();
+    dropIndex = -1;
+  }
+});
 
 function pickResult(name) {
   document.getElementById('heroSearch').value = name;
