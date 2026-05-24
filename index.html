@@ -328,6 +328,12 @@
     }
 
     window.addEventListener('DOMContentLoaded', buildDB);
+window.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+        document.getElementById('heroSearch').value = '';
+        closeDrop();
+    }
+});
 
     function search(q) {
         if (!q || q.length < 1) return [];
@@ -356,7 +362,7 @@
             if(r.catKey === 'seed') catStyle = "background:#eff6ff;color:#1d4ed8;";
             if(r.catKey === 'cpa') catStyle = "background:#fef2f2;color:#b91c1c;";
             if(r.catKey === 'fert') catStyle = "background:#fff7ed;color:#c2410c;";
-            return `<div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;border-bottom:1px solid #f9fafb;" class="drop-item" data-name="${r.name.replace(/"/g,'&quot;')}" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background=''" onclick="pickResult('${r.name.replace(/'/g,"\\'")}')">
+            return `<div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;border-bottom:1px solid #f9fafb;" class="drop-item" data-name="${r.name}" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background=''" onclick="pickResult('${r.name.replace(/'/g,"\\'")}')">
                 <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;${catStyle}">${r.cat}</span>
                 <div style="min-width:0;">
                     <div class="drop-name" style="font-size:13px;font-weight:700;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.name}</div>
