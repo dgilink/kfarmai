@@ -401,8 +401,9 @@ window.addEventListener('pageshow', function(e) {
             } else if (e.key === 'Enter') {
                 e.preventDefault();
                 if (dropIndex >= 0 && dropNames[dropIndex]) {
+                    const selectedName = dropNames[dropIndex];
                     closeDrop();
-                    window.location.href = 'search_result.html?q=' + encodeURIComponent(dropNames[dropIndex]) + '&exact=true';
+                    window.location.href = 'search_result.html?q=' + encodeURIComponent(selectedName) + '&exact=true';
                 } else { goSearch(); }
             } else if (e.key === 'Escape') { closeDrop(); }
         });
