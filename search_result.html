@@ -225,7 +225,7 @@ function doSearch(q) {
     const companies = (data.companies || []).map(d => ({
       name: d.name, addr: d.address, cat: d.category,
       catKey: d.category === "상토" ? "santo" : d.category === "종자" ? "seed" : d.category === "작물보호제" ? "cpa" : d.category === "비료" ? "fert" : "santo",
-      lat: null, lot: null, tel: d.phone, homepage: d.website
+      lat: d.lat || null, lot: d.lng || null, tel: d.phone, homepage: d.website
     }));
     const intent = data.intent || "directory";
     const bannerEl = document.getElementById("intentBanner");
