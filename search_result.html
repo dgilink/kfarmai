@@ -236,7 +236,7 @@ function doSearch(q) {
     if (bannerEl) {
       const map = {
         diagnosis: {text: "🌿 AI 진단 기능 준비 중입니다. 아래 관련 농약사를 참고하세요.", color: "#1e6b2e", bg: "#f0faf2"},
-        subsidy:   {text: "📋 보조금 정보 기능 준비 중입니다. 지역 농업기술센터에 문의하세요.", color: "#1a56a0", bg: "#f0f5ff"},
+        subsidy:   {text: "📋 보조금 정보 수집 중입니다. 아래에서 우리 지역을 선택하면 보조사업 시즌(12~3월)에 알림을 드립니다.", color: "#1a56a0", bg: "#f0f5ff"},
         event:     {text: "🎪 행사 정보 기능 준비 중입니다.", color: "#7c3aed", bg: "#f5f0ff"},
         directory: {text: "", color: "", bg: ""}
       };
@@ -244,6 +244,12 @@ function doSearch(q) {
       if (info.text) {
         bannerEl.style.cssText = "display:block;background:" + info.bg + ";border-left:4px solid " + info.color + ";padding:12px 16px;margin-bottom:16px;border-radius:8px;color:" + info.color + ";font-weight:500;";
         bannerEl.textContent = info.text;
+      if (intent === 'subsidy') {
+        const form = document.createElement('div');
+        form.style.cssText = 'margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;';
+        form.innerHTML = '<select id="sidoSelect" style="padding:6px 10px;border:1px solid #1a56a0;border-radius:6px;font-size:13px;"><option value="">시/도 선택</option><option>서울특별시</option><option>경기도</option><option>강원도</option><option>충청북도</option><option>충청남도</option><option>전라북도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option></select><button onclick="alert(document.getElementById('sidoSelect').value ? document.getElementById('sidoSelect').value + ' 보조사업 시즌 알림을 등록했습니다.' : '지역을 선택해주세요.')" style="padding:6px 14px;background:#1a56a0;color:white;border:none;border-radius:6px;font-size:13px;cursor:pointer;">알림 신청</button>';
+        bannerEl.appendChild(form);
+      }
       } else {
         bannerEl.style.display = "none";
       }
