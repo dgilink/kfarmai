@@ -443,7 +443,7 @@
         const mapContainer = document.getElementById('map');
         const map = new kakao.maps.Map(mapContainer, {
             center: new kakao.maps.LatLng(36.5, 127.8),
-            level: 13
+            level: 8
         });
         const geocoder = new kakao.maps.services.Geocoder();
         const markers = [];
@@ -567,7 +567,7 @@
             const statusEl = document.getElementById('geocodeStatus');
             const countEl = document.getElementById('count');
 
-            list.forEach(addMarker);
+            (list.length > 500 ? list.slice(0, 500) : list).forEach(addMarker);
             countEl.textContent = list.length + '개 검색됨';
             statusEl.textContent = pending ? '제조공급업체 주소 확인중...' : '';
 
