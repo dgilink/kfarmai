@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>농약사·제조공급업체 찾기 - kfarmai</title>
     <style>
@@ -346,7 +349,7 @@
 
     <script src="static/pesticide_data.js"></script>
     <script src="static/cpa_data.js"></script>
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,clusterer"></script>
     <script>
     const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
     const SIDO_ALIASES = {
@@ -452,7 +455,9 @@
             infowindow.close();
         });
 
+        let clusterer = null;
         function clearMarkers() {
+            if (clusterer) { clusterer.clear(); }
             markers.forEach(function(marker) { marker.setMap(null); });
             markers.length = 0;
             infowindow.close();
@@ -486,6 +491,25 @@
             });
             markers.push(marker);
             return marker;
+        }
+        function applyClusterer() {
+            if (clusterer) clusterer.clear();
+            clusterer = new kakao.maps.MarkerClusterer({
+                map: map,
+                averageCenter: true,
+                minLevel: 5,
+                styles: [{
+                    width: '42px', height: '42px',
+                    background: 'rgba(30,107,46,0.9)',
+                    borderRadius: '50%',
+                    color: '#fff',
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    lineHeight: '42px',
+                    fontSize: '13px'
+                }]
+            });
+            clusterer.addMarkers(markers);
         }
 
         function fitMapToBounds(list) {
@@ -549,6 +573,7 @@
 
             if (!pending) {
                 if (moveMap) fitMapToBounds(list);
+                applyClusterer();
                 return;
             }
 
@@ -560,10 +585,12 @@
                     if (ok) addMarker(item);
                     statusEl.textContent = resolved < pending ? '제조공급업체 주소 확인중 ' + resolved + '/' + pending : '';
                     if (resolved === pending && moveMap) fitMapToBounds(list);
+                applyClusterer();
                 });
             });
 
             if (moveMap) fitMapToBounds(list);
+            applyClusterer();
         }
 
         function getFilteredItems() {
