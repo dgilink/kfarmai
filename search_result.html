@@ -369,18 +369,16 @@ let currentLng = null;
 
 function toggleRoadview() {
   const panel = document.getElementById('roadviewPanel');
-  const btn = document.getElementById('roadviewToggleBtn');
   const mapEl = document.getElementById('resultMap');
+  if (!panel) return;
   if (panel.style.display === 'none') {
     panel.style.display = 'block';
     mapEl.style.flex = '1';
-    btn.textContent = '🗺️ 지도만 보기';
     if (currentLat && currentLng) {
       showRoadview(currentLat, currentLng);
     }
   } else {
     panel.style.display = 'none';
-    btn.textContent = '🚶 로드뷰 보기';
   }
 }
 
