@@ -1,476 +1,445 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>kFarmAI - 전국 농자재 정보 플랫폼</title>
-<link rel="stylesheet" href="style.css">
-<style>
-/* ══ CI 로고 SVG (회로기판 잎사귀) ══ */
-.ci-wrap { display:flex; align-items:center; gap:10px; text-decoration:none; }
-.ci-leaf { width:36px; height:36px; flex-shrink:0; }
-.ci-text { line-height:1; }
-.ci-wordmark { font-size:20px; font-weight:900; letter-spacing:-1px; display:block; }
-.ci-wordmark .kf { color:#1e6b2e; }
-.ci-wordmark .arm { color:#111; }
-.ci-wordmark .ai { color:#f06400; }
-.ci-sub { font-size:9px; letter-spacing:1.8px; color:#999; text-transform:uppercase; margin-top:1px; display:block; }
-
-/* ══ 히어로 ══ */
-.hero {
-  background: #0f5c22;
-  padding:28px 18px 30px; color:white; position:relative; overflow:visible;
-}
-.hero::before { content:''; position:absolute; right:-30px; top:-30px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.05); }
-.hero-tag { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.13); border:1px solid rgba(255,255,255,0.2); padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; margin-bottom:14px; }
-.hero-title { font-size:28px; font-weight:900; line-height:1.2; margin-bottom:10px; letter-spacing:-0.8px; }
-.hero-title em { color:#f5d442; font-style:normal; }
-.hero-sub { font-size:14px; opacity:0.82; margin-bottom:22px; line-height:1.7; }
-
-/* ══ 검색바 ══ */
-.search-wrap { position:relative; z-index:9999; }
-.search-box {
-  background:white; border-radius:30px;
-  padding:0 6px 0 20px;
-  display:flex; align-items:center; gap:10px;
-  box-shadow:0 6px 28px rgba(0,0,0,0.3);
-  width:100%;
-}
-.search-icon { font-size:18px; color:#bbb; flex-shrink:0; }
-.search-input {
-  flex:1; border:none; outline:none; padding:14px 0;
-  font-size:16px; font-family:'Noto Sans KR',sans-serif;
-  color:#111; background:transparent; min-width:0;
-}
-.search-input::placeholder { color:#ccc; }
-.search-btn {
-  background:#f06400; color:white; border:none; border-radius:24px;
-  padding:11px 22px; font-size:15px; font-weight:700; cursor:pointer;
-  font-family:'Noto Sans KR',sans-serif; flex-shrink:0;
-  margin:4px; transition:background 0.2s;
-}
-.search-btn:hover { background:#d45800; }
-
-/* 자동완성 */
-.search-drop { display:none; position:absolute; top:calc(100% + 8px); left:0; right:0; background:white; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.18); overflow:visible; z-index:9999; }
-.search-drop.open { display:block; }
-.drop-item { padding:12px 18px; cursor:pointer; display:flex; gap:10px; align-items:flex-start; border-bottom:1px solid #f5f5f5; transition:background 0.15s; }
-.drop-item:last-child { border-bottom:none; }
-.drop-hover { background:#f0f7f2 !important; }
-.drop-item:hover { background:#f9f9f9; }
-.drop-cat { flex-shrink:0; font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px; margin-top:2px; background:#eaf5ec; color:#1e6b2e; }
-.drop-cat.seed { background:#eef4fb; color:#4a90d9; }
-.drop-cat.cpa { background:#fff0f0; color:#c0392b; }
-.drop-cat.fert { background:#fff3e0; color:#e65100; }
-.drop-name { font-size:14px; font-weight:700; color:#111; margin-bottom:2px; }
-.drop-addr { font-size:12px; color:#888; }
-.drop-empty { padding:16px 18px; font-size:14px; color:#999; text-align:center; }
-
-/* ══ 신뢰 숫자 ══ */
-.trust-bar { background:#0a3d18; padding:12px 6px; display:flex; justify-content:space-around; position:relative; z-index:1; }
-.trust-item { text-align:center; color:white; }
-.trust-num { font-size:20px; font-weight:900; color:#f5d442; letter-spacing:-0.5px; }
-.trust-label { font-size:10px; opacity:0.75; margin-top:2px; }
-
-/* ══ 섹션 ══ */
-.sec { padding:22px 18px; }
-.sec + .sec { border-top:8px solid #f0f9f2; }
-.sec-top { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:16px; }
-.sec-label { font-size:11px; letter-spacing:2.5px; color:#1e6b2e; font-weight:700; margin-bottom:3px; }
-.sec-title { font-size:21px; font-weight:900; letter-spacing:-0.5px; color:#111; }
-.sec-more { font-size:13px; color:#1e6b2e; font-weight:700; }
-
-/* ══ 카테고리 ══ */
-.cat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.cat-card { border-radius:12px; padding:16px 10px 14px; text-align:center; text-decoration:none; display:block; transition:transform 0.2s, box-shadow 0.2s; border:1.5px solid transparent; }
-.cat-card:hover { transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,0.1); }
-.cat-card.c1 { background:#cde8d2; border-color:#9dcba8; }
-.cat-card.c2 { background:#ccdff5; border-color:#96bfe8; }
-.cat-card.c3 { background:#fce5c0; border-color:#f4c47a; }
-.cat-card.c4 { background:#f8cccc; border-color:#eca0a0; }
-.cat-card.c5 { background:#fde0c0; border-color:#f5b870; }
-.cat-card.c6 { background:#cce8d8; border-color:#90ccb0; }
-.cat-icon { font-size:28px; margin-bottom:8px; display:block; }
-.cat-label { font-size:13px; font-weight:800; color:#111; display:block; margin-bottom:3px; line-height:1.3; }
-.cat-sub { font-size:11px; color:#555; display:block; font-weight:500; }
-
-/* ══ 타겟별 ══ */
-.target-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.target-card { border-radius:14px; padding:18px 12px 16px; text-decoration:none; display:block; transition:transform 0.2s; }
-.target-card:hover { transform:scale(0.97); }
-.tc1 { background:#1e6b2e; }
-.tc2 { background:#1a3f7a; }
-.tc3 { background:#f5f5f2; border:1.5px solid #e0e0e0; }
-.target-icon { font-size:26px; margin-bottom:8px; display:block; }
-.target-title { font-size:13px; font-weight:800; display:block; margin-bottom:4px; line-height:1.3; }
-.target-desc { font-size:11px; display:block; line-height:1.5; }
-.tc1 .target-title, .tc1 .target-desc { color:white; }
-.tc1 .target-desc, .tc2 .target-desc { opacity:0.82; }
-.tc2 .target-title, .tc2 .target-desc { color:white; }
-.tc3 .target-title { color:#111; }
-.tc3 .target-desc { color:#666; }
-
-/* ══ 지도 프리뷰 ══ */
-.map-preview { border-radius:12px; overflow:visible; border:2px solid #b0d8b8; text-decoration:none; display:block; }
-.map-ph { height:150px; background:linear-gradient(135deg,#c0e0c8,#88c498); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; }
-.map-ph span { font-size:36px; }
-.map-ph p { font-size:15px; color:#0a3d18; font-weight:800; }
-.map-foot { padding:12px 16px; background:white; display:flex; align-items:center; justify-content:space-between; }
-.map-count { font-size:14px; font-weight:700; }
-.map-count strong { color:#1e6b2e; font-size:18px; }
-.map-go { font-size:13px; color:#1e6b2e; font-weight:800; }
-
-/* ══ 뉴스 ══ */
-.news-item { padding:13px 0; border-bottom:1px solid #e8e8e8; display:flex; gap:12px; align-items:flex-start; }
-.news-item:last-child { border-bottom:none; }
-.news-thumb { width:56px; height:56px; border-radius:10px; background:#eaf5ec; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:22px; }
-.news-src { font-size:11px; color:#1e6b2e; font-weight:800; margin-bottom:4px; }
-.news-ttl { font-size:14px; font-weight:700; line-height:1.4; margin-bottom:4px; color:#111; }
-.news-dt { font-size:12px; color:#999; }
-
-/* ══ 보조사업 ══ */
-.sub-notice { background:#eaf5ec; border-radius:12px; padding:14px; margin-bottom:14px; border:1.5px dashed #4caf50; }
-.sub-notice h4 { font-size:14px; font-weight:800; color:#0a3d18; margin-bottom:4px; }
-.sub-notice p { font-size:13px; color:#1e6b2e; line-height:1.6; }
-.sub-card { background:white; border:1.5px solid #e8e8e8; border-radius:12px; padding:14px; margin-bottom:10px; position:relative; }
-.sub-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:#1e6b2e; border-radius:4px 0 0 4px; }
-.sub-region { font-size:12px; font-weight:800; color:#1e6b2e; background:#eaf5ec; padding:4px 10px; border-radius:6px; display:inline-block; margin-bottom:8px; }
-.sub-title { font-size:14px; font-weight:700; margin-bottom:4px; }
-.sub-date { font-size:12px; color:#888; }
-.sub-link { font-size:13px; color:#1e6b2e; font-weight:700; float:right; }
-
-/* ══ 관련사이트 ══ */
-.lp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-.lp-btn { padding:13px 8px; background:white; border:1.5px solid #d0e8d8; border-radius:10px; text-align:center; font-size:12px; color:#333; font-weight:600; transition:all 0.2s; text-decoration:none; display:block; line-height:1.5; }
-.lp-btn:hover { background:#eaf5ec; border-color:#1e6b2e; color:#1e6b2e; transform:translateY(-2px); }
-
-/* ══ 푸터 ══ */
-.kf-footer { background:#f0f9f2; padding:22px 18px; border-top:1px solid #c0e0c8; }
-.kf-footer p { font-size:12px; color:#666; line-height:1.9; }
-.kf-footer .copy { font-size:12px; color:#888; margin-top:8px; font-weight:600; }
-
-/* 플로팅 TOP */
-.float-top { position:fixed; bottom:72px; right:14px; width:44px; height:44px; background:#1e6b2e; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-size:10px; font-weight:700; gap:1px; box-shadow:0 4px 14px rgba(30,107,46,0.45); cursor:pointer; z-index:50; border:none; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kFarmAI - 전국 농자재 정보 플랫폼</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <style>
+        body { font-family: 'Pretendard', sans-serif; }
+        :root {
+            --color-emerald-deep: #0F4C43;
+            --color-neo-orange: #FF6B35;
+        }
+        .search-wrap { position: relative; z-index: 9999; }
+        #searchDrop { position:absolute; top:calc(100% + 8px); left:0; right:0; background:white; border-radius:12px; box-shadow:0 8px 32px rgba(0,0,0,0.15); overflow:hidden; z-index:9999; border:1px solid #f0f0f0; }
+        .drop-hover { background:#f0faf2 !important; }
+    </style>
 </head>
-<body>
+<body class="bg-[#F8F9FA] text-[#1A1D20] antialiased tracking-tight pb-20 md:pb-0">
 
-<!-- 헤더 -->
-<header style="position:sticky;top:0;z-index:100;background:white;border-bottom:1px solid #e8e8e8;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;">
-  <a href="index.html" class="ci-wrap">
-    <!-- CI 로고: 회로기판 잎사귀 SVG -->
-    <svg class="ci-leaf" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- 잎사귀 외형 -->
-      <path d="M18 3 C10 3 4 9 4 17 C4 23 7 27 12 30 L18 33 L24 30 C29 27 32 23 32 17 C32 9 26 3 18 3Z" fill="#1e6b2e"/>
-      <!-- 잎 중앙 맥 -->
-      <path d="M18 30 L18 10" stroke="#7ec850" stroke-width="1.2" stroke-linecap="round"/>
-      <!-- 회로 패턴 우측 -->
-      <path d="M18 14 L24 14 L24 10" stroke="#7ec850" stroke-width="1" stroke-linecap="round" fill="none"/>
-      <path d="M18 18 L26 18" stroke="#7ec850" stroke-width="1" stroke-linecap="round" fill="none"/>
-      <path d="M18 22 L24 22 L24 26" stroke="#7ec850" stroke-width="1" stroke-linecap="round" fill="none"/>
-      <!-- 회로 패턴 좌측 -->
-      <path d="M18 14 L12 14 L12 10" stroke="#a0d870" stroke-width="1" stroke-linecap="round" fill="none"/>
-      <path d="M18 20 L10 20" stroke="#a0d870" stroke-width="1" stroke-linecap="round" fill="none"/>
-      <path d="M18 24 L13 24 L13 27" stroke="#a0d870" stroke-width="1" stroke-linecap="round" fill="none"/>
-      <!-- 회로 끝 노드 -->
-      <circle cx="24" cy="10" r="1.5" fill="#f5d442"/>
-      <circle cx="12" cy="10" r="1.5" fill="#f5d442"/>
-      <circle cx="26" cy="18" r="1.5" fill="#f5d442"/>
-      <circle cx="10" cy="20" r="1.5" fill="#f5d442"/>
-      <circle cx="24" cy="26" r="1.5" fill="#f5d442"/>
-      <circle cx="13" cy="27" r="1.5" fill="#f5d442"/>
-      <!-- 중앙 K 텍스트 -->
-      <text x="18" y="20" text-anchor="middle" font-family="Arial Black, sans-serif" font-size="8" font-weight="900" fill="white" opacity="0.9">k</text>
-    </svg>
-    <div class="ci-text">
-      <span class="ci-wordmark"><span class="kf">kFarm</span><span class="ai">AI</span></span>
-      <span class="ci-sub">농자재 정보 플랫폼</span>
+    <!-- 헤더 -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 md:px-8 py-3 flex items-center justify-between">
+        <a href="index.html" class="flex items-center space-x-3 group">
+            <img src="static/logo.jpg" alt="kFarmAI 로고" class="w-9 h-9 rounded-lg object-cover">
+            <div class="leading-none">
+                <span class="text-xl font-bold tracking-tight block">
+                    <span class="text-[#0F4C43]">kFarm</span><span class="text-[#FF6B35] font-black">AI</span>
+                </span>
+                <span class="text-[9px] tracking-[1.5px] text-gray-400 font-semibold uppercase block mt-0.5">Agricultural AI Hub</span>
+            </div>
+        </a>
+        <button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors" onclick="openMenu()">
+            <span class="text-xl">☰</span>
+        </button>
+    </header>
+
+    <!-- 히어로 섹션 -->
+    <section class="bg-[#0F4C43] text-white px-6 py-16 md:py-24 relative">
+        <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-white/5 blur-xl"></div>
+        <div class="max-w-4xl mx-auto text-center relative" style="z-index:9999">
+            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-3 py-1.5 rounded-full text-xs font-semibold mb-6">
+                <span>🌿</span> 전국 농자재 통합 데이터베이스 검색 엔진
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black leading-tight tracking-tighter mb-4">
+                농자재 정보,<br class="md:hidden"> <span class="text-[#FF6B35]">한 곳에서</span> 정밀하게.
+            </h1>
+            <p class="text-sm md:text-base text-gray-200/80 max-w-lg mx-auto mb-10 font-medium">
+                농약사·상토·종자·비료·작물보호제 등 공공데이터와 연동된 전국 인프라 정보를 실시간 초고속 검색하세요.
+            </p>
+            <div class="search-wrap max-w-2xl mx-auto text-left">
+                <div class="bg-white p-2 rounded-xl md:rounded-full shadow-2xl flex flex-col md:flex-row items-center gap-2">
+                    <div class="flex-1 flex items-center w-full px-4 py-2 md:py-0">
+                        <span class="text-lg mr-3 text-gray-400">🔍</span>
+                        <input class="w-full text-sm font-medium text-gray-900 bg-transparent outline-none placeholder-gray-400"
+                               id="heroSearch" type="text"
+                               placeholder="식물 증상, 작물 고민, 지역 농약사 검색..."
+                               autocomplete="off"
+                               oninput="onInput(this.value)"
+                               onfocus="this.select()">
+                    </div>
+                    <button class="w-full md:w-auto bg-[#FF6B35] hover:bg-[#e05621] text-white font-bold px-7 py-3 rounded-lg md:rounded-full text-sm transition-all" onclick="goSearch()">
+                        검색하기
+                    </button>
+                </div>
+                <div id="searchDrop" style="display:none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 통계 바 -->
+    <div class="bg-[#0A3D18] text-white border-t border-white/5 py-4 px-4">
+        <div class="max-w-5xl mx-auto grid grid-cols-5 text-center divide-x divide-white/10">
+            <div><div class="text-base md:text-2xl font-black text-[#FF6B35] trust-num" id="stat-shops">3,019</div><div class="text-[10px] text-gray-300/70 mt-0.5">전국 농약사</div></div>
+            <div><div class="text-base md:text-2xl font-black text-white trust-num" id="stat-santo">15</div><div class="text-[10px] text-gray-300/70 mt-0.5">상토회사</div></div>
+            <div><div class="text-base md:text-2xl font-black text-white trust-num" id="stat-seed">57</div><div class="text-[10px] text-gray-300/70 mt-0.5">종자회사</div></div>
+            <div><div class="text-base md:text-2xl font-black text-white trust-num" id="stat-cpa">39</div><div class="text-[10px] text-gray-300/70 mt-0.5">작물보호제</div></div>
+            <div><div class="text-base md:text-2xl font-black text-white trust-num" id="stat-fert">8</div><div class="text-[10px] text-gray-300/70 mt-0.5">비료회사</div></div>
+        </div>
     </div>
-  </a>
-  <div style="display:flex;gap:4px;">
-    <button style="width:38px;height:38px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:20px;" onclick="openMenu()">☰</button>
-  </div>
-</header>
 
-<!-- 히어로 -->
-<section class="hero">
-  <div class="hero-tag">🌿 전국 농자재 정보 플랫폼</div>
-  <div class="hero-title">농자재 정보,<br><em>한 곳에서</em> 찾으세요</div>
-  <div class="hero-sub">농약사·상토·종자·비료·작물보호제<br>전국 정보를 빠르게 검색</div>
+    <main class="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16">
 
-  <div class="search-wrap">
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
-      <input class="search-input" id="heroSearch" type="text"
-             placeholder="식물 증상, 작물 고민, 지역 농약사 검색..."
-             autocomplete="off"
-             oninput="onInput(this.value)"
-             onkeydown="if(event.key==='Enter'){goSearch();event.preventDefault()}"
-             onfocus="this.select()">
-      <button class="search-btn" onclick="goSearch()">검색</button>
+        <!-- 카테고리 -->
+        <section class="space-y-6">
+            <div>
+                <span class="text-[10px] tracking-[2.5px] font-bold text-[#0F4C43] block uppercase mb-1">Categories</span>
+                <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">농자재 핵심 카테고리</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <a href="agri_map.html" class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center group">
+                    <span class="text-3xl block mb-3">🗺️</span>
+                    <span class="text-sm font-bold text-gray-900 block group-hover:text-[#0F4C43]">전국농약사</span>
+                    <span class="text-xs text-gray-400 block mt-1">지역별 대장 리스트</span>
+                </a>
+                <a href="santo.html" class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center group">
+                    <span class="text-3xl block mb-3">🌱</span>
+                    <span class="text-sm font-bold text-gray-900 block group-hover:text-[#0F4C43]">상토회사</span>
+                    <span class="text-xs text-gray-400 block mt-1" id="cat-santo">15개 정회원사</span>
+                </a>
+                <a href="seed.html" class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center group">
+                    <span class="text-3xl block mb-3">🌾</span>
+                    <span class="text-sm font-bold text-gray-900 block group-hover:text-[#0F4C43]">종자회사</span>
+                    <span class="text-xs text-gray-400 block mt-1" id="cat-seed">57개 회원 기업</span>
+                </a>
+                <a href="cpa.html" class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center group">
+                    <span class="text-3xl block mb-3">🧪</span>
+                    <span class="text-sm font-bold text-gray-900 block group-hover:text-[#0F4C43]">작물보호제</span>
+                    <span class="text-xs text-gray-400 block mt-1" id="cat-cpa">39개 회원 정보</span>
+                </a>
+                <a href="fert.html" class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center group">
+                    <span class="text-3xl block mb-3">🌿</span>
+                    <span class="text-sm font-bold text-gray-900 block group-hover:text-[#0F4C43]">비료회사</span>
+                    <span class="text-xs text-gray-400 block mt-1" id="cat-fert">8개 제조사</span>
+                </a>
+                <a href="links.html" class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all text-center group">
+                    <span class="text-3xl block mb-3">🔗</span>
+                    <span class="text-sm font-bold text-gray-900 block group-hover:text-[#0F4C43]">관련사이트</span>
+                    <span class="text-xs text-gray-400 block mt-1">기관 및 정보 채널</span>
+                </a>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <section class="lg:col-span-1 space-y-4">
+                <div>
+                    <span class="text-[10px] tracking-[2.5px] font-bold text-[#FF6B35] block uppercase mb-1">User Target</span>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">맞춤형 채널</h2>
+                </div>
+                <div class="space-y-3">
+                    <a href="agri_map.html" class="flex items-center p-4 bg-[#0F4C43] text-white rounded-xl shadow-sm hover:opacity-95 transition-opacity">
+                        <span class="text-2xl mr-4">🗺️</span>
+                        <div>
+                            <span class="font-bold text-sm block">전국 농약사 찾기</span>
+                            <span class="text-xs text-white/70 block mt-0.5">지역별 농약사 지도 검색</span>
+                        </div>
+                    </a>
+                    <a href="mfg.html" class="flex items-center p-4 bg-gray-900 text-white rounded-xl shadow-sm hover:opacity-95 transition-opacity">
+                        <span class="text-2xl mr-4">🏭</span>
+                        <div>
+                            <span class="font-bold text-sm block">제조·공급 업체 유니온</span>
+                            <span class="text-xs text-white/70 block mt-0.5">상토, 종자, 작물보호제 정보</span>
+                        </div>
+                    </a>
+                    <a href="news_sub.html" class="flex items-center p-4 bg-white border border-gray-100 text-gray-900 rounded-xl shadow-sm hover:bg-gray-50 transition-colors">
+                        <span class="text-2xl mr-4">📰</span>
+                        <div>
+                            <span class="font-bold text-sm block">보조사업 동향 소식</span>
+                            <span class="text-xs text-gray-500 block mt-0.5">지자체 보조사업 아카이브</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="lg:col-span-2 space-y-4">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <span class="text-[10px] tracking-[2.5px] font-bold text-[#0F4C43] block uppercase mb-1">Geo Infrastructure</span>
+                        <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">전국 농약사 공간 정보</h2>
+                    </div>
+                    <a href="map.html" class="text-xs font-bold text-[#0F4C43] hover:text-[#FF6B35] transition-colors">전체 지도 보기 →</a>
+                </div>
+                <a href="map.html" class="block bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group hover:shadow-md transition-shadow">
+                    <div class="h-44 bg-gradient-to-br from-[#c0e0c8] to-[#88c498] flex flex-col items-center justify-center space-y-2 relative">
+                        <span class="text-4xl group-hover:scale-110 transition-transform">📍</span>
+                        <p class="text-sm font-bold text-[#0A3D18]">전국 농약사 하이퍼 로컬 지도</p>
+                    </div>
+                    <div class="p-4 flex items-center justify-between bg-white">
+                        <div class="text-xs font-medium text-gray-600">
+                            검증 완료 판매소: <strong class="text-sm font-bold text-[#0F4C43]" id="map-count">3,019개소</strong>
+                        </div>
+                        <span class="text-xs font-bold text-[#0F4C43]">지도 열기 →</span>
+                    </div>
+                </a>
+            </section>
+        </div>
+
+        <!-- 보조금 + 뉴스 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section id="subsidy" class="space-y-4">
+                <div>
+                    <span class="text-[10px] tracking-[2.5px] font-bold text-[#0F4C43] block uppercase mb-1">Administrative Subsidy</span>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">정부 보조사업 고시</h2>
+                </div>
+                <div class="bg-[#EAF5EC] border border-dashed border-[#4CAF50] p-4 rounded-xl">
+                    <h4 class="text-xs font-bold text-[#0A3D18] mb-1">📢 실시간 수집 중</h4>
+                    <p class="text-xs text-[#1E6B2E] leading-relaxed">전국 지자체별 수도용 상토 및 농자재 지원 사업 정보를 추적 중입니다. 2026년 하반기 자동화 오픈 예정.</p>
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[#0F4C43] before:rounded-l-xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold text-[#0F4C43] bg-[#EAF5EC] px-2 py-0.5 rounded">충청남도 홍성군</span>
+                            <a href="https://www.hongseong.go.kr" target="_blank" class="text-xs font-semibold text-[#0F4C43] hover:underline">공고 원문 ↗</a>
+                        </div>
+                        <h4 class="text-sm font-bold text-gray-900 mb-1">2026년 수도용 우수 상토 보조사업 공급 계획 고시</h4>
+                        <span class="text-xs text-gray-400">접수 기간: 2026.01.15 ~ 02.28</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-1.5 before:bg-[#0F4C43] before:rounded-l-xl">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold text-[#0F4C43] bg-[#EAF5EC] px-2 py-0.5 rounded">충청남도 부여군</span>
+                            <a href="https://www.buyeo.go.kr" target="_blank" class="text-xs font-semibold text-[#0F4C43] hover:underline">공고 원문 ↗</a>
+                        </div>
+                        <h4 class="text-sm font-bold text-gray-900 mb-1">2026년 환경친화형 농자재 및 상토 구입비 지원 사업</h4>
+                        <span class="text-xs text-gray-400">접수 기간: 2026.01.20 ~ 03.10</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-4">
+                <div>
+                    <span class="text-[10px] tracking-[2.5px] font-bold text-[#0F4C43] block uppercase mb-1">News & Notice</span>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">농업 미디어 피드</h2>
+                </div>
+                <div class="bg-white rounded-xl border border-gray-100 shadow-sm divide-y divide-gray-100">
+                    <div class="p-4 flex gap-4 items-start">
+                        <div class="w-10 h-10 rounded-lg bg-[#EAF5EC] flex items-center justify-center text-lg flex-shrink-0">📋</div>
+                        <div>
+                            <span class="text-[10px] font-bold text-[#0F4C43] block mb-0.5">kFarmAI 공식 공지</span>
+                            <h4 class="text-sm font-bold text-gray-900">전국 농약사 공간 정보 지도 서비스 정식 오픈 (3,019개소)</h4>
+                            <span class="text-xs text-gray-400 block mt-1">2026.05.17</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex gap-4 items-start">
+                        <div class="w-10 h-10 rounded-lg bg-[#EAF5EC] flex items-center justify-center text-lg flex-shrink-0">🌿</div>
+                        <div>
+                            <span class="text-[10px] font-bold text-[#0F4C43] block mb-0.5">kFarmAI 데이터</span>
+                            <h4 class="text-sm font-bold text-gray-900">비료 제조사 8개 전 품목 데이터베이스 완료</h4>
+                            <span class="text-xs text-gray-400 block mt-1">2026.05.17</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex gap-4 items-start">
+                        <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-lg flex-shrink-0">📰</div>
+                        <div>
+                            <span class="text-[10px] font-bold text-gray-500 block mb-0.5">농민신문</span>
+                            <h4 class="text-sm font-bold text-gray-900">2026년도 수도용 상토 국고 보조사업 지자체별 배정 안내</h4>
+                            <span class="text-xs text-gray-400 block mt-1">2026.01.10</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- 유관기관 -->
+        <section class="space-y-4">
+            <div>
+                <span class="text-[10px] tracking-[2.5px] font-bold text-[#0F4C43] block uppercase mb-1">Allied Relations</span>
+                <h2 class="text-xl md:text-2xl font-extrabold text-gray-900">공공 및 유관기관 링크</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <a href="https://www.mafra.go.kr" target="_blank" class="p-3 bg-white border border-gray-200 rounded-lg text-center text-xs font-semibold text-gray-700 hover:border-[#0F4C43] hover:text-[#0F4C43] transition-all">🏛️ 농림축산식품부</a>
+                <a href="https://www.rda.go.kr" target="_blank" class="p-3 bg-white border border-gray-200 rounded-lg text-center text-xs font-semibold text-gray-700 hover:border-[#0F4C43] hover:text-[#0F4C43] transition-all">🔬 농촌진흥청</a>
+                <a href="https://www.nongsaro.go.kr" target="_blank" class="p-3 bg-white border border-gray-200 rounded-lg text-center text-xs font-semibold text-gray-700 hover:border-[#0F4C43] hover:text-[#0F4C43] transition-all">🌿 농사로</a>
+                <a href="https://www.nongmin.com" target="_blank" class="p-3 bg-white border border-gray-200 rounded-lg text-center text-xs font-semibold text-gray-700 hover:border-[#0F4C43] hover:text-[#0F4C43] transition-all">📰 농민신문</a>
+                <a href="https://psis.rda.go.kr" target="_blank" class="p-3 bg-white border border-gray-200 rounded-lg text-center text-xs font-semibold text-gray-700 hover:border-[#0F4C43] hover:text-[#0F4C43] transition-all">🧪 농약안전정보</a>
+                <a href="links.html" class="p-3 bg-gray-50 border border-gray-200 rounded-lg text-center text-xs font-bold text-[#0F4C43] hover:bg-gray-100 transition-colors">➕ 더보기</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="bg-gray-900 text-gray-400 px-6 py-12 border-t border-gray-800 text-xs">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div class="space-y-2">
+                <div class="text-white text-base font-bold"><span>kFarm</span><span class="text-[#FF6B35]">AI</span></div>
+                <p class="leading-relaxed text-gray-500">
+                    원천 데이터: 대한민국 공공데이터포털 | 공간 정보: Kakao Maps API<br>
+                    협력: 한국상토협회, 한국종자협회, 한국작물보호협회, 한국비료협회
+                </p>
+            </div>
+            <p class="text-gray-600 font-medium">© 2026 kFarmAI (kfarmai.com). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- TOP 버튼 -->
+    <button class="fixed bottom-20 right-4 z-40 w-11 h-11 bg-[#0F4C43] text-white rounded-full flex flex-col items-center justify-center text-[10px] font-bold shadow-xl" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <span>↑</span><span>TOP</span>
+    </button>
+
+    <!-- 모바일 하단 네비 -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200 grid grid-cols-5 py-2 z-40 shadow-xl">
+        <a href="index.html" class="flex flex-col items-center text-[#0F4C43] text-[10px] font-bold space-y-0.5"><span class="text-lg">🏠</span><span>홈</span></a>
+        <a href="agri_map.html" class="flex flex-col items-center text-gray-400 text-[10px] font-medium space-y-0.5"><span class="text-lg">🗺️</span><span>농약사</span></a>
+        <a href="mfg.html" class="flex flex-col items-center text-gray-400 text-[10px] font-medium space-y-0.5"><span class="text-lg">🏭</span><span>제조공급</span></a>
+        <a href="news_sub.html" class="flex flex-col items-center text-gray-400 text-[10px] font-medium space-y-0.5"><span class="text-lg">📰</span><span>소식</span></a>
+        <a href="links.html" class="flex flex-col items-center text-gray-400 text-[10px] font-medium space-y-0.5"><span class="text-lg">🔗</span><span>사이트</span></a>
+    </nav>
+
+    <!-- 오버레이 + 사이드 메뉴 -->
+    <div class="fixed inset-0 bg-black/50 z-50 hidden" id="overlay" onclick="closeMenu()"></div>
+    <div class="fixed top-0 bottom-0 right-[-320px] w-[300px] bg-white z-50 shadow-2xl transition-all duration-300 overflow-y-auto" id="menu">
+        <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+            <span class="text-lg font-black text-[#0F4C43]">kFarm<span class="text-[#FF6B35]">AI</span></span>
+            <button class="text-2xl text-gray-400 hover:text-gray-900" onclick="closeMenu()">✕</button>
+        </div>
+        <div class="p-3 space-y-1 font-semibold text-sm text-gray-800">
+            <a href="index.html" class="block p-3 rounded-lg bg-gray-50 text-[#0F4C43]">🏠 홈</a>
+            <a href="agri_map.html" class="block p-3 rounded-lg hover:bg-gray-50">🗺️ 전국농약사 디렉토리</a>
+            <a href="map.html" class="block p-3 rounded-lg hover:bg-gray-50">📍 농약사 지도</a>
+            <a href="santo.html" class="block p-3 rounded-lg hover:bg-gray-50">🌱 상토회사</a>
+            <a href="seed.html" class="block p-3 rounded-lg hover:bg-gray-50">🌾 종자회사</a>
+            <a href="cpa.html" class="block p-3 rounded-lg hover:bg-gray-50">🧪 작물보호제</a>
+            <a href="fert.html" class="block p-3 rounded-lg hover:bg-gray-50">🌿 비료회사</a>
+            <a href="mfg.html" class="block p-3 rounded-lg hover:bg-gray-50">🏭 제조·공급</a>
+            <a href="news_sub.html" class="block p-3 rounded-lg hover:bg-gray-50">📰 보조사업 소식</a>
+            <a href="links.html" class="block p-3 rounded-lg hover:bg-gray-50">🔗 유관기관 링크</a>
+        </div>
     </div>
-    <div class="search-drop" id="searchDrop"></div>
-  </div>
-</section>
 
-<!-- 신뢰 숫자 -->
-<div class="trust-bar">
-  <div class="trust-item"><div class="trust-num">3,019</div><div class="trust-label">전국 농약사</div></div>
-  <div class="trust-item"><div class="trust-num">15</div><div class="trust-label">상토회사</div></div>
-  <div class="trust-item"><div class="trust-num">57</div><div class="trust-label">종자회사</div></div>
-  <div class="trust-item"><div class="trust-num">39</div><div class="trust-label">작물보호제</div></div>
-  <div class="trust-item"><div class="trust-num">8</div><div class="trust-label">비료회사</div></div>
-</div>
+    <!-- 데이터 파일 -->
+    <script src="static/pesticide_data.js"></script>
+    <script src="static/santo_data.js"></script>
+    <script src="static/seed_data.js"></script>
+    <script src="static/cpa_data.js"></script>
+    <script src="static/fert_data.js"></script>
 
-<!-- 카테고리 -->
-<div class="sec">
-  <div class="sec-top">
-    <div><div class="sec-label">CATEGORIES</div><div class="sec-title">농자재 카테고리</div></div>
-  </div>
-  <div class="cat-grid">
-    <a href="agri_map.html" class="cat-card c1"><span class="cat-icon">🗺️</span><span class="cat-label">전국농약사</span><span class="cat-sub">지역별 리스트</span></a>
-    <a href="santo.html" class="cat-card c2"><span class="cat-icon">🌱</span><span class="cat-label">상토회사</span><span class="cat-sub">15개 회원사</span></a>
-    <a href="seed.html" class="cat-card c3"><span class="cat-icon">🌾</span><span class="cat-label">종자회사</span><span class="cat-sub">57개 회원사</span></a>
-    <a href="cpa.html" class="cat-card c4"><span class="cat-icon">🧪</span><span class="cat-label">작물보호제</span><span class="cat-sub">39개 회원사</span></a>
-    <a href="fert.html" class="cat-card c5"><span class="cat-icon">🌿</span><span class="cat-label">비료회사</span><span class="cat-sub">8개 회원사</span></a>
-    <a href="links.html" class="cat-card c6"><span class="cat-icon">🔗</span><span class="cat-label">관련사이트</span><span class="cat-sub">기관·협회·뉴스</span></a>
-  </div>
-</div>
+    <script>
+    let DB = [];
 
-<!-- 누구를 위한 서비스 -->
-<div class="sec">
-  <div class="sec-top">
-    <div><div class="sec-label">FOR USERS</div><div class="sec-title">누구를 위한 서비스?</div></div>
-  </div>
-  <div class="target-grid">
-    <a href="agri_map.html" class="target-card tc1"><span class="target-icon">🗺️</span><span class="target-title">전국농약사</span><span class="target-desc">지역별 농약사 찾기·자가등록</span></a>
-    <a href="mfg.html" class="target-card tc2"><span class="target-icon">🏭</span><span class="target-title">제조·공급업체</span><span class="target-desc">상토·종자·작물보호제·비료</span></a>
-    <a href="news_sub.html" class="target-card tc3"><span class="target-icon">📰</span><span class="target-title">관련소식</span><span class="target-desc">보조사업·농업뉴스</span></a>
-  </div>
-</div>
-
-<!-- 지도 -->
-<div class="sec">
-  <div class="sec-top">
-    <div><div class="sec-label">MAP</div><div class="sec-title">농약사 지도</div></div>
-    <a href="map.html" class="sec-more">지도 보기 →</a>
-  </div>
-  <a href="map.html" class="map-preview">
-    <div class="map-ph"><span>🗺️</span><p>전국 농약사 지도 서비스</p></div>
-    <div class="map-foot"><div class="map-count">전국 <strong>3,019</strong>개 농약·비료 판매업소</div><span class="map-go">열기 →</span></div>
-  </a>
-</div>
-
-<!-- 뉴스 -->
-<div class="sec">
-  <div class="sec-top">
-    <div><div class="sec-label">NEWS</div><div class="sec-title">농업 소식</div></div>
-    <a href="news_sub.html" class="sec-more">더보기 →</a>
-  </div>
-  <div class="news-item"><div class="news-thumb">📋</div><div><div class="news-src">KFARMAI 공지</div><div class="news-ttl">전국 농약사 지도 서비스 오픈 (3,019개)</div><div class="news-dt">2026.05.17</div></div></div>
-  <div class="news-item"><div class="news-thumb">🌿</div><div><div class="news-src">KFARMAI 공지</div><div class="news-ttl">비료회사 8개 정보 등록 완료</div><div class="news-dt">2026.05.17</div></div></div>
-  <div class="news-item"><div class="news-thumb">📰</div><div><div class="news-src">농민신문</div><div class="news-ttl">2026년 수도용 상토 보조사업 지자체별 공고 안내</div><div class="news-dt">2026.01.10</div></div></div>
-</div>
-
-<!-- 보조사업 -->
-<div class="sec" id="subsidy">
-  <div class="sec-top">
-    <div><div class="sec-label">SUBSIDY</div><div class="sec-title">보조사업 공고</div></div>
-    <a href="news_sub.html" class="sec-more">전체 →</a>
-  </div>
-  <div class="sub-notice"><h4>📢 보조사업 정보 수집 중</h4><p>전국 지자체별 수도용 상토 보조사업 정보를 수집 중입니다. 2026년 하반기 서비스 예정.</p></div>
-  <div class="sub-card"><span class="sub-region">충청남도 홍성군</span><a href="https://www.hongseong.go.kr" target="_blank" class="sub-link">공고문 →</a><div class="sub-title">2026년 수도용 상토 보조사업 공고</div><div class="sub-date">신청: 2026.01.15 ~ 02.28</div></div>
-  <div class="sub-card"><span class="sub-region">충청남도 부여군</span><a href="https://www.buyeo.go.kr" target="_blank" class="sub-link">공고문 →</a><div class="sub-title">2026년 수도용 상토 구입비 지원사업</div><div class="sub-date">신청: 2026.01.20 ~ 03.10</div></div>
-</div>
-
-<!-- 관련사이트 -->
-<div class="sec">
-  <div class="sec-top">
-    <div><div class="sec-label">RELATED</div><div class="sec-title">농업관련 사이트</div></div>
-    <a href="links.html" class="sec-more">전체보기 →</a>
-  </div>
-  <div class="lp-grid">
-    <a href="https://www.mafra.go.kr" target="_blank" class="lp-btn">🏛️ 농림축산식품부</a>
-    <a href="https://www.rda.go.kr" target="_blank" class="lp-btn">🔬 농촌진흥청</a>
-    <a href="https://www.nongsaro.go.kr" target="_blank" class="lp-btn">🌿 농사로</a>
-    <a href="https://www.nongmin.com" target="_blank" class="lp-btn">📰 농민신문</a>
-    <a href="https://psis.rda.go.kr" target="_blank" class="lp-btn">🧪 농약안전정보</a>
-    <a href="links.html" class="lp-btn">➕ 더보기</a>
-  </div>
-</div>
-
-<!-- 푸터 -->
-<footer class="kf-footer">
-  <p>데이터 출처: 공공데이터포털 | 지도: 카카오맵 API<br>출처: 한국상토협회, 한국종자협회, 한국작물보호협회, 한국비료협회</p>
-  <p class="copy">© 2026 kFarmAI (kfarmai.com). 무단복제 금지.</p>
-</footer>
-
-<button class="float-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑<br>TOP</button>
-
-<!-- 메뉴 오버레이 -->
-<div style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;" id="overlay" onclick="closeMenu()"></div>
-<div style="position:fixed;top:0;right:-300px;width:300px;height:100%;background:white;z-index:201;transition:right 0.3s;overflow-y:auto;" id="menu">
-  <div style="padding:14px 18px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;justify-content:space-between;">
-    <span style="font-size:18px;font-weight:900;color:#1e6b2e;">kFarm<span style="color:#f06400;">AI</span></span>
-    <button style="background:none;border:none;font-size:22px;cursor:pointer;" onclick="closeMenu()">✕</button>
-  </div>
-  <a href="index.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🏠 홈</a>
-  <a href="agri_map.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🗺️ 전국농약사</a>
-  <a href="map.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">📍 농약사 지도</a>
-  <a href="santo.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🌱 상토회사</a>
-  <a href="seed.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🌾 종자회사</a>
-  <a href="cpa.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🧪 작물보호제회사</a>
-  <a href="fert.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🌿 비료회사</a>
-  <a href="mfg.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🏭 제조·공급업체</a>
-  <a href="news_sub.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">📰 관련소식</a>
-  <a href="links.html" style="display:flex;padding:15px 22px;font-size:15px;font-weight:600;border-bottom:1px solid #f5f5f5;text-decoration:none;color:#111;">🔗 농업관련 사이트</a>
-</div>
-
-<!-- 바텀 네비 -->
-<nav style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8e8e8;display:flex;z-index:100;">
-  <a href="index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#1e6b2e;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏠</span><span>홈</span></a>
-  <a href="agri_map.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🗺️</span><span>농약사</span></a>
-  <a href="mfg.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏭</span><span>제조공급</span></a>
-  <a href="news_sub.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">📰</span><span>소식</span></a>
-  <a href="links.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🔗</span><span>사이트</span></a>
-</nav>
-
-<!-- 검색 데이터 -->
-<script src="static/pesticide_data.js"></script>
-<script src="static/santo_data.js"></script>
-<script src="static/seed_data.js"></script>
-<script src="static/cpa_data.js"></script>
-<script src="static/fert_data.js"></script>
-
-<script>
-let DB = [];
-
-function buildDB() {
-  if (typeof data !== 'undefined')
-    data.forEach(d => DB.push({ name:d.name, cat:'농약사', catKey:'map', addr:d.addr, tel:d.tel, lat:d.lat, lot:d.lot }));
-  if (typeof santoData !== 'undefined')
-    santoData.forEach(d => DB.push({ name:d.company, cat:'상토회사', catKey:'santo', addr:d.addr, tel:'', lat:null, lot:null }));
-  if (typeof seedData !== 'undefined')
-    seedData.forEach(d => DB.push({ name:d.company, cat:'종자회사', catKey:'seed', addr:d.addr, tel:d.tel, lat:null, lot:null }));
-  if (typeof cpaData !== 'undefined')
-    cpaData.forEach(d => DB.push({ name:d.company, cat:'작물보호제', catKey:'cpa', addr:d.addr, tel:d.tel, lat:null, lot:null }));
-  if (typeof fertData !== 'undefined')
-    fertData.forEach(d => DB.push({ name:d.company, cat:'비료회사', catKey:'fert', addr:d.addr||'', tel:d.tel||'', lat:null, lot:null }));
-}
-
-window.addEventListener('DOMContentLoaded', buildDB);
-
-function search(q) {
-  if (!q || q.length < 1) return [];
-  return DB.filter(d =>
-    d.name.includes(q) || (d.addr && d.addr.includes(q)) || d.cat.includes(q)
-  );
-}
-
-let dropTimer;
-function onInput(val) {
-  clearTimeout(dropTimer);
-  if (!val) { closeDrop(); return; }
-  dropTimer = setTimeout(() => {
-    const res = search(val);
-    renderDrop(res, val);
-  }, 150);
-}
-
-function renderDrop(res, q) {
-  const box = document.getElementById('searchDrop');
-  if (!res.length) {
-    box.innerHTML = `<div class="drop-empty">"${q}" 검색 결과 없음</div>`;
-    box.classList.add('open'); return;
-  }
-  box.innerHTML = res.slice(0, 7).map(r => {
-    const cc = r.catKey === 'seed' ? 'seed' : r.catKey === 'cpa' ? 'cpa' : r.catKey === 'fert' ? 'fert' : '';
-    return `<div class="drop-item" onclick="pickResult('${r.name.replace(/'/g,"\\'")}')">
-      <span class="drop-cat ${cc}">${r.cat}</span>
-      <div><div class="drop-name">${r.name}</div>${r.addr ? `<div class="drop-addr">${r.addr}</div>` : ''}</div>
-    </div>`;
-  }).join('');
-  box.classList.add('open');
-}
-
-function closeDrop() { document.getElementById('searchDrop').classList.remove('open'); }
-
-// 키보드 화살표 + 엔터 지원
-let dropIndex = -1;
-let dropNames = [];
-document.getElementById('heroSearch').addEventListener('keydown', function(e) {
-  const box = document.getElementById('searchDrop');
-  if (!box.classList.contains('open')) return;
-  const items = box.querySelectorAll('.drop-item');
-  if (!items.length) return;
-  dropNames = Array.from(items).map(el => el.querySelector('.drop-name') ? el.querySelector('.drop-name').textContent : '');
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    e.stopPropagation();
-    dropIndex = Math.min(dropIndex + 1, items.length - 1);
-    items.forEach((el, i) => el.classList.toggle('drop-hover', i === dropIndex));
-    if (dropNames[dropIndex]) document.getElementById('heroSearch').value = dropNames[dropIndex];
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    e.stopPropagation();
-    dropIndex = Math.max(dropIndex - 1, 0);
-    items.forEach((el, i) => el.classList.toggle('drop-hover', i === dropIndex));
-    if (dropNames[dropIndex]) document.getElementById('heroSearch').value = dropNames[dropIndex];
-  } else if (e.key === 'Enter') {
-    e.preventDefault();
-    if (dropIndex >= 0 && dropNames[dropIndex]) {
-      closeDrop();
-      window.location.href = 'search_result.html?q=' + encodeURIComponent(dropNames[dropIndex]) + '&exact=true';
-      dropIndex = -1;
-    } else {
-      goSearch();
+    function buildDB() {
+        if (typeof data !== 'undefined') data.forEach(d => DB.push({ name:d.name, cat:'농약사', catKey:'map', addr:d.addr, tel:d.tel, lat:d.lat, lot:d.lot }));
+        if (typeof santoData !== 'undefined') santoData.forEach(d => DB.push({ name:d.company, cat:'상토회사', catKey:'santo', addr:d.addr, tel:'', lat:null, lot:null }));
+        if (typeof seedData !== 'undefined') seedData.forEach(d => DB.push({ name:d.company, cat:'종자회사', catKey:'seed', addr:d.addr, tel:d.tel, lat:null, lot:null }));
+        if (typeof cpaData !== 'undefined') cpaData.forEach(d => DB.push({ name:d.company, cat:'작물보호제', catKey:'cpa', addr:d.addr, tel:d.tel, lat:null, lot:null }));
+        if (typeof fertData !== 'undefined') fertData.forEach(d => DB.push({ name:d.company, cat:'비료회사', catKey:'fert', addr:d.addr||'', tel:d.tel||'', lat:null, lot:null }));
     }
-  } else if (e.key === 'Escape') {
-    closeDrop();
-    dropIndex = -1;
-  }
-});
 
-function pickResult(name) {
-  document.getElementById('heroSearch').value = name;
-  closeDrop();
-  window.location.href = 'search_result.html?q=' + encodeURIComponent(name) + '&exact=true';
-}
+    window.addEventListener('DOMContentLoaded', buildDB);
 
-// ★ 핵심: 검색 → search_result.html?q=... 으로 페이지 이동
-function goSearch() {
-  const q = document.getElementById('heroSearch').value.trim();
-  if (!q) return;
-  if (q.startsWith('http')) { window.open(q, '_blank'); return; }
-  closeDrop();
-  window.location.href = 'search_result.html?q=' + encodeURIComponent(q);
-}
+    function search(q) {
+        if (!q || q.length < 1) return [];
+        return DB.filter(d => d.name.includes(q) || (d.addr && d.addr.includes(q)) || d.cat.includes(q));
+    }
 
-document.addEventListener('click', e => {
-  if (!e.target.closest('.search-wrap')) closeDrop();
-});
+    let dropTimer;
+    function onInput(val) {
+        clearTimeout(dropTimer);
+        if (!val) { closeDrop(); return; }
+        dropTimer = setTimeout(() => {
+            const res = search(val);
+            renderDrop(res, val);
+        }, 150);
+    }
 
-function openMenu() { document.getElementById('overlay').style.display='block'; document.getElementById('menu').style.right='0'; }
-function closeMenu() { document.getElementById('overlay').style.display='none'; document.getElementById('menu').style.right='-300px'; }
-</script>
-<script>
-fetch("https://kfarmai.onrender.com/api/stats")
-  .then(r => r.json())
-  .then(data => {
-    const els = {
-      pesticide_shops: document.querySelector('.trust-item:nth-child(1) .trust-num'),
-      santo: document.querySelector('.trust-item:nth-child(2) .trust-num'),
-      seed: document.querySelector('.trust-item:nth-child(3) .trust-num'),
-      cpa: document.querySelector('.trust-item:nth-child(4) .trust-num'),
-      fert: document.querySelector('.trust-item:nth-child(5) .trust-num'),
-    };
-    if (els.pesticide_shops) els.pesticide_shops.textContent = data.pesticide_shops.toLocaleString();
-    if (els.santo) els.santo.textContent = data.santo.toLocaleString();
-    if (els.seed) els.seed.textContent = data.seed.toLocaleString();
-    if (els.cpa) els.cpa.textContent = data.cpa.toLocaleString();
-    if (els.fert && data.fert) els.fert.textContent = data.fert.toLocaleString();
-  })
-  .catch(e => console.log("stats 로드 실패:", e));
-</script>
+    function renderDrop(res, q) {
+        const box = document.getElementById('searchDrop');
+        if (!res.length) {
+            box.innerHTML = `<div style="padding:16px;text-align:center;font-size:13px;color:#9ca3af;">"${q}"에 대한 검색 결과가 없습니다.</div>`;
+            box.style.display = 'block'; return;
+        }
+        box.innerHTML = res.slice(0, 7).map(r => {
+            let catStyle = "background:#f0fdf4;color:#15803d;";
+            if(r.catKey === 'seed') catStyle = "background:#eff6ff;color:#1d4ed8;";
+            if(r.catKey === 'cpa') catStyle = "background:#fef2f2;color:#b91c1c;";
+            if(r.catKey === 'fert') catStyle = "background:#fff7ed;color:#c2410c;";
+            return `<div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;border-bottom:1px solid #f9fafb;" class="drop-item" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background=''" onclick="pickResult('${r.name.replace(/'/g,"\\'")}')">
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;${catStyle}">${r.cat}</span>
+                <div style="min-width:0;">
+                    <div class="drop-name" style="font-size:13px;font-weight:700;color:#111827;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.name}</div>
+                    ${r.addr ? `<div style="font-size:11px;color:#9ca3af;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;">${r.addr}</div>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+        box.style.display = 'block';
+    }
+
+    function closeDrop() {
+        document.getElementById('searchDrop').style.display = 'none';
+        dropIndex = -1;
+    }
+
+    let dropIndex = -1;
+    let dropNames = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('heroSearch').addEventListener('keydown', function(e) {
+            const box = document.getElementById('searchDrop');
+            if (box.style.display === 'none' || !box.style.display) return;
+            const items = box.querySelectorAll('.drop-item');
+            if (!items.length) return;
+            dropNames = Array.from(items).map(el => el.querySelector('.drop-name') ? el.querySelector('.drop-name').textContent : '');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault(); e.stopPropagation();
+                dropIndex = Math.min(dropIndex + 1, items.length - 1);
+                items.forEach((el, i) => { el.classList.toggle('drop-hover', i === dropIndex); el.style.background = i === dropIndex ? '#f0faf2' : ''; });
+                if (dropNames[dropIndex]) document.getElementById('heroSearch').value = dropNames[dropIndex];
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault(); e.stopPropagation();
+                dropIndex = Math.max(dropIndex - 1, 0);
+                items.forEach((el, i) => { el.classList.toggle('drop-hover', i === dropIndex); el.style.background = i === dropIndex ? '#f0faf2' : ''; });
+                if (dropNames[dropIndex]) document.getElementById('heroSearch').value = dropNames[dropIndex];
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (dropIndex >= 0 && dropNames[dropIndex]) {
+                    closeDrop();
+                    window.location.href = 'search_result.html?q=' + encodeURIComponent(dropNames[dropIndex]) + '&exact=true';
+                } else { goSearch(); }
+            } else if (e.key === 'Escape') { closeDrop(); }
+        });
+    });
+
+    function pickResult(name) {
+        closeDrop();
+        window.location.href = 'search_result.html?q=' + encodeURIComponent(name) + '&exact=true';
+    }
+
+    function goSearch() {
+        const q = document.getElementById('heroSearch').value.trim();
+        if (!q) return;
+        if (q.startsWith('http')) { window.open(q, '_blank'); return; }
+        closeDrop();
+        window.location.href = 'search_result.html?q=' + encodeURIComponent(q);
+    }
+
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.search-wrap')) closeDrop();
+    });
+
+    function openMenu() {
+        document.getElementById('overlay').classList.remove('hidden');
+        document.getElementById('menu').style.right = '0';
+    }
+    function closeMenu() {
+        document.getElementById('overlay').classList.add('hidden');
+        document.getElementById('menu').style.right = '-320px';
+    }
+
+    // DB 실시간 통계
+    fetch("https://kfarmai.onrender.com/api/stats")
+        .then(r => r.json())
+        .then(d => {
+            if (document.getElementById('stat-shops')) document.getElementById('stat-shops').textContent = d.pesticide_shops.toLocaleString();
+            if (document.getElementById('stat-santo')) document.getElementById('stat-santo').textContent = d.santo.toLocaleString();
+            if (document.getElementById('stat-seed')) document.getElementById('stat-seed').textContent = d.seed.toLocaleString();
+            if (document.getElementById('stat-cpa')) document.getElementById('stat-cpa').textContent = d.cpa.toLocaleString();
+            if (document.getElementById('stat-fert')) document.getElementById('stat-fert').textContent = d.fert.toLocaleString();
+            if (document.getElementById('map-count')) document.getElementById('map-count').textContent = d.pesticide_shops.toLocaleString() + '개소';
+            if (document.getElementById('cat-santo')) document.getElementById('cat-santo').textContent = d.santo + '개 정회원사';
+            if (document.getElementById('cat-seed')) document.getElementById('cat-seed').textContent = d.seed + '개 회원 기업';
+            if (document.getElementById('cat-cpa')) document.getElementById('cat-cpa').textContent = d.cpa + '개 회원 정보';
+            if (document.getElementById('cat-fert')) document.getElementById('cat-fert').textContent = d.fert + '개 제조사';
+        })
+        .catch(e => console.log("stats 오류:", e));
+    </script>
 </body>
 </html>
