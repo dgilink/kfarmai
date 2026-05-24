@@ -403,6 +403,7 @@ function focusMarker(lat, lot, name) {
   currentLat = lat;
   currentLng = lot;
   if (!kakaoMap) return;
+  kakaoMap.relayout();
   kakaoMap.setCenter(new kakao.maps.LatLng(lat, lot));
   kakaoMap.setLevel(4);
   document.getElementById('mapPanel').scrollIntoView({ behavior:'smooth' });
