@@ -295,7 +295,7 @@ function renderResults() {
 
   listEl.innerHTML = filtered.map((r, idx) => {
     const cc = r.catKey === 'seed' ? 'seed' : r.catKey === 'cpa' ? 'cpa' : r.catKey === 'fert' ? 'fert' : '';
-    const hasMap = r.catKey === 'map' && r.lat && r.lot;
+    const hasMap = r.lat && r.lot;
     return `
       <div class="r-card ${cc}" id="rcard-${idx}">
         <span class="r-cat-badge ${cc}">${r.cat}</span>
