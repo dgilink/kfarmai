@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -6,17 +6,17 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>寃?됯껐怨?- kFarmAI</title>
+<title>검색결과 - kFarmAI</title>
 <link rel="stylesheet" href="style.css">
 <style>
-/* CI 濡쒓퀬 */
+/* CI 로고 */
 .ci-wrap { display:flex;align-items:center;gap:10px;text-decoration:none; }
 .ci-leaf { width:32px;height:32px;flex-shrink:0; }
 .ci-wordmark { font-size:18px;font-weight:900;letter-spacing:-1px; }
 .ci-wordmark .kf { color:#1e6b2e; }
 .ci-wordmark .ai { color:#f06400; }
 
-/* ?ㅻ뜑 寃?됰컮 */
+/* 헤더 검색바 */
 .hd-search {
   padding:10px 14px;background:#f0f9f2;border-bottom:2px solid #c0e0c8;
   display:flex;gap:8px;align-items:center;
@@ -33,7 +33,7 @@
   font-family:'Noto Sans KR',sans-serif;flex-shrink:0;
 }
 
-/* ??*/
+/* 탭 */
 .tab-bar {
   display:flex;background:white;border-bottom:2px solid #e8e8e8;
   overflow-x:auto;scrollbar-width:none;
@@ -48,7 +48,7 @@
 }
 .tab-btn.active { color:#1e6b2e;border-bottom-color:#1e6b2e; }
 
-/* 寃곌낵 移대뱶 */
+/* 결과 카드 */
 .result-list { padding:14px 16px; }
 .r-card {
   background:white;border:1.5px solid #e0e8e2;border-radius:12px;
@@ -77,7 +77,7 @@
   font-family:'Noto Sans KR',sans-serif;
 }
 
-/* 吏???⑤꼸 */
+/* 지도 패널 */
 .map-panel { position:relative; }
 .map-panel-title {
   padding:10px 16px;background:#1e6b2e;color:white;
@@ -90,7 +90,7 @@
   font-size:14px;
 }
 
-/* 鍮?寃곌낵 */
+/* 빈 결과 */
 .empty-result {
   padding:40px 20px;text-align:center;
 }
@@ -98,7 +98,7 @@
 .empty-result h3 { font-size:18px;font-weight:800;color:#111;margin-bottom:8px; }
 .empty-result p { font-size:14px;color:#888;line-height:1.7; }
 
-/* 移댁슫???ㅻ뜑 */
+/* 카운트 헤더 */
 .result-header {
   padding:12px 16px;background:#f8f8f6;border-bottom:1px solid #e8e8e8;
   display:flex;justify-content:space-between;align-items:center;
@@ -109,7 +109,7 @@
 </head>
 <body>
 
-<!-- ?ㅻ뜑 -->
+<!-- 헤더 -->
 <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #f0f0f0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
   <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
     <img src="static/logo.png" alt="kFarmAI" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">
@@ -121,54 +121,54 @@
   <button style="width:40px;height:40px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:20px;" onclick="openMenu()">&#9776;</button>
 </header>
 
-<!-- ?ㅻ뜑 寃?됰컮 -->
+<!-- 헤더 검색바 -->
 <div class="hd-search">
-  <input class="hd-input" id="hdSearch" type="text" placeholder="?ㅼ떆 寃??.."
+  <input class="hd-input" id="hdSearch" type="text" placeholder="다시 검색..."
          onkeydown="if(event.key==='Enter') reSearch()">
-  <button class="hd-btn" onclick="reSearch()">寃??/button>
+  <button class="hd-btn" onclick="reSearch()">검색</button>
 </div>
 
-<!-- ??-->
+<!-- 탭 -->
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('all',this)" id="tab-all">?꾩껜</button>
-  <button class="tab-btn" onclick="switchTab('map',this)" id="tab-map">?뿺截??띿빟??/button>
-  <button class="tab-btn" onclick="switchTab('santo',this)" id="tab-santo">?뙮 ?곹넗</button>
-  <button class="tab-btn" onclick="switchTab('seed',this)" id="tab-seed">?뙻 醫낆옄</button>
-  <button class="tab-btn" onclick="switchTab('cpa',this)" id="tab-cpa">?㎦ ?묐Ъ蹂댄샇??/button>
-  <button class="tab-btn" onclick="switchTab('fert',this)" id="tab-fert">?뙼 鍮꾨즺</button>
+  <button class="tab-btn active" onclick="switchTab('all',this)" id="tab-all">전체</button>
+  <button class="tab-btn" onclick="switchTab('map',this)" id="tab-map">🗺️ 농약사</button>
+  <button class="tab-btn" onclick="switchTab('santo',this)" id="tab-santo">🌱 상토</button>
+  <button class="tab-btn" onclick="switchTab('seed',this)" id="tab-seed">🌾 종자</button>
+  <button class="tab-btn" onclick="switchTab('cpa',this)" id="tab-cpa">🧪 작물보호제</button>
+  <button class="tab-btn" onclick="switchTab('fert',this)" id="tab-fert">🌿 비료</button>
 </div>
 
-<!-- 寃곌낵 移댁슫???ㅻ뜑 -->
+<!-- 결과 카운트 헤더 -->
 <div id="intentBanner" style="display:none;margin-bottom:12px;"></div>
 <div class="result-header">
-  <span id="resultCount">寃??以?..</span>
+  <span id="resultCount">검색 중...</span>
 </div>
 
-<!-- 吏??(?띿빟??寃곌낵 ?덉쓣 ?뚮쭔 ?쒖떆) -->
+<!-- 지도 (농약사 결과 있을 때만 표시) -->
 <div class="map-panel" id="mapPanel" style="display:none;">
-  <div class="map-panel-title">?뱧 吏?꾩뿉???꾩튂 ?뺤씤</div>
+  <div class="map-panel-title">📍 지도에서 위치 확인</div>
   <div id="resultMap"></div>
   <div id="roadviewPanel" style="width:100%;height:300px;display:none;border-radius:8px;overflow:hidden;margin-top:8px;"></div>
 </div>
 
-<!-- 寃곌낵 由ъ뒪??-->
+<!-- 결과 리스트 -->
 <div class="result-list" id="resultList"></div>
 
-<!-- ?명꽣 -->
+<!-- 푸터 -->
 <div style="padding:16px;text-align:center;font-size:12px;color:#aaa;border-top:1px solid #e8e8e8;margin-top:8px;">
-  짤 2026 kFarmAI (kfarmai.com). 臾대떒蹂듭젣 湲덉?.
+  © 2026 kFarmAI (kfarmai.com). 무단복제 금지.
 </div>
 
-<!-- 諛뷀? ?ㅻ퉬 -->
+<!-- 바텀 네비 -->
 <nav style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8e8e8;display:flex;z-index:100;">
-  <a href="index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">?룧</span><span>??/span></a>
-  <a href="agri_map.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">?뿺截?/span><span>?띿빟??/span></a>
-  <a href="mfg.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">?룺</span><span>?쒖“怨듦툒</span></a>
-  <a href="news_sub.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">?벐</span><span>?뚯떇</span></a>
-  <a href="links.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">?뵕</span><span>?ъ씠??/span></a>
+  <a href="index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏠</span><span>홈</span></a>
+  <a href="agri_map.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🗺️</span><span>농약사</span></a>
+  <a href="mfg.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏭</span><span>제조공급</span></a>
+  <a href="news_sub.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">📰</span><span>소식</span></a>
+  <a href="links.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🔗</span><span>사이트</span></a>
 </nav>
 
-<!-- ?곗씠??-->
+<!-- 데이터 -->
 <script src="static/pesticide_data.js"></script>
 <script src="static/santo_data.js"></script>
 <script src="static/seed_data.js"></script>
@@ -177,7 +177,7 @@
 <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,roadview"></script>
 
 <script>
-/* ?? ?곗씠??鍮뚮뱶 ?? */
+/* ── 데이터 빌드 ── */
 let DB = [];
 let currentTab = 'all';
 let allResults = [];
@@ -187,18 +187,18 @@ let infowindow = null;
 
 function buildDB() {
   if (typeof data !== 'undefined')
-    data.forEach(d => DB.push({ name:d.name, cat:'?띿빟??, catKey:'map', addr:d.addr, tel:d.tel, lat:d.lat, lot:d.lot, homepage:'' }));
+    data.forEach(d => DB.push({ name:d.name, cat:'농약사', catKey:'map', addr:d.addr, tel:d.tel, lat:d.lat, lot:d.lot, homepage:'' }));
   if (typeof santoData !== 'undefined')
-    santoData.forEach(d => DB.push({ name:d.company, cat:'?곹넗?뚯궗', catKey:'santo', addr:d.addr, tel:'', lat:null, lot:null, homepage:d.homepage||'' }));
+    santoData.forEach(d => DB.push({ name:d.company, cat:'상토회사', catKey:'santo', addr:d.addr, tel:'', lat:null, lot:null, homepage:d.homepage||'' }));
   if (typeof seedData !== 'undefined')
-    seedData.forEach(d => DB.push({ name:d.company, cat:'醫낆옄?뚯궗', catKey:'seed', addr:d.addr, tel:d.tel, lat:null, lot:null, homepage:d.homepage||'' }));
+    seedData.forEach(d => DB.push({ name:d.company, cat:'종자회사', catKey:'seed', addr:d.addr, tel:d.tel, lat:null, lot:null, homepage:d.homepage||'' }));
   if (typeof cpaData !== 'undefined')
-    cpaData.forEach(d => DB.push({ name:d.company, cat:'?묐Ъ蹂댄샇??, catKey:'cpa', addr:d.addr, tel:d.tel, lat:null, lot:null, homepage:d.homepage||'' }));
+    cpaData.forEach(d => DB.push({ name:d.company, cat:'작물보호제', catKey:'cpa', addr:d.addr, tel:d.tel, lat:null, lot:null, homepage:d.homepage||'' }));
   if (typeof fertData !== 'undefined')
-    fertData.forEach(d => DB.push({ name:d.company, cat:'鍮꾨즺?뚯궗', catKey:'fert', addr:d.addr||'', tel:d.tel||'', lat:null, lot:null, homepage:d.homepage||'' }));
+    fertData.forEach(d => DB.push({ name:d.company, cat:'비료회사', catKey:'fert', addr:d.addr||'', tel:d.tel||'', lat:null, lot:null, homepage:d.homepage||'' }));
 }
 
-/* ?? URL ?뚮씪誘명꽣 ?뚯떛 ?? */
+/* ── URL 파라미터 파싱 ── */
 function getExact() {
   const p = new URLSearchParams(window.location.search);
   return p.get('exact') === 'true';
@@ -209,7 +209,7 @@ function getQuery() {
   return params.get('q') || '';
 }
 
-/* ?? 寃???? */
+/* ── 검색 ── */
 function doSearch(q) {
   if (!q) return [];
   fetch("https://kfarmai.onrender.com/api/search", {
@@ -220,21 +220,21 @@ function doSearch(q) {
   .then(r => r.json())
   .then(data => {
     const shops = (data.shops || []).map(d => ({
-      name: d.name, addr: d.address, cat: "?띿빟??, catKey: "map",
+      name: d.name, addr: d.address, cat: "농약사", catKey: "map",
       lat: d.lat, lot: d.lng, tel: d.phone, homepage: null
     }));
     const companies = (data.companies || []).map(d => ({
       name: d.name, addr: d.address, cat: d.category,
-      catKey: d.category === "?곹넗" ? "santo" : d.category === "醫낆옄" ? "seed" : d.category === "?묐Ъ蹂댄샇?? ? "cpa" : d.category === "鍮꾨즺" ? "fert" : "santo",
+      catKey: d.category === "상토" ? "santo" : d.category === "종자" ? "seed" : d.category === "작물보호제" ? "cpa" : d.category === "비료" ? "fert" : "santo",
       lat: d.lat || null, lot: d.lng || null, tel: d.phone, homepage: d.website
     }));
     const intent = data.intent || "directory";
     const bannerEl = document.getElementById("intentBanner");
     if (bannerEl) {
       const map = {
-        diagnosis: {text: "?뙼 AI 吏꾨떒 湲곕뒫 以鍮?以묒엯?덈떎. ?꾨옒 愿???띿빟?щ? 李멸퀬?섏꽭??", color: "#1e6b2e", bg: "#f0faf2"},
-        subsidy:   {text: "?뱥 蹂댁“湲??뺣낫 ?섏쭛 以묒엯?덈떎. ?꾨옒?먯꽌 ?곕━ 吏??쓣 ?좏깮?섎㈃ 蹂댁“?ъ뾽 ?쒖쫵(12~3?????뚮┝???쒕┰?덈떎.", color: "#1a56a0", bg: "#f0f5ff"},
-        event:     {text: "?렕 ?됱궗 ?뺣낫 湲곕뒫 以鍮?以묒엯?덈떎.", color: "#7c3aed", bg: "#f5f0ff"},
+        diagnosis: {text: "🌿 AI 진단 기능 준비 중입니다. 아래 관련 농약사를 참고하세요.", color: "#1e6b2e", bg: "#f0faf2"},
+        subsidy:   {text: "📋 보조금 정보 수집 중입니다. 아래에서 우리 지역을 선택하면 보조사업 시즌(12~3월)에 알림을 드립니다.", color: "#1a56a0", bg: "#f0f5ff"},
+        event:     {text: "🎪 행사 정보 기능 준비 중입니다.", color: "#7c3aed", bg: "#f5f0ff"},
         directory: {text: "", color: "", bg: ""}
       };
       const info = map[intent] || map["directory"];
@@ -248,11 +248,11 @@ function doSearch(q) {
     allResults = [...shops, ...companies];
     renderResults();
   })
-  .catch(e => console.error("API ?ㅻ쪟:", e));
+  .catch(e => console.error("API 오류:", e));
   return [];
 }
 
-/* ?? ???꾪솚 ?? */
+/* ── 탭 전환 ── */
 function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -260,7 +260,7 @@ function switchTab(tab, el) {
   renderResults();
 }
 
-/* ?? 寃곌낵 ?뚮뜑留??? */
+/* ── 결과 렌더링 ── */
 function renderResults() {
   const q = document.getElementById('hdSearch').value.trim() || getQuery();
   let filtered = allResults;
@@ -268,12 +268,12 @@ function renderResults() {
     filtered = allResults.filter(r => r.catKey === currentTab);
   }
 
-  // 移댁슫???쒖떆
+  // 카운트 표시
   const countEl = document.getElementById('resultCount');
-  countEl.innerHTML = `"<strong>${q}</strong>" 寃?됯껐怨?<strong style="color:#1e6b2e;">${filtered.length}</strong>嫄?;
+  countEl.innerHTML = `"<strong>${q}</strong>" 검색결과 <strong style="color:#1e6b2e;">${filtered.length}</strong>건`;
 
-  // 吏???⑤꼸 (?띿빟??寃곌낵 ?덉쓣 ??
-  const pestResults = filtered.filter(r => r.catKey === 'map' && r.lat && r.lot);
+  // 지도 패널 (농약사 결과 있을 때)
+  const pestResults = filtered.filter(r => r.lat && r.lot);
   const mapPanel = document.getElementById('mapPanel');
   if (pestResults.length > 0) {
     mapPanel.style.display = 'block';
@@ -282,14 +282,14 @@ function renderResults() {
     mapPanel.style.display = 'none';
   }
 
-  // 寃곌낵 移대뱶
+  // 결과 카드
   const listEl = document.getElementById('resultList');
   if (!filtered.length) {
     listEl.innerHTML = `
       <div class="empty-result">
-        <div class="icon">?뵇</div>
-        <h3>寃??寃곌낵 ?놁쓬</h3>
-        <p>"${q}"???대떦?섎뒗 ?뺣낫瑜?李얠쓣 ???놁뒿?덈떎.<br>?ㅻⅨ ?ㅼ썙?쒕줈 寃?됲빐蹂댁꽭??</p>
+        <div class="icon">🔍</div>
+        <h3>검색 결과 없음</h3>
+        <p>"${q}"에 해당하는 정보를 찾을 수 없습니다.<br>다른 키워드로 검색해보세요.</p>
       </div>`;
     return;
   }
@@ -302,16 +302,16 @@ function renderResults() {
         <span class="r-cat-badge ${cc}">${r.cat}</span>
         <div class="r-name">${r.name}</div>
         <div class="r-info">
-          ${r.addr ? `?뱧 ${r.addr}<br>` : ''}
-          ${r.tel ? `?뱸 ${r.tel}<br>` : ''}
-          ${r.homepage ? `<a href="${r.homepage}" target="_blank">?뙋 ?덊럹?댁? ??/a>` : ''}
+          ${r.addr ? `📍 ${r.addr}<br>` : ''}
+          ${r.tel ? `📞 ${r.tel}<br>` : ''}
+          ${r.homepage ? `<a href="${r.homepage}" target="_blank">🌐 홈페이지 →</a>` : ''}
         </div>
-        ${hasMap ? `<button class="r-map-link" onclick="focusMarker(${r.lat},${r.lot},'${r.name.replace(/'/g,"\\'")}')">?뱧 吏?꾩뿉??蹂닿린</button> <button class="r-map-link" onclick="showRoadview(${r.lat},${r.lot})" style="background:#eef4fb;color:#1a5c9e;">🚶 로드뷰</button>` : ''}
+        ${hasMap ? `<button class="r-map-link" onclick="focusMarker(${r.lat},${r.lot},'${r.name.replace(/'/g,"\\'")}')">📍 지도에서 보기</button> <button class="r-map-link" onclick="showRoadview(${r.lat},${r.lot})" style="background:#eef4fb;color:#1a5c9e;">🚶 로드뷰</button>` : ''}
       </div>`;
   }).join('');
 }
 
-/* ?? 移댁뭅?ㅻ㏊ ?뚮뜑留??? */
+/* ── 카카오맵 렌더링 ── */
 function renderMap(pestResults) {
   kakao.maps.load(function() {
     const container = document.getElementById('resultMap');
@@ -324,7 +324,7 @@ function renderMap(pestResults) {
       kakao.maps.event.addListener(kakaoMap, 'click', () => infowindow.close());
     }
 
-    // 湲곗〈 留덉빱 ?쒓굅
+    // 기존 마커 제거
     markers.forEach(m => m.setMap(null));
     markers = [];
 
@@ -338,7 +338,7 @@ function renderMap(pestResults) {
           `<div style="padding:10px;font-size:13px;min-width:180px;line-height:1.8;">
             <b style="color:#1e6b2e;">${r.name}</b><br>
             <span style="font-size:12px;color:#666;">${r.addr}</span><br>
-            ${r.tel ? `?뱸 ${r.tel}` : ''}
+            ${r.tel ? `📞 ${r.tel}` : ''}
           </div>`
         );
         infowindow.open(kakaoMap, marker);
@@ -356,7 +356,7 @@ function renderMap(pestResults) {
   });
 }
 
-/* ?? ?뱀젙 留덉빱 ?ъ빱???? */
+/* ── 특정 마커 포커스 ── */
 let roadviewClient = null;
 
 function showRoadview(lat, lng) {
@@ -380,7 +380,7 @@ function focusMarker(lat, lot, name) {
   kakaoMap.setLevel(4);
   document.getElementById('mapPanel').scrollIntoView({ behavior:'smooth' });
 
-  // ?대떦 留덉빱 ?명룷?덈룄???닿린
+  // 해당 마커 인포윈도우 열기
   markers.forEach(m => {
     const pos = m.getPosition();
     if (Math.abs(pos.getLat() - lat) < 0.0001 && Math.abs(pos.getLng() - lot) < 0.0001) {
@@ -390,14 +390,14 @@ function focusMarker(lat, lot, name) {
   });
 }
 
-/* ?? ?ш????? */
+/* ── 재검색 ── */
 function reSearch() {
   const q = document.getElementById('hdSearch').value.trim();
   if (!q) return;
   window.location.href = 'search_result.html?q=' + encodeURIComponent(q);
 }
 
-/* ?? 珥덇린???? */
+/* ── 초기화 ── */
 window.addEventListener('DOMContentLoaded', function() {
   buildDB();
   const q = getQuery();
