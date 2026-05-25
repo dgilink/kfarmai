@@ -38,7 +38,7 @@
         </button>
     </header>
 <!-- 스크롤 검색바 -->
-<div id="scrollSearchBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:white;border-bottom:1px solid #e5e7eb;padding:8px 16px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+<div id="scrollSearchBar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:99999;background:white;border-bottom:1px solid #e5e7eb;padding:6px 12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);box-sizing:border-box;">
   <div style="max-width:800px;margin:0 auto;display:flex;align-items:center;gap:12px;">
     <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0;">
       <img src="static/logo.png" style="width:28px;height:28px;border-radius:6px;object-fit:cover;">
@@ -80,7 +80,7 @@
                                oninput="onInput(this.value)"
                                onfocus="this.select()">
                     </div>
-                    <button class="w-auto bg-[#FF6B35] hover:bg-[#e05621] text-white font-bold px-6 py-2.5 rounded-full text-sm transition-all flex-shrink-0" onclick="goSearch()">
+                    <button class="w-auto bg-[#FF6B35] hover:bg-[#e05621] text-white font-bold px-4 py-2 rounded-full text-xs md:text-sm md:px-6 md:py-2.5 transition-all flex-shrink-0" onclick="goSearch()">
                         검색하기
                     </button>
                 </div>
@@ -328,6 +328,7 @@
     </div>
 
     <!-- 데이터 파일 -->
+    <script src="static/search-utils.js"></script>
     <script src="static/pesticide_data.js"></script>
     <script src="static/santo_data.js"></script>
     <script src="static/seed_data.js"></script>
@@ -355,7 +356,7 @@ window.addEventListener('pageshow', function(e) {
 
     function search(q) {
         if (!q || q.length < 1) return [];
-        return DB.filter(d => d.name.includes(q) || (d.addr && d.addr.includes(q)) || d.cat.includes(q));
+        return smartSearch(q, DB);
     }
 
     let dropTimer;
