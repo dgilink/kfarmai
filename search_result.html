@@ -285,7 +285,7 @@ function renderResults() {
 /* ── 카카오맵 렌더링 ── */
 function renderMap(pestResults) {
   document.getElementById('mapPanel').style.display = 'block';
-  kakao.maps.load(function() {
+  setTimeout(function() {
     const container = document.getElementById('resultMap');
     kakaoMap = new kakao.maps.Map(container, {
       center: new kakao.maps.LatLng(36.5, 127.8),
