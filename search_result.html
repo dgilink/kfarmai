@@ -294,8 +294,6 @@ function renderMap(pestResults) {
     kakaoMap.relayout();
     infowindow = new kakao.maps.InfoWindow({ zIndex:1 });
     kakao.maps.event.addListener(kakaoMap, 'click', () => infowindow.close());
-    {
-
     // 기존 마커 제거
     markers.forEach(m => m.setMap(null));
     markers = [];
