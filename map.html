@@ -468,7 +468,7 @@
                 ? '<br><a href="' + item.homepage + '" target="_blank" style="color:#1a5c2a;font-weight:700;">홈페이지 열기</a>'
                 : '';
             const ceo = item.ceo ? '<br>대표: ' + item.ceo : '';
-            return '<div style="padding:11px 12px;font-size:13px;min-width:220px;max-width:300px;line-height:1.75;">' +
+            return '<div style="padding:11px 12px;font-size:13px;min-width:220px;max-width:260px;line-height:1.75;word-break:keep-all;overflow-wrap:break-word;">' +
                 '<b style="font-size:14px;color:#1a5c2a;">' + item.name + '</b>' +
                 '<div style="margin:3px 0;color:#666;font-size:12px;">' + getTypeLabel(item.type) + '</div>' +
                 '<span style="color:#555;font-size:12px;">' + item.addr + '</span><br>' +
