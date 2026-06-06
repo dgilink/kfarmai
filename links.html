@@ -1,7 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>농업관련 사이트 - kfarmai</title>
 <link rel="stylesheet" href="style.css">
@@ -122,12 +125,12 @@
   © 2026 kfarmai.com | 농자재 토탈 정보 플랫폼
 </div>
 
-<nav class="kf-bottom-nav">
-  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
-  <a href="map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
-  <a href="santo.html" class="kf-nav-item"><span class="kf-nav-icon">🌱</span><span>상토</span></a>
-  <a href="seed.html" class="kf-nav-item"><span class="kf-nav-icon">🌾</span><span>종자</span></a>
-  <a href="cpa.html" class="kf-nav-item"><span class="kf-nav-icon">🧪</span><span>작물보호제</span></a>
+<nav class="kf-bottom-nav material-nav">
+  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" fill="currentColor" opacity=".18"/><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg></span><span>홈</span></a>
+  <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon"><svg viewBox="0 0 48 48"><rect width="48" height="48" rx="14" fill="#CCFBF1"/><path d="M8 14 L18 12 L30 14 L40 12 L40 36 L30 38 L18 36 L8 38 Z" fill="#5EEAD4"/><path d="M18 12 L18 36 M30 14 L30 38" stroke="#0D9488" stroke-width="1.5" fill="none"/><path d="M24 16 c-3 0-5 2-5 5 0 4 5 9 5 9 s5-5 5-9 c0-3-2-5-5-5z" fill="#fff"/><circle cx="24" cy="21" r="2" fill="#DC2626"/></svg></span><span>농약방</span></a>
+  <a href="santo.html" class="kf-nav-item"><span class="kf-nav-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#EAD7C5"/><ellipse cx="24" cy="30" rx="16" ry="6" fill="#8B5E34"/><circle cx="16" cy="22" r="3" fill="#5C3D24"/><circle cx="28" cy="20" r="2.5" fill="#5C3D24"/><circle cx="22" cy="24" r="2" fill="#5C3D24"/><circle cx="32" cy="26" r="2.5" fill="#5C3D24"/></svg></span><span>상토</span></a>
+  <a href="seed.html" class="kf-nav-item"><span class="kf-nav-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#DCFCE7"/><ellipse cx="24" cy="32" rx="10" ry="3" fill="#A78B6E"/><path d="M24 14 c-3 5-3 10 0 16 c3-6 3-11 0-16z" fill="#22C55E"/><path d="M24 22 c-4 0-6 3-6 6 M24 22 c4 0 6 3 6 6" stroke="#15803D" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span><span>종자</span></a>
+  <a href="cpa.html" class="kf-nav-item"><span class="kf-nav-icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#EDE9FE"/><path d="M20 10 v10 l-6 14 a3 3 0 0 0 3 4 h14 a3 3 0 0 0 3-4 l-6-14 V10 z" fill="#fff" stroke="#7C3AED" stroke-width="1.8"/><path d="M16 28 h16" stroke="#7C3AED" stroke-width="1.5"/><circle cx="20" cy="32" r="1.5" fill="#A78BFA"/><circle cx="25" cy="34" r="1.5" fill="#A78BFA"/><rect x="20" y="8" width="8" height="3" rx="1" fill="#7C3AED"/></svg></span><span>작물보호제</span></a>
 </nav>
 
 <div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
@@ -139,13 +142,13 @@
     </a>
     <button class="kf-menu-close" onclick="closeMenu()">✕</button>
   </div>
-  <a href="index.html" class="kf-menu-item">🏠 홈</a>
-  <a href="map.html" class="kf-menu-item">🗺️ 농약사 찾기</a>
-  <a href="santo.html" class="kf-menu-item">🌱 상토회사 정보</a>
-  <a href="seed.html" class="kf-menu-item">🌾 종자회사 정보</a>
-  <a href="cpa.html" class="kf-menu-item">🧪 작물보호제회사</a>
-  <a href="#" class="kf-menu-item">🌿 비료회사 <span class="kf-badge kf-badge-soon">준비중</span></a>
-  <a href="links.html" class="kf-menu-item">🔗 농업관련 사이트</a>
+  <a href="index.html" class="kf-menu-item">홈</a>
+  <a href="agri_map.html" class="kf-menu-item">농약방</a>
+  <a href="santo.html" class="kf-menu-item">상토회사 정보</a>
+  <a href="seed.html" class="kf-menu-item">종자회사 정보</a>
+  <a href="cpa.html" class="kf-menu-item">작물보호제회사</a>
+  <a href="fert.html" class="kf-menu-item">비료회사</a>
+  <a href="links.html" class="kf-menu-item">농업관련 사이트</a>
 </div>
 
 <script>
