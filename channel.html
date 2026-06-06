@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채널 게시글 - kFarmAI</title>
+<meta name="description" content="kFarmAI 채널별 농업·식물 커뮤니티 게시글 목록입니다.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://kfarmai.com/channel.html">
+<meta name="theme-color" content="#1D9E75">
+<style>
+  :root {
+    --green:#1D9E75;
+    --green-dark:#14795A;
+    --orange:#FF6B2B;
+    --text:#171717;
+    --sub:#666;
+    --muted:#9CA3AF;
+    --bg:#F7F8F6;
+    --card:#fff;
+    --border:#E5E7EB;
+    --shadow:0 10px 28px rgba(0,0,0,.08);
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif; }
+  body { padding-bottom:78px; }
+  button, input, select, textarea { font-family:inherit; }
+  a { color:inherit; text-decoration:none; }
+  .app { max-width:520px; min-height:100vh; margin:0 auto; background:var(--bg); position:relative; }
+  .header { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.94); backdrop-filter:blur(14px); border-bottom:1px solid rgba(0,0,0,.06); padding:10px 14px 12px; }
+  .top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .back { width:36px; height:36px; border:0; border-radius:50%; background:#F3F4F6; color:#222; font-size:20px; font-weight:900; cursor:pointer; }
+  .brand { display:flex; align-items:center; gap:8px; min-width:0; }
+  .brand img { width:34px; height:34px; object-fit:contain; flex:0 0 auto; }
+  .brand-name { font-size:18px; line-height:1; font-weight:800; letter-spacing:-.5px; }
+  .brand-name .ai { color:var(--orange); }
+  .brand-sub { margin-top:2px; font-size:8px; line-height:1; letter-spacing:1.4px; color:#9CA3AF; font-weight:800; }
+  .channel-title { margin-left:auto; max-width:145px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; font-size:13px; font-weight:900; color:var(--green); }
+  .search { height:42px; display:flex; align-items:center; gap:8px; background:#F3F4F6; border:1px solid #ECEFF1; border-radius:999px; padding:0 13px; }
+  .search svg { width:18px; height:18px; color:var(--green); }
+  .search input { flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:14px; }
+  .chips { display:flex; gap:8px; overflow-x:auto; padding:12px 14px 6px; scrollbar-width:none; }
+  .chips::-webkit-scrollbar { display:none; }
+  .chip { flex:0 0 auto; height:34px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:#fff; color:#555; font-size:13px; font-weight:800; cursor:pointer; }
+  .chip.active { border-color:var(--green); background:rgba(29,158,117,.1); color:var(--green-dark); }
+  .status-line { display:flex; align-items:center; justify-content:space-between; padding:8px 16px 6px; color:#777; font-size:12px; font-weight:700; }
+  .list { padding:0 14px 18px; }
+  .post-card { background:var(--card); border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:14px; margin:10px 0; box-shadow:0 4px 14px rgba(0,0,0,.04); }
+  .badge { display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:7px; background:rgba(29,158,117,.12); color:var(--green-dark); font-size:11px; font-weight:900; margin-bottom:8px; }
+  .badge.blue { background:#E8F1FF; color:#2563EB; }
+  .badge.orange { background:#FFF1E8; color:#EA580C; }
+  .badge.teal { background:#E6FFFA; color:#0F766E; }
+  .post-title { font-size:15px; font-weight:900; line-height:1.35; margin-bottom:7px; color:#111; }
+  .post-content { font-size:13px; color:#555; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:9px; }
+  .meta { display:flex; flex-wrap:wrap; gap:8px; color:#8A8A8A; font-size:11px; font-weight:700; }
+  .empty, .loading { color:#777; text-align:center; padding:42px 20px; font-size:14px; line-height:1.6; }
+  .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(29,158,117,.18); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .fab { position:fixed; right:calc(50% - 246px); bottom:86px; z-index:45; height:48px; padding:0 18px; border:0; border-radius:999px; background:var(--green); color:#fff; font-size:15px; font-weight:900; box-shadow:0 10px 24px rgba(29,158,117,.34); cursor:pointer; }
+  @media (max-width:540px) { .fab { right:16px; } }
+  .bottom-nav { position:fixed; left:50%; bottom:0; transform:translateX(-50%); z-index:50; width:100%; max-width:520px; height:66px; display:flex; background:rgba(255,255,255,.97); border-top:1px solid var(--border); backdrop-filter:blur(14px); }
+  .nav-item { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#9CA3AF; font-size:10px; font-weight:800; cursor:pointer; }
+  .nav-item svg { width:22px; height:22px; }
+  .nav-item.active { color:var(--green); }
+  .modal-overlay { position:fixed; inset:0; z-index:100; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.38); }
+  .modal-overlay.open { display:flex; }
+  .modal { width:100%; max-width:520px; max-height:88vh; overflow:auto; background:#fff; border-radius:22px 22px 0 0; padding:18px 18px 24px; box-shadow:var(--shadow); }
+  .modal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .modal-title { font-size:18px; font-weight:900; }
+  .modal-close { width:34px; height:34px; border:0; border-radius:50%; background:#F3F4F6; font-size:18px; cursor:pointer; }
+  .field { margin:12px 0; }
+  .label { font-size:13px; font-weight:900; color:#444; margin-bottom:7px; }
+  .input, .select, .textarea { width:100%; border:1.5px solid var(--border); border-radius:12px; outline:0; padding:11px 12px; font-size:14px; background:#fff; }
+  .textarea { min-height:110px; resize:vertical; }
+  .input:focus, .select:focus, .textarea:focus { border-color:var(--green); }
+  .submit { width:100%; height:48px; border:0; border-radius:13px; background:var(--green); color:#fff; font-size:15px; font-weight:900; cursor:pointer; margin-top:8px; }
+  .submit:disabled { opacity:.55; cursor:not-allowed; }
+  .login-box { text-align:center; padding:12px 4px 4px; }
+  .login-box strong { display:block; font-size:18px; margin-bottom:6px; }
+  .login-box p { margin:0 0 16px; color:#777; font-size:13px; }
+  .google { width:100%; height:48px; border:1px solid var(--border); border-radius:13px; background:#fff; font-size:15px; font-weight:900; cursor:pointer; }
+  .toast { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:200; background:#111; color:#fff; border-radius:999px; padding:11px 16px; font-size:13px; font-weight:800; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="nav-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" fill="currentColor" opacity=".2"/><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></symbol>
+  <symbol id="nav-q" viewBox="0 0 24 24"><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" fill="currentColor" opacity=".2"/><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="13" cy="10" r="1" fill="currentColor"/><circle cx="17" cy="10" r="1" fill="currentColor"/></symbol>
+  <symbol id="nav-d" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="currentColor" opacity=".18"/><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="nav-pin" viewBox="0 0 24 24"><path d="M20 10c0 7-8 13-8 13S4 17 4 10a8 8 0 0 1 16 0z" fill="currentColor" opacity=".2"/><path d="M20 10c0 7-8 13-8 13S4 17 4 10a8 8 0 0 1 16 0z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5" fill="currentColor"/></symbol>
+  <symbol id="nav-my" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="currentColor" opacity=".2"/><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" stroke="currentColor" stroke-width="1.8" fill="currentColor" fill-opacity=".2" stroke-linecap="round"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="header">
+    <div class="top">
+      <button class="back" type="button" onclick="location.href='index.html'" aria-label="뒤로가기">←</button>
+      <a class="brand" href="index.html">
+        <img src="logo.png" alt="kFarmAI">
+        <div>
+          <div class="brand-name">kFarm<span class="ai">AI</span></div>
+          <div class="brand-sub">AI FARM COMMUNITY</div>
+        </div>
+      </a>
+      <div class="channel-title" id="channelTitle">전체 게시글</div>
+    </div>
+    <form class="search" onsubmit="event.preventDefault(); applyKeywordSearch();">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" id="searchInput" placeholder="채널 게시글 검색" enterkeyhint="search" autocomplete="off">
+    </form>
+  </header>
+
+  <div class="chips" id="regionChips">
+    <button class="chip active" data-region="">전체</button>
+    <button class="chip" data-region="전남">전남</button>
+    <button class="chip" data-region="경남">경남</button>
+    <button class="chip" data-region="경북">경북</button>
+    <button class="chip" data-region="충남">충남</button>
+    <button class="chip" data-region="기타">기타</button>
+  </div>
+
+  <div class="status-line">
+    <span id="resultLabel">최신 글</span>
+    <span id="resultCount"></span>
+  </div>
+  <main class="list" id="postList">
+    <div class="loading"><span class="spinner"></span>불러오는 중...</div>
+  </main>
+  <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
+
+  <button class="fab" type="button" onclick="openWriteFlow()">+ 글쓰기</button>
+</div>
+
+<nav class="bottom-nav">
+  <a class="nav-item" href="index.html"><svg><use href="#nav-home"/></svg><span>홈</span></a>
+  <a class="nav-item active" href="channel.html"><svg><use href="#nav-q"/></svg><span>질문</span></a>
+  <a class="nav-item" href="index.html#diagnosis"><svg><use href="#nav-d"/></svg><span>진단</span></a>
+  <a class="nav-item" href="agri_map.html"><svg><use href="#nav-pin"/></svg><span>주변</span></a>
+  <button class="nav-item" type="button" onclick="openLoginModal()"><svg><use href="#nav-my"/></svg><span>MY</span></button>
+</nav>
+
+<div class="modal-overlay" id="writeModal" onclick="if(event.target===this)closeWriteModal()">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">커뮤니티에 글쓰기</div><button class="modal-close" type="button" onclick="closeWriteModal()">×</button></div>
+    <div class="field"><div class="label">채널 선택</div><select class="select" id="channelSelect"></select></div>
+    <div class="field"><div class="label">지역 태그</div><select class="select" id="regionSelect"><option value="">지역 선택</option><option>전남</option><option>경남</option><option>경북</option><option>충남</option><option>기타</option></select></div>
+    <div class="field"><div class="label">제목</div><input class="input" id="postTitle" placeholder="어떤 증상인가요?" autocomplete="off"></div>
+    <div class="field"><div class="label">내용</div><textarea class="textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
+    <button class="submit" id="submitBtn" type="button" onclick="submitPost()">등록하기</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loginModal" onclick="if(event.target===this)closeLoginModal()">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">로그인</div><button class="modal-close" type="button" onclick="closeLoginModal()">×</button></div>
+    <div class="login-box">
+      <strong>로그인하고 글을 작성하세요</strong>
+      <p>질문 등록, 댓글, 진단 기록 기능을 이용할 수 있습니다.</p>
+      <button class="google" type="button" onclick="loginGoogle()">Google로 시작하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
+const CHANNEL_CONFIG = {
+  'plant-hospital': '식물 병원',
+  'plant-question': '식물 질문방',
+  'crop-consult': '작물 상담방',
+  'plant-brag': '내 식물 자랑',
+  'farmer-lounge': '농부 사랑방',
+  'plant-share': '식물 나눔·직거래',
+  'garden-class': '원예 클래스',
+  'plant-meet': '식집사 모임'
+};
+const CHANNEL_BADGE_COLORS = {'plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
+const PAGE_SIZE = 20;
+const params = new URLSearchParams(location.search);
+const slugParam = params.get('slug') || '';
+let sb;
+let currentUser = null;
+let channels = [];
+let currentChannel = null;
+let activeRegion = '';
+let keyword = '';
+let offset = 0;
+let isLoading = false;
+let hasMore = true;
+
+document.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { data: authData } = await sb.auth.getUser();
+  currentUser = authData?.user || null;
+  await loadChannels();
+  bindRegionChips();
+  document.getElementById('searchInput').addEventListener('search', applyKeywordSearch);
+  document.getElementById('searchInput').addEventListener('input', debounce(applyKeywordSearch, 350));
+  window.addEventListener('scroll', handleScroll, { passive:true });
+  resetAndLoad();
+}
+
+async function loadChannels() {
+  try {
+    const { data, error } = await sb.from('channels').select('id, slug, name').order('slug');
+    if (error) throw error;
+    channels = data && data.length ? data : defaultChannels();
+  } catch (_) {
+    channels = defaultChannels();
+  }
+  currentChannel = slugParam ? channels.find(ch => ch.slug === slugParam) : null;
+  document.getElementById('channelTitle').textContent = currentChannel?.name || (slugParam ? (CHANNEL_CONFIG[slugParam] || '채널') : '전체 게시글');
+  const select = document.getElementById('channelSelect');
+  select.innerHTML = '<option value="">채널을 선택하세요</option>';
+  channels.forEach(ch => {
+    const opt = document.createElement('option');
+    opt.value = ch.id;
+    opt.textContent = ch.name || CHANNEL_CONFIG[ch.slug] || '일반';
+    if (currentChannel && ch.id === currentChannel.id) opt.selected = true;
+    select.appendChild(opt);
+  });
+}
+
+function defaultChannels() {
+  return Object.entries(CHANNEL_CONFIG).map(([slug, name]) => ({ id: slug, slug, name }));
+}
+
+function bindRegionChips() {
+  document.getElementById('regionChips').addEventListener('click', e => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('.chip').forEach(chip => chip.classList.remove('active'));
+    btn.classList.add('active');
+    activeRegion = btn.dataset.region || '';
+    resetAndLoad();
+  });
+}
+
+function applyKeywordSearch() {
+  keyword = document.getElementById('searchInput').value.trim();
+  resetAndLoad();
+}
+
+function resetAndLoad() {
+  offset = 0;
+  hasMore = true;
+  document.getElementById('postList').innerHTML = '<div class="loading"><span class="spinner"></span>불러오는 중...</div>';
+  loadPosts();
+}
+
+async function loadPosts() {
+  if (isLoading || !hasMore) return;
+  isLoading = true;
+  document.getElementById('moreLoader').style.display = offset > 0 ? 'block' : 'none';
+  try {
+    let query = sb
+      .from('posts')
+      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name,slug),comments(count)', { count:'exact' })
+      .order('created_at', { ascending:false })
+      .range(offset, offset + PAGE_SIZE - 1);
+    if (currentChannel?.id) query = query.eq('channel_id', currentChannel.id);
+    if (activeRegion) query = activeRegion === '기타' ? query.not('region_tag', 'in', '("전남","경남","경북","충남")') : query.ilike('region_tag', `%${activeRegion}%`);
+    if (keyword) query = query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
+    const { data, count, error } = await query;
+    if (error) throw error;
+    renderPosts(data || [], count || 0);
+    offset += (data || []).length;
+    hasMore = (data || []).length === PAGE_SIZE;
+  } catch (err) {
+    if (offset === 0) document.getElementById('postList').innerHTML = '<div class="empty">게시글을 불러오지 못했습니다.<br>잠시 후 다시 시도해주세요.</div>';
+  } finally {
+    isLoading = false;
+    document.getElementById('moreLoader').style.display = 'none';
+  }
+}
+
+function renderPosts(posts, totalCount) {
+  const list = document.getElementById('postList');
+  document.getElementById('resultLabel').textContent = activeRegion ? `${activeRegion} 글` : '최신 글';
+  document.getElementById('resultCount').textContent = `${totalCount}개`;
+  if (offset === 0) list.innerHTML = '';
+  if (!posts.length && offset === 0) {
+    list.innerHTML = '<div class="empty">아직 게시글이 없습니다.<br>첫 글을 올려보세요.</div>';
+    return;
+  }
+  posts.forEach(post => {
+    const slug = post.channels?.slug || channels.find(ch => ch.id === post.channel_id)?.slug || '';
+    const badgeClass = CHANNEL_BADGE_COLORS[slug] || '';
+    const commentCount = Array.isArray(post.comments) && post.comments[0]?.count !== undefined ? post.comments[0].count : 0;
+    const card = document.createElement('article');
+    card.className = 'post-card';
+    card.innerHTML = `
+      <span class="badge ${badgeClass}">${esc(post.channels?.name || channelName(slug))}</span>
+      <div class="post-title">${esc(post.title || '제목 없음')}</div>
+      <div class="post-content">${esc(post.content || '')}</div>
+      <div class="meta">
+        <span>${post.user_id ? '회원' : '익명'} 작성자</span>
+        <span>댓글 ${commentCount}</span>
+        <span>조회 ${post.view_count || 0}</span>
+        <span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span>
+        <span>${timeAgo(post.created_at)}</span>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function handleScroll() {
+  if (!hasMore || isLoading) return;
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 260) loadPosts();
+}
+
+async function openWriteFlow() {
+  const { data } = await sb.auth.getUser();
+  currentUser = data?.user || null;
+  if (!currentUser) return openLoginModal();
+  document.getElementById('writeModal').classList.add('open');
+}
+function closeWriteModal() { document.getElementById('writeModal').classList.remove('open'); }
+function openLoginModal() { document.getElementById('loginModal').classList.add('open'); }
+function closeLoginModal() { document.getElementById('loginModal').classList.remove('open'); }
+
+async function submitPost() {
+  const channelId = document.getElementById('channelSelect').value;
+  const title = document.getElementById('postTitle').value.trim();
+  const content = document.getElementById('postContent').value.trim();
+  const region = document.getElementById('regionSelect').value;
+  if (!channelId || !title || !content) return showToast('채널, 제목, 내용을 입력해주세요.');
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  try {
+    const { data } = await sb.auth.getUser();
+    const user = data?.user;
+    if (!user) throw new Error('로그인이 필요합니다.');
+    const { error } = await sb.from('posts').insert({ user_id:user.id, channel_id:channelId, title, content, region_tag:region || null });
+    if (error) throw error;
+    showToast('게시글이 등록되었습니다.');
+    closeWriteModal();
+    document.getElementById('postTitle').value = '';
+    document.getElementById('postContent').value = '';
+    resetAndLoad();
+  } catch (err) {
+    showToast(err.message || '등록에 실패했습니다.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function loginGoogle() {
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:location.href } });
+  if (error) showToast('로그인 실패: ' + error.message);
+}
+
+function channelName(slug) { return CHANNEL_CONFIG[slug] || '일반'; }
+function esc(value) {
+  return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function escapeLike(value) { return String(value || '').replace(/[%_]/g, m => '\\' + m); }
+function timeAgo(dateValue) {
+  if (!dateValue) return '';
+  const diff = Date.now() - new Date(dateValue).getTime();
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return '방금';
+  if (min < 60) return `${min}분 전`;
+  const hour = Math.floor(min / 60);
+  if (hour < 24) return `${hour}시간 전`;
+  const day = Math.floor(hour / 24);
+  if (day < 7) return `${day}일 전`;
+  return new Date(dateValue).toLocaleDateString('ko-KR');
+}
+function debounce(fn, wait) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
+}
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+</script>
+</body>
+</html>
