@@ -835,12 +835,32 @@
     .topbar {
       background: #FFFFFF;
       border-bottom: 1px solid #F0F2F4;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: none;
     }
 
     .brand img {
+      width: 36px;
+      height: 36px;
       box-shadow: none;
       background: #F6F8F7;
+    }
+
+    .brand-title {
+      color: #111111;
+    }
+
+    .bell-button {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 0;
+      color: #111111;
+      box-shadow: none;
+    }
+
+    .bell-button svg {
+      width: 22px;
+      height: 22px;
     }
 
     .profile-pill,
@@ -855,22 +875,23 @@
     }
 
     .view-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 12px;
-      padding: 4px;
-      border-radius: 999px;
-      background: #F5F6F7;
+      display: flex;
+      justify-content: flex-start;
+      gap: 6px;
+      margin-top: 10px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
     .view-tab {
-      min-height: 36px;
+      min-height: 30px;
+      padding: 0 12px;
       border: 0;
       border-radius: 999px;
       background: transparent;
       color: #737A80;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 850;
       cursor: pointer;
     }
@@ -901,19 +922,33 @@
     }
 
     .hero-card {
-      min-height: 168px;
+      height: 200px;
+      min-height: 200px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      border-radius: 18px;
+      border-radius: 16px;
       background:
-        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.58)),
-        url("https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&w=900&q=80") center/cover;
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.62)),
+        url("https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800") center/cover;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
+    .hero-badge {
+      width: fit-content;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 900;
+      backdrop-filter: blur(8px);
+    }
+
     .hero-card h2 {
-      font-size: 23px;
+      font-size: 26px;
+      line-height: 1.16;
       color: #FFFFFF;
     }
 
@@ -927,18 +962,23 @@
       background: #1A237E;
     }
 
+    .page[aria-label="커뮤니티"] > .page-head {
+      display: none;
+    }
+
     .channel-grid {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
     }
 
     .channel-card {
-      min-height: 84px;
+      min-height: 92px;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 10px 6px;
-      border-radius: 14px;
+      border-radius: 16px;
+      background: #FFFFFF !important;
     }
 
     .channel-card strong {
@@ -952,9 +992,10 @@
     }
 
     .channel-icon {
-      width: 36px;
-      height: 36px;
-      background: rgba(255,255,255,0.78);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--channel-bg, #F2F4F5);
     }
 
     .feed-card,
@@ -962,6 +1003,16 @@
     .link-card {
       border-color: #EEF1F3;
       border-radius: 14px;
+    }
+
+    .section-title strong {
+      font-size: 18px;
+      color: #111111;
+    }
+
+    .section-title span {
+      color: #8A9096;
+      font-size: 12px;
     }
 
     .upload-card {
@@ -1022,6 +1073,29 @@
       background: #E7F7F1;
     }
 
+    .floating-write {
+      position: fixed;
+      right: calc(50% - 224px);
+      bottom: calc(var(--tab-h) + 18px + env(safe-area-inset-bottom));
+      z-index: 21;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      background: #111111;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      cursor: pointer;
+    }
+
+    @media (max-width: 480px) {
+      .floating-write {
+        right: 16px;
+      }
+    }
+
     @media (min-width: 481px) {
       body {
         background: #F5F5F5;
@@ -1047,7 +1121,12 @@
             <span class="brand-sub">AI FARM COMMUNITY</span>
           </span>
         </a>
-        <button class="profile-pill" type="button" id="myButton">MY</button>
+        <button class="profile-pill bell-button" type="button" id="myButton" aria-label="알림 및 로그인">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
       </div>
       <label class="search" for="globalSearch">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1073,16 +1152,16 @@
             <span class="badge" id="channelCount">채널 로딩 중</span>
           </div>
 
-          <a class="hero-card" href="#write" id="writePostButton">
-            <h2>이상하다 싶을 때, 바로 여기</h2>
+          <a class="hero-card" href="#write">
+            <span class="hero-badge">AI 식물 주치의</span>
+            <h2>이상하다 싶을 때,<br>바로 여기</h2>
             <p>사진 한 장이면 AI가 진단해드려요</p>
-            <span class="hero-action">질문 올리기</span>
           </a>
 
           <section class="section">
             <div class="section-title">
-              <strong>채널</strong>
-              <span>역할별 게시판</span>
+              <strong>채널 둘러보기</strong>
+              <span>전체보기 &gt;</span>
             </div>
             <div class="channel-grid" id="channelGrid">
               <div class="empty-feed">채널을 불러오는 중입니다</div>
@@ -1091,8 +1170,8 @@
 
           <section class="section">
             <div class="section-title">
-              <strong>최근 질문</strong>
-              <span>실시간</span>
+              <strong>방금 올라온 질문</strong>
+              <span>더보기</span>
             </div>
             <div class="feed-list" id="recentPosts">
               <div class="empty-feed">최근 질문을 불러오는 중입니다</div>
@@ -1262,6 +1341,8 @@
       <span class="dot"></span>
     </div>
 
+    <button class="floating-write" type="button" id="writePostButton">+ 질문하기</button>
+
     <nav class="tabbar" aria-label="하단 탭">
       <button class="tab active" type="button" data-page="0" data-primary="true" aria-label="홈">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -1378,26 +1459,32 @@
     const SWIPE_DISTANCE_THRESHOLD = 60;
     const SWIPE_VELOCITY_THRESHOLD = 0.45;
     const ENABLE_SWIPE = false;
+    const bellIconHtml = `
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    `;
 
     const channelStyles = {
       'plant-hospital': { bg: '#E8F5E9', point: '#2E7D32', desc: '사진 증상 진단 허브' },
       'plant-question': { bg: '#E3F2FD', point: '#1565C0', desc: '반려식물과 텃밭 Q&A' },
       'crop-consult': { bg: '#FFF8E1', point: '#F57F17', desc: '농가 재배 상담' },
       'plant-brag': { bg: '#FCE4EC', point: '#AD1457', desc: '성장 기록 공유' },
-      'farmer-lounge': { bg: '#F3E5F5', point: '#6A1B9A', desc: '현장 이야기와 정보' },
+      'farmer-lounge': { bg: '#FBE9E7', point: '#BF360C', desc: '현장 이야기와 정보' },
       'plant-share': { bg: '#E0F7FA', point: '#00838F', desc: '식물 나눔과 교환' },
       'garden-class': { bg: '#F9FBE7', point: '#827717', desc: '가드닝 클래스' },
-      'plant-meet': { bg: '#FBE9E7', point: '#BF360C', desc: '식물 모임과 행사' }
+      'plant-meet': { bg: '#FFFDE7', point: '#F9A825', desc: '식물 모임과 행사' }
     };
 
     const channelIcons = {
       'plant-hospital': '<svg viewBox="0 0 24 24" fill="none"><path d="M7 21c0-7 5-12 12-15-1 7-6 13-12 15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 17h10M11 12v8M4 6h6M7 3v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
       'plant-question': '<svg viewBox="0 0 24 24" fill="none"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-5 4v-4.2A3.5 3.5 0 0 1 5 12V6.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8h6M9 11h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      'crop-consult': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 20h16M6 20V9l6-4 6 4v11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 20v-6h6v6M8 11h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      'plant-brag': '<svg viewBox="0 0 24 24" fill="none"><path d="M6 20h12l-1-8H7l-1 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 12V5M12 5c-3 0-5 2-5 5 3 0 5-2 5-5ZM12 5c3 0 5 2 5 5-3 0-5-2-5-5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      'farmer-lounge': '<svg viewBox="0 0 24 24" fill="none"><path d="M6 18v-6a6 6 0 0 1 12 0v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 18h16M8 18v3M16 18v3M10 9h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 5h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      'plant-share': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 5v16M7 10c0-3 2-5 5-5 0 3-2 5-5 5ZM12 5c4 0 7 3 7 7-4 0-7-3-7-7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      'garden-class': '<svg viewBox="0 0 24 24" fill="none"><path d="M5 5h14v14H5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8 9h8M8 13h5M16 17l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 20l3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+      'crop-consult': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M7 8c0 3 2 5 5 5M17 8c0 3-2 5-5 5M7 13c0 3 2 5 5 5M17 13c0 3-2 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      'plant-brag': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 8a2 2 0 0 1 2-2h2l1.4-2h5.2L16 6h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="2"/><path d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/></svg>',
+      'farmer-lounge': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 11 12 4l8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
+      'plant-share': '<svg viewBox="0 0 24 24" fill="none"><path d="M7 21h10l1-8H6l1 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 13V5M12 5c-3 0-5 2-5 5 3 0 5-2 5-5ZM12 5c3 0 5 2 5 5-3 0-5-2-5-5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      'garden-class': '<svg viewBox="0 0 24 24" fill="none"><path d="M6 4l8 8M14 4 6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/></svg>',
       'plant-meet': '<svg viewBox="0 0 24 24" fill="none"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 20a4 4 0 0 1 8 0M12 20a4 4 0 0 1 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
     };
 
@@ -1511,10 +1598,9 @@
           <article class="feed-card">
             <div class="feed-top">
               <span class="badge">${escapeHtml(channelName)}</span>
-              <span class="time">${escapeHtml(formatPostTime(post.created_at))}</span>
             </div>
             <h3>${escapeHtml(post.title)}</h3>
-            <div class="feed-meta"><span>익명 작성자</span><span>댓글 0</span></div>
+            <div class="feed-meta"><span>익명 작성자</span><span>댓글 0</span><span>좋아요 0</span><span>${escapeHtml(formatPostTime(post.created_at))}</span></div>
           </article>
         `;
       }).join('');
@@ -1543,12 +1629,13 @@
     function updateAuthUi(user) {
       currentUser = user || null;
       if (!currentUser) {
-        myButton.textContent = 'MY';
+        myButton.innerHTML = bellIconHtml;
         logoutButton.style.display = 'none';
         return;
       }
       const displayName = getUserDisplayName(currentUser);
-      myButton.textContent = displayName.trim().charAt(0).toUpperCase();
+      myButton.innerHTML = bellIconHtml;
+      myButton.title = displayName;
       logoutButton.style.display = 'inline-flex';
     }
 
