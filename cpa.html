@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>농약회사 정보 - kfarmai</title>
 <link rel="stylesheet" href="style.css">
@@ -129,6 +132,13 @@ function resetSearch() {
   renderCards(cpaData);
 }
 
+function applyUrlQuery() {
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (!q) return;
+  document.getElementById('keyword').value = q;
+  search();
+}
+
 function openMenu() {
   document.getElementById('overlay').classList.add('open');
   document.getElementById('menu').classList.add('open');
@@ -139,6 +149,7 @@ function closeMenu() {
 }
 
 renderCards(cpaData);
+applyUrlQuery();
 </script>
 </body>
 </html>

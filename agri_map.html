@@ -482,6 +482,14 @@ function resetAll() {
   renderAll(true);
 }
 
+function applyUrlQuery() {
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (!q) return;
+  document.getElementById('keyword').value = q;
+  currentKeyword = q.trim();
+  renderAll(true);
+}
+
 function geocodeShop(shop, done) {
   if (shop.lat && shop.lot) {
     done(shop);
@@ -622,6 +630,7 @@ kakao.maps.load(function() {
     infowindow.close();
   });
   renderAll(false);
+  applyUrlQuery();
   setLoading('mapLoading', false);
 });
 </script>

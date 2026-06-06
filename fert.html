@@ -75,9 +75,16 @@ function search() {
   renderCards(fertData.filter(d => !kw || d.company.includes(kw) || d.products.includes(kw)));
 }
 function resetSearch() { document.getElementById('keyword').value = ''; renderCards(fertData); }
+function applyUrlQuery() {
+  const q = new URLSearchParams(window.location.search).get('q');
+  if (!q) return;
+  document.getElementById('keyword').value = q;
+  search();
+}
 function openMenu() { document.getElementById('overlay').classList.add('open'); document.getElementById('menu').classList.add('open'); }
 function closeMenu() { document.getElementById('overlay').classList.remove('open'); document.getElementById('menu').classList.remove('open'); }
 renderCards(fertData);
+applyUrlQuery();
 </script>
 </body>
 </html>
