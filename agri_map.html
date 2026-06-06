@@ -488,6 +488,9 @@ function applyUrlQuery() {
   document.getElementById('keyword').value = q;
   currentKeyword = q.trim();
   renderAll(true);
+  if (currentList.length) {
+    window.setTimeout(() => focusShop(currentList[0].id, true), 250);
+  }
 }
 
 function geocodeShop(shop, done) {

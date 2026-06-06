@@ -74,6 +74,19 @@
 
 <script src="static/seed_data.js"></script>
 <script>
+const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function getInitials(text) {
+  return String(text || '').split('').map(ch => {
+    const code = ch.charCodeAt(0) - 44032;
+    return code >= 0 && code <= 11171 ? CHO[Math.floor(code / 588)] : ch;
+  }).join('');
+}
+function matchesKeyword(item, kw) {
+  if (!kw) return true;
+  const needle = String(kw).toLowerCase().replace(/\s+/g, '');
+  const hay = [item.company, item.products, item.addr].join(' ').toLowerCase().replace(/\s+/g, '');
+  return hay.includes(needle) || getInitials(hay).includes(needle);
+}
 function renderCards(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
@@ -102,7 +115,7 @@ function renderCards(list) {
 }
 function search() {
   const kw = document.getElementById('keyword').value.trim();
-  renderCards(seedData.filter(d => !kw || d.company.includes(kw) || d.products.includes(kw) || d.addr.includes(kw)));
+  renderCards(seedData.filter(d => matchesKeyword(d, kw)));
 }
 function resetSearch() {
   document.getElementById('keyword').value = '';

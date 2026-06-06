@@ -1074,6 +1074,11 @@
     </div>
   </div>
 </div>
+<script src="static/pesticide_data.js"></script>
+<script src="static/santo_data.js"></script>
+<script src="static/seed_data.js"></script>
+<script src="static/cpa_data.js"></script>
+<script src="static/fert_data.js"></script>
 <script>
 (function(){
   const pages = document.getElementById('pages');
@@ -1357,8 +1362,8 @@ function postSuggestHtml(post,kw){
   return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-ico">Q</div><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${getTimeAgo(post.created_at)}</div></div></div>`;
 }
 function linkSuggestHtml(item,kw,kind){
-  const url=`${item.url}?q=${encodeURIComponent(kw)}`;
-  return `<a class="s-item" href="${url}"><div class="s-ico">${kind==='지도'?'M':'I'}</div><div class="s-main"><div class="s-title">${highlightText(item.text.replace(/^농약사/, kw+' 농약사'),kw)}</div><div class="s-meta">${kind}에서 보기</div></div></a>`;
+  const url=`${item.url}?q=${encodeURIComponent(item.query||kw)}`;
+  return `<a class="s-item" href="${url}"><div class="s-ico">${kind==='지도'?'M':'I'}</div><div class="s-main"><div class="s-title">${highlightText(item.text,kw)}</div><div class="s-meta">${escHtml(item.meta||`${kind}에서 보기`)}</div></div></a>`;
 }
 function renderRecentSection(items){
   if(!items.length)return '';
@@ -1375,7 +1380,7 @@ async function runSearch(raw){
   if(!feed)return;
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
   const posts=await searchPosts(kw,20);
-  const shortcuts=[...getShopSuggestions(kw).slice(0,1),...getMaterialSuggestions(kw).slice(0,4)];
+  const shortcuts=[...getShopSuggestions(kw).slice(0,3),...getMaterialSuggestions(kw).slice(0,6)];
   renderSearchResults(kw,posts,shortcuts);
 }
 async function searchPosts(kw,limit){
@@ -1401,7 +1406,7 @@ function renderSearchResults(kw,posts,shortcuts){
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     return `<div class="q-card"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span><div class="q-title">${highlightText(post.title,kw)}</div><div class="q-meta"><span>${post.user_id?'회원':'익명 작성자'}</span><span>댓글 ${post.comment_count||0}</span><span>좋아요 ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></div>`;
   }).join('');
-  const shortcutHtml=shortcuts.map(item=>`<a class="q-card" href="${item.url}?q=${encodeURIComponent(kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${item.type==='map'?'농약사':'농자재'}</span><div class="q-title">${highlightText(item.text.replace(/^농약사/, kw+' 농약사'),kw)}</div><div class="q-meta"><span>${item.type==='map'?'지도에서 보기':'정보 페이지에서 보기'}</span></div></a>`).join('');
+  const shortcutHtml=shortcuts.map(item=>`<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${item.type==='map'?'농약사':'농자재'}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta|| (item.type==='map'?'지도·로드뷰에서 보기':'정보 페이지에서 보기'))}</span></div></a>`).join('');
   feed.innerHTML=head+postHtml+shortcutHtml;
 }
 function clearSearchResults(){
@@ -1411,10 +1416,45 @@ function clearSearchResults(){
   loadFeed();
 }
 function closeSearchDropdown(){document.getElementById('searchDropdown')?.classList.remove('open');}
-function getShopSuggestions(kw){return matchesSearchText('농약사 농약방 주변농약방 내 주변 농자재점 ㄴㅇㅅ',kw)?[AGRI_LINKS[0],{...AGRI_LINKS[0],text:'내 주변 농약사 - 지도에서 보기'}]:[];}
+function getShopSuggestions(kw){
+  const shops=typeof data!=='undefined'?data:[];
+  const matched=shops.filter(shop=>matchesSearchText([shop.name,shop.addr,shop.tel,shop.item,'농약사 농약방'].join(' '),kw)).slice(0,2).map(shop=>({
+    type:'map',
+    url:'agri_map.html',
+    query:shop.name,
+    text:`${shop.name} - 지도·로드뷰에서 보기`,
+    meta:shop.addr||'지도에서 보기'
+  }));
+  if(matched.length)return matched;
+  return matchesSearchText('농약사 농약방 주변농약방 내 주변 농자재점 ㄴㅇㅅ',kw)?[
+    {...AGRI_LINKS[0],query:kw,text:`${kw} 농약사 - 지도·로드뷰에서 보기`,meta:'agri_map.html 검색'}
+  ]:[];
+}
 function getMaterialSuggestions(kw){
-  if(matchesSearchText('농자재 농자재회사 농업자재 agri products',kw))return AGRI_LINKS.filter(item=>item.type==='material');
-  return AGRI_LINKS.filter(item=>item.type==='material'&&matchesSearchText(`${item.label} ${item.initial} ${item.text}`,kw));
+  const datasets=[
+    {kind:'상토',url:'santo.html',items:typeof santoData!=='undefined'?santoData:[]},
+    {kind:'종자',url:'seed.html',items:typeof seedData!=='undefined'?seedData:[]},
+    {kind:'작물보호제',url:'cpa.html',items:typeof cpaData!=='undefined'?cpaData:[]},
+    {kind:'비료',url:'fert.html',items:typeof fertData!=='undefined'?fertData:[]}
+  ];
+  const results=[];
+  datasets.forEach(ds=>{
+    ds.items.forEach(item=>{
+      const text=[ds.kind,item.company,item.products,item.addr,item.tel].join(' ');
+      if(matchesSearchText(text,kw)){
+        results.push({
+          type:'material',
+          url:ds.url,
+          query:item.company,
+          text:`${item.company} - ${ds.kind} 정보 보기`,
+          meta:item.products||item.addr||`${ds.kind} 검색`
+        });
+      }
+    });
+  });
+  if(results.length)return results.slice(0,6);
+  if(matchesSearchText('농자재 농자재회사 농업자재 agri products',kw))return AGRI_LINKS.filter(item=>item.type==='material').map(item=>({...item,query:kw,meta:'농자재 정보 페이지'}));
+  return AGRI_LINKS.filter(item=>item.type==='material'&&matchesSearchText(`${item.label} ${item.initial} ${item.text}`,kw)).map(item=>({...item,query:kw,meta:'농자재 정보 페이지'}));
 }
 function matchesSearchText(text,kw){const hay=String(text||'').toLowerCase();const compactHay=hay.replace(/\s/g,'');const needle=String(kw||'').toLowerCase();return hay.includes(needle)||compactHay.includes(needle.replace(/\s/g,''))||getInitials(hay).includes(needle)||SEARCH_ALIASES.some(a=>(a.initial===needle||a.label.includes(needle))&&compactHay.includes(a.label.toLowerCase().replace(/\s/g,'')));}
 function getInitials(text){return String(text||'').split('').map(ch=>{const code=ch.charCodeAt(0)-44032;if(code>=0&&code<=11171)return CHO_LIST[Math.floor(code/588)];return ch;}).join('');}
