@@ -52,6 +52,21 @@
     display: flex; align-items: center; justify-content: space-between;
     padding-bottom: 8px;
   }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .lang-toggle {
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 999px;
+    padding: 6px 9px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #A1A7AE;
+    cursor: pointer;
+    line-height: 1;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+  .lang-toggle .active { color: var(--green); }
+  .lang-toggle .divider { color: #D1D5DB; margin: 0 4px; }
   .brand { display: flex; align-items: center; gap: 8px; }
   .brand img {
     width: 36px; height: 36px; object-fit: contain;
@@ -80,13 +95,23 @@
   .bell {
     position: relative; width: 30px; height: 30px;
     display: flex; align-items: center; justify-content: center; cursor: pointer;
+    border-radius: 50%;
+    overflow: hidden;
   }
   .bell svg { width: 22px; height: 22px; color: #333; }
+  .bell img { width: 100%; height: 100%; object-fit: cover; }
+  .bell .profile-initial {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--green-soft); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900;
+  }
   .bell::after {
     content: ''; position: absolute; top: 3px; right: 3px;
     width: 7px; height: 7px; border-radius: 50%;
     background: var(--orange); border: 1.5px solid #fff;
   }
+  .bell.logged-in::after { display: none; }
 
   /* Tabs - centered pill */
   .tabs {
@@ -433,19 +458,57 @@
     width: 100%; padding: 14px; background: var(--green); color: #fff; border: 0; border-radius: 12px;
     font-size: 15px; font-weight: 800; cursor: pointer;
   }
-  .login-modal-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 50;
-    align-items: center; justify-content: center;
+  .my-panel-overlay {
+    display: flex; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 60;
+    align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .22s ease;
   }
-  .login-modal-overlay.open { display: flex; }
-  .login-modal { width: calc(100% - 48px); max-width: 360px; background: #fff; border-radius: 20px; padding: 24px 20px; }
-  .login-sub { font-size: 13px; color: var(--sub); margin-bottom: 20px; line-height: 1.45; }
-  .btn-google, .login-close { width: 100%; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .my-panel-overlay.open { opacity: 1; pointer-events: auto; }
+  .my-panel {
+    width: 100%; max-width: 480px; max-height: 86vh; overflow-y: auto;
+    margin: 0 auto; background: #fff; border-radius: 22px 22px 0 0;
+    padding: 12px 18px 26px;
+    transform: translateY(100%); transition: transform .28s cubic-bezier(.32,.72,.36,1);
+  }
+  .my-panel-overlay.open .my-panel { transform: translateY(0); }
+  .my-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .my-title { font-size: 18px; font-weight: 900; letter-spacing: -0.4px; }
+  .my-close {
+    width: 34px; height: 34px; border: 0; border-radius: 50%;
+    background: #F3F4F6; color: #4B5563; font-size: 20px; cursor: pointer;
+  }
+  .login-sub { font-size: 13px; color: var(--sub); margin: 6px 0 20px; line-height: 1.45; }
+  .login-sub strong { display: block; color: var(--text); font-size: 18px; margin-bottom: 6px; }
+  .btn-google, .btn-kakao { width: 100%; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; }
   .btn-google {
     padding: 13px; border: 1.5px solid var(--border); background: #fff; display: flex; align-items: center;
     justify-content: center; gap: 10px; color: var(--text);
   }
-  .login-close { margin-top: 10px; padding: 10px; border: 0; background: transparent; color: var(--muted); }
+  .btn-kakao {
+    margin-top: 10px; padding: 13px; border: 0; background: #F3F4F6; color: #9CA3AF;
+  }
+  .my-profile { display: flex; align-items: center; gap: 12px; padding: 8px 0 18px; }
+  .my-avatar {
+    width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
+    background: var(--green-soft); color: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 900; flex-shrink: 0;
+  }
+  .my-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .my-name { font-size: 17px; font-weight: 900; color: var(--text); }
+  .my-email { margin-top: 3px; font-size: 12px; color: var(--sub); word-break: break-all; }
+  .role-badge {
+    display: inline-flex; margin-top: 7px; padding: 4px 9px;
+    border-radius: 999px; background: var(--green-soft); color: var(--green);
+    font-size: 11px; font-weight: 800;
+  }
+  .my-menu { border-top: 1px solid var(--border); }
+  .my-row {
+    min-height: 48px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 700; color: #222;
+  }
+  .my-row .count, .my-row .muted { color: var(--muted); font-size: 12px; font-weight: 700; }
+  .my-row.logout { color: #DC2626; cursor: pointer; }
+  .my-version { padding-top: 14px; color: var(--muted); font-size: 12px; text-align: center; font-weight: 700; }
   .feed-loading { text-align: center; padding: 20px 10px; color: var(--muted); font-size: 13px; }
   .spinner {
     width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--green);
@@ -729,8 +792,11 @@
           <div class="brand-sub">AI FARM COMMUNITY</div>
         </div>
       </div>
-      <div class="bell" onclick="openLogin()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <div class="header-actions">
+        <button class="lang-toggle" id="langToggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button>
+        <div class="bell" id="headerProfile" onclick="openMyPanel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        </div>
       </div>
     </div>
     <div class="search">
@@ -738,9 +804,9 @@
       <input type="text" placeholder="작물 증상, 질문, 농자재를 검색하세요" />
     </div>
     <div class="tabs">
-      <div class="tab active" data-i="0">커뮤니티</div>
-      <div class="tab" data-i="1">AI 진단</div>
-      <div class="tab" data-i="2">농자재</div>
+      <div class="tab active" data-i="0" data-i18n="community">커뮤니티</div>
+      <div class="tab" data-i="1" data-i18n="diagnosis">AI 진단</div>
+      <div class="tab" data-i="2" data-i18n="agriData">농자재</div>
     </div>
   </header>
 
@@ -755,14 +821,14 @@
           <div class="hero-content">
             <span class="badge-orange">★ AI 식물 주치의</span>
             <div>
-              <div class="hero-title">이상하다 싶을 때,<br/>바로 여기</div>
+              <div class="hero-title" data-i18n="heroTitle">이상하다 싶을 때,<br/>바로 여기</div>
               <div class="hero-sub">사진 한 장이면 AI가 진단해드려요</div>
             </div>
           </div>
         </div>
 
         <div class="section-head">
-          <div class="section-title">채널 둘러보기</div>
+          <div class="section-title" data-i18n="exploreChannels">채널 둘러보기</div>
           <div class="section-more">전체보기</div>
         </div>
         <div class="channels" id="channelGrid">
@@ -771,7 +837,7 @@
 
         <div class="section-head">
           <div style="display:flex;align-items:center">
-            <div class="section-title">방금 올라온 질문</div>
+            <div class="section-title" data-i18n="recentQuestions">방금 올라온 질문</div>
             <span class="live-dot">실시간</span>
           </div>
           <div class="section-more">더보기</div>
@@ -916,10 +982,10 @@
   <!-- Bottom Nav (fixed) -->
   <nav class="bnav">
     <div class="b on"><svg><use href="#nav-home"/></svg><span>홈</span></div>
-    <div class="b"><svg><use href="#nav-q"/></svg><span>질문</span></div>
-    <div class="b"><svg><use href="#nav-d"/></svg><span>진단</span></div>
-    <a class="b" href="agri_map.html"><svg><use href="#nav-pin"/></svg><span>주변</span></a>
-    <div class="b" onclick="openLogin()"><svg><use href="#nav-my"/></svg><span>MY</span></div>
+    <div class="b"><svg><use href="#nav-q"/></svg><span data-i18n="qa">질문</span></div>
+    <div class="b"><svg><use href="#nav-d"/></svg><span data-i18n="diagnosisShort">진단</span></div>
+    <a class="b" href="agri_map.html"><svg><use href="#nav-pin"/></svg><span data-i18n="nearby">주변</span></a>
+    <div class="b" onclick="openMyPanel()"><svg><use href="#nav-my"/></svg><span>MY</span></div>
   </nav>
 </div>
 
@@ -935,16 +1001,47 @@
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
-<div class="login-modal-overlay" id="loginModal" onclick="if(event.target===this)closeLogin()">
-  <div class="login-modal">
-    <div class="modal-title">kFarmAI 시작하기</div>
-    <div class="login-sub">로그인하면 커뮤니티 참여와 진단 기록을 계정에 연결할 수 있습니다.</div>
-    <button class="btn-google" id="googleBtn" onclick="loginGoogle()">
-      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-      Google로 시작하기
-    </button>
-    <button class="login-close" onclick="closeLogin()">닫기</button>
+<!-- MY PANEL -->
+<div class="my-panel-overlay" id="myPanel" onclick="if(event.target===this)closeMyPanel()">
+  <div class="my-panel">
+    <div class="modal-handle"></div>
+    <div class="my-head">
+      <div class="my-title">MY</div>
+      <button class="my-close" type="button" onclick="closeMyPanel()">×</button>
+    </div>
+
+    <div id="myLoggedOut">
+      <div class="login-sub">
+        <strong>로그인하고 더 많은 기능을 이용하세요</strong>
+        질문 등록, 진단 기록, 내 식물 관리
+      </div>
+      <button class="btn-google" id="googleBtn" onclick="loginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Google로 시작하기
+      </button>
+      <button class="btn-kakao" type="button" disabled>카카오로 시작하기 (준비중)</button>
+    </div>
+
+    <div id="myLoggedIn" style="display:none">
+      <div class="my-profile">
+        <div class="my-avatar" id="myAvatar">U</div>
+        <div>
+          <div class="my-name" id="myName">사용자</div>
+          <div class="my-email" id="myEmail">user@example.com</div>
+          <span class="role-badge">일반회원</span>
+        </div>
+      </div>
+      <div class="my-menu">
+        <div class="my-row"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
+        <div class="my-row"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
+        <div class="my-row"><span>저장한 정보</span><span class="muted">준비중</span></div>
+        <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
+        <div class="my-row"><span>공지사항</span><span class="muted">준비중</span></div>
+        <div class="my-row"><span>문의하기</span><span class="muted">준비중</span></div>
+        <div class="my-row logout" onclick="logout()">로그아웃</div>
+      </div>
+      <div class="my-version">앱 버전: v2.0</div>
+    </div>
   </div>
 </div>
 <script>
@@ -1052,8 +1149,120 @@ const sbScript = document.createElement('script');
 sbScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 sbScript.onload = () => { window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); initSupabaseApp(); };
 document.head.appendChild(sbScript);
-async function initSupabaseApp(){const {data:{session}}=await _sb.auth.getSession();if(session)updateUserUI(session.user);_sb.auth.onAuthStateChange((event,session)=>{if(session)updateUserUI(session.user);});loadChannels();loadFeed();}
-function updateUserUI(user){const bell=document.querySelector('.bell');if(!bell)return;const firstChar=(user.user_metadata?.full_name||user.email||'U')[0].toUpperCase();bell.innerHTML=`<span style="font-size:14px;font-weight:800;color:#333">${firstChar}</span>`;bell.onclick=()=>{if(confirm('로그아웃 하시겠습니까?')){_sb.auth.signOut();location.reload();}};_sb.from('users').upsert({id:user.id,nickname:user.user_metadata?.full_name||user.email?.split('@')[0]||'익명',email:user.email,role:'user'},{onConflict:'id'}).then(()=>{});}
+let currentUser = null;
+const I18N = {
+  ko: {
+    community: '커뮤니티',
+    diagnosis: 'AI 진단',
+    diagnosisShort: '진단',
+    agriData: '농자재',
+    qa: '질문',
+    nearby: '주변',
+    recentQuestions: '방금 올라온 질문',
+    exploreChannels: '채널 둘러보기',
+    heroTitle: '이상하다 싶을 때,<br/>바로 여기'
+  },
+  en: {
+    community: 'Community',
+    diagnosis: 'AI Diagnosis',
+    diagnosisShort: 'AI Diagnosis',
+    agriData: 'Agri Data',
+    qa: 'Q&A',
+    nearby: 'Nearby',
+    recentQuestions: 'Recent Questions',
+    exploreChannels: 'Explore Channels',
+    heroTitle: 'When Something Feels Off,<br/>Start Here'
+  }
+};
+function initLanguage(){
+  const saved = localStorage.getItem('kfarmai_lang') || 'ko';
+  applyLanguage(saved);
+}
+function applyLanguage(lang){
+  const useLang = lang === 'en' ? 'en' : 'ko';
+  localStorage.setItem('kfarmai_lang', useLang);
+  document.documentElement.lang = useLang;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.dataset.i18n;
+    if(I18N[useLang][key]) el.innerHTML = I18N[useLang][key];
+  });
+  document.querySelectorAll('.lang-toggle').forEach(btn=>{
+    btn.querySelector('.kr')?.classList.toggle('active', useLang === 'ko');
+    btn.querySelector('.en')?.classList.toggle('active', useLang === 'en');
+  });
+}
+function toggleLanguage(){
+  const next = (localStorage.getItem('kfarmai_lang') || 'ko') === 'ko' ? 'en' : 'ko';
+  applyLanguage(next);
+}
+initLanguage();
+async function initSupabaseApp(){
+  const {data:{session}}=await _sb.auth.getSession();
+  setMyState(session?.user || null);
+  if(session)updateUserUI(session.user);
+  _sb.auth.onAuthStateChange((event,session)=>{
+    setMyState(session?.user || null);
+    if(session)updateUserUI(session.user);
+    else resetUserUI();
+  });
+  loadChannels();
+  loadFeed();
+}
+function updateUserUI(user){
+  currentUser = user;
+  renderHeaderProfile(user);
+  renderMyProfile(user);
+  loadMyCounts(user.id);
+  _sb.from('users').upsert({id:user.id,nickname:user.user_metadata?.full_name||user.email?.split('@')[0]||'익명',email:user.email,role:'user'},{onConflict:'id'}).then(()=>{});
+}
+function resetUserUI(){
+  currentUser = null;
+  const bell=document.getElementById('headerProfile');
+  if(!bell)return;
+  bell.classList.remove('logged-in');
+  bell.onclick=()=>openMyPanel();
+  bell.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
+}
+function setMyState(user){
+  currentUser = user;
+  const loggedOut=document.getElementById('myLoggedOut');
+  const loggedIn=document.getElementById('myLoggedIn');
+  if(loggedOut)loggedOut.style.display = user ? 'none' : 'block';
+  if(loggedIn)loggedIn.style.display = user ? 'block' : 'none';
+}
+function renderHeaderProfile(user){
+  const bell=document.getElementById('headerProfile');
+  if(!bell)return;
+  const avatar=user.user_metadata?.avatar_url || user.user_metadata?.picture;
+  const initial=getInitial(user);
+  bell.classList.add('logged-in');
+  bell.onclick=()=>openMyPanel();
+  bell.innerHTML=avatar ? `<img src="${escAttr(avatar)}" alt="profile">` : `<span class="profile-initial">${escHtml(initial)}</span>`;
+}
+function renderMyProfile(user){
+  const name=user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'사용자';
+  const email=user.email||'';
+  const avatar=user.user_metadata?.avatar_url || user.user_metadata?.picture;
+  const avatarEl=document.getElementById('myAvatar');
+  document.getElementById('myName').textContent=name;
+  document.getElementById('myEmail').textContent=email;
+  if(avatarEl)avatarEl.innerHTML=avatar ? `<img src="${escAttr(avatar)}" alt="profile">` : escHtml(getInitial(user));
+}
+async function loadMyCounts(userId){
+  if(!window._sb||!userId)return;
+  try{
+    const [{count:postCount},{count:diagnosisCount}] = await Promise.all([
+      _sb.from('posts').select('id',{count:'exact',head:true}).eq('user_id',userId),
+      _sb.from('diagnoses').select('id',{count:'exact',head:true}).eq('user_id',userId)
+    ]);
+    document.getElementById('myPostCount').textContent=postCount ?? 0;
+    document.getElementById('myDiagnosisCount').textContent=diagnosisCount ?? 0;
+  }catch(e){
+    document.getElementById('myPostCount').textContent='0';
+    document.getElementById('myDiagnosisCount').textContent='0';
+  }
+}
+function getInitial(user){return (user.user_metadata?.full_name||user.user_metadata?.name||user.email||'U').trim()[0].toUpperCase();}
 async function loadChannels(){const grid=document.getElementById('channelGrid');const select=document.getElementById('channelSelect');if(!grid||!select||!window._sb)return;try{const {data}=await _sb.from('channels').select('*').order('slug');renderChannels(data&&data.length?data:defaultChannels(),grid,select);}catch(e){renderChannels(defaultChannels(),grid,select);}}
 function defaultChannels(){return Object.entries(CHANNEL_CONFIG).map(([slug,cfg])=>({slug,name:cfg.name,id:slug}));}
 function renderChannels(channels,grid,select){grid.innerHTML='';select.innerHTML='<option value="">채널을 선택하세요</option>';channels.forEach(ch=>{const cfg=CHANNEL_CONFIG[ch.slug]||{icon:'ic-chat',name:ch.name||'일반'};const card=document.createElement('div');card.className='channel';card.innerHTML=`<div class="ch-icon-wrap"><svg><use href="#${cfg.icon}"/></svg></div><div class="ch-name">${escHtml(ch.name||cfg.name)}</div>`;card.onclick=()=>filterByChannel(ch.id,ch.name||cfg.name);grid.appendChild(card);const opt=document.createElement('option');opt.value=ch.id;opt.textContent=ch.name||cfg.name;select.appendChild(opt);});}
@@ -1062,11 +1271,15 @@ function filterByChannel(id,name){loadFeed(id);const title=document.querySelecto
 async function submitPost(){const channelId=document.getElementById('channelSelect').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!title){alert('채널과 제목을 입력해주세요.');return;}const {data:{session}}=await _sb.auth.getSession();const {error}=await _sb.from('posts').insert({channel_id:channelId,title,content,user_id:session?.user?.id||null});if(error){alert('등록 실패: '+error.message);return;}closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';loadFeed();}
 function openModal(){document.getElementById('writeModal').classList.add('open');}
 function closeModal(){document.getElementById('writeModal').classList.remove('open');}
-function openLogin(){document.getElementById('loginModal').classList.add('open');}
-function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
+function openMyPanel(){document.getElementById('myPanel').classList.add('open');}
+function closeMyPanel(){document.getElementById('myPanel').classList.remove('open');}
+function openLogin(){openMyPanel();}
+function closeLogin(){closeMyPanel();}
 async function loginGoogle(){const {error}=await _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://kfarmai.com'}});if(error)alert('로그인 실패: '+error.message);}
+async function logout(){if(!_sb)return;await _sb.auth.signOut();setMyState(null);resetUserUI();closeMyPanel();}
 function getTimeAgo(dateStr){const diff=(Date.now()-new Date(dateStr))/1000;if(diff<60)return '방금 전';if(diff<3600)return Math.floor(diff/60)+'분 전';if(diff<86400)return Math.floor(diff/3600)+'시간 전';return Math.floor(diff/86400)+'일 전';}
 function escHtml(str){return(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escAttr(str){return escHtml(str).replace(/'/g,'&#39;');}
 </script>
 </body>
 </html>
