@@ -13,10 +13,10 @@
 
 <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #f0f0f0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
   <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <img src="static/logo.png" alt="kFarmAI" style="width:36px;height:36px;border-radius:8px;object-fit:cover;">
+    <img src="logo.webp" alt="kFarmAI" style="width:36px;height:36px;object-fit:contain;">
     <div style="line-height:1;">
-      <div style="font-size:18px;font-weight:900;letter-spacing:-0.5px;"><span style="color:#0F4C43;">kFarm</span><span style="color:#FF6B35;">AI</span></div>
-      <div style="font-size:9px;letter-spacing:1.5px;color:#9ca3af;font-weight:600;text-transform:uppercase;margin-top:1px;">Agricultural AI Hub</div>
+      <div style="font-size:18px;font-weight:700;letter-spacing:-0.5px;"><span style="color:#111;">kFarm</span><span style="color:#FF6B2B;">AI</span></div>
+      <div style="font-size:9px;letter-spacing:1.5px;color:#9ca3af;font-weight:700;text-transform:uppercase;margin-top:1px;">AI FARM COMMUNITY</div>
     </div>
   </a>
   <button style="width:40px;height:40px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:20px;" onclick="openMenu()">☰</button>
@@ -45,28 +45,29 @@
 <!-- 바텀 네비 -->
 <nav class="kf-bottom-nav">
   <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
-  <a href="index.html#subsidy" class="kf-nav-item"><span class="kf-nav-icon">📋</span><span>보조사업</span></a>
-  <a href="map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
+  <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사 찾기</span></a>
   <a href="santo.html" class="kf-nav-item active"><span class="kf-nav-icon">🌱</span><span>상토</span></a>
   <a href="seed.html" class="kf-nav-item"><span class="kf-nav-icon">🌾</span><span>종자</span></a>
+  <a href="cpa.html" class="kf-nav-item"><span class="kf-nav-icon">🧪</span><span>작물보호제</span></a>
+  <a href="fert.html" class="kf-nav-item"><span class="kf-nav-icon">🌿</span><span>비료</span></a>
 </nav>
 
 <!-- 햄버거 메뉴 -->
 <div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
 <div class="kf-menu" id="menu">
   <div class="kf-menu-header">
-    <a href="index.html" class="kf-logo">
-      <div class="kf-logo-mark">kf</div>
-      <span class="kf-logo-text">kfarm<em>ai</em></span>
+    <a href="index.html" class="kf-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+      <img src="logo.webp" alt="kFarmAI" style="width:36px;height:36px;object-fit:contain;">
+      <span style="line-height:1;"><span style="display:block;font-size:18px;font-weight:700;color:#111;">kFarm<span style="color:#FF6B2B;">AI</span></span><span style="display:block;font-size:9px;letter-spacing:1.5px;color:#9ca3af;font-weight:700;">AI FARM COMMUNITY</span></span>
     </a>
     <button class="kf-menu-close" onclick="closeMenu()">✕</button>
   </div>
   <a href="index.html" class="kf-menu-item">홈</a>
-  <a href="index.html#subsidy" class="kf-menu-item">보조사업 공고</a>
-  <a href="map.html" class="kf-menu-item">농약사 찾기 🗺️</a>
-  <a href="santo.html" class="kf-menu-item">상토회사 정보 🌱</a>
-  <a href="seed.html" class="kf-menu-item">종자회사 정보 🌾</a>
-  <a href="links.html" class="kf-menu-item">농업관련 사이트 🔗</a>
+  <a href="agri_map.html" class="kf-menu-item">농약사 찾기</a>
+  <a href="santo.html" class="kf-menu-item">상토</a>
+  <a href="seed.html" class="kf-menu-item">종자</a>
+  <a href="cpa.html" class="kf-menu-item">작물보호제</a>
+  <a href="fert.html" class="kf-menu-item">비료</a>
 </div>
 
 <script src="static/santo_data.js"></script>
