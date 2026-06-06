@@ -9,19 +9,23 @@
 <title>전국농약사 - kfarmai</title>
 <link rel="stylesheet" href="style.css">
 <style>
+html, body { height:100%; }
+body { min-height:100vh;display:flex;flex-direction:column;overflow:hidden; }
+.fixed-map-shell { flex:0 0 auto;background:white; }
 .region-tab-wrap { overflow-x:auto;scrollbar-width:none;padding:12px 16px 0; }
 .region-tab-wrap::-webkit-scrollbar { display:none; }
 .region-tabs { display:flex;gap:6px;min-width:max-content; }
 .rtab { flex-shrink:0;padding:6px 14px;border-radius:16px;border:1.5px solid #e8e8e8;background:white;font-size:12px;font-weight:500;cursor:pointer;color:#666;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s; }
 .rtab.active { background:#111;color:white;border-color:#111; }
 
-.list-header { padding:10px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center; }
+.list-wrap { flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:white; }
+.list-header { flex:0 0 auto;padding:10px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center; }
 .list-count { font-size:13px;color:#666; }
-.map-panel { margin:12px 16px 18px;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.06);touch-action:pan-y; }
+.map-panel { margin:10px 16px 12px;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.06);touch-action:pan-y; }
 .map-panel-title { padding:10px 14px;background:#1e6b2e;color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px; }
-#agriMap { width:100%;height:min(320px,40vh);max-height:40vh;min-height:220px;background:#eef7f0;touch-action:pan-y; }
+#agriMap { width:100%;height:250px;max-height:250px;background:#eef7f0;touch-action:pan-y; }
 .roadview-wrap { position:relative;display:none;border-top:1px solid #e8e8e8;touch-action:pan-y; }
-#roadviewPanel { width:100%;height:min(280px,35vh);max-height:35vh;min-height:190px;overflow:hidden;touch-action:pan-y; }
+#roadviewPanel { width:100%;height:220px;max-height:220px;overflow:hidden;touch-action:pan-y; }
 .roadview-close { position:absolute;top:8px;right:8px;z-index:5;width:32px;height:32px;border:0;border-radius:50%;background:rgba(0,0,0,0.68);color:white;font-size:18px;font-weight:900;line-height:1;cursor:pointer; }
 .map-status { font-size:11px;color:rgba(255,255,255,0.8);font-weight:600; }
 
@@ -33,7 +37,16 @@
 .shop-info { font-size:11px;color:#888;line-height:1.6; }
 .shop-tag { display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#eaf5ec;color:#1e6b2e;font-weight:600;margin-left:4px; }
 .shop-tag.user { background:#fff3e0;color:#e65100; }
-#shopList { padding-bottom:120px; }
+#shopList { flex:1 1 auto;min-height:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding-bottom:120px;touch-action:pan-y; }
+
+@media (max-width:480px) {
+  body { height:100dvh; }
+  header { flex:0 0 auto; }
+  #agriMap { height:250px;max-height:250px; }
+  #roadviewPanel { height:220px;max-height:220px; }
+  .list-wrap { height:calc(100dvh - 520px);min-height:150px; }
+  body.roadview-open .list-wrap { height:calc(100dvh - 740px);min-height:120px; }
+}
 
 /* 자가등록 플로팅 버튼 */
 .reg-float-btn {
@@ -83,6 +96,7 @@
   <button style="width:40px;height:40px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:20px;" onclick="openMenu()">☰</button>
 </header>
 
+<div class="fixed-map-shell">
 <div style="padding:14px 16px 8px;border-bottom:1px solid #e8e8e8;">
   <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">PESTICIDE STORES</div>
   <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">전국농약사</div>
@@ -109,13 +123,16 @@
     <div id="roadviewPanel"></div>
   </div>
 </div>
+</div>
 
+<div class="list-wrap">
 <div class="list-header">
   <span class="list-count" id="listCount">로딩 중...</span>
   <span style="font-size:12px;color:#1e6b2e;font-weight:600;">목록 클릭 시 지도·로드뷰 표시</span>
 </div>
 
 <div id="shopList"></div>
+</div>
 
 <!-- 자가등록 플로팅 버튼 -->
 <button class="reg-float-btn" onclick="openRegModal()">+ 농약사 정보 등록하기</button>
@@ -470,6 +487,7 @@ function geocodeShop(shop, done) {
 function showRoadview(lat, lng) {
   const wrap = document.getElementById('roadviewWrap');
   const panel = document.getElementById('roadviewPanel');
+  document.body.classList.add('roadview-open');
   wrap.style.display = 'block';
   panel.innerHTML = '';
   if (!roadviewClient) roadviewClient = new kakao.maps.RoadviewClient();
@@ -486,6 +504,7 @@ function showRoadview(lat, lng) {
 function closeRoadview() {
   const wrap = document.getElementById('roadviewWrap');
   const panel = document.getElementById('roadviewPanel');
+  document.body.classList.remove('roadview-open');
   if (wrap) wrap.style.display = 'none';
   if (panel) panel.innerHTML = '';
 }
