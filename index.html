@@ -1,1896 +1,1714 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#1D9E75">
-  <title>kFarmAI - 농업 AI 커뮤니티</title>
-  <style>
-    :root {
-      --brand: #1D9E75;
-      --brand-dark: #137B5B;
-      --brand-soft: #E7F7F1;
-      --ink: #17211D;
-      --muted: #6B7772;
-      --line: #E7ECE9;
-      --bg: #F5F5F5;
-      --card: #FFFFFF;
-      --warning: #FF8A3D;
-      --shadow: 0 8px 22px rgba(23, 33, 29, 0.07);
-      --header-h: 116px;
-      --tab-h: 74px;
-    }
-
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
-      letter-spacing: 0;
-    }
-
-    body {
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    .app {
-      width: 100%;
-      max-width: 480px;
-      min-height: 100vh;
-      margin: 0 auto;
-      background: var(--bg);
-      position: relative;
-    }
-
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 50%;
-      z-index: 20;
-      width: 100%;
-      max-width: 480px;
-      transform: translateX(-50%);
-      padding: calc(10px + env(safe-area-inset-top)) 16px 12px;
-      background: rgba(255, 255, 255, 0.96);
-      border-bottom: 1px solid rgba(231, 236, 233, 0.9);
-      backdrop-filter: blur(14px);
-    }
-
-    .brand-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      min-width: 0;
-      gap: 10px;
-      font-weight: 900;
-    }
-
-    .brand img {
-      width: 38px;
-      height: 38px;
-      border-radius: 11px;
-      object-fit: cover;
-      box-shadow: 0 5px 14px rgba(29, 158, 117, 0.18);
-    }
-
-    .brand-title {
-      display: block;
-      font-size: 22px;
-      line-height: 1;
-      color: var(--brand);
-      white-space: nowrap;
-    }
-
-    .brand-ai {
-      color: #FF6B2B;
-    }
-
-    .brand-sub {
-      display: block;
-      margin-top: 3px;
-      font-size: 10px;
-      color: var(--muted);
-      font-weight: 800;
-      letter-spacing: 0.6px;
-    }
-
-    .profile-pill {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      height: 34px;
-      padding: 0 12px;
-      border: 1.5px solid rgba(29, 158, 117, 0.32);
-      border-radius: 999px;
-      background: var(--card);
-      color: var(--brand-dark);
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .search {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      height: 44px;
-      padding: 0 14px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      background: var(--card);
-      box-shadow: 0 6px 16px rgba(23, 33, 29, 0.05);
-    }
-
-    .search svg {
-      width: 18px;
-      height: 18px;
-      color: var(--brand);
-      flex: 0 0 auto;
-    }
-
-    .search input {
-      width: 100%;
-      border: 0;
-      outline: 0;
-      background: transparent;
-      color: var(--ink);
-      font-size: 14px;
-      font-weight: 650;
-      min-width: 0;
-    }
-
-    .search input::placeholder {
-      color: #99A6A1;
-      font-weight: 600;
-    }
-
-    .shell {
-      padding-top: var(--header-h);
-      padding-bottom: calc(var(--tab-h) + 18px + env(safe-area-inset-bottom));
-    }
-
-    .pager {
-      display: flex;
-      width: 100%;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      overscroll-behavior-x: contain;
-      touch-action: pan-y;
-    }
-
-    .pager::-webkit-scrollbar {
-      display: none;
-    }
-
-    .page {
-      flex: 0 0 100%;
-      min-height: calc(100vh - var(--header-h) - var(--tab-h));
-      scroll-snap-align: start;
-      padding: 18px 16px 22px;
-    }
-
-    .page-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .eyebrow {
-      margin: 0 0 5px;
-      color: var(--brand);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3, p {
-      margin: 0;
-    }
-
-    h1 {
-      font-size: 24px;
-      line-height: 1.22;
-      letter-spacing: 0;
-    }
-
-    h2 {
-      font-size: 20px;
-      line-height: 1.25;
-    }
-
-    h3 {
-      font-size: 15px;
-      line-height: 1.35;
-    }
-
-    .section {
-      margin-top: 22px;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .section-title strong {
-      font-size: 16px;
-    }
-
-    .section-title span {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .hero-card {
-      display: block;
-      min-height: 112px;
-      padding: 16px;
-      border-radius: 18px;
-      background: var(--brand);
-      color: white;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .hero-card::after {
-      content: "";
-      position: absolute;
-      right: -34px;
-      bottom: -48px;
-      width: 118px;
-      height: 118px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .hero-card p {
-      margin-top: 6px;
-      max-width: 300px;
-      color: rgba(255, 255, 255, 0.86);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .hero-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 12px;
-      padding: 8px 11px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.18);
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .channel-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .channel-card,
-    .link-card,
-    .case-card,
-    .feed-card,
-    .upload-card {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--card);
-      box-shadow: var(--shadow);
-    }
-
-    .channel-card {
-      min-height: 96px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: var(--channel-bg, var(--card));
-      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
-    }
-
-    .channel-card:hover,
-    .channel-card.active {
-      border-color: var(--channel-point, var(--brand));
-      box-shadow: 0 10px 24px color-mix(in srgb, var(--channel-point, var(--brand)) 18%, transparent);
-    }
-
-    .channel-card:hover {
-      transform: translateY(-1px);
-    }
-
-    .channel-icon,
-    .tab-icon,
-    .link-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex: 0 0 auto;
-    }
-
-    .channel-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.72);
-      color: var(--channel-point, var(--brand));
-    }
-
-    .channel-icon svg,
-    .link-icon svg {
-      width: 19px;
-      height: 19px;
-    }
-
-    .channel-card strong {
-      display: block;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-
-    .channel-card span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.35;
-    }
-
-    .channel-grid .empty-feed {
-      grid-column: 1 / -1;
-    }
-
-    .feed-list,
-    .case-list,
-    .link-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .feed-card {
-      padding: 14px;
-    }
-
-    .feed-top,
-    .case-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      height: 24px;
-      padding: 0 8px;
-      border-radius: 999px;
-      background: var(--brand-soft);
-      color: var(--brand-dark);
-      font-size: 11px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .time {
-      color: #97A39F;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .feed-card p {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .feed-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      color: #8A9691;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .upload-card {
-      padding: 18px;
-      text-align: center;
-    }
-
-    .upload-target {
-      display: grid;
-      place-items: center;
-      width: 76px;
-      height: 76px;
-      margin: 0 auto 13px;
-      border-radius: 26px;
-      background: var(--brand-soft);
-      color: var(--brand);
-    }
-
-    .upload-target svg {
-      width: 34px;
-      height: 34px;
-    }
-
-    .upload-card p {
-      margin: 7px auto 14px;
-      max-width: 285px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .primary-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 16px;
-      border: 0;
-      border-radius: 13px;
-      background: var(--brand);
-      color: white;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .chips {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 2px 0 4px;
-      scrollbar-width: none;
-    }
-
-    .chips::-webkit-scrollbar {
-      display: none;
-    }
-
-    .chip {
-      flex: 0 0 auto;
-      min-height: 34px;
-      padding: 0 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: white;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 850;
-      cursor: pointer;
-    }
-
-    .chip.active {
-      border-color: var(--brand);
-      background: var(--brand);
-      color: white;
-    }
-
-    .case-card {
-      display: grid;
-      grid-template-columns: 58px 1fr;
-      gap: 12px;
-      padding: 12px;
-    }
-
-    .case-thumb {
-      width: 58px;
-      height: 58px;
-      border-radius: 15px;
-      background: linear-gradient(145deg, #DFF5EA, #B6E6D2);
-      display: grid;
-      place-items: center;
-      color: var(--brand);
-    }
-
-    .case-thumb svg {
-      width: 26px;
-      height: 26px;
-    }
-
-    .case-card p {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .confidence {
-      color: var(--brand-dark);
-      font-size: 12px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .link-card {
-      display: grid;
-      grid-template-columns: 46px 1fr auto;
-      align-items: center;
-      gap: 12px;
-      padding: 14px;
-      transition: border-color 160ms ease, box-shadow 160ms ease;
-    }
-
-    .link-card:hover {
-      border-color: var(--link-point, var(--brand));
-      box-shadow: 0 10px 24px color-mix(in srgb, var(--link-point, var(--brand)) 16%, transparent);
-    }
-
-    .link-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 15px;
-      background: var(--link-bg, var(--brand-soft));
-      color: var(--link-point, var(--brand));
-    }
-
-    .link-card p {
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .chev {
-      color: #A0ABA6;
-      font-size: 24px;
-      line-height: 1;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .stat {
-      padding: 12px 8px;
-      border-radius: 15px;
-      background: white;
-      border: 1px solid var(--line);
-      text-align: center;
-    }
-
-    .stat strong {
-      display: block;
-      color: var(--brand);
-      font-size: 16px;
-    }
-
-    .agri-hero {
-      background: #1A237E;
-    }
-
-    .stat span {
-      display: block;
-      margin-top: 3px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 750;
-    }
-
-    .dots {
-      position: fixed;
-      left: 50%;
-      bottom: calc(var(--tab-h) + 8px + env(safe-area-inset-bottom));
-      z-index: 19;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      max-width: 480px;
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 99px;
-      background: #C7D4CF;
-      transition: width 180ms ease, background 180ms ease;
-    }
-
-    .dot.active {
-      width: 20px;
-      background: var(--brand);
-    }
-
-    .tabbar {
-      position: fixed;
-      left: 50%;
-      bottom: 0;
-      z-index: 20;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      width: 100%;
-      max-width: 480px;
-      min-height: calc(var(--tab-h) + env(safe-area-inset-bottom));
-      padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      border-top: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(14px);
-    }
-
-    .tab {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      border: 0;
-      border-radius: 14px;
-      background: transparent;
-      color: #8A9691;
-      font-size: 11px;
-      font-weight: 850;
-      cursor: pointer;
-    }
-
-    .tab svg {
-      width: 21px;
-      height: 21px;
-    }
-
-    .tab.active {
-      color: var(--brand);
-      background: var(--brand-soft);
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 30;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(23, 33, 29, 0.42);
-    }
-
-    .modal-backdrop.show {
-      display: flex;
-    }
-
-    .write-modal {
-      width: min(100%, 420px);
-      border-radius: 18px;
-      background: white;
-      box-shadow: 0 18px 50px rgba(23, 33, 29, 0.2);
-      padding: 18px;
-    }
-
-    .write-modal h2 {
-      font-size: 19px;
-      margin-bottom: 14px;
-    }
-
-    .field {
-      display: grid;
-      gap: 6px;
-      margin-top: 12px;
-    }
-
-    .field label {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: #FAFBFA;
-      color: var(--ink);
-      outline: 0;
-      padding: 11px 12px;
-      font-size: 14px;
-    }
-
-    .field textarea {
-      min-height: 112px;
-      resize: vertical;
-    }
-
-    .field input:focus,
-    .field textarea:focus,
-    .field select:focus {
-      border-color: var(--brand);
-      background: white;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 9px;
-      margin-top: 16px;
-    }
-
-    .secondary-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 42px;
-      padding: 0 16px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: white;
-      color: var(--muted);
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .modal-actions button {
-      flex: 1;
-    }
-
-    .empty-feed {
-      padding: 24px 16px;
-      border: 1px dashed var(--line);
-      border-radius: 16px;
-      background: white;
-      color: var(--muted);
-      text-align: center;
-      font-size: 14px;
-      font-weight: 750;
-    }
-
-    .auth-body {
-      display: grid;
-      gap: 10px;
-    }
-
-    .auth-sub {
-      margin: -6px 0 8px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .social-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      min-height: 46px;
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      background: white;
-      color: var(--ink);
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .social-btn svg {
-      width: 20px;
-      height: 20px;
-      flex: 0 0 auto;
-    }
-
-    .kakao-btn {
-      border-color: #FEE500;
-      background: #FEE500;
-      color: #191919;
-      cursor: not-allowed;
-      opacity: 0.68;
-    }
-
-    .logout-btn {
-      margin-top: 4px;
-      width: 100%;
-    }
-
-    /* v0-style visual refresh */
-    :root {
-      --header-h: 164px;
-      --shadow: 0 2px 8px rgba(0,0,0,0.08);
-      --bg: #FFFFFF;
-    }
-
-    .app,
-    html,
-    body {
-      background: #FFFFFF;
-    }
-
-    .topbar {
-      background: #FFFFFF;
-      border-bottom: 1px solid #F0F2F4;
-      box-shadow: none;
-    }
-
-    .brand img {
-      width: 36px;
-      height: 36px;
-      box-shadow: none;
-      background: #F6F8F7;
-    }
-
-    .brand-title {
-      color: #111111;
-    }
-
-    .bell-button {
-      width: 38px;
-      height: 38px;
-      padding: 0;
-      border: 0;
-      color: #111111;
-      box-shadow: none;
-    }
-
-    .bell-button svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    .profile-pill,
-    .search,
-    .channel-card,
-    .link-card,
-    .case-card,
-    .feed-card,
-    .upload-card,
-    .stat {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .view-tabs {
-      display: flex;
-      justify-content: flex-start;
-      gap: 6px;
-      margin-top: 10px;
-      padding: 0;
-      border-radius: 0;
-      background: transparent;
-    }
-
-    .view-tab {
-      min-height: 30px;
-      padding: 0 12px;
-      border: 0;
-      border-radius: 999px;
-      background: transparent;
-      color: #737A80;
-      font-size: 12px;
-      font-weight: 850;
-      cursor: pointer;
-    }
-
-    .view-tab.active {
-      background: #111111;
-      color: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    }
-
-    .pager {
-      display: block;
-      overflow: hidden;
-      scroll-snap-type: none;
-    }
-
-    .page {
-      display: none;
-      min-height: calc(100vh - var(--header-h) - var(--tab-h));
-    }
-
-    .page.active-page {
-      display: block;
-    }
-
-    .dots {
-      display: none;
-    }
-
-    .hero-card {
-      height: 200px;
-      min-height: 200px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      border-radius: 16px;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.62)),
-        url("https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800") center/cover;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .hero-badge {
-      width: fit-content;
-      margin-bottom: 10px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.18);
-      color: #FFFFFF;
-      font-size: 11px;
-      font-weight: 900;
-      backdrop-filter: blur(8px);
-    }
-
-    .hero-card h2 {
-      font-size: 26px;
-      line-height: 1.16;
-      color: #FFFFFF;
-    }
-
-    .hero-card p {
-      color: rgba(255,255,255,0.88);
-      font-size: 13px;
-    }
-
-    .hero-card.agri-hero {
-      min-height: 132px;
-      background: #1A237E;
-    }
-
-    .page[aria-label="커뮤니티"] > .page-head {
-      display: none;
-    }
-
-    .channel-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .channel-card {
-      min-height: 92px;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 10px 6px;
-      border-radius: 16px;
-      background: #FFFFFF !important;
-    }
-
-    .channel-card strong {
-      margin-top: 8px;
-      font-size: 12px;
-      line-height: 1.2;
-    }
-
-    .channel-card > span:not(.channel-icon) {
-      display: none;
-    }
-
-    .channel-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: var(--channel-bg, #F2F4F5);
-    }
-
-    .feed-card,
-    .case-card,
-    .link-card {
-      border-color: #EEF1F3;
-      border-radius: 14px;
-    }
-
-    .section-title strong {
-      font-size: 18px;
-      color: #111111;
-    }
-
-    .section-title span {
-      color: #8A9096;
-      font-size: 12px;
-    }
-
-    .upload-card {
-      border: 1.5px dashed #C9D7D2;
-      box-shadow: none;
-    }
-
-    .upload-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .agri-tabs {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-      margin: 14px 0 18px;
-    }
-
-    .agri-tabs a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 38px;
-      border: 1px solid #EEF1F3;
-      border-radius: 999px;
-      background: #FFFFFF;
-      color: #30363A;
-      font-size: 13px;
-      font-weight: 850;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .link-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .link-card {
-      grid-template-columns: 42px 1fr;
-      min-height: 92px;
-      align-items: start;
-      padding: 12px;
-    }
-
-    .link-card .chev {
-      display: none;
-    }
-
-    .link-card p {
-      font-size: 11px;
-    }
-
-    .tab.active {
-      color: #1D9E75;
-      background: #E7F7F1;
-    }
-
-    .floating-write {
-      position: fixed;
-      right: calc(50% - 224px);
-      bottom: calc(var(--tab-h) + 18px + env(safe-area-inset-bottom));
-      z-index: 21;
-      min-height: 44px;
-      padding: 0 18px;
-      border: 0;
-      border-radius: 999px;
-      background: #111111;
-      color: #FFFFFF;
-      font-size: 14px;
-      font-weight: 900;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      cursor: pointer;
-    }
-
-    @media (max-width: 480px) {
-      .floating-write {
-        right: 16px;
-      }
-    }
-
-    @media (min-width: 481px) {
-      body {
-        background: #F5F5F5;
-      }
-
-      .app,
-      .topbar,
-      .tabbar,
-      .dots {
-        box-shadow: 0 0 0 1px rgba(19, 123, 91, 0.06);
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>kFarmAI</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --green: #1D9E75;
+    --green-light: #E8F5F0;
+    --green-dark: #0F6E56;
+    --orange: #FF6B2B;
+    --black: #111111;
+    --gray1: #F5F5F5;
+    --gray2: #EEEEEE;
+    --gray3: #999999;
+    --gray4: #666666;
+    --white: #FFFFFF;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --radius: 12px;
+    --radius-lg: 16px;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: var(--white);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    position: fixed;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    z-index: 100;
+    background: var(--white);
+    padding: 12px 16px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  .logo-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--white);
+    overflow: hidden;
+  }
+
+  .logo-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: white;
+  }
+
+  .logo-svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text .k { color: var(--black); }
+  .logo-text .farm { color: var(--black); }
+  .logo-text .ai { color: var(--orange); }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bell-btn {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--gray1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bell-badge {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+    border: 1.5px solid white;
+  }
+
+  /* ─── SEARCH ─── */
+  .search-wrap {
+    margin-bottom: 10px;
+  }
+
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray1);
+    border-radius: 10px;
+    padding: 9px 14px;
+  }
+
+  .search-box svg { flex-shrink: 0; }
+
+  .search-box input {
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--black);
+    width: 100%;
+    outline: none;
+  }
+
+  .search-box input::placeholder { color: var(--gray3); }
+
+  /* ─── TABS ─── */
+  .page-tabs {
+    display: flex;
+    gap: 6px;
+    padding-bottom: 10px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 7px 4px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+    background: transparent;
+    color: var(--gray3);
+  }
+
+  .tab-btn.active {
+    background: var(--black);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  /* ─── PAGES CONTAINER ─── */
+  .pages-container {
+    position: fixed;
+    top: 118px;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+  }
+
+  .pages-track {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .page {
+    width: 33.333%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 16px;
+  }
+
+  /* ─── DOT INDICATOR ─── */
+  .dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 0 4px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--gray2);
+    transition: all 0.3s;
+  }
+
+  .dot.active {
+    width: 20px;
+    background: var(--green);
+  }
+
+  /* ─── PAGE 1: COMMUNITY ─── */
+  .hero-banner {
+    margin: 12px 16px 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    height: 180px;
+  }
+
+  .hero-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+  }
+
+  .hero-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 16px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+  }
+
+  .hero-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: white;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .hero-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* ─── CHANNELS ─── */
+  .section {
+    padding: 16px 16px 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .section-more {
+    font-size: 12px;
+    color: var(--gray3);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .channel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .channel-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 10px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s;
+    border: 1px solid rgba(0,0,0,0.04);
+  }
+
+  .channel-card:active { transform: scale(0.95); }
+
+  .channel-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+
+  .channel-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+    text-align: center;
+    line-height: 1.3;
+    word-break: keep-all;
+  }
+
+  /* ─── RECENT Q ─── */
+  .realtime-badge {
+    background: #FF4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+  }
+
+  .q-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .q-card {
+    background: var(--white);
+    border: 1px solid var(--gray2);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: box-shadow 0.15s;
+  }
+
+  .q-card:active { box-shadow: var(--shadow); }
+
+  .q-channel-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+  }
+
+  .q-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--gray3);
+  }
+
+  .q-meta span { display: flex; align-items: center; gap: 3px; }
+
+  /* ─── FAB ─── */
+  .fab {
+    position: fixed;
+    bottom: 76px;
+    right: calc(50% - 228px);
+    background: var(--black);
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 50;
+    transition: transform 0.15s;
+  }
+
+  .fab:active { transform: scale(0.95); }
+
+  /* ─── PAGE 2: AI DIAGNOSIS ─── */
+  .diag-header {
+    padding: 16px 16px 0;
+  }
+
+  .diag-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .diag-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--black);
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .diag-title .ai-highlight {
+    color: var(--green);
+  }
+
+  .diag-sub {
+    font-size: 13px;
+    color: var(--gray4);
+  }
+
+  .upload-card {
+    margin: 14px 16px;
+    border: 2px dashed var(--gray2);
+    border-radius: var(--radius-lg);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray1);
+  }
+
+  .upload-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--green-light);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+
+  .upload-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--black);
+  }
+
+  .upload-sub {
+    font-size: 12px;
+    color: var(--gray3);
+    text-align: center;
+  }
+
+  .upload-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .btn-camera {
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-album {
+    background: var(--white);
+    color: var(--black);
+    border: 1.5px solid var(--gray2);
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .crop-section { padding: 0 16px; }
+
+  .crop-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .crop-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  .crop-range {
+    font-size: 12px;
+    color: var(--gray3);
+  }
+
+  .crop-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .crop-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1.5px solid var(--gray2);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+    color: var(--black);
+  }
+
+  .crop-chip.active {
+    background: var(--black);
+    color: white;
+    border-color: var(--black);
+  }
+
+  .diag-cases { padding: 14px 16px 0; }
+
+  .diag-cases-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--black);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .star { color: var(--orange); }
+
+  .case-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gray2);
+  }
+
+  .case-item:last-child { border-bottom: none; }
+
+  .case-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 22px;
+  }
+
+  .case-info { flex: 1; }
+
+  .case-crop-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 3px;
+  }
+
+  .case-crop {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--black);
+  }
+
+  .status-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+
+  .status-danger { background: #FFEBEB; color: #D63031; }
+  .status-warning { background: #FFF3E0; color: #E67E22; }
+  .status-good { background: #E8F5E9; color: #27AE60; }
+
+  .case-desc {
+    font-size: 12px;
+    color: var(--gray4);
+  }
+
+  .case-pct {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .pct-num {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--black);
+  }
+
+  .pct-time {
+    font-size: 11px;
+    color: var(--gray3);
+  }
+
+  /* ─── PAGE 3: AGRI DATA ─── */
+  .agri-header {
+    padding: 16px 16px 0;
+  }
+
+  .agri-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .agri-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--black);
+    margin-bottom: 2px;
+  }
+
+  .agri-sub {
+    font-size: 13px;
+    color: var(--gray4);
+    margin-bottom: 14px;
+  }
+
+  .agri-count {
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .cat-tabs {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    margin-bottom: 16px;
+  }
+
+  .cat-tabs::-webkit-scrollbar { display: none; }
+
+  .cat-tab {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--gray2);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 72px;
+    text-decoration: none;
+  }
+
+  .cat-tab:active, .cat-tab.active {
+    border-color: var(--green);
+    background: var(--green-light);
+  }
+
+  .cat-tab-icon { font-size: 24px; }
+  .cat-tab-name { font-size: 12px; font-weight: 600; color: var(--black); }
+
+  /* Map banner */
+  .map-banner {
+    margin: 0 16px 16px;
+    background: linear-gradient(135deg, #1A237E 0%, #283593 100%);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .map-banner::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .map-banner-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .map-banner-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 12px;
+  }
+
+  .map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Quick links */
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 0 16px;
+    margin-bottom: 14px;
+  }
+
+  .quick-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.15s;
+    border: 1px solid rgba(0,0,0,0.04);
+    text-decoration: none;
+  }
+
+  .quick-card:active { transform: scale(0.95); }
+
+  .quick-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+
+  .quick-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--black);
+    text-align: center;
+  }
+
+  /* Bottom promo */
+  .bottom-promo {
+    margin: 0 16px;
+    background: var(--black);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .promo-text { }
+  .promo-title { font-size: 14px; font-weight: 700; color: white; }
+  .promo-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+  /* ─── BOTTOM TAB ─── */
+  .bottom-tab {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    height: 60px;
+    background: var(--white);
+    border-top: 1px solid var(--gray2);
+    display: flex;
+    z-index: 100;
+  }
+
+  .tab-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: color 0.15s;
+    color: var(--gray3);
+    font-size: 10px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    text-decoration: none;
+  }
+
+  .tab-item.active { color: var(--green); }
+
+  .tab-item svg { margin-bottom: 1px; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-end;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    padding: 20px 16px 32px;
+  }
+
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--gray2);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--black);
+  }
+
+  .modal-field { margin-bottom: 12px; }
+
+  .modal-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray4);
+    margin-bottom: 6px;
+  }
+
+  .modal-select, .modal-input, .modal-textarea {
+    width: 100%;
+    border: 1.5px solid var(--gray2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: white;
+    color: var(--black);
+  }
+
+  .modal-select:focus, .modal-input:focus, .modal-textarea:focus {
+    border-color: var(--green);
+  }
+
+  .modal-textarea { height: 80px; resize: none; }
+
+  .modal-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+  }
+
+  /* ─── LOGIN MODAL ─── */
+  .login-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-modal-overlay.open { display: flex; }
+
+  .login-modal {
+    width: calc(100% - 48px);
+    max-width: 360px;
+    background: white;
+    border-radius: 20px;
+    padding: 24px 20px;
+  }
+
+  .login-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+
+  .login-sub {
+    font-size: 13px;
+    color: var(--gray4);
+    margin-bottom: 20px;
+  }
+
+  .btn-google {
+    width: 100%;
+    padding: 13px;
+    border: 1.5px solid var(--gray2);
+    border-radius: 12px;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    color: var(--black);
+  }
+
+  .btn-kakao {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    background: #FEE500;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: #3C1E1E;
+    opacity: 0.6;
+  }
+
+  .login-close {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    color: var(--gray3);
+    cursor: pointer;
+  }
+
+  /* Loading */
+  .feed-loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--gray3);
+    font-size: 13px;
+  }
+
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--gray2);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
-  <div class="app">
-    <header class="topbar">
-      <div class="brand-row">
-        <a class="brand" href="index.html" aria-label="kFarmAI 홈">
-          <img src="logo.webp" alt="kFarmAI 로고" onerror="this.src='static/logo.png'">
-          <span>
-            <span class="brand-title">kFarm<span class="brand-ai">AI</span></span>
-            <span class="brand-sub">AI FARM COMMUNITY</span>
-          </span>
-        </a>
-        <button class="profile-pill bell-button" type="button" id="myButton" aria-label="알림 및 로그인">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
-      </div>
-      <label class="search" for="globalSearch">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="m21 21-4.3-4.3M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div class="logo">
+      <div class="logo-img">
+        <img src="logo.webp" alt="kFarmAI" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <svg style="display:none" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#1D9E75"/>
+          <path d="M16 4C10 4 6 9 6 14C6 20 11 26 16 28C21 26 26 20 26 14C26 9 22 4 16 4Z" fill="#0F6E56"/>
+          <path d="M16 6C11 6 8 10 8 14C8 19 12 24 16 26C20 24 24 19 24 14C24 10 21 6 16 6Z" fill="#27AE60"/>
+          <path d="M12 12L16 8L20 12M12 12L16 20M12 12H20M20 12L16 20" stroke="#E8F5E9" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="16" cy="14" r="2" fill="#E8F5E9"/>
+          <text x="16" y="18" text-anchor="middle" fill="white" font-size="7" font-weight="bold">K</text>
         </svg>
-        <input id="globalSearch" type="search" placeholder="작물 증상, 질문, 농자재를 검색하세요">
-      </label>
-      <nav class="view-tabs" aria-label="상단 페이지 탭">
-        <button class="view-tab active" type="button" data-page="0">커뮤니티</button>
-        <button class="view-tab" type="button" data-page="1">AI 진단</button>
-        <button class="view-tab" type="button" data-page="2">농자재</button>
-      </nav>
-    </header>
-
-    <main class="shell">
-      <div class="pager" id="pager" aria-label="kFarmAI 주요 페이지">
-        <section class="page active-page" aria-label="커뮤니티">
-          <div class="page-head">
-            <div>
-              <p class="eyebrow">COMMUNITY</p>
-              <h1>이상하다 싶을 때,<br>바로 여기</h1>
-            </div>
-            <span class="badge" id="channelCount">채널 로딩 중</span>
-          </div>
-
-          <a class="hero-card" href="#write">
-            <span class="hero-badge">AI 식물 주치의</span>
-            <h2>이상하다 싶을 때,<br>바로 여기</h2>
-            <p>사진 한 장이면 AI가 진단해드려요</p>
-          </a>
-
-          <section class="section">
-            <div class="section-title">
-              <strong>채널 둘러보기</strong>
-              <span>전체보기 &gt;</span>
-            </div>
-            <div class="channel-grid" id="channelGrid">
-              <div class="empty-feed">채널을 불러오는 중입니다</div>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-title">
-              <strong>방금 올라온 질문</strong>
-              <span>더보기</span>
-            </div>
-            <div class="feed-list" id="recentPosts">
-              <div class="empty-feed">최근 질문을 불러오는 중입니다</div>
-            </div>
-          </section>
-        </section>
-
-        <section class="page" aria-label="AI 진단">
-          <div class="page-head">
-            <div>
-              <p class="eyebrow">AI DIAGNOSIS</p>
-              <h1>사진 한 장으로<br>증상 단서를 정리해요</h1>
-            </div>
-            <span class="badge">MVP</span>
-          </div>
-
-          <section class="upload-card">
-            <div class="upload-target">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h2l1.5-2h5L16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2"/><path d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/></svg>
-            </div>
-            <h2>작물 사진 업로드</h2>
-            <p>잎, 줄기, 열매가 잘 보이도록 촬영한 뒤 진단 요청을 시작합니다.</p>
-            <div class="upload-actions">
-              <button class="primary-btn" type="button">촬영하기</button>
-              <button class="secondary-btn" type="button">앨범에서</button>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-title">
-              <strong>작물 선택</strong>
-              <span>진단 범위</span>
-            </div>
-            <div class="chips" id="cropChips">
-              <button class="chip active" type="button">전체</button>
-              <button class="chip" type="button">토마토</button>
-              <button class="chip" type="button">고추</button>
-              <button class="chip" type="button">상추</button>
-              <button class="chip" type="button">오이</button>
-              <button class="chip" type="button">벼</button>
-              <button class="chip" type="button">딸기</button>
-            </div>
-          </section>
-
-          <section class="section">
-            <div class="section-title">
-              <strong>최근 진단 사례</strong>
-              <span>참고용</span>
-            </div>
-            <div class="case-list">
-              <article class="case-card">
-                <div class="case-thumb"><svg viewBox="0 0 24 24" fill="none"><path d="M5 21c8-1 14-7 16-16-8 2-14 8-16 16Z" stroke="currentColor" stroke-width="2"/><path d="M5 21c3-5 6-8 11-11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-                <div>
-                  <div class="case-top"><h3>토마토 잎 반점</h3><span class="confidence">가능성 82%</span></div>
-                  <p>하엽의 갈색 반점과 노란 테두리 패턴을 기준으로 초기 병징을 의심했습니다.</p>
-                </div>
-              </article>
-              <article class="case-card">
-                <div class="case-thumb"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3c4 4 4 10 0 18-4-8-4-14 0-18Z" stroke="currentColor" stroke-width="2"/><path d="M12 7v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-                <div>
-                  <div class="case-top"><h3>고추 생육 부진</h3><span class="confidence">확인 필요</span></div>
-                  <p>정식 후 저온, 과습, 뿌리 활착 상태를 함께 확인하도록 안내했습니다.</p>
-                </div>
-              </article>
-              <article class="case-card">
-                <div class="case-thumb"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14c4-6 12-6 16 0-4 6-12 6-16 0Z" stroke="currentColor" stroke-width="2"/><path d="M9 14h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
-                <div>
-                  <div class="case-top"><h3>상추 잎끝 마름</h3><span class="confidence">가능성 74%</span></div>
-                  <p>수분 스트레스와 양분 불균형 가능성을 우선 점검하도록 정리했습니다.</p>
-                </div>
-              </article>
-            </div>
-          </section>
-        </section>
-
-        <section class="page" aria-label="농자재 지역 정보">
-          <div class="page-head">
-            <div>
-              <p class="eyebrow">AGRI DATA</p>
-              <h1>필요한 농자재,<br>가까운 곳에서 찾아요</h1>
-            </div>
-            <span class="badge">3,019곳</span>
-          </div>
-
-          <a class="hero-card agri-hero" href="agri_map.html">
-            <h2>전국 농약사 지도</h2>
-            <p>전국 3,019개 농약사를 지도에서 찾아보세요</p>
-            <span class="hero-action">지도 열기</span>
-          </a>
-
-          <div class="agri-tabs" aria-label="농자재 분류">
-            <a href="santo.html">상토</a>
-            <a href="seed.html">종자</a>
-            <a href="cpa.html">작물보호제</a>
-            <a href="fert.html">비료</a>
-          </div>
-
-          <section class="section">
-            <div class="section-title">
-              <strong>바로가기</strong>
-            </div>
-            <div class="link-list">
-              <a class="link-card" href="#" style="--link-bg:#E3F2FD;--link-point:#1565C0;">
-                <span class="link-icon">☀️</span>
-                <span><strong>농업 날씨</strong><p>작물 관리에 필요한 날씨 정보</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="#" style="--link-bg:#E8F5E9;--link-point:#2E7D32;">
-                <span class="link-icon">💹</span>
-                <span><strong>농산물 시세</strong><p>주요 농산물 가격 흐름 확인</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="#" style="--link-bg:#FFF8E1;--link-point:#F57F17;">
-                <span class="link-icon">🏛️</span>
-                <span><strong>정부 지원금</strong><p>농업 지원 정책과 신청 정보</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="#" style="--link-bg:#F9FBE7;--link-point:#827717;">
-                <span class="link-icon">📅</span>
-                <span><strong>재배 달력</strong><p>시기별 파종과 관리 일정</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="agri_map.html" style="--link-bg:#FBE9E7;--link-point:#BF360C;">
-                <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z" stroke="currentColor" stroke-width="2"/><path d="M9 3v15M15 6v15" stroke="currentColor" stroke-width="2"/></svg></span>
-                <span><strong>주변 농약방</strong><p>전국 3,019개 농약사 검색 · 지도 · 로드뷰</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="#" style="--link-bg:#E0F7FA;--link-point:#00838F;">
-                <span class="link-icon">📘</span>
-                <span><strong>재배 가이드</strong><p>작물별 기초 재배 안내</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="santo.html" style="--link-bg:#FFF8E1;--link-point:#F57F17;">
-                <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M6 19V8l6-4 6 4v11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 19v-7h6v7" stroke="currentColor" stroke-width="2"/></svg></span>
-                <span><strong>상토</strong><p>상토 제조 및 공급사 정보</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="seed.html" style="--link-bg:#F3E5F5;--link-point:#6A1B9A;">
-                <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 21c0-8 5-14 12-17-1 7-7 12-12 17Z" stroke="currentColor" stroke-width="2"/><path d="M7 21c1-5 4-8 9-11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-                <span><strong>종자</strong><p>종자 업체와 품목 정보</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="cpa.html" style="--link-bg:#E8F5E9;--link-point:#2E7D32;">
-                <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M8 4h8l1 5-5 12L7 9l1-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 9h6M10 13h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-                <span><strong>작물보호제</strong><p>작물보호제 제조 및 공급사 정보</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="fert.html" style="--link-bg:#E0F7FA;--link-point:#00838F;">
-                <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 20h14l-2-14H7L5 20Z" stroke="currentColor" stroke-width="2"/><path d="M9 10h6M10 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-                <span><strong>비료</strong><p>비료 제조사 및 유통 정보</p></span>
-                <span class="chev">›</span>
-              </a>
-              <a class="link-card" href="news_sub.html" style="--link-bg:#FCE4EC;--link-point:#AD1457;">
-                <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h14v16H5z" stroke="currentColor" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
-                <span><strong>보조사업 소식</strong><p>지역별 농업 지원사업 아카이브</p></span>
-                <span class="chev">›</span>
-              </a>
-            </div>
-          </section>
-        </section>
       </div>
-    </main>
-
-    <div class="dots" aria-hidden="true">
-      <span class="dot active"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
-
-    <button class="floating-write" type="button" id="writePostButton">+ 질문하기</button>
-
-    <nav class="tabbar" aria-label="하단 탭">
-      <button class="tab active" type="button" data-page="0" data-primary="true" aria-label="홈">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <span>홈</span>
-      </button>
-      <button class="tab" type="button" data-page="0" aria-label="질문">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M8 9a4 4 0 1 1 6.7 2.9c-1.2 1-2.7 1.7-2.7 3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 20h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
-        <span>질문</span>
-      </button>
-      <button class="tab" type="button" data-page="1" data-primary="true" aria-label="진단">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 7a2 2 0 0 1 2-2h2l1.5-2h5L16 5h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7Z" stroke="currentColor" stroke-width="2"/><path d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/></svg>
-        <span>진단</span>
-      </button>
-      <button class="tab" type="button" data-page="2" data-primary="true" aria-label="주변">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.1 7-12A7 7 0 1 0 5 9c0 6.9 7 12 7 12Z" stroke="currentColor" stroke-width="2"/><path d="M12 12.2a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/></svg>
-        <span>주변</span>
-      </button>
-      <button class="tab" type="button" data-page="2" aria-label="MY">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <span>MY</span>
-      </button>
-    </nav>
-
-    <div class="modal-backdrop" id="writeModal" aria-hidden="true">
-      <form class="write-modal" id="writePostForm">
-        <h2>질문 글쓰기</h2>
-        <div class="field">
-          <label for="postChannel">채널</label>
-          <select id="postChannel" required>
-            <option value="">채널을 불러오는 중입니다</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="postTitle">제목</label>
-          <input id="postTitle" type="text" maxlength="80" placeholder="궁금한 내용을 짧게 적어주세요" required>
-        </div>
-        <div class="field">
-          <label for="postContent">내용</label>
-          <textarea id="postContent" maxlength="1200" placeholder="작물명, 증상, 재배 환경을 적어주세요"></textarea>
-        </div>
-        <div class="modal-actions">
-          <button class="secondary-btn" type="button" id="cancelWrite">취소</button>
-          <button class="primary-btn" type="submit" id="submitWrite">확인</button>
-        </div>
-      </form>
-    </div>
-
-    <div class="modal-backdrop" id="authModal" aria-hidden="true">
-      <div class="write-modal">
-        <h2>kFarmAI 시작하기</h2>
-        <p class="auth-sub">로그인하면 커뮤니티 활동과 진단 기록을 계정에 연결할 수 있습니다.</p>
-        <div class="auth-body">
-          <button class="social-btn" type="button" id="googleLoginButton">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C4 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.84z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 4 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Google로 시작하기</span>
-          </button>
-          <button class="social-btn kakao-btn" type="button" disabled>
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path fill="#191919" d="M12 4C6.48 4 2 7.47 2 11.75c0 2.78 1.9 5.22 4.75 6.58l-.72 2.65a.45.45 0 0 0 .68.49l3.16-2.1c.7.1 1.4.15 2.13.15 5.52 0 10-3.47 10-7.75S17.52 4 12 4z"/>
-            </svg>
-            <span>카카오로 시작하기 준비중</span>
-          </button>
-          <button class="secondary-btn logout-btn" type="button" id="logoutButton" style="display:none;">로그아웃</button>
-          <button class="secondary-btn logout-btn" type="button" id="closeAuthButton">닫기</button>
-        </div>
+      <div class="logo-text">
+        <span class="farm">kFarm</span><span class="ai">AI</span>
       </div>
+    </div>
+    <div class="header-actions">
+      <button class="bell-btn" onclick="openLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="bell-badge"></span>
+      </button>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    const pager = document.getElementById('pager');
-    const pagePanels = Array.from(document.querySelectorAll('.page'));
-    const viewTabs = Array.from(document.querySelectorAll('.view-tab'));
-    const dots = Array.from(document.querySelectorAll('.dot'));
-    const tabs = Array.from(document.querySelectorAll('.tab'));
-    const cropChips = document.getElementById('cropChips');
-    const channelCount = document.getElementById('channelCount');
-    const channelGrid = document.getElementById('channelGrid');
-    const recentPosts = document.getElementById('recentPosts');
-    const writePostButton = document.getElementById('writePostButton');
-    const writeModal = document.getElementById('writeModal');
-    const writePostForm = document.getElementById('writePostForm');
-    const postChannel = document.getElementById('postChannel');
-    const postTitle = document.getElementById('postTitle');
-    const postContent = document.getElementById('postContent');
-    const submitWrite = document.getElementById('submitWrite');
-    const cancelWrite = document.getElementById('cancelWrite');
-    const myButton = document.getElementById('myButton');
-    const authModal = document.getElementById('authModal');
-    const googleLoginButton = document.getElementById('googleLoginButton');
-    const logoutButton = document.getElementById('logoutButton');
-    const closeAuthButton = document.getElementById('closeAuthButton');
-    const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let channels = [];
-    let channelNameById = {};
-    let selectedChannelId = null;
-    let currentUser = null;
-    let activePage = 0;
-    let activeTab = tabs[0];
-    let swipeStartX = 0;
-    let swipeStartY = 0;
-    let swipeStartTime = 0;
-    let swipeStartPage = 0;
-    let swipeTracking = false;
-    let swipeHorizontal = false;
-    const SWIPE_DISTANCE_THRESHOLD = 60;
-    const SWIPE_VELOCITY_THRESHOLD = 0.45;
-    const ENABLE_SWIPE = false;
-    const bellIconHtml = `
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
-    `;
+      <input type="text" placeholder="작물 증상, 질문, 농자재를 검색하세요" autocomplete="off">
+    </div>
+  </div>
 
-    const channelStyles = {
-      'plant-hospital': { bg: '#E8F5E9', point: '#2E7D32', desc: '사진 증상 진단 허브' },
-      'plant-question': { bg: '#E3F2FD', point: '#1565C0', desc: '반려식물과 텃밭 Q&A' },
-      'crop-consult': { bg: '#FFF8E1', point: '#F57F17', desc: '농가 재배 상담' },
-      'plant-brag': { bg: '#FCE4EC', point: '#AD1457', desc: '성장 기록 공유' },
-      'farmer-lounge': { bg: '#FBE9E7', point: '#BF360C', desc: '현장 이야기와 정보' },
-      'plant-share': { bg: '#E0F7FA', point: '#00838F', desc: '식물 나눔과 교환' },
-      'garden-class': { bg: '#F9FBE7', point: '#827717', desc: '가드닝 클래스' },
-      'plant-meet': { bg: '#FFFDE7', point: '#F9A825', desc: '식물 모임과 행사' }
-    };
+  <div class="page-tabs">
+    <button class="tab-btn active" onclick="switchPage(0)">커뮤니티</button>
+    <button class="tab-btn" onclick="switchPage(1)">AI 진단</button>
+    <button class="tab-btn" onclick="switchPage(2)">농자재</button>
+  </div>
+</div>
 
-    const channelIcons = {
-      'plant-hospital': '<svg viewBox="0 0 24 24" fill="none"><path d="M7 21c0-7 5-12 12-15-1 7-6 13-12 15Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 17h10M11 12v8M4 6h6M7 3v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      'plant-question': '<svg viewBox="0 0 24 24" fill="none"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5v5A3.5 3.5 0 0 1 15.5 15H11l-5 4v-4.2A3.5 3.5 0 0 1 5 12V6.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8h6M9 11h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      'crop-consult': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M7 8c0 3 2 5 5 5M17 8c0 3-2 5-5 5M7 13c0 3 2 5 5 5M17 13c0 3-2 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      'plant-brag': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 8a2 2 0 0 1 2-2h2l1.4-2h5.2L16 6h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="2"/><path d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/></svg>',
-      'farmer-lounge': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 11 12 4l8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
-      'plant-share': '<svg viewBox="0 0 24 24" fill="none"><path d="M7 21h10l1-8H6l1 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 13V5M12 5c-3 0-5 2-5 5 3 0 5-2 5-5ZM12 5c3 0 5 2 5 5-3 0-5-2-5-5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      'garden-class': '<svg viewBox="0 0 24 24" fill="none"><path d="M6 4l8 8M14 4 6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" stroke-width="2"/></svg>',
-      'plant-meet': '<svg viewBox="0 0 24 24" fill="none"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 20a4 4 0 0 1 8 0M12 20a4 4 0 0 1 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
-    };
+<!-- PAGES -->
+<div class="pages-container">
+  <div class="pages-track" id="pagesTrack">
 
-    function escapeHtml(value) {
-      return String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+    <!-- PAGE 1: 커뮤니티 -->
+    <div class="page" id="page0">
+      <!-- Hero -->
+      <div class="hero-banner">
+        <img class="hero-bg" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&auto=format&fit=crop" alt="식물">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-badge">★ AI 식물 주치의</div>
+          <div class="hero-title">이상하다 싶을 때,<br>바로 여기</div>
+          <div class="hero-sub">사진 한 장이면 AI가 진단해드려요</div>
+        </div>
+      </div>
 
-    function formatPostTime(value) {
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return '';
-      const diff = Date.now() - date.getTime();
-      const minute = 60 * 1000;
-      const hour = 60 * minute;
-      const day = 24 * hour;
-      if (diff < minute) return '방금 전';
-      if (diff < hour) return `${Math.floor(diff / minute)}분 전`;
-      if (diff < day) return `${Math.floor(diff / hour)}시간 전`;
-      return date.toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' });
-    }
+      <!-- Channels -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">채널 둘러보기</div>
+          <a href="#" class="section-more">전체보기 ›</a>
+        </div>
+        <div class="channel-grid" id="channelGrid">
+          <!-- 동적 로딩 -->
+          <div class="feed-loading"><div class="spinner"></div></div>
+        </div>
+      </div>
 
-    function setFeedMessage(message) {
-      recentPosts.innerHTML = `<div class="empty-feed">${escapeHtml(message)}</div>`;
-    }
+      <!-- Recent Q -->
+      <div class="section" style="margin-top:16px">
+        <div class="section-header">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="section-title">방금 올라온 질문</div>
+            <span class="realtime-badge">실시간</span>
+          </div>
+          <a href="#" class="section-more">더보기 ›</a>
+        </div>
+        <div class="q-list" id="recentFeed">
+          <div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>
+        </div>
+      </div>
 
-    function getChannelStyle(slug) {
-      return channelStyles[slug] || { bg: '#F5F5F5', point: '#1D9E75', desc: '커뮤니티 채널' };
-    }
+      <div class="dots" style="margin-top:12px">
+        <div class="dot active" id="dot0"></div>
+        <div class="dot" id="dot1"></div>
+        <div class="dot" id="dot2"></div>
+      </div>
+    </div>
 
-    function renderChannelCards() {
-      if (!channels.length) {
-        channelCount.textContent = '0개 채널';
-        channelGrid.innerHTML = '<div class="empty-feed">등록된 채널이 없습니다</div>';
-        return;
-      }
+    <!-- PAGE 2: AI 진단 -->
+    <div class="page" id="page1">
+      <div class="diag-header">
+        <div class="diag-label">AI DIAGNOSIS</div>
+        <div class="diag-title">식물 사진을 올리면<br><span class="ai-highlight">AI</span>가 진단해드려요</div>
+        <div class="diag-sub">병해충, 영양 상태까지 30초 안에 분석</div>
+      </div>
 
-      channelCount.textContent = `${channels.length}개 채널`;
-      channelGrid.innerHTML = channels.map((channel) => {
-        const style = getChannelStyle(channel.slug);
-        const icon = channelIcons[channel.slug] || channelIcons['plant-question'];
-        const isActive = channel.id === selectedChannelId;
-        return `
-          <a class="channel-card${isActive ? ' active' : ''}" href="#recentPosts" data-channel-id="${channel.id}" style="--channel-bg:${style.bg};--channel-point:${style.point};">
-            <span class="channel-icon">${icon}</span>
-            <strong>${escapeHtml(channel.name)}</strong>
-            <span>${escapeHtml(style.desc)}</span>
-          </a>
-        `;
-      }).join('');
-    }
+      <div class="upload-card">
+        <div class="upload-icon">🌿</div>
+        <div class="upload-title">진단할 사진을 올려주세요</div>
+        <div class="upload-sub">선명한 잎·줄기 사진일수록 정확해요</div>
+        <div class="upload-btns">
+          <button class="btn-camera">📷 촬영하기</button>
+          <button class="btn-album">🖼 앨범에서</button>
+        </div>
+      </div>
 
-    async function loadChannels() {
-      const { data, error } = await supabaseClient
-        .from('channels')
-        .select('id, slug, name, target_type')
-        .order('name', { ascending: true });
+      <div class="crop-section">
+        <div class="crop-label">
+          <div class="crop-title">작물 선택</div>
+          <div class="crop-range">진단 범위</div>
+        </div>
+        <div class="crop-chips">
+          <div class="crop-chip active">전체</div>
+          <div class="crop-chip">🍅 토마토</div>
+          <div class="crop-chip">🌶 고추</div>
+          <div class="crop-chip">🍓 딸기</div>
+          <div class="crop-chip">🥬 상추</div>
+          <div class="crop-chip">🥒 오이</div>
+          <div class="crop-chip">🌾 벼</div>
+          <div class="crop-chip">🍇 포도</div>
+          <div class="crop-chip">🍎 사과</div>
+        </div>
+      </div>
 
-      if (error) {
-        postChannel.innerHTML = '<option value="">채널을 불러오지 못했습니다</option>';
-        throw error;
-      }
-
-      channels = data || [];
-      channelNameById = channels.reduce((acc, channel) => {
-        acc[channel.id] = channel.name;
-        return acc;
-      }, {});
-
-      if (!channels.length) {
-        postChannel.innerHTML = '<option value="">등록된 채널이 없습니다</option>';
-        renderChannelCards();
-        return;
-      }
-
-      postChannel.innerHTML = channels
-        .map((channel) => `<option value="${channel.id}">${escapeHtml(channel.name)}</option>`)
-        .join('');
-      renderChannelCards();
-    }
-
-    async function loadRecentPosts(channelId = selectedChannelId) {
-      setFeedMessage('최근 질문을 불러오는 중입니다');
-
-      let query = supabaseClient
-        .from('posts')
-        .select('id, title, content, channel_id, created_at')
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (channelId) query = query.eq('channel_id', channelId);
-
-      const { data, error } = await query;
-
-      if (error) {
-        setFeedMessage('최근 질문을 불러오지 못했습니다');
-        return;
-      }
-
-      if (!data || !data.length) {
-        setFeedMessage('아직 질문이 없습니다');
-        return;
-      }
-
-      recentPosts.innerHTML = data.map((post) => {
-        const channelName = channelNameById[post.channel_id] || '커뮤니티';
-        return `
-          <article class="feed-card">
-            <div class="feed-top">
-              <span class="badge">${escapeHtml(channelName)}</span>
+      <div class="diag-cases">
+        <div class="diag-cases-title"><span class="star">★</span> 최근 진단 사례</div>
+        <div class="case-item">
+          <div class="case-icon" style="background:#FFEBEB">🔬</div>
+          <div class="case-info">
+            <div class="case-crop-row">
+              <span class="case-crop">토마토</span>
+              <span class="status-badge status-danger">위험</span>
             </div>
-            <h3>${escapeHtml(post.title)}</h3>
-            <div class="feed-meta"><span>익명 작성자</span><span>댓글 0</span><span>좋아요 0</span><span>${escapeHtml(formatPostTime(post.created_at))}</span></div>
-          </article>
-        `;
-      }).join('');
+            <div class="case-desc">잎곰팡이병 의심</div>
+          </div>
+          <div class="case-pct">
+            <div class="pct-num">94%</div>
+            <div class="pct-time">방금 전</div>
+          </div>
+        </div>
+        <div class="case-item">
+          <div class="case-icon" style="background:#FFF3E0">🔬</div>
+          <div class="case-info">
+            <div class="case-crop-row">
+              <span class="case-crop">고추</span>
+              <span class="status-badge status-warning">주의</span>
+            </div>
+            <div class="case-desc">탄저병 초기 단계</div>
+          </div>
+          <div class="case-pct">
+            <div class="pct-num">88%</div>
+            <div class="pct-time">1시간 전</div>
+          </div>
+        </div>
+        <div class="case-item">
+          <div class="case-icon" style="background:#E8F5E9">🔬</div>
+          <div class="case-info">
+            <div class="case-crop-row">
+              <span class="case-crop">딸기</span>
+              <span class="status-badge status-good">양호</span>
+            </div>
+            <div class="case-desc">저산, 건강한 상태</div>
+          </div>
+          <div class="case-pct">
+            <div class="pct-num">97%</div>
+            <div class="pct-time">2시간 전</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dots" style="margin:12px 0">
+        <div class="dot" id="dot0b"></div>
+        <div class="dot active" id="dot1b"></div>
+        <div class="dot" id="dot2b"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: 농자재 -->
+    <div class="page" id="page2">
+      <div class="agri-header">
+        <div class="agri-label">AGRI DATA</div>
+        <div style="display:flex;align-items:flex-start;justify-content:space-between">
+          <div class="agri-title">필요한 농자재,<br>가까운 곳에서 찾아요</div>
+          <div class="agri-count">3,019곳</div>
+        </div>
+        <div class="agri-sub">등록된 농자재를 한눈에 확인하세요</div>
+
+        <!-- Category tabs -->
+        <div class="cat-tabs">
+          <a href="santo.html" class="cat-tab">
+            <div class="cat-tab-icon">🪨</div>
+            <div class="cat-tab-name">상토</div>
+          </a>
+          <a href="seed.html" class="cat-tab">
+            <div class="cat-tab-icon">🌱</div>
+            <div class="cat-tab-name">종자</div>
+          </a>
+          <a href="cpa.html" class="cat-tab">
+            <div class="cat-tab-icon">🧪</div>
+            <div class="cat-tab-name">작물보호제</div>
+          </a>
+          <a href="fert.html" class="cat-tab">
+            <div class="cat-tab-icon">💧</div>
+            <div class="cat-tab-name">비료</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Map banner -->
+      <div class="map-banner">
+        <div class="map-banner-title">전국 농약사 지도</div>
+        <div class="map-banner-sub">전국 3,019개 농약사를 지도에서 찾아보세요</div>
+        <a href="agri_map.html" class="map-btn">
+          🗺 지도 열기
+        </a>
+      </div>
+
+      <!-- Quick links -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">바로가기</div>
+        </div>
+      </div>
+      <div class="quick-grid">
+        <a href="#" class="quick-card">
+          <div class="quick-icon" style="background:#FFF8E1">☀️</div>
+          <div class="quick-name">농업 날씨</div>
+        </a>
+        <a href="#" class="quick-card">
+          <div class="quick-icon" style="background:#E8F5E9">📈</div>
+          <div class="quick-name">농산물 시세</div>
+        </a>
+        <a href="#" class="quick-card">
+          <div class="quick-icon" style="background:#E3F2FD">🏛</div>
+          <div class="quick-name">정부 지원금</div>
+        </a>
+        <a href="#" class="quick-card">
+          <div class="quick-icon" style="background:#FCE4EC">📅</div>
+          <div class="quick-name">재배 달력</div>
+        </a>
+        <a href="agri_map.html" class="quick-card">
+          <div class="quick-icon" style="background:#E0F7FA">🗺️</div>
+          <div class="quick-name">주변 농약방</div>
+        </a>
+        <a href="#" class="quick-card">
+          <div class="quick-icon" style="background:#F3E5F5">📖</div>
+          <div class="quick-name">재배 가이드</div>
+        </a>
+      </div>
+
+      <!-- Bottom promo -->
+      <a href="#" class="bottom-promo">
+        <div class="promo-text">
+          <div class="promo-title">우리 동네 농산물 시세</div>
+          <div class="promo-sub">오늘 기준 도매가 확인하기</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+
+      <div class="dots" style="margin:12px 0">
+        <div class="dot" id="dot0c"></div>
+        <div class="dot" id="dot1c"></div>
+        <div class="dot active" id="dot2c"></div>
+      </div>
+    </div>
+
+  </div><!-- /pages-track -->
+</div><!-- /pages-container -->
+
+<!-- FAB -->
+<button class="fab" onclick="openModal()">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  질문하기
+</button>
+
+<!-- BOTTOM TAB -->
+<nav class="bottom-tab">
+  <button class="tab-item active" onclick="switchPage(0);setActiveTab(0)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    홈
+  </button>
+  <button class="tab-item" onclick="switchPage(0);setActiveTab(1)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    질문
+  </button>
+  <button class="tab-item" onclick="switchPage(1);setActiveTab(2)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><circle cx="11" cy="11" r="3"/><path d="m21 21-4.35-4.35"/></svg>
+    진단
+  </button>
+  <button class="tab-item" onclick="switchPage(2);setActiveTab(3)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    주변
+  </button>
+  <button class="tab-item" onclick="openLogin();setActiveTab(4)">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    MY
+  </button>
+</nav>
+
+<!-- WRITE MODAL -->
+<div class="modal-overlay" id="writeModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">커뮤니티에 질문하기</div>
+    <div class="modal-field">
+      <div class="modal-label">채널 선택</div>
+      <select class="modal-select" id="channelSelect">
+        <option value="">채널을 선택하세요</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">제목</div>
+      <input class="modal-input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off">
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">내용</div>
+      <textarea class="modal-textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea>
+    </div>
+    <button class="modal-submit" onclick="submitPost()">질문 등록하기</button>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="login-modal-overlay" id="loginModal" onclick="if(event.target===this)closeLogin()">
+  <div class="login-modal">
+    <div class="modal-title">kFarmAI 시작하기</div>
+    <div class="login-sub">로그인하면 커뮤니티 참여와 진단 기록을 계정에 연결할 수 있습니다.</div>
+    <button class="btn-google" id="googleBtn" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Google로 시작하기
+    </button>
+    <button class="btn-kakao">
+      💬 카카오로 시작하기 (준비중)
+    </button>
+    <button class="login-close" onclick="closeLogin()">닫기</button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───
+const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhaZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzMjUxMDMsImV4cCI6MjA2MzkwMTEwM30.placeholder';
+
+// Supabase SDK
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+script.onload = () => {
+  window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  initApp();
+};
+document.head.appendChild(script);
+
+// ─── CHANNEL CONFIG ───
+const CHANNEL_CONFIG = {
+  'plant-hospital': { icon: '🌿', bg: '#E8F5E9', name: '식물 병원' },
+  'plant-question': { icon: '💬', bg: '#E3F2FD', name: '식물 질문방' },
+  'crop-consult':   { icon: '🌾', bg: '#FFF8E1', name: '작물 상담방' },
+  'plant-brag':     { icon: '📷', bg: '#FCE4EC', name: '내 식물 자랑' },
+  'farmer-lounge':  { icon: '🏡', bg: '#FFF3E0', name: '농부 사랑방' },
+  'plant-share':    { icon: '🪴', bg: '#E0F7FA', name: '나눔·직거래' },
+  'garden-class':   { icon: '✂️', bg: '#F9FBE7', name: '원예 클래스' },
+  'plant-meet':     { icon: '🤝', bg: '#FFFDE7', name: '식집사 모임' },
+};
+
+const CHANNEL_BADGE_COLORS = {
+  'plant-hospital': { bg: '#E8F5E9', color: '#2E7D32' },
+  'plant-question': { bg: '#E3F2FD', color: '#1565C0' },
+  'crop-consult':   { bg: '#FFF8E1', color: '#F57F17' },
+  'plant-brag':     { bg: '#FCE4EC', color: '#AD1457' },
+  'farmer-lounge':  { bg: '#FFF3E0', color: '#E65100' },
+  'plant-share':    { bg: '#E0F7FA', color: '#00838F' },
+  'garden-class':   { bg: '#F9FBE7', color: '#827717' },
+  'plant-meet':     { bg: '#FFFDE7', color: '#F9A825' },
+};
+
+// ─── SWIPE ───
+let currentPage = 0;
+let touchStartX = 0;
+let touchStartY = 0;
+let isDragging = false;
+
+const track = document.getElementById('pagesTrack');
+
+track.addEventListener('touchstart', e => {
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  isDragging = true;
+}, { passive: true });
+
+track.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  const dx = e.touches[0].clientX - touchStartX;
+  const dy = e.touches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+track.addEventListener('touchend', e => {
+  if (!isDragging) return;
+  isDragging = false;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 60) {
+    if (dx < 0 && currentPage < 2) switchPage(currentPage + 1);
+    else if (dx > 0 && currentPage > 0) switchPage(currentPage - 1);
+  }
+});
+
+function switchPage(n) {
+  currentPage = n;
+  track.style.transform = `translateX(-${n * 33.333}%)`;
+  document.querySelectorAll('.tab-btn').forEach((t, i) => t.classList.toggle('active', i === n));
+  updateDots();
+}
+
+function updateDots() {
+  ['dot0','dot1','dot2'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'dot' + (i === currentPage ? ' active' : '');
+  });
+  ['dot0b','dot1b','dot2b'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'dot' + (i === currentPage ? ' active' : '');
+  });
+  ['dot0c','dot1c','dot2c'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.className = 'dot' + (i === currentPage ? ' active' : '');
+  });
+}
+
+// ─── BOTTOM TAB ───
+function setActiveTab(n) {
+  document.querySelectorAll('.tab-item').forEach((t, i) => t.classList.toggle('active', i === n));
+}
+
+// ─── INIT ───
+async function initApp() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (session) updateUserUI(session.user);
+
+  _sb.auth.onAuthStateChange((event, session) => {
+    if (session) updateUserUI(session.user);
+  });
+
+  loadChannels();
+  loadFeed();
+}
+
+function updateUserUI(user) {
+  const bellBtn = document.querySelector('.bell-btn');
+  const firstChar = (user.user_metadata?.full_name || user.email || 'U')[0].toUpperCase();
+  bellBtn.innerHTML = `<span style="font-size:14px;font-weight:700;color:#333">${firstChar}</span>`;
+  bellBtn.onclick = () => {
+    if (confirm('로그아웃 하시겠습니까?')) {
+      _sb.auth.signOut();
+      location.reload();
+    }
+  };
+
+  _sb.from('users').upsert({
+    id: user.id,
+    nickname: user.user_metadata?.full_name || user.email?.split('@')[0] || '익명',
+    email: user.email,
+    role: 'user'
+  }, { onConflict: 'id' }).then(() => {});
+}
+
+// ─── CHANNELS ───
+async function loadChannels() {
+  const grid = document.getElementById('channelGrid');
+  const select = document.getElementById('channelSelect');
+  
+  try {
+    const { data } = await _sb.from('channels').select('*').order('created_at');
+    
+    if (!data || data.length === 0) {
+      renderDefaultChannels(grid, select);
+      return;
     }
 
-    function openWriteModal() {
-      writeModal.classList.add('show');
-      writeModal.setAttribute('aria-hidden', 'false');
-      window.setTimeout(() => postTitle.focus(), 0);
+    grid.innerHTML = '';
+    data.forEach(ch => {
+      const cfg = CHANNEL_CONFIG[ch.slug] || { icon: '📋', bg: '#F5F5F5' };
+      const card = document.createElement('div');
+      card.className = 'channel-card';
+      card.innerHTML = `
+        <div class="channel-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+        <div class="channel-name">${ch.name}</div>
+      `;
+      card.onclick = () => filterByChannel(ch.id, ch.name);
+      grid.appendChild(card);
+
+      const opt = document.createElement('option');
+      opt.value = ch.id;
+      opt.textContent = ch.name;
+      select.appendChild(opt);
+    });
+  } catch (e) {
+    renderDefaultChannels(grid, select);
+  }
+}
+
+function renderDefaultChannels(grid, select) {
+  const defaults = [
+    { slug: 'plant-hospital', name: '식물 병원' },
+    { slug: 'plant-question', name: '식물 질문방' },
+    { slug: 'crop-consult', name: '작물 상담방' },
+    { slug: 'plant-brag', name: '내 식물 자랑' },
+    { slug: 'farmer-lounge', name: '농부 사랑방' },
+    { slug: 'plant-share', name: '나눔·직거래' },
+    { slug: 'garden-class', name: '원예 클래스' },
+    { slug: 'plant-meet', name: '식집사 모임' },
+  ];
+  grid.innerHTML = '';
+  defaults.forEach(ch => {
+    const cfg = CHANNEL_CONFIG[ch.slug] || { icon: '📋', bg: '#F5F5F5' };
+    const card = document.createElement('div');
+    card.className = 'channel-card';
+    card.innerHTML = `
+      <div class="channel-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+      <div class="channel-name">${ch.name}</div>
+    `;
+    grid.appendChild(card);
+
+    const opt = document.createElement('option');
+    opt.value = ch.slug;
+    opt.textContent = ch.name;
+    select.appendChild(opt);
+  });
+}
+
+// ─── FEED ───
+async function loadFeed(channelId = null) {
+  const feed = document.getElementById('recentFeed');
+  feed.innerHTML = '<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
+
+  try {
+    let query = _sb.from('posts')
+      .select('*, channels(name, slug)')
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (channelId) query = query.eq('channel_id', channelId);
+
+    const { data } = await query;
+
+    if (!data || data.length === 0) {
+      feed.innerHTML = '<div class="feed-loading">아직 질문이 없습니다 🌱<br>첫 질문을 올려보세요!</div>';
+      return;
     }
 
-    function closeWriteModal() {
-      writeModal.classList.remove('show');
-      writeModal.setAttribute('aria-hidden', 'true');
-      writePostForm.reset();
-      if (channels[0]) postChannel.value = channels[0].id;
-    }
+    feed.innerHTML = '';
+    data.forEach(post => {
+      const slug = post.channels?.slug || '';
+      const chName = post.channels?.name || '일반';
+      const colors = CHANNEL_BADGE_COLORS[slug] || { bg: '#F5F5F5', color: '#666' };
+      const timeAgo = getTimeAgo(post.created_at);
+      const author = post.user_id ? '회원' : '익명 작성자';
 
-    function getUserDisplayName(user) {
-      return user?.user_metadata?.full_name
-        || user?.user_metadata?.name
-        || user?.email?.split('@')[0]
-        || 'MY';
-    }
-
-    function updateAuthUi(user) {
-      currentUser = user || null;
-      if (!currentUser) {
-        myButton.innerHTML = bellIconHtml;
-        logoutButton.style.display = 'none';
-        return;
-      }
-      const displayName = getUserDisplayName(currentUser);
-      myButton.innerHTML = bellIconHtml;
-      myButton.title = displayName;
-      logoutButton.style.display = 'inline-flex';
-    }
-
-    function openAuthModal() {
-      authModal.classList.add('show');
-      authModal.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeAuthModal() {
-      authModal.classList.remove('show');
-      authModal.setAttribute('aria-hidden', 'true');
-    }
-
-    async function upsertUserProfile(user) {
-      if (!user) return;
-      const nickname = getUserDisplayName(user);
-      const { error } = await supabaseClient
-        .from('users')
-        .upsert({
-          id: user.id,
-          nickname,
-          email: user.email || null,
-          role: 'user'
-        }, { onConflict: 'id' });
-      if (error) console.warn('users upsert failed:', error.message);
-    }
-
-    async function handleSession(session) {
-      const user = session?.user || null;
-      updateAuthUi(user);
-      if (user) {
-        await upsertUserProfile(user);
-        closeAuthModal();
-      }
-    }
-
-    async function initAuth() {
-      const { data, error } = await supabaseClient.auth.getSession();
-      if (error) {
-        console.warn('session check failed:', error.message);
-        return;
-      }
-      await handleSession(data.session);
-    }
-
-    function getDefaultTabForPage(pageIndex) {
-      return tabs.find((tab) => Number(tab.dataset.page) === pageIndex && tab.dataset.primary === 'true')
-        || tabs.find((tab) => Number(tab.dataset.page) === pageIndex)
-        || tabs[0];
-    }
-
-    function setActivePage(pageIndex, shouldScroll, selectedTab) {
-      activePage = Math.max(0, Math.min(2, pageIndex));
-      activeTab = selectedTab || getDefaultTabForPage(activePage);
-
-      if (shouldScroll) {
-        pager.scrollTo({
-          left: activePage * pager.clientWidth,
-          behavior: 'smooth'
-        });
-      }
-
-      dots.forEach((dot, index) => {
-        dot.classList.toggle('active', index === activePage);
-      });
-
-      pagePanels.forEach((page, index) => {
-        page.classList.toggle('active-page', index === activePage);
-      });
-
-      viewTabs.forEach((tab) => {
-        tab.classList.toggle('active', Number(tab.dataset.page) === activePage);
-      });
-
-      tabs.forEach((tab) => {
-        tab.classList.toggle('active', tab === activeTab);
-      });
-    }
-
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        setActivePage(Number(tab.dataset.page), true, tab);
-      });
+      const card = document.createElement('div');
+      card.className = 'q-card';
+      card.innerHTML = `
+        <div class="q-channel-badge" style="background:${colors.bg};color:${colors.color}">${chName}</div>
+        <div class="q-title">${escHtml(post.title)}</div>
+        <div class="q-meta">
+          <span>${author}</span>
+          <span>💬 ${post.comment_count || 0}</span>
+          <span>♡ ${post.like_count || 0}</span>
+          <span>${timeAgo}</span>
+        </div>
+      `;
+      feed.appendChild(card);
     });
+  } catch (e) {
+    feed.innerHTML = '<div class="feed-loading">불러오기 실패. 새로고침해주세요.</div>';
+  }
+}
 
-    viewTabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        setActivePage(Number(tab.dataset.page), false);
-      });
-    });
+function filterByChannel(id, name) {
+  loadFeed(id);
+  document.querySelector('.section-title').textContent = name + ' 질문';
+}
 
-    channelGrid.addEventListener('click', async (event) => {
-      const card = event.target.closest('[data-channel-id]');
-      if (!card) return;
-      event.preventDefault();
-      selectedChannelId = card.dataset.channelId;
-      renderChannelCards();
-      await loadRecentPosts(selectedChannelId);
-    });
+// ─── POST ───
+async function submitPost() {
+  const channelId = document.getElementById('channelSelect').value;
+  const title = document.getElementById('postTitle').value.trim();
+  const content = document.getElementById('postContent').value.trim();
 
-    writePostButton.addEventListener('click', (event) => {
-      event.preventDefault();
-      openWriteModal();
-    });
+  if (!channelId || !title) {
+    alert('채널과 제목을 입력해주세요.');
+    return;
+  }
 
-    cancelWrite.addEventListener('click', closeWriteModal);
+  const { data: { session } } = await _sb.auth.getSession();
 
-    writeModal.addEventListener('click', (event) => {
-      if (event.target === writeModal) closeWriteModal();
-    });
+  const { error } = await _sb.from('posts').insert({
+    channel_id: channelId,
+    title,
+    content,
+    user_id: session?.user?.id || null
+  });
 
-    myButton.addEventListener('click', openAuthModal);
+  if (error) {
+    alert('등록 실패: ' + error.message);
+    return;
+  }
 
-    closeAuthButton.addEventListener('click', closeAuthModal);
+  closeModal();
+  document.getElementById('postTitle').value = '';
+  document.getElementById('postContent').value = '';
+  loadFeed();
+}
 
-    authModal.addEventListener('click', (event) => {
-      if (event.target === authModal) closeAuthModal();
-    });
+// ─── AUTH ───
+function openLogin() {
+  document.getElementById('loginModal').classList.add('open');
+}
 
-    googleLoginButton.addEventListener('click', async () => {
-      const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: 'https://kfarmai.com'
-        }
-      });
-      if (error) alert(`Google 로그인에 실패했습니다: ${error.message}`);
-    });
+function closeLogin() {
+  document.getElementById('loginModal').classList.remove('open');
+}
 
-    logoutButton.addEventListener('click', async () => {
-      const { error } = await supabaseClient.auth.signOut();
-      if (error) {
-        alert(`로그아웃에 실패했습니다: ${error.message}`);
-        return;
-      }
-      updateAuthUi(null);
-      closeAuthModal();
-    });
+async function loginGoogle() {
+  const { error } = await _sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://kfarmai.com' }
+  });
+  if (error) alert('로그인 실패: ' + error.message);
+}
 
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      handleSession(session);
-    });
+// ─── MODAL ───
+function openModal() {
+  document.getElementById('writeModal').classList.add('open');
+}
 
-    writePostForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const title = postTitle.value.trim();
-      const content = postContent.value.trim();
-      const channelId = postChannel.value;
+function closeModal() {
+  document.getElementById('writeModal').classList.remove('open');
+}
 
-      if (!title || !channelId) return;
+// ─── UTILS ───
+function getTimeAgo(dateStr) {
+  const diff = (Date.now() - new Date(dateStr)) / 1000;
+  if (diff < 60) return '방금 전';
+  if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+  if (diff < 86400) return Math.floor(diff / 3600) + '시간 전';
+  return Math.floor(diff / 86400) + '일 전';
+}
 
-      submitWrite.disabled = true;
-      submitWrite.textContent = '등록 중';
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 
-      const { error } = await supabaseClient
-        .from('posts')
-        .insert({
-          title,
-          content,
-          channel_id: channelId,
-          user_id: null
-        });
-
-      submitWrite.disabled = false;
-      submitWrite.textContent = '확인';
-
-      if (error) {
-        alert(`글 등록에 실패했습니다: ${error.message}`);
-        return;
-      }
-
-      closeWriteModal();
-      await loadRecentPosts();
-    });
-
-    pager.addEventListener('touchstart', (event) => {
-      if (!ENABLE_SWIPE) return;
-      if (event.touches.length !== 1) return;
-      const touch = event.touches[0];
-      swipeStartX = touch.clientX;
-      swipeStartY = touch.clientY;
-      swipeStartTime = Date.now();
-      swipeStartPage = activePage;
-      swipeTracking = true;
-      swipeHorizontal = false;
-    }, { passive: true });
-
-    pager.addEventListener('touchmove', (event) => {
-      if (!swipeTracking || event.touches.length !== 1) return;
-      const touch = event.touches[0];
-      const dx = touch.clientX - swipeStartX;
-      const dy = touch.clientY - swipeStartY;
-
-      if (!swipeHorizontal && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.25) {
-        swipeHorizontal = true;
-      }
-
-      if (swipeHorizontal) event.preventDefault();
-    }, { passive: false });
-
-    pager.addEventListener('touchend', (event) => {
-      if (!swipeTracking) return;
-      swipeTracking = false;
-
-      const touch = event.changedTouches[0];
-      const dx = touch.clientX - swipeStartX;
-      const dy = touch.clientY - swipeStartY;
-      const elapsed = Math.max(Date.now() - swipeStartTime, 1);
-      const velocity = Math.abs(dx) / elapsed;
-      const isHorizontal = Math.abs(dx) > Math.abs(dy) * 1.2;
-      const shouldMove = isHorizontal && (Math.abs(dx) >= SWIPE_DISTANCE_THRESHOLD || velocity >= SWIPE_VELOCITY_THRESHOLD);
-
-      if (!shouldMove) {
-        swipeHorizontal = false;
-        setActivePage(swipeStartPage, true);
-        return;
-      }
-
-      const direction = dx < 0 ? 1 : -1;
-      swipeHorizontal = false;
-      setActivePage(swipeStartPage + direction, true);
-    }, { passive: true });
-
-    pager.addEventListener('scroll', () => {
-      if (swipeTracking || swipeHorizontal) return;
-      window.clearTimeout(pager._scrollTimer);
-      pager._scrollTimer = window.setTimeout(() => {
-        const nextPage = Math.round(pager.scrollLeft / pager.clientWidth);
-        if (nextPage !== activePage) setActivePage(nextPage, false);
-      }, 60);
-    });
-
-    window.addEventListener('resize', () => {
-      setActivePage(activePage, true);
-    });
-
-    cropChips.addEventListener('click', (event) => {
-      const chip = event.target.closest('.chip');
-      if (!chip) return;
-      cropChips.querySelectorAll('.chip').forEach((item) => item.classList.remove('active'));
-      chip.classList.add('active');
-    });
-
-    async function initCommunity() {
-      try {
-        await loadChannels();
-      } catch (error) {
-        setFeedMessage('채널 정보를 불러오지 못했습니다');
-        return;
-      }
-      await loadRecentPosts();
-    }
-
-    initCommunity();
-    initAuth();
-  </script>
+// ─── CROP CHIPS ───
+document.querySelectorAll('.crop-chip').forEach(chip => {
+  chip.addEventListener('click', function() {
+    document.querySelectorAll('.crop-chip').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
 </body>
 </html>
