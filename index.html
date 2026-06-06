@@ -833,13 +833,13 @@
         </div>
       </div>
     </div>
-    <div class="search" id="searchBox">
+    <form class="search" id="searchBox" onsubmit="event.preventDefault(); runSearch();">
       <button class="search-btn" type="button" onclick="runSearch()" aria-label="검색">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       </button>
       <input type="search" id="globalSearch" placeholder="작물 증상, 농약사, 농자재를 검색하세요" data-i18n-placeholder="searchPlaceholder" enterkeyhint="search" autocomplete="off" />
       <div class="search-dd" id="searchDropdown"></div>
-    </div>
+    </form>
     <div class="tabs">
       <div class="tab active" data-i="0" data-i18n="community">커뮤니티</div>
       <div class="tab" data-i="1" data-i18n="diagnosis">AI 진단</div>
@@ -1337,6 +1337,7 @@ function initSearch(){
   const input=document.getElementById('globalSearch');
   if(!input)return;
   input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSearch();}});
+  input.addEventListener('search',()=>runSearch());
   input.addEventListener('input',debounce(()=>renderSearchDropdown(input.value.trim()),180));
   input.addEventListener('focus',()=>{if(input.value.trim().length>=2)renderSearchDropdown(input.value.trim());});
   document.addEventListener('click',e=>{if(!document.getElementById('searchBox')?.contains(e.target))closeSearchDropdown();});
