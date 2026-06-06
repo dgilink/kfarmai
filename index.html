@@ -819,6 +819,209 @@
       width: 100%;
     }
 
+    /* v0-style visual refresh */
+    :root {
+      --header-h: 164px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --bg: #FFFFFF;
+    }
+
+    .app,
+    html,
+    body {
+      background: #FFFFFF;
+    }
+
+    .topbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid #F0F2F4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .brand img {
+      box-shadow: none;
+      background: #F6F8F7;
+    }
+
+    .profile-pill,
+    .search,
+    .channel-card,
+    .link-card,
+    .case-card,
+    .feed-card,
+    .upload-card,
+    .stat {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .view-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+      padding: 4px;
+      border-radius: 999px;
+      background: #F5F6F7;
+    }
+
+    .view-tab {
+      min-height: 36px;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      color: #737A80;
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .view-tab.active {
+      background: #111111;
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .pager {
+      display: block;
+      overflow: hidden;
+      scroll-snap-type: none;
+    }
+
+    .page {
+      display: none;
+      min-height: calc(100vh - var(--header-h) - var(--tab-h));
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    .dots {
+      display: none;
+    }
+
+    .hero-card {
+      min-height: 168px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.58)),
+        url("https://images.unsplash.com/photo-1520412099551-62b6bafeb5bb?auto=format&fit=crop&w=900&q=80") center/cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .hero-card h2 {
+      font-size: 23px;
+      color: #FFFFFF;
+    }
+
+    .hero-card p {
+      color: rgba(255,255,255,0.88);
+      font-size: 13px;
+    }
+
+    .hero-card.agri-hero {
+      min-height: 132px;
+      background: #1A237E;
+    }
+
+    .channel-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .channel-card {
+      min-height: 84px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px 6px;
+      border-radius: 14px;
+    }
+
+    .channel-card strong {
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .channel-card > span:not(.channel-icon) {
+      display: none;
+    }
+
+    .channel-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.78);
+    }
+
+    .feed-card,
+    .case-card,
+    .link-card {
+      border-color: #EEF1F3;
+      border-radius: 14px;
+    }
+
+    .upload-card {
+      border: 1.5px dashed #C9D7D2;
+      box-shadow: none;
+    }
+
+    .upload-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .agri-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin: 14px 0 18px;
+    }
+
+    .agri-tabs a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border: 1px solid #EEF1F3;
+      border-radius: 999px;
+      background: #FFFFFF;
+      color: #30363A;
+      font-size: 13px;
+      font-weight: 850;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .link-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .link-card {
+      grid-template-columns: 42px 1fr;
+      min-height: 92px;
+      align-items: start;
+      padding: 12px;
+    }
+
+    .link-card .chev {
+      display: none;
+    }
+
+    .link-card p {
+      font-size: 11px;
+    }
+
+    .tab.active {
+      color: #1D9E75;
+      background: #E7F7F1;
+    }
+
     @media (min-width: 481px) {
       body {
         background: #F5F5F5;
@@ -838,7 +1041,7 @@
     <header class="topbar">
       <div class="brand-row">
         <a class="brand" href="index.html" aria-label="kFarmAI 홈">
-          <img src="static/logo.png" alt="kFarmAI 로고">
+          <img src="logo.webp" alt="kFarmAI 로고" onerror="this.src='static/logo.png'">
           <span>
             <span class="brand-title">kFarm<span class="brand-ai">AI</span></span>
             <span class="brand-sub">AI FARM COMMUNITY</span>
@@ -852,11 +1055,16 @@
         </svg>
         <input id="globalSearch" type="search" placeholder="작물 증상, 질문, 농자재를 검색하세요">
       </label>
+      <nav class="view-tabs" aria-label="상단 페이지 탭">
+        <button class="view-tab active" type="button" data-page="0">커뮤니티</button>
+        <button class="view-tab" type="button" data-page="1">AI 진단</button>
+        <button class="view-tab" type="button" data-page="2">농자재</button>
+      </nav>
     </header>
 
     <main class="shell">
       <div class="pager" id="pager" aria-label="kFarmAI 주요 페이지">
-        <section class="page" aria-label="커뮤니티">
+        <section class="page active-page" aria-label="커뮤니티">
           <div class="page-head">
             <div>
               <p class="eyebrow">COMMUNITY</p>
@@ -866,8 +1074,8 @@
           </div>
 
           <a class="hero-card" href="#write" id="writePostButton">
-            <h2>식물 증상, 바로 물어보세요</h2>
-            <p>식물·작물 고민을 올리면 AI와 전문가가 함께 답합니다</p>
+            <h2>이상하다 싶을 때, 바로 여기</h2>
+            <p>사진 한 장이면 AI가 진단해드려요</p>
             <span class="hero-action">질문 올리기</span>
           </a>
 
@@ -907,7 +1115,10 @@
             </div>
             <h2>작물 사진 업로드</h2>
             <p>잎, 줄기, 열매가 잘 보이도록 촬영한 뒤 진단 요청을 시작합니다.</p>
-            <button class="primary-btn" type="button">사진 선택하기</button>
+            <div class="upload-actions">
+              <button class="primary-btn" type="button">촬영하기</button>
+              <button class="secondary-btn" type="button">앨범에서</button>
+            </div>
           </section>
 
           <section class="section">
@@ -972,11 +1183,11 @@
             <span class="hero-action">지도 열기</span>
           </a>
 
-          <div class="stats" aria-label="농자재 데이터 요약">
-            <a class="stat" href="santo.html"><strong>15</strong><span>상토</span></a>
-            <a class="stat" href="seed.html"><strong>57</strong><span>종자</span></a>
-            <a class="stat" href="cpa.html"><strong>39</strong><span>작물보호제</span></a>
-            <a class="stat" href="fert.html"><strong>8</strong><span>비료</span></a>
+          <div class="agri-tabs" aria-label="농자재 분류">
+            <a href="santo.html">상토</a>
+            <a href="seed.html">종자</a>
+            <a href="cpa.html">작물보호제</a>
+            <a href="fert.html">비료</a>
           </div>
 
           <section class="section">
@@ -984,9 +1195,34 @@
               <strong>바로가기</strong>
             </div>
             <div class="link-list">
-              <a class="link-card" href="agri_map.html" style="--link-bg:#E3F2FD;--link-point:#1565C0;">
+              <a class="link-card" href="#" style="--link-bg:#E3F2FD;--link-point:#1565C0;">
+                <span class="link-icon">☀️</span>
+                <span><strong>농업 날씨</strong><p>작물 관리에 필요한 날씨 정보</p></span>
+                <span class="chev">›</span>
+              </a>
+              <a class="link-card" href="#" style="--link-bg:#E8F5E9;--link-point:#2E7D32;">
+                <span class="link-icon">💹</span>
+                <span><strong>농산물 시세</strong><p>주요 농산물 가격 흐름 확인</p></span>
+                <span class="chev">›</span>
+              </a>
+              <a class="link-card" href="#" style="--link-bg:#FFF8E1;--link-point:#F57F17;">
+                <span class="link-icon">🏛️</span>
+                <span><strong>정부 지원금</strong><p>농업 지원 정책과 신청 정보</p></span>
+                <span class="chev">›</span>
+              </a>
+              <a class="link-card" href="#" style="--link-bg:#F9FBE7;--link-point:#827717;">
+                <span class="link-icon">📅</span>
+                <span><strong>재배 달력</strong><p>시기별 파종과 관리 일정</p></span>
+                <span class="chev">›</span>
+              </a>
+              <a class="link-card" href="agri_map.html" style="--link-bg:#FBE9E7;--link-point:#BF360C;">
                 <span class="link-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3V6Z" stroke="currentColor" stroke-width="2"/><path d="M9 3v15M15 6v15" stroke="currentColor" stroke-width="2"/></svg></span>
-                <span><strong>전국 농약사 지도</strong><p>전국 3,019개 농약사 검색 · 지도 · 로드뷰</p></span>
+                <span><strong>주변 농약방</strong><p>전국 3,019개 농약사 검색 · 지도 · 로드뷰</p></span>
+                <span class="chev">›</span>
+              </a>
+              <a class="link-card" href="#" style="--link-bg:#E0F7FA;--link-point:#00838F;">
+                <span class="link-icon">📘</span>
+                <span><strong>재배 가이드</strong><p>작물별 기초 재배 안내</p></span>
                 <span class="chev">›</span>
               </a>
               <a class="link-card" href="santo.html" style="--link-bg:#FFF8E1;--link-point:#F57F17;">
@@ -1103,6 +1339,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const pager = document.getElementById('pager');
+    const pagePanels = Array.from(document.querySelectorAll('.page'));
+    const viewTabs = Array.from(document.querySelectorAll('.view-tab'));
     const dots = Array.from(document.querySelectorAll('.dot'));
     const tabs = Array.from(document.querySelectorAll('.tab'));
     const cropChips = document.getElementById('cropChips');
@@ -1139,6 +1377,7 @@
     let swipeHorizontal = false;
     const SWIPE_DISTANCE_THRESHOLD = 60;
     const SWIPE_VELOCITY_THRESHOLD = 0.45;
+    const ENABLE_SWIPE = false;
 
     const channelStyles = {
       'plant-hospital': { bg: '#E8F5E9', point: '#2E7D32', desc: '사진 증상 진단 허브' },
@@ -1275,6 +1514,7 @@
               <span class="time">${escapeHtml(formatPostTime(post.created_at))}</span>
             </div>
             <h3>${escapeHtml(post.title)}</h3>
+            <div class="feed-meta"><span>익명 작성자</span><span>댓글 0</span></div>
           </article>
         `;
       }).join('');
@@ -1375,6 +1615,14 @@
         dot.classList.toggle('active', index === activePage);
       });
 
+      pagePanels.forEach((page, index) => {
+        page.classList.toggle('active-page', index === activePage);
+      });
+
+      viewTabs.forEach((tab) => {
+        tab.classList.toggle('active', Number(tab.dataset.page) === activePage);
+      });
+
       tabs.forEach((tab) => {
         tab.classList.toggle('active', tab === activeTab);
       });
@@ -1383,6 +1631,12 @@
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         setActivePage(Number(tab.dataset.page), true, tab);
+      });
+    });
+
+    viewTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        setActivePage(Number(tab.dataset.page), false);
       });
     });
 
@@ -1471,6 +1725,7 @@
     });
 
     pager.addEventListener('touchstart', (event) => {
+      if (!ENABLE_SWIPE) return;
       if (event.touches.length !== 1) return;
       const touch = event.touches[0];
       swipeStartX = touch.clientX;
