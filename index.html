@@ -87,7 +87,11 @@
     padding: 10px 12px; margin: 4px 0 8px;
     position: relative;
   }
-  .search svg { width: 18px; height: 18px; color: #1D9E75; flex-shrink: 0; cursor: pointer; }
+  .search-btn {
+    width: 24px; height: 24px; border: 0; background: transparent;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+  }
+  .search-btn svg { width: 18px; height: 18px; color: #1D9E75; }
   .search input {
     flex: 1; border: none; background: transparent; outline: none;
     font-size: 13px; color: #111;
@@ -121,6 +125,7 @@
     padding: 11px 12px; margin-bottom: 8px; font-size: 13px; font-weight: 900;
   }
   .search-close { width: 28px; height: 28px; border: 0; border-radius: 50%; background: #F3F4F6; color: #555; font-size: 17px; cursor: pointer; }
+  .search-group-title { font-size: 12px; font-weight: 900; color: var(--sub); margin: 12px 4px 8px; }
   .bell {
     position: relative; width: 30px; height: 30px;
     display: flex; align-items: center; justify-content: center; cursor: pointer;
@@ -829,7 +834,9 @@
       </div>
     </div>
     <div class="search" id="searchBox">
-      <svg onclick="runSearch()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <button class="search-btn" type="button" onclick="runSearch()" aria-label="검색">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
       <input type="search" id="globalSearch" placeholder="작물 증상, 농약사, 농자재를 검색하세요" data-i18n-placeholder="searchPlaceholder" enterkeyhint="search" autocomplete="off" />
       <div class="search-dd" id="searchDropdown"></div>
     </div>
@@ -1098,6 +1105,7 @@
     const cur = pages.children[current];
     if(resetScroll && cur) cur.scrollTop = 0;
   }
+  window.goMainPage = () => go(0);
   tabs.forEach(t => t.addEventListener('click', () => go(parseInt(t.dataset.i), true)));
 
   // Touch swipe
@@ -1342,8 +1350,8 @@ async function renderSearchDropdown(raw){
   dd.classList.add('open');
   dd.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
   const posts=await searchPosts(kw,3);
-  const shopItems=getShopSuggestions(kw).slice(0,2);
-  const matItems=getMaterialSuggestions(kw).slice(0,2);
+  const shopItems=getShopSuggestions(kw,2);
+  const matItems=getMaterialSuggestions(kw,2);
   const recent=getRecentSearches();
   dd.innerHTML=[
     renderSuggestSection('커뮤니티 게시글',posts.map(p=>postSuggestHtml(p,kw))),
@@ -1376,12 +1384,14 @@ async function runSearch(raw){
   if(input)input.value=kw;
   closeSearchDropdown();
   saveRecentSearch(kw);
+  if(window.goMainPage)window.goMainPage();
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
-  const posts=await searchPosts(kw,20);
-  const shortcuts=[...getShopSuggestions(kw).slice(0,3),...getMaterialSuggestions(kw).slice(0,6)];
-  renderSearchResults(kw,posts,shortcuts);
+  const posts=await searchPosts(kw,30);
+  const shops=getShopSuggestions(kw,20);
+  const materials=getMaterialSuggestions(kw,30);
+  renderSearchResults(kw,posts,shops,materials);
 }
 async function searchPosts(kw,limit){
   if(!window._sb)return [];
@@ -1396,9 +1406,9 @@ async function searchPosts(kw,limit){
     return list;
   }catch(e){return [];}
 }
-function renderSearchResults(kw,posts,shortcuts){
+function renderSearchResults(kw,posts,shops,materials){
   const feed=document.getElementById('recentFeed');
-  const total=posts.length+shortcuts.length;
+  const total=posts.length+shops.length+materials.length;
   const head=`<div class="search-result-head"><span>'${escHtml(kw)}' 검색 결과 ${total}개</span><button class="search-close" onclick="clearSearchResults()">×</button></div>`;
   if(!total){feed.innerHTML=head+'<div class="feed-loading">검색 결과가 없습니다</div>';return;}
   const postHtml=posts.map(post=>{
@@ -1406,8 +1416,15 @@ function renderSearchResults(kw,posts,shortcuts){
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     return `<div class="q-card"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span><div class="q-title">${highlightText(post.title,kw)}</div><div class="q-meta"><span>${post.user_id?'회원':'익명 작성자'}</span><span>댓글 ${post.comment_count||0}</span><span>좋아요 ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></div>`;
   }).join('');
-  const shortcutHtml=shortcuts.map(item=>`<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${item.type==='map'?'농약사':'농자재'}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta|| (item.type==='map'?'지도·로드뷰에서 보기':'정보 페이지에서 보기'))}</span></div></a>`).join('');
-  feed.innerHTML=head+postHtml+shortcutHtml;
+  const shopHtml=shops.map(item=>resultLinkCard(item,kw,'농약사')).join('');
+  const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
+  feed.innerHTML=head+
+    (posts.length?'<div class="search-group-title">커뮤니티 게시글</div>'+postHtml:'')+
+    (shops.length?'<div class="search-group-title">농약사 지도·로드뷰</div>'+shopHtml:'')+
+    (materials.length?'<div class="search-group-title">농자재 회사 정보</div>'+materialHtml:'');
+}
+function resultLinkCard(item,kw,badge){
+  return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${badge}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
 }
 function clearSearchResults(){
   const input=document.getElementById('globalSearch');
@@ -1416,9 +1433,9 @@ function clearSearchResults(){
   loadFeed();
 }
 function closeSearchDropdown(){document.getElementById('searchDropdown')?.classList.remove('open');}
-function getShopSuggestions(kw){
+function getShopSuggestions(kw,limit=2){
   const shops=typeof data!=='undefined'?data:[];
-  const matched=shops.filter(shop=>matchesSearchText([shop.name,shop.addr,shop.tel,shop.item,'농약사 농약방'].join(' '),kw)).slice(0,2).map(shop=>({
+  const matched=shops.filter(shop=>matchesSearchText([shop.name,shop.addr,shop.tel,shop.item,'농약사 농약방'].join(' '),kw)).slice(0,limit).map(shop=>({
     type:'map',
     url:'agri_map.html',
     query:shop.name,
@@ -1430,7 +1447,7 @@ function getShopSuggestions(kw){
     {...AGRI_LINKS[0],query:kw,text:`${kw} 농약사 - 지도·로드뷰에서 보기`,meta:'agri_map.html 검색'}
   ]:[];
 }
-function getMaterialSuggestions(kw){
+function getMaterialSuggestions(kw,limit=6){
   const datasets=[
     {kind:'상토',url:'santo.html',items:typeof santoData!=='undefined'?santoData:[]},
     {kind:'종자',url:'seed.html',items:typeof seedData!=='undefined'?seedData:[]},
@@ -1452,9 +1469,9 @@ function getMaterialSuggestions(kw){
       }
     });
   });
-  if(results.length)return results.slice(0,6);
-  if(matchesSearchText('농자재 농자재회사 농업자재 agri products',kw))return AGRI_LINKS.filter(item=>item.type==='material').map(item=>({...item,query:kw,meta:'농자재 정보 페이지'}));
-  return AGRI_LINKS.filter(item=>item.type==='material'&&matchesSearchText(`${item.label} ${item.initial} ${item.text}`,kw)).map(item=>({...item,query:kw,meta:'농자재 정보 페이지'}));
+  if(results.length)return results.slice(0,limit);
+  if(matchesSearchText('농자재 농자재회사 농업자재 agri products',kw))return AGRI_LINKS.filter(item=>item.type==='material').map(item=>({...item,query:kw,meta:'농자재 정보 페이지'})).slice(0,limit);
+  return AGRI_LINKS.filter(item=>item.type==='material'&&matchesSearchText(`${item.label} ${item.initial} ${item.text}`,kw)).map(item=>({...item,query:kw,meta:'농자재 정보 페이지'})).slice(0,limit);
 }
 function matchesSearchText(text,kw){const hay=String(text||'').toLowerCase();const compactHay=hay.replace(/\s/g,'');const needle=String(kw||'').toLowerCase();return hay.includes(needle)||compactHay.includes(needle.replace(/\s/g,''))||getInitials(hay).includes(needle)||SEARCH_ALIASES.some(a=>(a.initial===needle||a.label.includes(needle))&&compactHay.includes(a.label.toLowerCase().replace(/\s/g,'')));}
 function getInitials(text){return String(text||'').split('').map(ch=>{const code=ch.charCodeAt(0)-44032;if(code>=0&&code<=11171)return CHO_LIST[Math.floor(code/588)];return ch;}).join('');}
