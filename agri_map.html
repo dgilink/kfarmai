@@ -23,11 +23,16 @@ body { min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-a
 .list-count { font-size:13px;color:#666; }
 .map-panel { margin:10px 20px 12px 16px;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.06);touch-action:pan-y; }
 .map-panel-title { padding:10px 14px;background:#1e6b2e;color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px; }
+.map-box { position:relative; }
 #agriMap { width:100%;height:250px;max-height:250px;background:#eef7f0;touch-action:pan-y; }
 .roadview-wrap { position:relative;display:none;border-top:1px solid #e8e8e8;touch-action:pan-y; }
 #roadviewPanel { width:100%;height:220px;max-height:220px;overflow:hidden;touch-action:pan-y; }
 .roadview-close { position:absolute;top:8px;right:8px;z-index:5;width:32px;height:32px;border:0;border-radius:50%;background:rgba(0,0,0,0.68);color:white;font-size:18px;font-weight:900;line-height:1;cursor:pointer; }
 .map-status { font-size:11px;color:rgba(255,255,255,0.8);font-weight:600; }
+.loading-overlay { position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,0.92);color:#1D9E75;font-size:13px;font-weight:800; }
+.loading-overlay.hide { display:none; }
+.spinner { width:34px;height:34px;border-radius:50%;border:4px solid rgba(29,158,117,0.18);border-top-color:#1D9E75;animation:spin 0.8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
 
 .shop-item { padding:13px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:10px;align-items:flex-start;cursor:pointer; }
 .shop-item:hover { background:#f7fbf8; }
@@ -115,10 +120,20 @@ body { min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-a
     <span>📍 전국 농약사 지도</span>
     <span class="map-status" id="mapStatus">지도 준비 중</span>
   </div>
-  <div id="agriMap"></div>
+  <div class="map-box">
+    <div id="agriMap"></div>
+    <div class="loading-overlay" id="mapLoading">
+      <div class="spinner"></div>
+      <div>지도 불러오는 중...</div>
+    </div>
+  </div>
   <div class="roadview-wrap" id="roadviewWrap">
     <button class="roadview-close" type="button" onclick="closeRoadview()" aria-label="로드뷰 닫기">×</button>
     <div id="roadviewPanel"></div>
+    <div class="loading-overlay" id="roadviewLoading">
+      <div class="spinner"></div>
+      <div>로드뷰 불러오는 중...</div>
+    </div>
   </div>
 </div>
 </div>
@@ -277,6 +292,12 @@ function normalizeSido(value) {
   if (!raw) return '';
   const first = raw.split(/\s+/)[0];
   return SIDO_ALIASES[first] || first;
+}
+
+function setLoading(id, show) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('hide', !show);
 }
 
 function itemMatchesKeyword(item, keyword) {
@@ -487,13 +508,19 @@ function showRoadview(lat, lng) {
   const panel = document.getElementById('roadviewPanel');
   document.body.classList.add('roadview-open');
   wrap.style.display = 'block';
+  setLoading('roadviewLoading', true);
   panel.innerHTML = '';
   if (!roadviewClient) roadviewClient = new kakao.maps.RoadviewClient();
   const roadview = new kakao.maps.Roadview(panel);
   roadviewClient.getNearestPanoId(new kakao.maps.LatLng(lat, lng), 50, function(panoId) {
     if (panoId) {
       roadview.setPanoId(panoId, new kakao.maps.LatLng(lat, lng));
+      kakao.maps.event.addListener(roadview, 'init', function() {
+        setLoading('roadviewLoading', false);
+      });
+      window.setTimeout(() => setLoading('roadviewLoading', false), 1200);
     } else {
+      setLoading('roadviewLoading', false);
       panel.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px;background:#f5f5f5;border-radius:8px;">이 위치의 로드뷰를 제공하지 않습니다.</div>';
     }
   });
@@ -503,6 +530,7 @@ function closeRoadview() {
   const wrap = document.getElementById('roadviewWrap');
   const panel = document.getElementById('roadviewPanel');
   document.body.classList.remove('roadview-open');
+  setLoading('roadviewLoading', false);
   if (wrap) wrap.style.display = 'none';
   if (panel) panel.innerHTML = '';
 }
@@ -581,6 +609,7 @@ function closeMenu() { document.getElementById('overlay').classList.remove('open
 
 buildRegionTabs();
 allShops = getAllShops();
+setLoading('mapLoading', true);
 kakao.maps.load(function() {
   const container = document.getElementById('agriMap');
   kakaoMap = new kakao.maps.Map(container, {
@@ -593,6 +622,7 @@ kakao.maps.load(function() {
     infowindow.close();
   });
   renderAll(false);
+  setLoading('mapLoading', false);
 });
 </script>
 </body>
