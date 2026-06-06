@@ -43,7 +43,7 @@
     z-index: 100;
     background: var(--white);
     padding: 12px 16px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+    border-bottom: none;
   }
 
   .header-row {
@@ -149,12 +149,13 @@
   .page-tabs {
     display: flex;
     gap: 6px;
+    justify-content: flex-start;
     padding-bottom: 10px;
   }
 
   .tab-btn {
-    flex: 1;
-    padding: 7px 4px;
+    flex: 0 0 auto;
+    padding: 7px 14px;
     border-radius: 20px;
     border: none;
     cursor: pointer;
@@ -226,7 +227,7 @@
     border-radius: var(--radius-lg);
     overflow: hidden;
     position: relative;
-    height: 180px;
+    height: 200px;
   }
 
   .hero-bg {
@@ -333,6 +334,12 @@
     align-items: center;
     justify-content: center;
     font-size: 22px;
+  }
+
+  .channel-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
   }
 
   .channel-name {
@@ -1097,7 +1104,7 @@
         <img class="hero-bg" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&auto=format&fit=crop" alt="식물">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <div class="hero-badge">★ AI 식물 주치의</div>
+          <div class="hero-badge">AI 식물 주치의</div>
           <div class="hero-title">이상하다 싶을 때,<br>바로 여기</div>
           <div class="hero-sub">사진 한 장이면 AI가 진단해드려요</div>
         </div>
@@ -1107,7 +1114,7 @@
       <div class="section">
         <div class="section-header">
           <div class="section-title">채널 둘러보기</div>
-          <a href="#" class="section-more">전체보기 ›</a>
+          <a href="#" class="section-more">전체보기 &gt;</a>
         </div>
         <div class="channel-grid" id="channelGrid">
           <!-- 동적 로딩 -->
@@ -1122,7 +1129,7 @@
             <div class="section-title">방금 올라온 질문</div>
             <span class="realtime-badge">실시간</span>
           </div>
-          <a href="#" class="section-more">더보기 ›</a>
+          <a href="#" class="section-more">더보기 &gt;</a>
         </div>
         <div class="q-list" id="recentFeed">
           <div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>
@@ -1296,6 +1303,26 @@
           <div class="quick-icon" style="background:#F3E5F5">📖</div>
           <div class="quick-name">재배 가이드</div>
         </a>
+        <a href="santo.html" class="quick-card">
+          <div class="quick-icon" style="background:#FFF8E1">🪨</div>
+          <div class="quick-name">상토</div>
+        </a>
+        <a href="seed.html" class="quick-card">
+          <div class="quick-icon" style="background:#E8F5E9">🌱</div>
+          <div class="quick-name">종자</div>
+        </a>
+        <a href="cpa.html" class="quick-card">
+          <div class="quick-icon" style="background:#E3F2FD">🧪</div>
+          <div class="quick-name">작물보호제</div>
+        </a>
+        <a href="fert.html" class="quick-card">
+          <div class="quick-icon" style="background:#E0F7FA">💧</div>
+          <div class="quick-name">비료</div>
+        </a>
+        <a href="news_sub.html" class="quick-card">
+          <div class="quick-icon" style="background:#FCE4EC">📢</div>
+          <div class="quick-name">보조사업 소식</div>
+        </a>
       </div>
 
       <!-- Bottom promo -->
@@ -1319,8 +1346,7 @@
 
 <!-- FAB -->
 <button class="fab" onclick="openModal()">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-  질문하기
+  + 질문하기
 </button>
 
 <!-- BOTTOM TAB -->
@@ -1389,7 +1415,7 @@
 <script>
 // ─── CONFIG ───
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhaZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzMjUxMDMsImV4cCI6MjA2MzkwMTEwM30.placeholder';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
 
 // Supabase SDK
 const script = document.createElement('script');
@@ -1402,14 +1428,14 @@ document.head.appendChild(script);
 
 // ─── CHANNEL CONFIG ───
 const CHANNEL_CONFIG = {
-  'plant-hospital': { icon: '🌿', bg: '#E8F5E9', name: '식물 병원' },
-  'plant-question': { icon: '💬', bg: '#E3F2FD', name: '식물 질문방' },
-  'crop-consult':   { icon: '🌾', bg: '#FFF8E1', name: '작물 상담방' },
-  'plant-brag':     { icon: '📷', bg: '#FCE4EC', name: '내 식물 자랑' },
-  'farmer-lounge':  { icon: '🏡', bg: '#FFF3E0', name: '농부 사랑방' },
-  'plant-share':    { icon: '🪴', bg: '#E0F7FA', name: '나눔·직거래' },
-  'garden-class':   { icon: '✂️', bg: '#F9FBE7', name: '원예 클래스' },
-  'plant-meet':     { icon: '🤝', bg: '#FFFDE7', name: '식집사 모임' },
+  'plant-hospital': { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-5 4-8 11-9 2 6 1 13-4 16Z"/><path d="M8 17c3-3 5-6 7-10"/></svg>', bg: '#E8F5E9', color: '#2E7D32', name: '식물 병원' },
+  'plant-question': { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M9 9h6M9 13h4"/></svg>', bg: '#E3F2FD', color: '#1565C0', name: '식물 질문방' },
+  'crop-consult':   { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V4"/><path d="M7 8c3 0 5 2 5 5-3 0-5-2-5-5Z"/><path d="M17 8c-3 0-5 2-5 5 3 0 5-2 5-5Z"/><path d="M7 14c3 0 5 2 5 5-3 0-5-2-5-5Z"/><path d="M17 14c-3 0-5 2-5 5 3 0 5-2 5-5Z"/></svg>', bg: '#FFF8E1', color: '#F57F17', name: '작물 상담방' },
+  'plant-brag':     { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h-4l-2 3H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2h-3Z"/><circle cx="12" cy="13" r="3"/></svg>', bg: '#FCE4EC', color: '#AD1457', name: '내 식물 자랑' },
+  'farmer-lounge':  { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>', bg: '#FBE9E7', color: '#BF360C', name: '농부 사랑방' },
+  'plant-share':    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h10l-1 10H8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/><path d="M12 17v-5"/><path d="M9.5 14.5 12 12l2.5 2.5"/></svg>', bg: '#E0F7FA', color: '#00838F', name: '나눔·직거래' },
+  'garden-class':   { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.1 15.9"/><path d="M8.1 8.1 20 20"/></svg>', bg: '#F9FBE7', color: '#827717', name: '원예 클래스' },
+  'plant-meet':     { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>', bg: '#FFFDE7', color: '#F9A825', name: '식집사 모임' },
 };
 
 const CHANNEL_BADGE_COLORS = {
@@ -1522,7 +1548,7 @@ async function loadChannels() {
   const select = document.getElementById('channelSelect');
   
   try {
-    const { data } = await _sb.from('channels').select('*').order('created_at');
+    const { data } = await _sb.from('channels').select('*').order('slug');
     
     if (!data || data.length === 0) {
       renderDefaultChannels(grid, select);
@@ -1531,11 +1557,11 @@ async function loadChannels() {
 
     grid.innerHTML = '';
     data.forEach(ch => {
-      const cfg = CHANNEL_CONFIG[ch.slug] || { icon: '📋', bg: '#F5F5F5' };
+      const cfg = CHANNEL_CONFIG[ch.slug] || { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>', bg: '#F5F5F5', color: '#666' };
       const card = document.createElement('div');
       card.className = 'channel-card';
       card.innerHTML = `
-        <div class="channel-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+        <div class="channel-icon" style="background:${cfg.bg};color:${cfg.color}">${cfg.icon}</div>
         <div class="channel-name">${ch.name}</div>
       `;
       card.onclick = () => filterByChannel(ch.id, ch.name);
@@ -1564,11 +1590,11 @@ function renderDefaultChannels(grid, select) {
   ];
   grid.innerHTML = '';
   defaults.forEach(ch => {
-    const cfg = CHANNEL_CONFIG[ch.slug] || { icon: '📋', bg: '#F5F5F5' };
+    const cfg = CHANNEL_CONFIG[ch.slug] || { icon: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>', bg: '#F5F5F5', color: '#666' };
     const card = document.createElement('div');
     card.className = 'channel-card';
     card.innerHTML = `
-      <div class="channel-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+      <div class="channel-icon" style="background:${cfg.bg};color:${cfg.color}">${cfg.icon}</div>
       <div class="channel-name">${ch.name}</div>
     `;
     grid.appendChild(card);
