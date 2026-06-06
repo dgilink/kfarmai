@@ -177,6 +177,7 @@
       scroll-behavior: smooth;
       scrollbar-width: none;
       overscroll-behavior-x: contain;
+      touch-action: pan-y;
     }
 
     .pager::-webkit-scrollbar {
@@ -1125,6 +1126,14 @@
     let currentUser = null;
     let activePage = 0;
     let activeTab = tabs[0];
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeStartTime = 0;
+    let swipeStartPage = 0;
+    let swipeTracking = false;
+    let swipeHorizontal = false;
+    const SWIPE_DISTANCE_THRESHOLD = 60;
+    const SWIPE_VELOCITY_THRESHOLD = 0.45;
 
     const channelStyles = {
       'plant-hospital': { bg: '#E8F5E9', point: '#2E7D32', desc: '사진 증상 진단 허브' },
@@ -1456,7 +1465,55 @@
       await loadRecentPosts();
     });
 
+    pager.addEventListener('touchstart', (event) => {
+      if (event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      swipeStartX = touch.clientX;
+      swipeStartY = touch.clientY;
+      swipeStartTime = Date.now();
+      swipeStartPage = activePage;
+      swipeTracking = true;
+      swipeHorizontal = false;
+    }, { passive: true });
+
+    pager.addEventListener('touchmove', (event) => {
+      if (!swipeTracking || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      const dx = touch.clientX - swipeStartX;
+      const dy = touch.clientY - swipeStartY;
+
+      if (!swipeHorizontal && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+        swipeHorizontal = true;
+      }
+
+      if (swipeHorizontal) event.preventDefault();
+    }, { passive: false });
+
+    pager.addEventListener('touchend', (event) => {
+      if (!swipeTracking) return;
+      swipeTracking = false;
+
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - swipeStartX;
+      const dy = touch.clientY - swipeStartY;
+      const elapsed = Math.max(Date.now() - swipeStartTime, 1);
+      const velocity = Math.abs(dx) / elapsed;
+      const isHorizontal = Math.abs(dx) > Math.abs(dy) * 1.2;
+      const shouldMove = isHorizontal && (Math.abs(dx) >= SWIPE_DISTANCE_THRESHOLD || velocity >= SWIPE_VELOCITY_THRESHOLD);
+
+      if (!shouldMove) {
+        swipeHorizontal = false;
+        setActivePage(swipeStartPage, true);
+        return;
+      }
+
+      const direction = dx < 0 ? 1 : -1;
+      swipeHorizontal = false;
+      setActivePage(swipeStartPage + direction, true);
+    }, { passive: true });
+
     pager.addEventListener('scroll', () => {
+      if (swipeTracking || swipeHorizontal) return;
       window.clearTimeout(pager._scrollTimer);
       pager._scrollTimer = window.setTimeout(() => {
         const nextPage = Math.round(pager.scrollLeft / pager.clientWidth);
