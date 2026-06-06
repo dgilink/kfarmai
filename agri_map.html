@@ -2,6 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>전국농약사 - kfarmai</title>
 <link rel="stylesheet" href="style.css">
@@ -14,8 +17,14 @@
 
 .list-header { padding:10px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center; }
 .list-count { font-size:13px;color:#666; }
+.map-panel { margin:12px 16px 0;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.06); }
+.map-panel-title { padding:10px 14px;background:#1e6b2e;color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px; }
+#agriMap { width:100%;height:320px;background:#eef7f0; }
+#roadviewPanel { width:100%;height:300px;display:none;border-top:1px solid #e8e8e8;overflow:hidden; }
+.map-status { font-size:11px;color:rgba(255,255,255,0.8);font-weight:600; }
 
-.shop-item { padding:13px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:10px;align-items:flex-start; }
+.shop-item { padding:13px 16px;border-bottom:1px solid #f0f0f0;display:flex;gap:10px;align-items:flex-start;cursor:pointer; }
+.shop-item:hover { background:#f7fbf8; }
 .shop-item:last-child { border-bottom:none; }
 .shop-alpha { width:34px;height:34px;border-radius:8px;background:#eaf5ec;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#1e6b2e;flex-shrink:0; }
 .shop-name { font-size:14px;font-weight:700;margin-bottom:2px; }
@@ -77,7 +86,7 @@
 </div>
 
 <div class="kf-search-bar">
-  <input type="text" id="keyword" placeholder="상호명·주소 검색" onkeypress="if(event.keyCode==13) doSearch()" style="flex:1;min-width:130px;">
+  <input type="text" id="keyword" placeholder="상호명·주소 검색" autocomplete="off" onkeypress="if(event.keyCode==13) doSearch()" style="flex:1;min-width:130px;">
   <button class="kf-btn kf-btn-primary" onclick="doSearch()">검색</button>
   <button class="kf-btn kf-btn-gray" onclick="resetAll()">초기화</button>
 </div>
@@ -86,9 +95,18 @@
   <div class="region-tabs" id="regionTabs"></div>
 </div>
 
+<div class="map-panel" id="mapPanel">
+  <div class="map-panel-title">
+    <span>📍 전국 농약사 지도</span>
+    <span class="map-status" id="mapStatus">지도 준비 중</span>
+  </div>
+  <div id="agriMap"></div>
+  <div id="roadviewPanel"></div>
+</div>
+
 <div class="list-header">
   <span class="list-count" id="listCount">로딩 중...</span>
-  <a href="map.html" style="font-size:12px;color:#1e6b2e;font-weight:600;">지도 보기 →</a>
+  <span style="font-size:12px;color:#1e6b2e;font-weight:600;">목록 클릭 시 지도·로드뷰 표시</span>
 </div>
 
 <div id="shopList"></div>
@@ -102,11 +120,11 @@
     <h3>🌿 농약사 정보 등록</h3>
     <div id="regForm">
       <label>상호명 *</label>
-      <input type="text" id="regName" placeholder="예) ○○농약사">
+      <input type="text" id="regName" placeholder="예) ○○농약사" autocomplete="off">
       <label>주소 *</label>
-      <input type="text" id="regAddr" placeholder="예) 충남 홍성군 홍성읍 ○○로 123">
+      <input type="text" id="regAddr" placeholder="예) 충남 홍성군 홍성읍 ○○로 123" autocomplete="off">
       <label>전화번호</label>
-      <input type="text" id="regTel" placeholder="예) 041-000-0000">
+      <input type="text" id="regTel" placeholder="예) 041-000-0000" autocomplete="off">
       <label>시도</label>
       <select id="regSido">
         <option value="">선택</option>
@@ -118,7 +136,7 @@
         <option>세종특별자치시</option><option>제주특별자치도</option>
       </select>
       <label>비밀번호 (수정 시 필요) *</label>
-      <input type="password" id="regPw" placeholder="4자리 이상">
+      <input type="password" id="regPw" placeholder="4자리 이상" autocomplete="off">
       <div class="modal-notice">입력하신 정보는 검토 없이 즉시 등록됩니다. 허위 정보 등록 시 삭제될 수 있습니다. 비밀번호는 나중에 정보 수정 시 사용됩니다.</div>
       <div class="modal-btns">
         <button class="modal-btn modal-btn-cancel" onclick="closeRegModal()">취소</button>
@@ -139,14 +157,14 @@
     <h3>✏️ 정보 수정</h3>
     <input type="hidden" id="editIdx">
     <label>비밀번호 확인</label>
-    <input type="password" id="editPw" placeholder="등록 시 입력한 비밀번호">
+    <input type="password" id="editPw" placeholder="등록 시 입력한 비밀번호" autocomplete="off">
     <div id="editFields" style="display:none;">
       <label>상호명</label>
-      <input type="text" id="editName">
+      <input type="text" id="editName" autocomplete="off">
       <label>주소</label>
-      <input type="text" id="editAddr">
+      <input type="text" id="editAddr" autocomplete="off">
       <label>전화번호</label>
-      <input type="text" id="editTel">
+      <input type="text" id="editTel" autocomplete="off">
     </div>
     <div class="modal-btns">
       <button class="modal-btn modal-btn-cancel" onclick="closeEditModal()">취소</button>
@@ -167,21 +185,86 @@
   <div class="kf-menu-header"><a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
   <a href="index.html" class="kf-menu-item">🏠 홈</a>
   <a href="agri_map.html" class="kf-menu-item">🗺️ 전국농약사</a>
-  <a href="map.html" class="kf-menu-item">📍 농약사 지도</a>
+  <a href="agri_map.html" class="kf-menu-item">📍 농약사 지도</a>
   <a href="mfg.html" class="kf-menu-item">🏭 제조·공급업체</a>
   <a href="news_sub.html" class="kf-menu-item">📰 관련소식</a>
   <a href="links.html" class="kf-menu-item">🔗 농업관련 사이트</a>
 </div>
 
 <script src="static/pesticide_data.js"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,clusterer"></script>
 <script>
 // 자가등록 데이터 (localStorage 사용 - 세션 내 유지)
 let userShops = JSON.parse(localStorage.getItem('kfarmai_shops') || '[]');
 let currentRegion = '전체';
 let currentKeyword = '';
 let editPwVerified = false;
+let allShops = [];
+let currentList = [];
+let kakaoMap = null;
+let geocoder = null;
+let infowindow = null;
+let clusterer = null;
+let markers = [];
+let markerById = {};
+let roadviewClient = null;
 
 const REGIONS = ['전체','서울','경기','인천','충남','충북','전남','전북','경남','경북','강원','부산','대구','광주','대전','울산','세종','제주'];
+const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const SIDO_ALIASES = {
+  '서울': '서울특별시', '경기': '경기도', '인천': '인천광역시',
+  '충남': '충청남도', '충북': '충청북도', '전남': '전라남도',
+  '전북': '전북특별자치도', '경남': '경상남도', '경북': '경상북도',
+  '강원': '강원특별자치도', '부산': '부산광역시', '대구': '대구광역시',
+  '광주': '광주광역시', '대전': '대전광역시', '울산': '울산광역시',
+  '세종': '세종특별자치시', '제주': '제주특별자치도'
+};
+
+function cleanShopName(name) {
+  const cleaned = String(name || '')
+    .trim()
+    .replace(/^\((주|유|재|사)\)\s*/u, '')
+    .replace(/^\(([^()]+)\)$/u, '$1')
+    .replace(/^\(\s*(?=[가-힣A-Za-z0-9])/u, '')
+    .trim();
+  return cleaned.includes('(') ? cleaned : cleaned.replace(/\s*\)$/u, '').trim();
+}
+
+function escapeHtml(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getInitials(text) {
+  return String(text || '').split('').map(ch => {
+    const code = ch.charCodeAt(0) - 44032;
+    if (code >= 0 && code <= 11171) return CHO[Math.floor(code / 588)];
+    return ch;
+  }).join('');
+}
+
+function normalizeText(text) {
+  return String(text || '').toLowerCase().replace(/\s+/g, '');
+}
+
+function normalizeSido(value) {
+  const raw = String(value || '').trim();
+  if (!raw) return '';
+  const first = raw.split(/\s+/)[0];
+  return SIDO_ALIASES[first] || first;
+}
+
+function itemMatchesKeyword(item, keyword) {
+  if (!keyword) return true;
+  const needle = normalizeText(keyword);
+  const haystack = normalizeText([item.name, item.addr, item.tel, item.item].join(' '));
+  const initials = normalizeText(getInitials(item.name));
+  return haystack.includes(needle) || initials.includes(needle);
+}
 
 // 지역 탭 생성
 function buildRegionTabs() {
@@ -190,34 +273,57 @@ function buildRegionTabs() {
     const btn = document.createElement('button');
     btn.className = 'rtab' + (r === '전체' ? ' active' : '');
     btn.textContent = r;
-    btn.onclick = () => { currentRegion = r; document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderList(); };
+    btn.onclick = () => {
+      currentRegion = r;
+      document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      renderAll(true);
+    };
     wrap.appendChild(btn);
   });
 }
 
 // 공공데이터 + 자가등록 통합
 function getAllShops() {
-  const pub = (typeof data !== 'undefined' ? data : []).map(d => ({
-    name: d.name, addr: d.addr, tel: d.tel, sido: d.sido, source: 'public', pw: ''
+  const pub = (typeof data !== 'undefined' ? data : []).map((d, idx) => ({
+    id: 'public-' + idx,
+    name: cleanShopName(d.name),
+    addr: d.addr || '',
+    tel: d.tel || '',
+    sido: normalizeSido(d.sido || d.addr),
+    item: d.item || '농약',
+    lat: Number(d.lat || 0),
+    lot: Number(d.lot || 0),
+    source: 'public',
+    pw: ''
   }));
-  return [...pub, ...userShops];
+  const user = userShops.map((s, idx) => ({
+    ...s,
+    id: 'user-' + idx,
+    name: cleanShopName(s.name),
+    sido: normalizeSido(s.sido || s.addr),
+    lat: Number(s.lat || 0),
+    lot: Number(s.lot || 0),
+    userIdx: idx
+  }));
+  return [...pub, ...user];
 }
 
 function filterShops() {
-  let list = getAllShops();
+  let list = allShops;
   if (currentRegion !== '전체') {
-    list = list.filter(d => d.sido && d.sido.includes(currentRegion) || d.addr && d.addr.includes(currentRegion));
+    const targetSido = SIDO_ALIASES[currentRegion] || currentRegion;
+    list = list.filter(d => d.sido === targetSido || (d.addr && d.addr.includes(currentRegion)));
   }
   if (currentKeyword) {
-    list = list.filter(d => d.name.includes(currentKeyword) || d.addr.includes(currentKeyword));
+    list = list.filter(d => itemMatchesKeyword(d, currentKeyword));
   }
   // 가나다순 정렬
   list.sort((a,b) => a.name.localeCompare(b.name, 'ko'));
   return list;
 }
 
-function renderList() {
-  const list = filterShops();
+function renderList(list) {
   const container = document.getElementById('shopList');
   document.getElementById('listCount').textContent = list.length + '개 농약사';
 
@@ -228,37 +334,169 @@ function renderList() {
 
   let html = '';
   let lastAlpha = '';
-  list.forEach((shop, idx) => {
+  list.forEach((shop) => {
     const first = shop.name.charAt(0);
     if (first !== lastAlpha) {
       html += `<div style="padding:8px 16px;background:#f7f7f5;font-size:12px;font-weight:700;color:#444;border-bottom:1px solid #e8e8e8;">${first}</div>`;
       lastAlpha = first;
     }
     const isUser = shop.source === 'user';
-    const userIdx = isUser ? userShops.findIndex(s=>s.name===shop.name&&s.addr===shop.addr) : -1;
-    html += `<div class="shop-item">
+    const userIdx = isUser ? shop.userIdx : -1;
+    html += `<div class="shop-item" data-shop-id="${shop.id}">
       <div class="shop-alpha">${first}</div>
       <div style="flex:1;">
-        <div class="shop-name">${shop.name}${isUser?'<span class="shop-tag user">자가등록</span>':''}</div>
+        <div class="shop-name">${escapeHtml(shop.name)}${isUser?'<span class="shop-tag user">자가등록</span>':''}</div>
         <div class="shop-info">
-          ${shop.addr?`📍 ${shop.addr}<br>`:''}
-          ${shop.tel?`📞 ${shop.tel}`:''}
+          ${shop.addr?`📍 ${escapeHtml(shop.addr)}<br>`:''}
+          ${shop.tel?`📞 ${escapeHtml(shop.tel)}`:''}
         </div>
       </div>
-      ${isUser?`<button onclick="openEditModal(${userIdx})" style="flex-shrink:0;background:none;border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;color:#666;">수정</button>`:''}
+      ${isUser?`<button onclick="event.stopPropagation();openEditModal(${userIdx})" style="flex-shrink:0;background:none;border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;color:#666;">수정</button>`:''}
     </div>`;
   });
   container.innerHTML = html;
+  container.querySelectorAll('.shop-item').forEach(el => {
+    el.addEventListener('click', () => focusShop(el.dataset.shopId, true));
+  });
 }
 
-function doSearch() { currentKeyword = document.getElementById('keyword').value.trim(); renderList(); }
-function resetAll() { currentKeyword=''; document.getElementById('keyword').value=''; currentRegion='전체'; document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active')); document.querySelector('.rtab').classList.add('active'); renderList(); }
+function clearMarkers() {
+  if (clusterer) clusterer.clear();
+  markers.forEach(marker => marker.setMap(null));
+  markers = [];
+  markerById = {};
+  if (infowindow) infowindow.close();
+}
+
+function getInfoContent(shop) {
+  return `<div style="padding:10px;font-size:13px;min-width:180px;line-height:1.8;">
+    <b style="color:#1e6b2e;">${escapeHtml(shop.name)}</b><br>
+    <span style="font-size:12px;color:#666;">${escapeHtml(shop.addr)}</span><br>
+    ${shop.tel ? `📞 ${escapeHtml(shop.tel)}` : ''}
+  </div>`;
+}
+
+function addMarker(shop) {
+  if (!shop.lat || !shop.lot) return null;
+  const pos = new kakao.maps.LatLng(shop.lat, shop.lot);
+  const marker = new kakao.maps.Marker({ map: kakaoMap, position: pos });
+  kakao.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(getInfoContent(shop));
+    infowindow.open(kakaoMap, marker);
+    showRoadview(shop.lat, shop.lot);
+  });
+  markers.push(marker);
+  markerById[shop.id] = marker;
+  return marker;
+}
+
+function fitMapToBounds(list) {
+  const withCoords = list.filter(shop => shop.lat && shop.lot);
+  if (!withCoords.length) return;
+  if (withCoords.length === 1) {
+    kakaoMap.setCenter(new kakao.maps.LatLng(withCoords[0].lat, withCoords[0].lot));
+    kakaoMap.setLevel(5);
+    return;
+  }
+  const bounds = new kakao.maps.LatLngBounds();
+  withCoords.forEach(shop => bounds.extend(new kakao.maps.LatLng(shop.lat, shop.lot)));
+  kakaoMap.setBounds(bounds);
+}
+
+function renderMap(list, moveMap) {
+  if (!kakaoMap) return;
+  clearMarkers();
+  const mapTargets = list.filter(shop => shop.lat && shop.lot);
+  mapTargets.forEach(addMarker);
+  if (clusterer) clusterer.clear();
+  clusterer = new kakao.maps.MarkerClusterer({
+    map: kakaoMap,
+    averageCenter: true,
+    minLevel: 6
+  });
+  clusterer.addMarkers(markers);
+  document.getElementById('mapStatus').textContent = mapTargets.length + '개 위치 표시';
+  if (moveMap) fitMapToBounds(mapTargets);
+}
+
+function renderAll(moveMap) {
+  currentList = filterShops();
+  renderList(currentList);
+  renderMap(currentList, moveMap);
+}
+
+function doSearch() {
+  currentKeyword = document.getElementById('keyword').value.trim();
+  renderAll(true);
+}
+
+function resetAll() {
+  currentKeyword='';
+  document.getElementById('keyword').value='';
+  currentRegion='전체';
+  document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.rtab').classList.add('active');
+  document.getElementById('roadviewPanel').style.display = 'none';
+  renderAll(true);
+}
+
+function geocodeShop(shop, done) {
+  if (shop.lat && shop.lot) {
+    done(shop);
+    return;
+  }
+  if (!geocoder || !shop.addr) {
+    alert('이 농약사는 지도 좌표가 없습니다.');
+    return;
+  }
+  geocoder.addressSearch(shop.addr, function(result, status) {
+    if (status === kakao.maps.services.Status.OK && result[0]) {
+      shop.lat = Number(result[0].y);
+      shop.lot = Number(result[0].x);
+      done(shop);
+    } else {
+      alert('이 농약사의 주소를 지도에서 찾지 못했습니다.');
+    }
+  });
+}
+
+// search_result.html의 로드뷰 처리 방식 적용
+function showRoadview(lat, lng) {
+  const panel = document.getElementById('roadviewPanel');
+  panel.style.display = 'block';
+  panel.innerHTML = '';
+  if (!roadviewClient) roadviewClient = new kakao.maps.RoadviewClient();
+  const roadview = new kakao.maps.Roadview(panel);
+  roadviewClient.getNearestPanoId(new kakao.maps.LatLng(lat, lng), 50, function(panoId) {
+    if (panoId) {
+      roadview.setPanoId(panoId, new kakao.maps.LatLng(lat, lng));
+    } else {
+      panel.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:13px;background:#f5f5f5;border-radius:8px;">이 위치의 로드뷰를 제공하지 않습니다.</div>';
+    }
+  });
+}
+
+function focusShop(shopId, scrollToMap) {
+  const shop = currentList.find(item => item.id === shopId) || allShops.find(item => item.id === shopId);
+  if (!shop) return;
+  geocodeShop(shop, function(target) {
+    if (!markerById[target.id]) addMarker(target);
+    kakaoMap.setCenter(new kakao.maps.LatLng(target.lat, target.lot));
+    kakaoMap.setLevel(4);
+    if (markerById[target.id]) {
+      infowindow.setContent(getInfoContent(target));
+      infowindow.open(kakaoMap, markerById[target.id]);
+    }
+    showRoadview(target.lat, target.lot);
+    if (scrollToMap) document.getElementById('mapPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+}
 
 // 등록 모달
 function openRegModal() { document.getElementById('regModal').classList.add('show'); document.getElementById('regForm').style.display='block'; document.getElementById('regSuccess').style.display='none'; }
 function closeRegModal() { document.getElementById('regModal').classList.remove('show'); }
 function submitReg() {
-  const name = document.getElementById('regName').value.trim();
+  const name = cleanShopName(document.getElementById('regName').value);
   const addr = document.getElementById('regAddr').value.trim();
   const tel = document.getElementById('regTel').value.trim();
   const sido = document.getElementById('regSido').value;
@@ -270,7 +508,8 @@ function submitReg() {
   localStorage.setItem('kfarmai_shops', JSON.stringify(userShops));
   document.getElementById('regForm').style.display='none';
   document.getElementById('regSuccess').style.display='block';
-  renderList();
+  allShops = getAllShops();
+  renderAll(true);
 }
 
 // 수정 모달
@@ -295,12 +534,13 @@ function verifyPw() {
     document.getElementById('editTel').value = userShops[idx].tel;
     document.getElementById('editBtn').textContent='저장하기';
   } else {
-    userShops[idx].name = document.getElementById('editName').value.trim();
+    userShops[idx].name = cleanShopName(document.getElementById('editName').value);
     userShops[idx].addr = document.getElementById('editAddr').value.trim();
     userShops[idx].tel = document.getElementById('editTel').value.trim();
     localStorage.setItem('kfarmai_shops', JSON.stringify(userShops));
     closeEditModal();
-    renderList();
+    allShops = getAllShops();
+    renderAll(true);
     alert('수정되었습니다.');
   }
 }
@@ -309,7 +549,20 @@ function openMenu() { document.getElementById('overlay').classList.add('open'); 
 function closeMenu() { document.getElementById('overlay').classList.remove('open'); document.getElementById('menu').classList.remove('open'); }
 
 buildRegionTabs();
-renderList();
+allShops = getAllShops();
+kakao.maps.load(function() {
+  const container = document.getElementById('agriMap');
+  kakaoMap = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(36.5, 127.8),
+    level: 13
+  });
+  geocoder = new kakao.maps.services.Geocoder();
+  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+  kakao.maps.event.addListener(kakaoMap, 'click', function() {
+    infowindow.close();
+  });
+  renderAll(false);
+});
 </script>
 </body>
 </html>
