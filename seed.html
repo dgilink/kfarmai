@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -16,9 +16,46 @@
 </head>
 <body>
 
+<svg class="kf-icon-sprite" width="0" height="0" style="position:absolute;left:-9999px;overflow:hidden;" aria-hidden="true" focusable="false">
+  <symbol id="nav-home" viewBox="0 0 24 24">
+    <path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" fill="currentColor" opacity=".18"/>
+    <path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="ql-map" viewBox="0 0 48 48">
+    <rect width="48" height="48" rx="14" fill="#CCFBF1"/>
+    <path d="M8 14 L18 12 L30 14 L40 12 L40 36 L30 38 L18 36 L8 38 Z" fill="#5EEAD4"/>
+    <path d="M18 12 L18 36 M30 14 L30 38" stroke="#0D9488" stroke-width="1.5" fill="none"/>
+    <path d="M24 16 c-3 0-5 2-5 5 0 4 5 9 5 9 s5-5 5-9 c0-3-2-5-5-5z" fill="#fff"/>
+    <circle cx="24" cy="21" r="2" fill="#DC2626"/>
+  </symbol>
+  <symbol id="st-soil" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="22" fill="#EAD7C5"/>
+    <ellipse cx="24" cy="30" rx="16" ry="6" fill="#8B5E34"/>
+    <circle cx="16" cy="22" r="3" fill="#5C3D24"/><circle cx="28" cy="20" r="2.5" fill="#5C3D24"/><circle cx="22" cy="24" r="2" fill="#5C3D24"/><circle cx="32" cy="26" r="2.5" fill="#5C3D24"/>
+  </symbol>
+  <symbol id="st-seed" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="22" fill="#DCFCE7"/>
+    <ellipse cx="24" cy="32" rx="10" ry="3" fill="#A78B6E"/>
+    <path d="M24 14 c-3 5-3 10 0 16 c3-6 3-11 0-16z" fill="#22C55E"/>
+    <path d="M24 22 c-4 0-6 3-6 6 M24 22 c4 0 6 3 6 6" stroke="#15803D" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="st-chem" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="22" fill="#EDE9FE"/>
+    <path d="M20 10 v10 l-6 14 a3 3 0 0 0 3 4 h14 a3 3 0 0 0 3-4 l-6-14 V10 z" fill="#fff" stroke="#7C3AED" stroke-width="1.8"/>
+    <path d="M16 28 h16" stroke="#7C3AED" stroke-width="1.5"/>
+    <circle cx="20" cy="32" r="1.5" fill="#A78BFA"/><circle cx="25" cy="34" r="1.5" fill="#A78BFA"/>
+    <rect x="20" y="8" width="8" height="3" rx="1" fill="#7C3AED"/>
+  </symbol>
+  <symbol id="st-fert" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="22" fill="#DBEAFE"/>
+    <path d="M24 10 c-6 8-10 14-10 20 a10 10 0 0 0 20 0 c0-6-4-12-10-20z" fill="#38BDF8"/>
+    <path d="M20 26 c0 4 2 6 5 7" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>
+  </symbol>
+</svg>
+
 <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #f0f0f0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
   <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-    <img src="logo.webp" alt="kFarmAI" style="width:36px;height:36px;object-fit:contain;">
+    <img src="logo.png" alt="kFarmAI" style="width:36px;height:36px;object-fit:contain;">
     <div style="line-height:1;">
       <div style="font-size:18px;font-weight:700;letter-spacing:-0.5px;"><span style="color:#111;">kFarm</span><span style="color:#FF6B2B;">AI</span></div>
       <div style="font-size:9px;letter-spacing:1.5px;color:#9ca3af;font-weight:700;text-transform:uppercase;margin-top:1px;">AI FARM COMMUNITY</div>
@@ -47,20 +84,20 @@
   출처: 한국종자협회 (kosaseed.or.kr) | © 2026 kfarmai.com
 </div>
 
-<nav class="kf-bottom-nav">
-  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
-  <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사 찾기</span></a>
-  <a href="santo.html" class="kf-nav-item"><span class="kf-nav-icon">🌱</span><span>상토</span></a>
-  <a href="seed.html" class="kf-nav-item active"><span class="kf-nav-icon">🌾</span><span>종자</span></a>
-  <a href="cpa.html" class="kf-nav-item"><span class="kf-nav-icon">🧪</span><span>작물보호제</span></a>
-  <a href="fert.html" class="kf-nav-item"><span class="kf-nav-icon">🌿</span><span>비료</span></a>
+<nav class="kf-bottom-nav material-nav">
+  <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon"><svg><use href="#nav-home"/></svg></span><span>홈</span></a>
+  <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon"><svg><use href="#ql-map"/></svg></span><span>농약사 찾기</span></a>
+  <a href="santo.html" class="kf-nav-item"><span class="kf-nav-icon"><svg><use href="#st-soil"/></svg></span><span>상토</span></a>
+  <a href="seed.html" class="kf-nav-item active"><span class="kf-nav-icon"><svg><use href="#st-seed"/></svg></span><span>종자</span></a>
+  <a href="cpa.html" class="kf-nav-item"><span class="kf-nav-icon"><svg><use href="#st-chem"/></svg></span><span>작물보호제</span></a>
+  <a href="fert.html" class="kf-nav-item"><span class="kf-nav-icon"><svg><use href="#st-fert"/></svg></span><span>비료</span></a>
 </nav>
 
 <div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
 <div class="kf-menu" id="menu">
   <div class="kf-menu-header">
     <a href="index.html" class="kf-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-      <img src="logo.webp" alt="kFarmAI" style="width:36px;height:36px;object-fit:contain;">
+      <img src="logo.png" alt="kFarmAI" style="width:36px;height:36px;object-fit:contain;">
       <span style="line-height:1;"><span style="display:block;font-size:18px;font-weight:700;color:#111;">kFarm<span style="color:#FF6B2B;">AI</span></span><span style="display:block;font-size:9px;letter-spacing:1.5px;color:#9ca3af;font-weight:700;">AI FARM COMMUNITY</span></span>
     </a>
     <button class="kf-menu-close" onclick="closeMenu()">✕</button>

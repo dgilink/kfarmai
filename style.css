@@ -69,6 +69,42 @@ button { font-family: 'Noto Sans KR', sans-serif; }
 }
 .kf-nav-item.active { color: var(--green); }
 .kf-nav-icon { font-size: 19px; }
+.kf-bottom-nav.material-nav {
+  gap: 6px;
+  padding: 7px 8px 8px;
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(12px);
+}
+.kf-bottom-nav.material-nav .kf-nav-item {
+  min-width: 0;
+  padding: 7px 2px 6px;
+  border-radius: 12px;
+  color: #6b7280;
+  font-size: 9px;
+  font-weight: 700;
+}
+.kf-bottom-nav.material-nav .kf-nav-item.active {
+  background: rgba(29,158,117,0.11);
+  color: #1D9E75;
+}
+.kf-bottom-nav.material-nav .kf-nav-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: currentColor;
+}
+.kf-bottom-nav.material-nav .kf-nav-item.active .kf-nav-icon {
+  background: white;
+}
+.kf-bottom-nav.material-nav svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
 
 /* 검색바 */
 .kf-search-bar {
