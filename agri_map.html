@@ -9,19 +9,19 @@
 <title>전국농약사 - kfarmai</title>
 <link rel="stylesheet" href="style.css">
 <style>
-html, body { height:100%; }
-body { min-height:100vh;display:flex;flex-direction:column;overflow:hidden; }
-.fixed-map-shell { flex:0 0 auto;background:white; }
+html, body { min-height:100%; }
+body { min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y; }
+.fixed-map-shell { background:white; }
 .region-tab-wrap { overflow-x:auto;scrollbar-width:none;padding:12px 16px 0; }
 .region-tab-wrap::-webkit-scrollbar { display:none; }
 .region-tabs { display:flex;gap:6px;min-width:max-content; }
 .rtab { flex-shrink:0;padding:6px 14px;border-radius:16px;border:1.5px solid #e8e8e8;background:white;font-size:12px;font-weight:500;cursor:pointer;color:#666;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s; }
 .rtab.active { background:#111;color:white;border-color:#111; }
 
-.list-wrap { flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:white; }
-.list-header { flex:0 0 auto;padding:10px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center; }
+.list-wrap { background:white; }
+.list-header { padding:10px 16px;background:#f7f7f5;border-bottom:1px solid #e8e8e8;display:flex;justify-content:space-between;align-items:center; }
 .list-count { font-size:13px;color:#666; }
-.map-panel { margin:10px 16px 12px;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.06);touch-action:pan-y; }
+.map-panel { margin:10px 20px 12px 16px;border:1px solid #e8e8e8;border-radius:14px;overflow:hidden;background:white;box-shadow:0 8px 24px rgba(0,0,0,0.06);touch-action:pan-y; }
 .map-panel-title { padding:10px 14px;background:#1e6b2e;color:white;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px; }
 #agriMap { width:100%;height:250px;max-height:250px;background:#eef7f0;touch-action:pan-y; }
 .roadview-wrap { position:relative;display:none;border-top:1px solid #e8e8e8;touch-action:pan-y; }
@@ -37,15 +37,13 @@ body { min-height:100vh;display:flex;flex-direction:column;overflow:hidden; }
 .shop-info { font-size:11px;color:#888;line-height:1.6; }
 .shop-tag { display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#eaf5ec;color:#1e6b2e;font-weight:600;margin-left:4px; }
 .shop-tag.user { background:#fff3e0;color:#e65100; }
-#shopList { flex:1 1 auto;min-height:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;padding-bottom:120px;touch-action:pan-y; }
+#shopList { padding-bottom:120px;touch-action:pan-y; }
 
 @media (max-width:480px) {
-  body { height:100dvh; }
-  header { flex:0 0 auto; }
+  body { min-height:100dvh;overflow-y:auto; }
   #agriMap { height:250px;max-height:250px; }
   #roadviewPanel { height:220px;max-height:220px; }
-  .list-wrap { height:calc(100dvh - 520px);min-height:150px; }
-  body.roadview-open .list-wrap { height:calc(100dvh - 740px);min-height:120px; }
+  .map-panel { margin-right:20px; }
 }
 
 /* 자가등록 플로팅 버튼 */
