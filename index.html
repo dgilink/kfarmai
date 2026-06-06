@@ -25,7 +25,6 @@
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", "Pretendard", sans-serif;
     background: #0a0a0a;
     color: var(--text);
-    overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
   }
   body { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
@@ -118,7 +117,10 @@
     flex: 0 0 100%;
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
     padding: 12px 14px 100px;
   }
   .pages.dragging { transition: none; }
@@ -956,15 +958,15 @@
   const total = 3;
   const MIN_SWIPE = 60;
 
-  function go(i){
+  function go(i, resetScroll = false){
     current = Math.max(0, Math.min(total-1, i));
     pages.style.transform = `translateX(-${current * 100}%)`;
     tabs.forEach((t,k)=>t.classList.toggle('active', k===current));
     pdots.forEach((d,k)=>d.classList.toggle('on', k===current));
     const cur = pages.children[current];
-    if(cur) cur.scrollTop = 0;
+    if(resetScroll && cur) cur.scrollTop = 0;
   }
-  tabs.forEach(t => t.addEventListener('click', () => go(parseInt(t.dataset.i))));
+  tabs.forEach(t => t.addEventListener('click', () => go(parseInt(t.dataset.i), true)));
 
   // Touch swipe
   let startX = 0, startY = 0, dx = 0, dragging = false, axis = null;
@@ -976,21 +978,34 @@
     if(!dragging) return;
     const cx = e.touches[0].clientX - startX;
     const cy = e.touches[0].clientY - startY;
-    if(!axis && (Math.abs(cx) > 8 || Math.abs(cy) > 8)) axis = Math.abs(cx) > Math.abs(cy) ? 'x' : 'y';
+    const absX = Math.abs(cx);
+    const absY = Math.abs(cy);
+    if(!axis && (absX > 8 || absY > 8)){
+      if(absY > absX){
+        axis = 'y';
+        dragging = false;
+        dx = 0;
+        pages.classList.remove('dragging');
+        return;
+      }
+      axis = 'x';
+    }
     if(axis === 'x'){
+      e.preventDefault();
       dx = cx;
       pages.classList.add('dragging');
       const w = wrap.clientWidth;
       pages.style.transform = `translateX(${-current * 100 + (dx / w) * 100}%)`;
     }
-  }, {passive:true});
+  }, {passive:false});
   wrap.addEventListener('touchend', () => {
     if(!dragging) return;
     dragging = false;
     pages.classList.remove('dragging');
-    if(axis === 'x' && Math.abs(dx) >= MIN_SWIPE) go(current + (dx < 0 ? 1 : -1));
-    else go(current);
+    if(axis === 'x' && Math.abs(dx) >= MIN_SWIPE) go(current + (dx < 0 ? 1 : -1), true);
+    else if(axis === 'x') go(current);
     dx = 0;
+    axis = null;
   });
 
   // Mouse drag (desktop preview)
@@ -1007,7 +1022,7 @@
     if(!mdown) return;
     mdown = false;
     pages.classList.remove('dragging');
-    if(Math.abs(dx) >= MIN_SWIPE) go(current + (dx < 0 ? 1 : -1));
+    if(Math.abs(dx) >= MIN_SWIPE) go(current + (dx < 0 ? 1 : -1), true);
     else go(current);
     dx = 0;
   });
