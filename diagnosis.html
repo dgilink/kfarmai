@@ -2,456 +2,563 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>AI 진단 — kFarmAI</title>
+<meta name="description" content="kFarmAI AI 진단 — 사진과 증상으로 작물의 병해충·영양 상태를 진단합니다.">
+<meta name="theme-color" content="#0B1410">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; }
-body {
-  height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
-  background: #F5F5F5; color: #1a1a1a; -webkit-font-smoothing: antialiased;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    /* kFarmAI base (header) */
+    --green: #1D9E75;
+    --green-dark: #157A5A;
+    --orange: #FF6B2B;
+    --border: #ECEEF2;
+    --pill: #F1F3F5;
+    --text: #1A1A1A;
+    --sub: #6B7280;
 
-/* ── Header ─────────────────────────── */
-.header {
-  flex-shrink: 0; height: 52px; background: #1B5E20; padding: 0 16px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.logo { color: #fff; font-size: 18px; font-weight: 500; letter-spacing: -.3px; }
-.logo .ai { color: #A5D6A7; }
-.hdr-right { display: flex; align-items: center; gap: 14px; }
-.lang { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; }
-.lang span { font-size: 13px; font-weight: 500; color: rgba(255,255,255,.55); }
-.lang .on { color: #fff; }
-.lang .sep { color: rgba(255,255,255,.25) !important; }
-.notif { background: none; border: none; cursor: pointer; color: rgba(255,255,255,.8); padding: 4px; line-height: 0; }
+    /* AI · Tech · Agri palette (diagnosis surface) */
+    --bg-dark: #0B1410;
+    --surface: #14201B;
+    --surface-2: #1B2A23;
+    --line-dark: rgba(255,255,255,.08);
+    --lime: #B6FF3C;          /* AI primary */
+    --lime-2: #00E5A0;        /* green tech */
+    --cyan: #22D3EE;          /* data accent */
+    --txt-on-dark: #E8F5EE;
+    --muted-dark: #7A8B82;
+    --danger: #FF5577;
+    --danger-soft: rgba(255,85,119,.12);
 
-/* ── Tab bar ────────────────────────── */
-.tabbar { flex-shrink: 0; background: #fff; display: flex; border-bottom: 1px solid #E0E0E0; }
-.tab {
-  flex: 1; padding: 11px 0; text-align: center; font-size: 14px; font-weight: 500;
-  color: #9E9E9E; cursor: pointer; user-select: none;
-  border-bottom: 2px solid transparent; margin-bottom: -1px;
-  transition: color .15s, border-color .15s;
-}
-.tab.active { color: #2E7D32; border-bottom-color: #2E7D32; }
+    --grad-ai: linear-gradient(135deg, #B6FF3C 0%, #00E5A0 55%, #22D3EE 100%);
+    --grad-card: linear-gradient(160deg, #18261F 0%, #0F1A15 100%);
+    --glow-lime: 0 0 22px rgba(182,255,60,.35);
+  }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", "Pretendard", sans-serif;
+    background: #050807;
+    color: var(--text);
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { display: flex; justify-content: center; align-items: center; min-height: 100dvh; }
 
-/* ── Scroll area ────────────────────── */
-.scroll-area {
-  flex: 1; min-height: 0; overflow-y: auto; background: #F5F5F5;
-  padding: 10px 12px 12px; display: flex; flex-direction: column;
-  -webkit-overflow-scrolling: touch; scrollbar-width: none;
-}
-.scroll-area::-webkit-scrollbar { display: none; }
+  .phone {
+    width: 100%; max-width: 480px;
+    height: 100dvh; max-height: 920px;
+    background: var(--bg-dark);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  @media (min-width: 520px) {
+    .phone { border-radius: 36px; height: 92vh; box-shadow: 0 24px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.04); }
+  }
 
-/* Pull-to-refresh */
-.ptr {
-  flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 8px;
-  height: 0; overflow: hidden; color: #2E7D32; font-size: 13px; font-weight: 500;
-  transition: height .2s ease;
-}
-.ptr.visible { height: 44px; }
-.ptr-icon { font-size: 18px; transition: transform .3s ease; display: inline-block; }
-.ptr-icon.flip { transform: rotate(180deg); }
-.ptr-spin {
-  width: 18px; height: 18px; border: 2.5px solid #C8E6C9; border-top-color: #2E7D32;
-  border-radius: 50%; animation: spin .75s linear infinite; display: none;
-}
-.ptr-spin.show { display: block; }
-@keyframes spin { to { transform: rotate(360deg); } }
+  /* ===== Header (white, kFarmAI 통일) ===== */
+  .header {
+    flex-shrink: 0;
+    background: #fff;
+    padding: 10px 14px 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+  }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; }
+  .brand { display: flex; align-items: center; gap: 8px; }
+  .brand img { width: 36px; height: 36px; object-fit: contain; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1; gap: 4px; }
+  .brand-name {
+    font-size: 22px; font-weight: 800; letter-spacing: -0.6px; color: #1A2332;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Pretendard", sans-serif;
+  }
+  .brand-name .ai { color: var(--orange); margin-left: 3px; }
+  .brand-sub { font-size: 8.5px; font-weight: 700; color: #6B7B8C; letter-spacing: 2.4px; }
+  .search {
+    display: flex; align-items: center; gap: 8px;
+    background: #F3F4F6; border-radius: 12px;
+    padding: 10px 12px; margin: 4px 0 8px;
+  }
+  .search svg { width: 18px; height: 18px; color: var(--green); flex-shrink: 0; }
+  .search input { flex: 1; border: none; background: transparent; outline: none; font-size: 13px; color: #111; }
+  .search input::placeholder { color: #9CA3AF; }
+  .bell { position: relative; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .bell svg { width: 22px; height: 22px; color: #333; }
+  .bell::after {
+    content: ''; position: absolute; top: 3px; right: 3px;
+    width: 7px; height: 7px; border-radius: 50%; background: var(--orange); border: 1.5px solid #fff;
+  }
 
-/* ── Diagnosis card ─────────────────── */
-.diag-card {
-  flex: 1; min-height: 0; border: 1.5px solid #4CAF50; border-radius: 14px;
-  background: #fff; display: flex; flex-direction: column; position: relative;
-}
-.card-hd {
-  flex-shrink: 0; background: #E8F5E9; border-bottom: 1px solid #C8E6C9;
-  border-radius: 13px 13px 0 0; padding: 6px 12px;
-  display: flex; align-items: center; gap: 7px;
-}
-.dot { width: 6px; height: 6px; border-radius: 50%; background: #4CAF50; flex-shrink: 0; }
-.card-hd-txt { font-size: 12px; color: #1B5E20; font-weight: 500; }
+  .tabs { display: flex; gap: 6px; background: var(--pill); border-radius: 22px; padding: 4px; margin: 2px 0 10px; }
+  .tab { flex: 1; text-align: center; padding: 9px 0; font-size: 13.5px; font-weight: 700; color: #6B7280; border-radius: 18px; cursor: pointer; user-select: none; transition: all .25s; }
+  .tab.active { background: #111; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
 
-/* Loading overlay */
-.diag-overlay {
-  position: absolute; inset: 0; border-radius: 13px;
-  background: rgba(255,255,255,.88); z-index: 20;
-  display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-}
-.diag-overlay.show { display: flex; }
-.overlay-spin {
-  width: 36px; height: 36px; border: 3px solid #C8E6C9; border-top-color: #2E7D32;
-  border-radius: 50%; animation: spin .8s linear infinite;
-}
-.overlay-txt { font-size: 14px; font-weight: 600; color: #1B5E20; }
-.overlay-sub { font-size: 11px; color: #9E9E9E; }
+  /* ===== Scroll area (dark tech bg) ===== */
+  .scroll-area {
+    flex: 1; min-height: 0; overflow-y: auto;
+    background:
+      radial-gradient(80% 50% at 0% 0%, rgba(0,229,160,.10) 0%, transparent 60%),
+      radial-gradient(70% 40% at 100% 100%, rgba(34,211,238,.08) 0%, transparent 60%),
+      var(--bg-dark);
+    padding: 12px 14px 14px;
+    display: flex; flex-direction: column;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .scroll-area::-webkit-scrollbar { display: none; }
 
-/* Inner */
-.inner {
-  flex: 1; min-height: 0; padding: 12px;
-  display: flex; flex-direction: column; gap: 10px;
-}
+  /* Pull-to-refresh */
+  .ptr {
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 8px;
+    height: 0; overflow: hidden; color: var(--lime); font-size: 13px; font-weight: 600;
+    transition: height .2s ease;
+  }
+  .ptr.visible { height: 44px; }
+  .ptr-icon { font-size: 18px; transition: transform .3s ease; display: inline-block; }
+  .ptr-icon.flip { transform: rotate(180deg); }
+  .ptr-spin {
+    width: 18px; height: 18px; border: 2.5px solid rgba(182,255,60,.2); border-top-color: var(--lime);
+    border-radius: 50%; animation: spin .75s linear infinite; display: none;
+  }
+  .ptr-spin.show { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Step indicator */
-.steps { flex-shrink: 0; display: flex; align-items: flex-start; justify-content: center; }
-.step { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.step-c {
-  width: 26px; height: 26px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 600; background: #E0E0E0; color: #9E9E9E;
-  transition: background .25s, color .25s;
-}
-.step-c.on { background: #2E7D32; color: #fff; }
-.step-n { font-size: 10px; color: #BDBDBD; transition: color .25s; }
-.step-n.on { color: #2E7D32; font-weight: 600; }
-.step-line { flex: 1; height: 2px; background: #E0E0E0; margin: 12px 6px 0; min-width: 20px; max-width: 56px; }
+  /* ===== Diagnosis card ===== */
+  .diag-card {
+    flex: 1; min-height: 0;
+    background: var(--grad-card);
+    border: 1px solid rgba(182,255,60,.25);
+    border-radius: 20px;
+    display: flex; flex-direction: column;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+    overflow: hidden;
+  }
+  .diag-card::before {
+    content: ''; position: absolute; inset: 0; padding: 1px;
+    border-radius: 20px; pointer-events: none;
+    background: linear-gradient(135deg, rgba(182,255,60,.5), rgba(34,211,238,.3) 50%, transparent 80%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .card-hd {
+    flex-shrink: 0;
+    background: rgba(182,255,60,.06);
+    border-bottom: 1px solid var(--line-dark);
+    padding: 9px 14px;
+    display: flex; align-items: center; gap: 8px;
+    position: relative; z-index: 2;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--lime);
+    box-shadow: 0 0 8px var(--lime); flex-shrink: 0;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+  .card-hd-txt {
+    font-size: 11.5px; color: var(--lime); font-weight: 700;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .card-hd-tag {
+    margin-left: auto; font-size: 10px; color: var(--cyan); font-weight: 700;
+    letter-spacing: 1px; opacity: .85;
+  }
 
-/* Input view */
-#inputView { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+  /* Loading overlay */
+  .diag-overlay {
+    position: absolute; inset: 0; border-radius: 20px;
+    background: rgba(11,20,16,.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 20;
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  }
+  .diag-overlay.show { display: flex; }
+  .overlay-spin {
+    width: 44px; height: 44px; border: 3px solid rgba(182,255,60,.15); border-top-color: var(--lime);
+    border-radius: 50%; animation: spin .8s linear infinite;
+    box-shadow: var(--glow-lime);
+  }
+  .overlay-txt { font-size: 14px; font-weight: 700; color: var(--lime); letter-spacing: .3px; }
+  .overlay-sub { font-size: 11px; color: var(--muted-dark); }
 
-/* Camera area */
-.cam-wrap {
-  flex: 1; min-height: 160px; background: #1a2a1a; border-radius: 10px;
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.cam-hint {
-  position: absolute; top: 10px; left: 0; right: 0;
-  text-align: center; color: rgba(255,255,255,.65); font-size: 11.5px;
-  z-index: 5; pointer-events: none;
-}
-#camVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
-.cam-fb {
-  color: rgba(255,255,255,.7); font-size: 13px;
-  text-align: center; line-height: 1.6; padding: 20px; z-index: 2;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-}
-.guide {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  z-index: 4; pointer-events: none; overflow: hidden;
-}
-.c { position: absolute; width: 20px; height: 20px; border-style: solid; border-color: #4CAF50; border-width: 0; }
-.c-tl { top:0; left:0;   border-top-width:2.5px; border-left-width:2.5px;  border-radius:3px 0 0 0; }
-.c-tr { top:0; right:0;  border-top-width:2.5px; border-right-width:2.5px; border-radius:0 3px 0 0; }
-.c-bl { bottom:0; left:0;  border-bottom-width:2.5px; border-left-width:2.5px;  border-radius:0 0 0 3px; }
-.c-br { bottom:0; right:0; border-bottom-width:2.5px; border-right-width:2.5px; border-radius:0 0 3px 0; }
-.scan { position: absolute; left: 0; right: 0; height: 1.5px; background: #4CAF50; opacity: .7; animation: scan 2s linear infinite; }
-@keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-.cam-btns {
-  position: absolute; bottom: 12px; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: center; gap: 36px; z-index: 6;
-}
-.cam-btn {
-  width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.45);
-  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-  color: #fff; -webkit-tap-highlight-color: transparent;
-}
-.cam-btn:active { background: rgba(0,0,0,.65); }
-.shutter {
-  width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,.9);
-  background: transparent; cursor: pointer; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-}
-.shutter-in { width: 48px; height: 48px; border-radius: 50%; background: #fff; }
-.shutter:active .shutter-in { opacity: .8; }
-.img-badge {
-  position: absolute; top: 8px; right: 8px; z-index: 7;
-  background: #2E7D32; color: #fff; font-size: 11px; font-weight: 700;
-  padding: 3px 8px; border-radius: 6px; display: none;
-}
-.img-badge.show { display: block; }
+  .inner {
+    flex: 1; min-height: 0; padding: 14px;
+    display: flex; flex-direction: column; gap: 14px;
+    position: relative; z-index: 2;
+  }
 
-/* Crop selection */
-.crop-sec { flex-shrink: 0; }
-.crop-lbl-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-.crop-badge {
-  width: 20px; height: 20px; border-radius: 50%; background: #2E7D32; color: #fff;
-  font-size: 11px; font-weight: 700; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.crop-lbl { font-size: 13px; font-weight: 600; }
-.crop-opt { font-size: 11px; color: #9E9E9E; }
-.pills { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
-.pills::-webkit-scrollbar { display: none; }
-.pill {
-  flex-shrink: 0; padding: 6px 14px; border-radius: 999px;
-  border: 1px solid #E0E0E0; background: #fff; font-size: 13px; font-weight: 500; color: #555;
-  cursor: pointer; white-space: nowrap;
-  transition: background .15s, color .15s, border-color .15s;
-  -webkit-tap-highlight-color: transparent;
-}
-.pill.on { background: #2E7D32; color: #fff; border-color: #2E7D32; }
+  /* Step indicator — 2 steps */
+  .steps { flex-shrink: 0; display: flex; align-items: flex-start; justify-content: center; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .step-c {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+    background: rgba(255,255,255,.06); color: var(--muted-dark);
+    border: 1px solid var(--line-dark);
+    transition: all .3s;
+  }
+  .step-c.on {
+    background: var(--grad-ai); color: #0B1410; border-color: transparent;
+    box-shadow: var(--glow-lime);
+  }
+  .step-n { font-size: 10px; color: var(--muted-dark); font-weight: 700; letter-spacing: .5px; transition: color .25s; }
+  .step-n.on { color: var(--lime); }
+  .step-line { flex: 0 0 80px; height: 2px; background: rgba(255,255,255,.08); margin: 13px 10px 0; border-radius: 2px; overflow: hidden; }
+  .step-line.on { background: var(--grad-ai); box-shadow: 0 0 8px rgba(182,255,60,.4); }
 
-/* Symptom section */
-.symptom-wrap { flex-shrink: 0; }
-.symptom-label {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 600; margin-bottom: 8px;
-}
-.num-badge {
-  width: 20px; height: 20px; border-radius: 50%; background: #2E7D32; color: #fff;
-  font-size: 11px; font-weight: 700; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.optional { font-size: 11px; color: #9E9E9E; font-weight: 400; }
-#symptomInput {
-  display: block; width: 100%;
-  border: 1px solid #C8E6C9; border-radius: 8px;
-  padding: 10px 12px; font-size: 14px; font-family: inherit;
-  resize: none; outline: none; color: #1a1a1a; background: #fff;
-  line-height: 1.5; overflow: hidden;
-  transition: border-color .15s;
-}
-#symptomInput:focus { border-color: #2E7D32; }
-#symptomInput::placeholder { color: #BDBDBD; }
-.char-count { text-align: right; font-size: 11px; color: #9E9E9E; margin-top: 4px; }
+  /* Input view */
+  #inputView { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 14px; }
 
-/* Start button */
-.diag-btn-wrap { flex-shrink: 0; position: sticky; bottom: 0; padding-top: 4px; }
-.diag-btn {
-  width: 100%; background: #1B5E20; border: none; border-radius: 12px; padding: 14px;
-  cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px;
-  -webkit-tap-highlight-color: transparent; transition: background .15s;
-}
-.diag-btn:active:not(:disabled) { background: #154a18; }
-.diag-btn:disabled { opacity: .65; cursor: not-allowed; }
-.diag-btn-main { color: #fff; font-size: 16px; font-weight: 500; font-family: inherit; display: flex; align-items: center; gap: 8px; }
-.diag-btn-sub  { color: rgba(255,255,255,.75); font-size: 11px; font-family: inherit; }
-.btn-spin {
-  display: none; width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,.35); border-top-color: #fff;
-  border-radius: 50%; animation: spin .75s linear infinite; flex-shrink: 0;
-}
-.btn-spin.show { display: inline-block; }
+  /* Camera area */
+  .cam-wrap {
+    flex: 1; min-height: 220px;
+    background: #06100C;
+    border-radius: 16px;
+    position: relative; overflow: hidden;
+    border: 1px solid var(--line-dark);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cam-wrap::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      linear-gradient(rgba(182,255,60,.04) 1px, transparent 1px) 0 0/100% 24px,
+      linear-gradient(90deg, rgba(182,255,60,.04) 1px, transparent 1px) 0 0/24px 100%;
+  }
+  .cam-hint {
+    position: absolute; top: 12px; left: 0; right: 0;
+    text-align: center; color: rgba(232,245,238,.7); font-size: 11.5px; font-weight: 600;
+    letter-spacing: .3px;
+    z-index: 5; pointer-events: none;
+  }
+  #camVideo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+  .cam-fb {
+    color: rgba(232,245,238,.65); font-size: 13px;
+    text-align: center; line-height: 1.6; padding: 20px; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .guide {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 4; pointer-events: none; overflow: hidden;
+  }
+  .c { position: absolute; width: 24px; height: 24px; border-style: solid; border-color: var(--lime); border-width: 0; filter: drop-shadow(0 0 4px rgba(182,255,60,.7)); }
+  .c-tl { top:0; left:0;   border-top-width:3px; border-left-width:3px;  border-radius:4px 0 0 0; }
+  .c-tr { top:0; right:0;  border-top-width:3px; border-right-width:3px; border-radius:0 4px 0 0; }
+  .c-bl { bottom:0; left:0;  border-bottom-width:3px; border-left-width:3px;  border-radius:0 0 0 4px; }
+  .c-br { bottom:0; right:0; border-bottom-width:3px; border-right-width:3px; border-radius:0 0 4px 0; }
+  .scan {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--lime), var(--cyan), transparent);
+    opacity: .9; animation: scan 2.2s linear infinite;
+    box-shadow: 0 0 12px var(--lime);
+  }
+  @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+  .cam-btns {
+    position: absolute; bottom: 14px; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: center; gap: 36px; z-index: 6;
+  }
+  .cam-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(11,20,16,.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(182,255,60,.25); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--lime);
+  }
+  .cam-btn:active { background: rgba(182,255,60,.15); }
+  .shutter {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 3px solid var(--lime); background: transparent; cursor: pointer; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--glow-lime);
+  }
+  .shutter-in { width: 50px; height: 50px; border-radius: 50%; background: var(--grad-ai); }
+  .shutter:active .shutter-in { opacity: .8; }
+  .img-badge {
+    position: absolute; top: 10px; right: 10px; z-index: 7;
+    background: var(--grad-ai); color: #0B1410; font-size: 11px; font-weight: 800;
+    padding: 5px 10px; border-radius: 10px; display: none;
+    box-shadow: var(--glow-lime); letter-spacing: .3px;
+  }
+  .img-badge.show { display: block; }
 
-/* Result view */
-#resultView { flex: 1; min-height: 0; overflow-y: auto; display: none; scrollbar-width: none; }
-#resultView::-webkit-scrollbar { display: none; }
+  /* Symptom section */
+  .sec { flex-shrink: 0; }
+  .sec-label {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 700; margin-bottom: 8px;
+    color: var(--txt-on-dark); letter-spacing: .3px;
+  }
+  .num-badge {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--grad-ai); color: #0B1410;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--glow-lime);
+  }
+  .optional {
+    font-size: 10px; color: var(--cyan); font-weight: 700;
+    letter-spacing: .8px; text-transform: uppercase;
+    border: 1px solid rgba(34,211,238,.35); padding: 2px 7px; border-radius: 6px;
+  }
 
-/* Result card */
-.result-card {
-  border: 1.5px solid #4CAF50; border-radius: 14px; padding: 16px;
-  animation: slideUp .35s ease;
-}
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-.result-header { margin-bottom: 14px; }
-.result-badge {
-  display: inline-block; font-size: 11px; padding: 2px 8px;
-  border-radius: 10px; margin-bottom: 6px; font-weight: 700;
-}
-.result-badge.urgent { background: #FFEBEE; color: #B71C1C; }
-.result-title { font-size: 20px; font-weight: 500; color: #1B5E20; line-height: 1.3; }
-.result-confidence { font-size: 13px; margin-top: 4px; font-weight: 500; }
-.result-confidence.high { color: #2E7D32; }
-.result-confidence.mid  { color: #E65100; }
-.result-confidence.low  { color: #B71C1C; }
-.result-section { margin-bottom: 12px; }
-.result-section-label { font-size: 12px; color: #9E9E9E; margin-bottom: 4px; font-weight: 500; }
-.result-section-body { font-size: 14px; color: #212121; line-height: 1.6; }
-.result-list { list-style: none; padding: 0; }
-.result-list li { font-size: 14px; color: #212121; line-height: 1.8; }
-.result-list li::before { content: "✓ "; color: #2E7D32; }
-.result-actions { display: flex; gap: 8px; margin-top: 14px; }
-.btn-retry {
-  flex: 1; border: 1px solid #2E7D32; color: #2E7D32; background: #fff;
-  border-radius: 8px; padding: 10px; font-size: 14px; font-weight: 500;
-  font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
-.btn-retry:active { background: #F1F8E9; }
-.btn-share {
-  flex: 1; background: #1B5E20; color: #fff; border: none;
-  border-radius: 8px; padding: 10px; font-size: 14px; font-weight: 500;
-  font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent;
-}
-.btn-share:active { background: #154a18; }
+  #symptomInput {
+    display: block; width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--line-dark); border-radius: 12px;
+    padding: 12px 14px; font-size: 14px; font-family: inherit;
+    resize: none; outline: none; color: var(--txt-on-dark);
+    line-height: 1.5; overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  #symptomInput:focus { border-color: var(--lime); box-shadow: 0 0 0 3px rgba(182,255,60,.12); }
+  #symptomInput::placeholder { color: rgba(122,139,130,.7); }
+  .char-count { text-align: right; font-size: 11px; color: var(--muted-dark); margin-top: 5px; }
 
-/* Toast */
-.toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(8px);
-  background: rgba(20,20,20,.88); color: #fff;
-  padding: 9px 20px; border-radius: 999px;
-  font-size: 13px; font-weight: 500;
-  z-index: 999; opacity: 0; pointer-events: none; white-space: nowrap;
-  transition: opacity .2s, transform .2s;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* Start button (sticky) */
+  .diag-btn-wrap {
+    flex-shrink: 0; position: sticky; bottom: 0; padding-top: 6px;
+    background: linear-gradient(to top, var(--surface) 60%, transparent);
+  }
+  .diag-btn {
+    width: 100%;
+    background: var(--grad-ai);
+    border: none; border-radius: 14px; padding: 15px;
+    cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    transition: transform .12s, box-shadow .2s;
+    box-shadow: 0 6px 24px rgba(182,255,60,.35), 0 0 0 1px rgba(182,255,60,.4);
+    position: relative; overflow: hidden;
+  }
+  .diag-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+    transform: translateX(-100%); transition: transform .8s;
+  }
+  .diag-btn:hover::before { transform: translateX(100%); }
+  .diag-btn:active:not(:disabled) { transform: translateY(1px); box-shadow: 0 3px 14px rgba(182,255,60,.3); }
+  .diag-btn:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+  .diag-btn-main { color: #0B1410; font-size: 16px; font-weight: 800; font-family: inherit; display: flex; align-items: center; gap: 8px; letter-spacing: -0.2px; position: relative; z-index: 1; }
+  .diag-btn-sub  { color: rgba(11,20,16,.7); font-size: 11px; font-family: inherit; font-weight: 600; letter-spacing: .2px; position: relative; z-index: 1; }
+  .btn-spin {
+    display: none; width: 16px; height: 16px;
+    border: 2px solid rgba(11,20,16,.25); border-top-color: #0B1410;
+    border-radius: 50%; animation: spin .75s linear infinite; flex-shrink: 0;
+  }
+  .btn-spin.show { display: inline-block; }
+
+  /* Result view */
+  #resultView { flex: 1; min-height: 0; overflow-y: auto; display: none; scrollbar-width: none; }
+  #resultView::-webkit-scrollbar { display: none; }
+  .result-card {
+    border: 1px solid rgba(182,255,60,.3); border-radius: 16px; padding: 18px;
+    background: var(--surface-2);
+    animation: slideUp .35s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .result-header { margin-bottom: 14px; }
+  .result-badge {
+    display: inline-block; font-size: 11px; padding: 3px 9px;
+    border-radius: 8px; margin-bottom: 8px; font-weight: 800; letter-spacing: .5px;
+  }
+  .result-badge.urgent { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(255,85,119,.3); }
+  .result-title {
+    font-size: 22px; font-weight: 800; line-height: 1.3; letter-spacing: -0.4px;
+    background: var(--grad-ai); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .result-confidence { font-size: 13px; margin-top: 6px; font-weight: 700; }
+  .result-confidence.high { color: var(--lime); }
+  .result-confidence.mid  { color: var(--cyan); }
+  .result-confidence.low  { color: var(--danger); }
+  .result-section { margin-bottom: 14px; }
+  .result-section-label {
+    font-size: 11px; color: var(--cyan); margin-bottom: 5px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .result-section-body { font-size: 14px; color: var(--txt-on-dark); line-height: 1.6; }
+  .result-list { list-style: none; padding: 0; }
+  .result-list li { font-size: 14px; color: var(--txt-on-dark); line-height: 1.8; }
+  .result-list li::before { content: "▸ "; color: var(--lime); font-weight: 700; }
+  .result-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .btn-retry {
+    flex: 1; border: 1px solid rgba(182,255,60,.4); color: var(--lime); background: transparent;
+    border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn-retry:active { background: rgba(182,255,60,.1); }
+  .btn-share {
+    flex: 1; background: var(--grad-ai); color: #0B1410; border: none;
+    border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 800;
+    font-family: inherit; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(182,255,60,.3);
+  }
+  .btn-share:active { transform: translateY(1px); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 28px; left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: rgba(11,20,16,.95); color: var(--lime);
+    border: 1px solid rgba(182,255,60,.3);
+    padding: 10px 20px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    z-index: 999; opacity: 0; pointer-events: none; white-space: nowrap;
+    transition: opacity .2s, transform .2s;
+    box-shadow: 0 6px 20px rgba(0,0,0,.4);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-  <div class="logo">kFarm<span class="ai">AI</span></div>
-  <div class="hdr-right">
-    <div class="lang" id="langBtn">
-      <span class="on" id="lKR">KR</span>
-      <span class="sep">|</span>
-      <span id="lEN">EN</span>
-    </div>
-    <button class="notif" aria-label="알림">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-      </svg>
-    </button>
-  </div>
-</header>
+<div class="phone">
 
-<!-- Tab bar -->
-<nav class="tabbar">
-  <div class="tab">커뮤니티</div>
-  <div class="tab active">AI 진단</div>
-  <div class="tab">농자재</div>
-</nav>
-
-<!-- Scroll area -->
-<div class="scroll-area" id="scrollArea">
-
-  <!-- Pull-to-refresh -->
-  <div class="ptr" id="ptr">
-    <div class="ptr-spin" id="ptrSpin"></div>
-    <span class="ptr-icon" id="ptrIcon">↓</span>
-    <span id="ptrTxt">당겨서 새로고침</span>
-  </div>
-
-  <!-- Diagnosis card -->
-  <div class="diag-card">
-    <div class="card-hd">
-      <div class="dot"></div>
-      <span class="card-hd-txt">AI 진단 구역</span>
-    </div>
-
-    <!-- Loading overlay -->
-    <div class="diag-overlay" id="diagOverlay">
-      <div class="overlay-spin"></div>
-      <div class="overlay-txt">AI가 분석하고 있어요</div>
-      <div class="overlay-sub">보통 15~30초 소요됩니다</div>
-    </div>
-
-    <div class="inner">
-
-      <!-- Step indicator -->
-      <div class="steps">
-        <div class="step">
-          <div class="step-c on" id="s1">1</div>
-          <div class="step-n on">사진</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-          <div class="step-c" id="s2">2</div>
-          <div class="step-n">작물</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-          <div class="step-c" id="s3">3</div>
-          <div class="step-n">결과</div>
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <div class="top-bar">
+      <div class="brand">
+        <img src="logo.png" alt="kFarmAI 로고">
+        <div class="brand-text">
+          <div class="brand-name">kFarm<span class="ai">AI</span></div>
+          <div class="brand-sub">AI FARM COMMUNITY</div>
         </div>
       </div>
+      <div class="bell" aria-label="알림">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </div>
+    </div>
 
-      <!-- Input view -->
-      <div id="inputView">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="M21 21l-4.3-4.3"/>
+      </svg>
+      <input type="text" placeholder="작물·병해충·증상 검색">
+    </div>
 
-        <!-- Camera -->
-        <div class="cam-wrap" id="camWrap">
-          <div class="cam-hint">아픈 잎·줄기·열매를 프레임 안에</div>
-          <video id="camVideo" autoplay playsinline muted></video>
-          <div class="cam-fb" id="camFb">
-            <div style="font-size:32px;margin-bottom:8px">📷</div>
-            <div>카메라 시작 중...</div>
+    <div class="tabs">
+      <div class="tab" data-tab="community">커뮤니티</div>
+      <div class="tab active" data-tab="diagnosis">AI 진단</div>
+      <div class="tab" data-tab="supplies">농자재</div>
+    </div>
+  </header>
+
+  <!-- ===== Scroll area ===== -->
+  <div class="scroll-area" id="scrollArea">
+
+    <div class="ptr" id="ptr">
+      <div class="ptr-spin" id="ptrSpin"></div>
+      <span class="ptr-icon" id="ptrIcon">↓</span>
+      <span id="ptrTxt">당겨서 새로고침</span>
+    </div>
+
+    <div class="diag-card">
+      <div class="card-hd">
+        <div class="dot"></div>
+        <span class="card-hd-txt">AI Diagnosis</span>
+        <span class="card-hd-tag">v2.0 · NEURAL</span>
+      </div>
+
+      <div class="diag-overlay" id="diagOverlay">
+        <div class="overlay-spin"></div>
+        <div class="overlay-txt">AI가 분석하고 있어요</div>
+        <div class="overlay-sub">보통 15~30초 소요됩니다</div>
+      </div>
+
+      <div class="inner">
+
+        <!-- Step indicator: Photo → Result -->
+        <div class="steps">
+          <div class="step">
+            <div class="step-c on" id="s1">1</div>
+            <div class="step-n on">사진</div>
           </div>
-          <div class="guide" id="guide">
-            <div class="c c-tl"></div><div class="c c-tr"></div>
-            <div class="c c-bl"></div><div class="c c-br"></div>
-            <div class="scan"></div>
+          <div class="step-line" id="line1"></div>
+          <div class="step">
+            <div class="step-c" id="s2">2</div>
+            <div class="step-n">결과</div>
           </div>
-          <div class="img-badge" id="imgBadge">📸 사진 선택됨</div>
-          <div class="cam-btns">
-            <button class="cam-btn" onclick="openAlbum()" aria-label="앨범">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
+        </div>
+
+        <!-- Input view -->
+        <div id="inputView">
+
+          <!-- Camera -->
+          <div class="cam-wrap" id="camWrap">
+            <div class="cam-hint">아픈 잎·줄기·열매를 프레임 안에</div>
+            <video id="camVideo" autoplay playsinline muted></video>
+            <div class="cam-fb" id="camFb">
+              <div style="font-size:32px;margin-bottom:8px">📷</div>
+              <div>카메라 시작 중...</div>
+            </div>
+            <div class="guide" id="guide">
+              <div class="c c-tl"></div><div class="c c-tr"></div>
+              <div class="c c-bl"></div><div class="c c-br"></div>
+              <div class="scan"></div>
+            </div>
+            <div class="img-badge" id="imgBadge">📸 사진 선택됨</div>
+            <div class="cam-btns">
+              <button class="cam-btn" onclick="openAlbum()" aria-label="앨범">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="3"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </button>
+              <button class="shutter" onclick="capturePhoto()" aria-label="촬영">
+                <div class="shutter-in"></div>
+              </button>
+              <button class="cam-btn" onclick="flipCamera()" aria-label="전면/후면 전환">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 4v6h6"/>
+                  <path d="M23 20v-6h-6"/>
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"/>
+                  <path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Symptom input -->
+          <div class="sec">
+            <div class="sec-label">
+              <span class="num-badge">+</span>
+              증상 메모
+              <span class="optional">선택</span>
+            </div>
+            <textarea
+              id="symptomInput"
+              placeholder="예) 잎이 노랗게 변해요 / 줄기에 검은 반점 / 벌레가 보여요"
+              rows="2"
+              maxlength="200"
+            ></textarea>
+            <div class="char-count"><span id="charCount">0</span>/200</div>
+          </div>
+
+          <!-- Start button -->
+          <div class="diag-btn-wrap">
+            <button class="diag-btn" id="diagBtn" onclick="startDiagnosis()">
+              <span class="diag-btn-main">
+                <span class="btn-spin" id="btnSpin"></span>
+                <span id="btnText">⚡ AI 진단 시작</span>
+              </span>
+              <span class="diag-btn-sub" id="btnSub">30초 안에 결과를 드려요</span>
             </button>
-            <button class="shutter" onclick="capturePhoto()" aria-label="촬영">
-              <div class="shutter-in"></div>
-            </button>
-            <button class="cam-btn" onclick="flipCamera()" aria-label="전면/후면 전환">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 4v6h6"/>
-                <path d="M23 20v-6h-6"/>
-                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10"/>
-                <path d="M3.51 15A9 9 0 0 0 18.36 18.36L23 14"/>
-              </svg>
-            </button>
           </div>
-        </div>
 
-        <!-- Crop selection -->
-        <div class="crop-sec">
-          <div class="crop-lbl-row">
-            <div class="crop-badge">2</div>
-            <span class="crop-lbl">작물 선택</span>
-            <span class="crop-opt">(선택)</span>
-          </div>
-          <div class="pills" id="pills">
-            <div class="pill on" data-crop="전체">전체</div>
-            <div class="pill" data-crop="토마토">토마토</div>
-            <div class="pill" data-crop="고추">고추</div>
-            <div class="pill" data-crop="상추">상추</div>
-            <div class="pill" data-crop="오이">오이</div>
-            <div class="pill" data-crop="벼">벼</div>
-            <div class="pill" data-crop="딸기">딸기</div>
-            <div class="pill" data-crop="감자">감자</div>
-          </div>
-        </div>
+        </div><!-- /inputView -->
 
-        <!-- Symptom input -->
-        <div class="symptom-wrap">
-          <div class="symptom-label">
-            <span class="num-badge">3</span>
-            증상을 입력하세요
-            <span class="optional">(선택)</span>
-          </div>
-          <textarea
-            id="symptomInput"
-            placeholder="예) 잎이 노랗게 변해요 / 줄기에 검은 반점이 생겼어요 / 벌레가 보여요"
-            rows="2"
-            maxlength="200"
-          ></textarea>
-          <div class="char-count"><span id="charCount">0</span>/200</div>
-        </div>
+        <div id="resultView"></div>
 
-        <!-- Start button -->
-        <div class="diag-btn-wrap">
-          <button class="diag-btn" id="diagBtn" onclick="startDiagnosis()">
-            <span class="diag-btn-main">
-              <span class="btn-spin" id="btnSpin"></span>
-              <span id="btnText">🔍 AI 진단 시작</span>
-            </span>
-            <span class="diag-btn-sub" id="btnSub">30초 안에 결과를 드려요</span>
-          </button>
-        </div>
+      </div>
+    </div>
 
-      </div><!-- /inputView -->
+  </div>
 
-      <!-- Result view (populated by JS) -->
-      <div id="resultView"></div>
-
-    </div><!-- /inner -->
-  </div><!-- /diag-card -->
-
-</div><!-- /scroll-area -->
+</div>
 
 <input type="file" id="albumInput" accept="image/*" style="display:none" onchange="handleAlbumFile(this)">
 <div class="toast" id="toast"></div>
@@ -475,11 +582,9 @@ const SYSTEM_PROMPT = `당신은 농업 전문가 AI입니다.
   "urgent": true
 }`;
 
-/* ── State ───────────────────────────── */
 let capturedFile = null;
 let lastResult   = null;
 
-/* ── Toast ───────────────────────────── */
 let _tt;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -489,23 +594,16 @@ function showToast(msg) {
   _tt = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-/* ── Tabs ────────────────────────────── */
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
+    const target = tab.dataset.tab;
+    if (target === 'community') { location.href = 'index.html'; }
   });
 });
 
-/* ── Language ────────────────────────── */
-let curLang = 'ko';
-document.getElementById('langBtn').addEventListener('click', () => {
-  curLang = curLang === 'ko' ? 'en' : 'ko';
-  document.getElementById('lKR').classList.toggle('on', curLang === 'ko');
-  document.getElementById('lEN').classList.toggle('on', curLang === 'en');
-});
-
-/* ── Camera ──────────────────────────── */
+/* ── Camera ── */
 let stream = null;
 let facing = 'environment';
 const video  = document.getElementById('camVideo');
@@ -520,9 +618,7 @@ function setFallback(html) {
 
 async function startCamera(facingMode) {
   if (!secure) {
-    setFallback(`<div style="font-size:28px;margin-bottom:8px">📷</div>
-      <div>HTTP 환경에서는 앨범만 지원합니다</div>
-      <div style="font-size:11px;margin-top:4px;opacity:.7">↓ 아래 앨범 버튼을 사용하세요</div>`);
+    setFallback(`<div style="font-size:28px;margin-bottom:8px">📷</div>`);
     return;
   }
   if (!navigator.mediaDevices?.getUserMedia) {
@@ -579,24 +675,15 @@ function handleAlbumFile(input) {
   input.value = '';
 }
 
-/* ── Guide frame ─────────────────────── */
 function sizeGuide() {
   const wrap  = document.getElementById('camWrap');
   const guide = document.getElementById('guide');
+  if (!wrap || !guide) return;
   const w = wrap.offsetWidth;
   guide.style.width  = Math.round(w * 0.55) + 'px';
   guide.style.height = Math.round(w * 0.55 * 0.75) + 'px';
 }
 
-/* ── Crop pills ──────────────────────── */
-document.getElementById('pills').addEventListener('click', e => {
-  const p = e.target.closest('.pill');
-  if (!p) return;
-  document.querySelectorAll('.pill').forEach(x => x.classList.remove('on'));
-  p.classList.add('on');
-});
-
-/* ── Symptom textarea ────────────────── */
 const symptomEl  = document.getElementById('symptomInput');
 const charCountEl = document.getElementById('charCount');
 symptomEl.addEventListener('input', () => {
@@ -605,17 +692,17 @@ symptomEl.addEventListener('input', () => {
   symptomEl.style.height = symptomEl.scrollHeight + 'px';
 });
 
-/* ── Step indicator ──────────────────── */
+/* ── Step indicator (2 steps) ── */
 function setStep(n) {
-  [1, 2, 3].forEach(i => {
+  [1, 2].forEach(i => {
     const circle = document.getElementById('s' + i);
     const label  = circle?.nextElementSibling;
     circle?.classList.toggle('on', i <= n);
     label?.classList.toggle('on', i <= n);
   });
+  document.getElementById('line1')?.classList.toggle('on', n >= 2);
 }
 
-/* ── Loading ─────────────────────────── */
 function setLoading(on) {
   const btn     = document.getElementById('diagBtn');
   const btnSpin = document.getElementById('btnSpin');
@@ -624,12 +711,11 @@ function setLoading(on) {
   const overlay = document.getElementById('diagOverlay');
   btn.disabled = on;
   btnSpin.classList.toggle('show', on);
-  btnText.textContent  = on ? '분석 중...' : '🔍 AI 진단 시작';
+  btnText.textContent  = on ? '분석 중...' : '⚡ AI 진단 시작';
   btnSub.style.display = on ? 'none' : '';
   overlay.classList.toggle('show', on);
 }
 
-/* ── Helpers ─────────────────────────── */
 function toBase64(file) {
   return new Promise(resolve => {
     const reader = new FileReader();
@@ -643,9 +729,7 @@ function escHtml(s) {
     c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
-/* ── Diagnosis ───────────────────────── */
 async function startDiagnosis() {
-  const crop    = document.querySelector('.pill.on')?.dataset.crop || '미선택';
   const symptom = symptomEl.value.trim();
 
   if (!capturedFile && !symptom) {
@@ -669,14 +753,14 @@ async function startDiagnosis() {
 
     userContent.push({
       type: 'text',
-      text: `작물: ${crop}\n증상: ${symptom || '텍스트 없음, 사진만으로 판단해주세요'}`
+      text: `증상: ${symptom || '텍스트 없음, 사진만으로 판단해주세요'}`
     });
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': API_KEY, // TODO: Edge Function 교체 필요
+        'x-api-key': API_KEY,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -694,7 +778,6 @@ async function startDiagnosis() {
 
     let result;
     try {
-      // Claude가 가끔 JSON을 마크다운 펜스로 감쌀 때 대비
       const clean = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
       result = JSON.parse(clean);
     } catch {
@@ -720,7 +803,7 @@ async function startDiagnosis() {
 
 function showResult(result) {
   setLoading(false);
-  setStep(3);
+  setStep(2);
 
   document.getElementById('inputView').style.display = 'none';
   const rv = document.getElementById('resultView');
@@ -752,7 +835,7 @@ function showResult(result) {
       </div>
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 진단하기</button>
-        <button class="btn-share" onclick="shareToCommunity()">커뮤니티에 공유</button>
+        <button class="btn-share" onclick="shareToCommunity()">커뮤니티 공유</button>
       </div>
     </div>`;
 }
@@ -773,17 +856,15 @@ function resetDiagnosis() {
   symptomEl.style.height   = 'auto';
   charCountEl.textContent  = '0';
 
-  document.querySelectorAll('.pill').forEach((p, i) => p.classList.toggle('on', i === 0));
   document.getElementById('imgBadge').classList.remove('show');
 }
 
 function shareToCommunity() {
   console.log('커뮤니티 공유 결과:', lastResult);
   showToast('커뮤니티 공유 기능은 준비 중입니다');
-  // TODO: post.html 또는 글쓰기 모달 연결 + 진단 결과 텍스트 자동 입력
 }
 
-/* ── Pull-to-refresh ─────────────────── */
+/* ── Pull-to-refresh ── */
 (function () {
   const area = document.getElementById('scrollArea');
   const ptr  = document.getElementById('ptr');
@@ -834,7 +915,6 @@ function shareToCommunity() {
   }, { passive: true });
 })();
 
-/* ── Init ────────────────────────────── */
 window.addEventListener('DOMContentLoaded', () => {
   sizeGuide();
   startCamera(facing);
