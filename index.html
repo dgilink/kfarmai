@@ -1586,15 +1586,20 @@ async function saveDiagnosisHistory(symptomText, resultData){
     const {data:{session}}=await _sb.auth.getSession();
     if(!session?.user?.id)return;
     const selectedCrop='미선택';
+    const crop=selectedCrop || '미선택';
+    const symptom=symptomText || '';
     const diagResult=typeof resultData==='string'?resultData:JSON.stringify(resultData);
-    await _sb.from('diagnoses').insert({
+    console.log('진단 저장 시도', {crop, symptom});
+    const {error}=await _sb.from('diagnoses').insert({
       user_id: session.user.id,
-      crop: selectedCrop || '미선택',
-      symptom: symptomText || '',
+      crop,
+      symptom,
       result: diagResult
     });
+    if(error){console.log('진단 저장 실패', error);return;}
+    console.log('진단 저장 성공');
     loadMyCounts(session.user.id);
-  }catch(e){}
+  }catch(e){console.log('진단 저장 실패', e);}
 }
 function formatMyDate(value){
   if(!value)return '';
@@ -1788,7 +1793,22 @@ function openMyPanel(){document.getElementById('myPanel').classList.add('open');
 function closeMyPanel(){document.getElementById('myPanel').classList.remove('open');}
 function openLogin(){openMyPanel();}
 function closeLogin(){closeMyPanel();}
-async function loginGoogle(){const {error}=await _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://kfarmai.com'}});if(error)alert('로그인 실패: '+error.message);}
+async function loginGoogle(){
+  const btn=document.getElementById('googleBtn');
+  const originalHtml=btn?.innerHTML || '';
+  if(btn){
+    btn.disabled=true;
+    btn.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" style="animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" fill="none" stroke="#4285F4" stroke-width="3" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg>`;
+  }
+  const {error}=await _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://kfarmai.com'}});
+  if(error){
+    alert('로그인 실패: '+error.message);
+    if(btn){
+      btn.disabled=false;
+      btn.innerHTML=originalHtml;
+    }
+  }
+}
 async function logout(){if(!_sb)return;await _sb.auth.signOut();setMyState(null);resetUserUI();closeMyPanel();}
 function getTimeAgo(dateStr){const diff=(Date.now()-new Date(dateStr))/1000;if(diff<60)return '방금 전';if(diff<3600)return Math.floor(diff/60)+'분 전';if(diff<86400)return Math.floor(diff/3600)+'시간 전';return Math.floor(diff/86400)+'일 전';}
 function escHtml(str){return(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
