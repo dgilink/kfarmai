@@ -525,17 +525,19 @@
           <!-- Symptom input -->
           <div class="sec">
             <div class="sec-label">
-              <span class="num-badge">+</span>
+              <span class="num-badge" id="symptomToggle" style="cursor:pointer" onclick="toggleSymptom()">+</span>
               증상 메모
               <span class="optional">선택</span>
             </div>
-            <textarea
-              id="symptomInput"
-              placeholder="예) 잎이 노랗게 변해요 / 줄기에 검은 반점 / 벌레가 보여요"
-              rows="2"
-              maxlength="200"
-            ></textarea>
-            <div class="char-count"><span id="charCount">0</span>/200</div>
+            <div id="symptomBody" style="display:none">
+              <textarea
+                id="symptomInput"
+                placeholder="예) 잎이 노랗게 변해요 / 줄기에 검은 반점 / 벌레가 보여요"
+                rows="2"
+                maxlength="200"
+              ></textarea>
+              <div class="char-count"><span id="charCount">0</span>/200</div>
+            </div>
           </div>
 
           <!-- Start button -->
@@ -561,6 +563,7 @@
 </div>
 
 <input type="file" id="albumInput" accept="image/*" style="display:none" onchange="handleAlbumFile(this)">
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleCameraCapture(this)">
 <div class="toast" id="toast"></div>
 
 <script>
@@ -649,22 +652,27 @@ function flipCamera() {
 }
 
 function capturePhoto() {
-  if (!stream || !video.videoWidth) {
-    showToast('카메라가 준비되지 않았습니다');
-    return;
-  }
-  const canvas = document.createElement('canvas');
-  canvas.width  = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video, 0, 0);
-  canvas.toBlob(blob => {
-    capturedFile = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
-    document.getElementById('imgBadge').classList.add('show');
-    showToast('사진이 촬영되었습니다 ✓');
-  }, 'image/jpeg', 0.85);
+  document.getElementById('cameraInput').click();
+}
+
+function handleCameraCapture(input) {
+  const file = input.files[0];
+  if (!file) return;
+  capturedFile = file;
+  document.getElementById('imgBadge').classList.add('show');
+  showToast('사진이 촬영되었습니다 ✓');
+  input.value = '';
 }
 
 function openAlbum() { document.getElementById('albumInput').click(); }
+
+function toggleSymptom() {
+  const body   = document.getElementById('symptomBody');
+  const toggle = document.getElementById('symptomToggle');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  toggle.textContent = isOpen ? '+' : '−';
+}
 
 function handleAlbumFile(input) {
   const file = input.files[0];
@@ -855,6 +863,9 @@ function resetDiagnosis() {
   symptomEl.value          = '';
   symptomEl.style.height   = 'auto';
   charCountEl.textContent  = '0';
+
+  document.getElementById('symptomBody').style.display   = 'none';
+  document.getElementById('symptomToggle').textContent   = '+';
 
   document.getElementById('imgBadge').classList.remove('show');
 }
