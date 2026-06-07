@@ -306,6 +306,8 @@ function renderPosts(posts, totalCount) {
         <span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span>
         <span>${timeAgo(post.created_at)}</span>
       </div>`;
+    card.style.cursor = 'pointer';
+    card.onclick = () => { window.location.href = 'post.html?id=' + post.id; };
     list.appendChild(card);
   });
 }
