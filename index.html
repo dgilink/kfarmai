@@ -345,6 +345,7 @@
     font-size: 13.5px; font-weight: 700;
     box-shadow: 0 8px 20px rgba(0,0,0,.28);
     border: 0; cursor: pointer; z-index: 5;
+    transition: opacity 0.2s ease;
   }
 
   /* ===== AI Diagnosis ===== */
@@ -1181,6 +1182,8 @@
     pdots.forEach((d,k)=>d.classList.toggle('on', k===current));
     const cur = pages.children[current];
     if(resetScroll && cur) cur.scrollTop = 0;
+    const fab = document.querySelector('.fab');
+    if(fab){ fab.style.opacity = current === 0 ? '1' : '0'; fab.style.pointerEvents = current === 0 ? '' : 'none'; }
   }
   window.goMainPage = () => go(0);
   tabs.forEach(t => t.addEventListener('click', () => go(parseInt(t.dataset.i), true)));
