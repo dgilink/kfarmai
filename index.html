@@ -1319,7 +1319,7 @@ async function runDiagnosis() {
   try {
     const res = await fetch(DIAG_ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhaZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzMjUxMDMsImV4cCI6MjA2MzkwMTEwM30.Jx5oBXoUVvHlPjBmNqwJTyZH6lMVOFxwjTFjUBYlBnU' },
       body: JSON.stringify(body)
     });
     if (!res.ok) throw new Error('서버 오류 ' + res.status);
