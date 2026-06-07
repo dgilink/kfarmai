@@ -905,17 +905,17 @@ function shareToCommunity() {
     }
   }
 
-  area.addEventListener('touchstart', e => {
+  document.addEventListener('touchstart', e => {
     if (loading) return;
-    sy = e.touches[0].clientY; pulling = area.scrollTop === 0; dy = 0;
+    sy = e.touches[0].clientY; pulling = true; dy = 0;
   }, { passive: true });
-  area.addEventListener('touchmove', e => {
+  document.addEventListener('touchmove', e => {
     if (!pulling || loading) return;
     dy = e.touches[0].clientY - sy;
     if (dy <= 0) { set('idle'); return; }
     set(dy >= THRESHOLD ? 'ready' : 'pulling');
   }, { passive: true });
-  area.addEventListener('touchend', () => {
+  document.addEventListener('touchend', () => {
     if (!pulling || loading) return;
     pulling = false;
     if (dy >= THRESHOLD) {
