@@ -6,6 +6,7 @@
 <title>AI 진단 — kFarmAI</title>
 <meta name="description" content="kFarmAI AI 진단 — 사진과 증상으로 작물의 병해충·영양 상태를 진단합니다.">
 <meta name="theme-color" content="#0B1410">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -377,6 +378,16 @@
   .result-list { list-style: none; padding: 0; }
   .result-list li { font-size: 14px; color: var(--txt-on-dark); line-height: 1.8; }
   .result-list li::before { content: "▸ "; color: var(--lime); font-weight: 700; }
+  .diag-result-card h2, .result-card h2 { font-size:16px; font-weight:500; color:#1B5E20; margin:14px 0 6px; }
+  .diag-result-card h3, .result-card h3 { font-size:14px; font-weight:500; color:#333; margin:10px 0 4px; }
+  .diag-result-card p, .result-card p { font-size:14px; line-height:1.7; color:#333; margin:4px 0; }
+  .diag-result-card ul, .result-card ul { padding-left:18px; margin:6px 0; }
+  .diag-result-card li, .result-card li { font-size:14px; line-height:1.7; color:#333; }
+  .diag-result-card table, .result-card table { width:100%; border-collapse:collapse; margin:10px 0; font-size:13px; }
+  .diag-result-card th, .result-card th { background:#E8F5E9; color:#1B5E20; padding:8px; text-align:left; }
+  .diag-result-card td, .result-card td { padding:8px; border-bottom:1px solid #E0E0E0; }
+  .diag-result-card strong, .result-card strong { color:#1B5E20; font-weight:500; }
+  .diag-result-card hr, .result-card hr { border:none; border-top:1px solid #E0E0E0; margin:14px 0; }
   .result-actions { display: flex; gap: 8px; margin-top: 16px; }
   .btn-retry {
     flex: 1; border: 1px solid rgba(182,255,60,.4); color: var(--lime); background: transparent;
@@ -818,18 +829,18 @@ function showResult(result) {
   const confMap     = { '높음': 'high', '보통': 'mid', '낮음': 'low' };
   const confClass   = confMap[result.confidence] || 'mid';
   const urgentBadge = result.urgent ? '<div class="result-badge urgent">긴급</div>' : '';
-  const solutions   = (result.solution || []).map(s => `<li>${escHtml(s)}</li>`).join('');
+  const solutions   = (result.solution || []).map(s => `<li>${renderMarkdown(s)}</li>`).join('');
 
   rv.innerHTML = `
     <div class="result-card">
       <div class="result-header">
         ${urgentBadge}
-        <div class="result-title">${escHtml(result.diagnosis)}</div>
+        <div class="result-title">${renderMarkdown(result.diagnosis)}</div>
         <div class="result-confidence ${confClass}">신뢰도: ${escHtml(result.confidence)}</div>
       </div>
       <div class="result-section">
         <div class="result-section-label">원인</div>
-        <div class="result-section-body">${escHtml(result.cause)}</div>
+        <div class="result-section-body">${renderMarkdown(result.cause)}</div>
       </div>
       <div class="result-section">
         <div class="result-section-label">대처 방법</div>
@@ -837,13 +848,17 @@ function showResult(result) {
       </div>
       <div class="result-section">
         <div class="result-section-label">예방법</div>
-        <div class="result-section-body">${escHtml(result.prevention)}</div>
+        <div class="result-section-body">${renderMarkdown(result.prevention)}</div>
       </div>
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 진단하기</button>
         <button class="btn-share" onclick="shareToCommunity()">커뮤니티 공유</button>
       </div>
     </div>`;
+}
+
+function renderMarkdown(text) {
+  return window.marked ? marked.parse(String(text || '')) : escHtml(text || '');
 }
 
 function resetDiagnosis() {
