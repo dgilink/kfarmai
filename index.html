@@ -414,6 +414,25 @@
   .case-pct .num.danger { color: #DC2626; }
   .case-pct .lbl { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
+  /* ===== Page 2: 진단 입력/결과 ===== */
+  .diag-preview-wrap { margin-top: 12px; display: none; }
+  .diag-preview-wrap.show { display: block; }
+  .diag-preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; }
+  .diag-preview-clear { display: block; width: 100%; margin-top: 6px; background: none; border: none; color: var(--sub); font-size: 12px; cursor: pointer; text-align: center; padding: 0; }
+  .symptom-area { margin-top: 14px; }
+  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 12px; font-size: 14px; font-family: inherit; min-height: 76px; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
+  .symptom-textarea:focus { border-color: var(--green); }
+  .diag-start-btn { width: 100%; height: 50px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 12px; opacity: .4; transition: opacity .2s; }
+  .diag-start-btn:not([disabled]) { opacity: 1; }
+  .diag-result-wrap { margin-top: 4px; }
+  .diag-loading { text-align: center; padding: 24px 0; display: none; }
+  .diag-loading.show { display: block; }
+  .diag-result-card { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid var(--border); margin-bottom: 8px; }
+  .diag-rc-title { font-size: 10.5px; font-weight: 900; color: var(--green); letter-spacing: .4px; margin-bottom: 5px; }
+  .diag-rc-body { font-size: 13.5px; line-height: 1.65; color: var(--text); }
+  .diag-disclaimer { font-size: 11.5px; color: #8a5c00; line-height: 1.6; margin: 8px 0 4px; padding: 10px 12px; background: #FFF8F0; border-radius: 10px; border-left: 3px solid var(--orange); }
+  .diag-map-btn { width: 100%; height: 46px; border: 1.5px solid var(--green); border-radius: 13px; background: #fff; color: var(--green); font-size: 14px; font-weight: 900; cursor: pointer; margin-top: 4px; margin-bottom: 16px; }
+
   /* ===== Page 3 ===== */
   .page3-title { margin: 4px 2px 12px; }
   .page3-title h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; }
@@ -941,9 +960,15 @@
           <div class="label">진단할 사진을 올려주세요</div>
           <div class="sub">잎·줄기·열매가 잘 보이게 촬영하세요</div>
           <div class="upload-buttons">
-            <button class="ub primary" onclick="showToast('카메라가 열렸습니다 📷')">📷 촬영하기</button>
-            <button class="ub outline" onclick="showToast('앨범에서 선택')">🖼 앨범에서</button>
+            <button class="ub primary" onclick="diagOpenCamera()">📷 촬영하기</button>
+            <button class="ub outline" onclick="diagOpenAlbum()">🖼 앨범에서</button>
           </div>
+          <div class="diag-preview-wrap" id="diagPreviewWrap">
+            <img id="diagPreviewImg" class="diag-preview-img" src="" alt="업로드 이미지">
+            <button class="diag-preview-clear" onclick="diagClearImage()">✕ 이미지 제거</button>
+          </div>
+          <input type="file" id="diagCameraInput" accept="image/*" capture="environment" style="display:none" onchange="diagHandleFile(this)">
+          <input type="file" id="diagAlbumInput" accept="image/*" style="display:none" onchange="diagHandleFile(this)">
         </div>
 
         <div class="section-head" style="margin-top:6px"><div class="section-title">작물 선택</div></div>
@@ -958,6 +983,13 @@
           <div class="crop">포도</div>
           <div class="crop">사과</div>
         </div>
+
+        <div class="symptom-area">
+          <textarea class="symptom-textarea" id="diagSymptom" placeholder="증상을 설명해주세요. 예) 잎이 노랗게 변했어요" oninput="updateDiagBtn()"></textarea>
+        </div>
+        <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">🔍 AI 진단 시작</button>
+        <div class="diag-loading" id="diagLoading"><div class="spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--sub)">AI가 분석 중입니다...</div></div>
+        <div class="diag-result-wrap" id="diagResultWrap"></div>
 
         <div class="section-head">
           <div class="section-title">★ 최근 진단 사례</div>
@@ -1224,11 +1256,113 @@
     c.addEventListener('click', ()=>{
       c.parentElement.querySelectorAll('.crop').forEach(x=>x.classList.remove('on'));
       c.classList.add('on');
+      if(window.updateDiagBtn) window.updateDiagBtn();
     });
   });
 
   go(0);
 })();
+
+// ===== AI 진단 =====
+let diagImageBase64 = null;
+const DIAG_ENDPOINT = 'https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/bright-action';
+
+function diagOpenCamera() { document.getElementById('diagCameraInput').click(); }
+function diagOpenAlbum()  { document.getElementById('diagAlbumInput').click(); }
+
+function diagHandleFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    diagImageBase64 = e.target.result.split(',')[1];
+    document.getElementById('diagPreviewImg').src = e.target.result;
+    document.getElementById('diagPreviewWrap').classList.add('show');
+    updateDiagBtn();
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function diagClearImage() {
+  diagImageBase64 = null;
+  document.getElementById('diagPreviewImg').src = '';
+  document.getElementById('diagPreviewWrap').classList.remove('show');
+  updateDiagBtn();
+}
+
+function updateDiagBtn() {
+  const cropEl = document.querySelector('.crop.on');
+  const crop = cropEl ? cropEl.textContent.trim() : '';
+  const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
+  const hasCrop = crop && crop !== '전체';
+  const btn = document.getElementById('diagStartBtn');
+  if (btn) btn.disabled = !(hasCrop && (symptom || diagImageBase64));
+}
+
+async function runDiagnosis() {
+  const crop = (document.querySelector('.crop.on')?.textContent || '').trim();
+  const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
+  const region = localStorage.getItem('kfarmai_region') || '';
+  const loading = document.getElementById('diagLoading');
+  const resultWrap = document.getElementById('diagResultWrap');
+  const btn = document.getElementById('diagStartBtn');
+
+  resultWrap.innerHTML = '';
+  loading.classList.add('show');
+  btn.disabled = true;
+  btn.textContent = '분석 중...';
+
+  const body = { symptom, crop_type: crop, region };
+  if (diagImageBase64) body.image_base64 = diagImageBase64;
+
+  try {
+    const res = await fetch(DIAG_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error('서버 오류 ' + res.status);
+    const data = await res.json();
+    renderDiagResult(data, resultWrap);
+  } catch (err) {
+    resultWrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-body" style="color:#DC2626">진단에 실패했습니다.<br>${err.message || '잠시 후 다시 시도해주세요.'}</div></div>`;
+  } finally {
+    loading.classList.remove('show');
+    btn.textContent = '🔍 AI 진단 시작';
+    updateDiagBtn();
+  }
+}
+
+function renderDiagResult(data, wrap) {
+  const sections = [
+    { key: 'summary',    label: '문제 요약' },
+    { key: 'causes',     label: '원인 후보' },
+    { key: 'management', label: '일반 관리법' },
+    { key: 'materials',  label: '관련 자재군' }
+  ];
+  let html = '';
+  sections.forEach(({ key, label }) => {
+    const val = data[key];
+    if (!val) return;
+    const text = Array.isArray(val) ? val.join('\n') : String(val);
+    html += `<div class="diag-result-card"><div class="diag-rc-title">${label}</div><div class="diag-rc-body">${escDiag(text)}</div></div>`;
+  });
+  if (!html) {
+    const raw = data.result || data.message || data.answer || JSON.stringify(data);
+    html = `<div class="diag-result-card"><div class="diag-rc-body">${escDiag(String(raw))}</div></div>`;
+  }
+  html += `<div class="diag-disclaimer">※ AI 참고 진단입니다. 정확한 처방은 농약사 또는 전문가에게 문의하세요.</div>`;
+  html += `<button class="diag-map-btn" onclick="location.href='agri_map.html'">📍 가까운 농약사 문의하기</button>`;
+  wrap.innerHTML = html;
+}
+
+function escDiag(s) {
+  return String(s)
+    .replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    .replace(/\n/g, '<br>');
+}
+
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
 const CHANNEL_CONFIG = {'plant-hospital':{icon:'ic-hospital',name:'식물 병원'},'plant-question':{icon:'ic-chat',name:'식물 질문방'},'crop-consult':{icon:'ic-wheat',name:'작물 상담방'},'plant-brag':{icon:'ic-camera',name:'내 식물 자랑'},'farmer-lounge':{icon:'ic-house',name:'농부 사랑방'},'plant-share':{icon:'ic-pot',name:'나눔·직거래'},'garden-class':{icon:'ic-class',name:'원예 클래스'},'plant-meet':{icon:'ic-people',name:'식집사 모임'}};
