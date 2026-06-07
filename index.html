@@ -22,6 +22,7 @@
 <meta name="twitter:image" content="https://kfarmai.com/logo.png">
 
 <meta name="theme-color" content="#16a34a">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -426,6 +427,16 @@
   .diag-result-card { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid var(--border); margin-bottom: 8px; }
   .diag-rc-title { font-size: 10.5px; font-weight: 900; color: var(--green); letter-spacing: .4px; margin-bottom: 5px; }
   .diag-rc-body { font-size: 13.5px; line-height: 1.65; color: var(--text); }
+  .diag-result-card h2 { font-size:16px; font-weight:500; color:#1B5E20; margin:14px 0 6px; }
+  .diag-result-card h3 { font-size:14px; font-weight:500; color:#333; margin:10px 0 4px; }
+  .diag-result-card p { font-size:14px; line-height:1.7; color:#333; margin:4px 0; }
+  .diag-result-card ul { padding-left:18px; margin:6px 0; }
+  .diag-result-card li { font-size:14px; line-height:1.7; color:#333; }
+  .diag-result-card table { width:100%; border-collapse:collapse; margin:10px 0; font-size:13px; }
+  .diag-result-card th { background:#E8F5E9; color:#1B5E20; padding:8px; text-align:left; }
+  .diag-result-card td { padding:8px; border-bottom:1px solid #E0E0E0; }
+  .diag-result-card strong { color:#1B5E20; font-weight:500; }
+  .diag-result-card hr { border:none; border-top:1px solid #E0E0E0; margin:14px 0; }
   .diag-disclaimer { font-size: 11.5px; color: #8a5c00; line-height: 1.6; margin: 8px 0 4px; padding: 10px 12px; background: #FFF8F0; border-radius: 10px; border-left: 3px solid var(--orange); }
   .diag-map-btn { width: 100%; height: 46px; border: 1.5px solid var(--green); border-radius: 13px; background: #fff; color: var(--green); font-size: 14px; font-weight: 900; cursor: pointer; margin-top: 4px; margin-bottom: 16px; }
 
@@ -1338,11 +1349,11 @@ function renderDiagResult(data, wrap) {
     const val = data[key];
     if (!val) return;
     const text = Array.isArray(val) ? val.join('\n') : String(val);
-    html += `<div class="diag-result-card"><div class="diag-rc-title">${label}</div><div class="diag-rc-body">${escDiag(text)}</div></div>`;
+    html += `<div class="diag-result-card"><div class="diag-rc-title">${label}</div><div class="diag-rc-body">${renderMarkdown(text)}</div></div>`;
   });
   if (!html) {
     const raw = data.result || data.message || data.answer || JSON.stringify(data);
-    html = `<div class="diag-result-card"><div class="diag-rc-body">${escDiag(String(raw))}</div></div>`;
+    html = `<div class="diag-result-card"><div class="diag-rc-body">${renderMarkdown(String(raw))}</div></div>`;
   }
   html += `<div class="diag-disclaimer">※ AI 참고 진단입니다. 정확한 처방은 농약사 또는 전문가에게 문의하세요.</div>`;
   html += `<button class="diag-map-btn" onclick="location.href='agri_map.html'">📍 가까운 농약사 문의하기</button>`;
@@ -1353,6 +1364,10 @@ function escDiag(s) {
   return String(s)
     .replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
     .replace(/\n/g, '<br>');
+}
+
+function renderMarkdown(text) {
+  return window.marked ? marked.parse(text) : escDiag(text);
 }
 
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
