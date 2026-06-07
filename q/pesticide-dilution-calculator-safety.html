@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="농약 희석배수를 계산할 때 물량과 약량을 계산하는 기본 원리와 안전사용기준 확인 방법을 설명합니다.">
+  <title>농약 희석배수 계산법 | 안전사용기준 확인과 물량 계산 — kFarmAI</title>
+  <link rel="canonical" href="https://kfarmai.com/q/pesticide-dilution-calculator-safety">
+  <meta property="og:title" content="농약 희석배수 계산법 | 안전사용기준 확인과 물량 계산 — kFarmAI">
+  <meta property="og:description" content="농약 희석배수를 계산할 때 물량과 약량을 계산하는 기본 원리와 안전사용기준 확인 방법을 설명합니다.">
+  <meta property="og:url" content="https://kfarmai.com/q/pesticide-dilution-calculator-safety">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #222; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; }
+    header { background: #1B5E20; height: 56px; display: flex; align-items: center; justify-content: center; }
+    header a { display: flex; align-items: center; text-decoration: none; }
+    main { max-width: 480px; margin: 0 auto; padding: 18px 16px 32px; }
+    h1 { font-size: 22px; line-height: 1.35; color: #1B5E20; margin: 12px 0 16px; }
+    h2 { font-size: 16px; color: #333; margin-top: 20px; margin-bottom: 8px; }
+    h3 { font-size: 15px; color: #333; margin: 0 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 0; padding-left: 20px; }
+    li { margin: 5px 0; }
+    .category-badge { display: inline-block; background: #E8F5E9; color: #2E7D32; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; }
+    .content { margin-top: 8px; }
+    .safety-notice { background: #FFF8E1; border-left: 3px solid #F9A825; padding: 10px 14px; font-size: 13px; border-radius: 6px; margin-top: 16px; }
+    .safety-notice a { color: #8A5A00; font-weight: 700; }
+    .btn-map { background: #2E7D32; color: #fff; border-radius: 10px; padding: 12px 20px; display: block; text-align: center; margin: 16px 0; text-decoration: none; font-weight: 700; }
+    .ai-cta-card { background: #E8F5E9; border: 1.5px solid #4CAF50; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .ai-cta-icon { width: 34px; height: 34px; border-radius: 50%; background: #C8E6C9; position: relative; }
+    .ai-cta-icon::after { content: "AI"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #1B5E20; font-size: 12px; font-weight: 900; }
+    .ai-cta-text strong { display: block; color: #1B5E20; font-size: 16px; }
+    .ai-cta-text p { margin: 6px 0 0; font-size: 14px; }
+    .ai-cta-btn { background: #1B5E20; color: #fff; border-radius: 10px; padding: 12px; display: block; text-align: center; text-decoration: none; font-weight: 700; }
+    .related-questions { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .related-questions h3 { flex: 0 0 100%; }
+    .related-questions a { border: 1px solid #C8E6C9; border-radius: 20px; padding: 8px 14px; font-size: 13px; color: #2E7D32; display: inline-block; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/index.html">
+      <img src="/logo-transparent.png" alt="kFarmAI" height="36">
+    </a>
+  </header>
+
+  <main>
+    <div class="category-badge">농자재/농약</div>
+    <h1>농약 희석배수 계산법 | 안전사용기준 확인과 물량 계산</h1>
+
+    <section class="content">
+      <p>농약 희석은 반드시 제품 라벨과 농약안전사용기준을 기준으로 해야 합니다. 희석배수는 최종 희석액 기준으로 계산하며, 1000배 희석이라면 물 1L당 원액 약 1mL 수준으로 이해할 수 있습니다. 다만 제품별 제형, 작물, 병해충, 사용시기, 수확 전 사용일수 기준이 다르므로 계산기만 믿고 사용하면 안 됩니다.</p>
+    </section>
+
+    <section class="causes">
+      <h2>가능한 원인</h2>
+      <ul>
+        <li>제품별 등록 작물·병해충 차이</li>
+        <li>희석배수와 사용량 혼동</li>
+        <li>수확 전 사용일수 미확인</li>
+        <li>혼용 가능 여부 미확인</li>
+        <li>살포 물량 차이</li>
+      </ul>
+    </section>
+
+    <section class="photo-tips">
+      <h2>사진으로 확인할 포인트</h2>
+      <ul>
+        <li>작물명과 병해충명이 제품 등록과 맞는지 확인</li>
+        <li>라벨의 희석배수와 사용량 확인</li>
+        <li>수확 전 사용일수와 사용횟수 확인</li>
+        <li>혼용 전 안전성 확인</li>
+        <li>보호장비 착용 여부 확인</li>
+      </ul>
+    </section>
+
+    <section class="actions">
+      <h2>바로 해야 할 조치</h2>
+      <ul>
+        <li>농약안전정보시스템에서 등록정보를 확인합니다.</li>
+        <li>계산기는 보조 도구로만 사용합니다.</li>
+        <li>정확한 계량도구를 사용합니다.</li>
+        <li>수확기에는 안전사용기준을 최우선으로 합니다.</li>
+      </ul>
+    </section>
+    <div class="safety-notice">
+      ⚠️ 농약 사용 전 반드시
+      <a href="https://psis.rda.go.kr" target="_blank">농약안전정보시스템</a>에서
+      작물·병해충 등록 여부와 안전사용기준을 확인하세요.
+    </div>
+
+    <section class="warnings">
+      <h2>하지 말아야 할 행동</h2>
+      <ul>
+        <li>등록되지 않은 작물에 사용하지 않기</li>
+        <li>희석을 진하게 하면 효과가 좋다고 생각하지 않기</li>
+        <li>보호장비 없이 살포하지 않기</li>
+      </ul>
+    </section>
+
+    <div class="ai-cta-card">
+      <div class="ai-cta-icon"></div>
+      <div class="ai-cta-text">
+        <strong>직접 사진으로 진단받기</strong>
+        <p>사진을 올리면 AI가 증상 후보, 확인 포인트, 조치 순서를 정리해드립니다.</p>
+      </div>
+      <a href="/diagnosis.html" class="ai-cta-btn">AI 진단 시작하기 →</a>
+    </div>
+
+    <div class="related-questions">
+      <h3>비슷한 증상 보기</h3>
+      <a href="/q/cucumber-yellow-spots-downy-mildew">농약안전사용기준 확인법</a>
+      <a href="/q/cucumber-powdery-mildew">농약 수확 전 사용일수</a>
+      <a href="/q/find-nearby-agricultural-supply-store">농약 혼용 주의사항</a>
+    </div>
+  </main>
+</body>
+</html>

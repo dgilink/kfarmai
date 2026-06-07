@@ -43,6 +43,11 @@
   .chips::-webkit-scrollbar { display:none; }
   .chip { flex:0 0 auto; height:34px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:#fff; color:#555; font-size:13px; font-weight:800; cursor:pointer; }
   .chip.active { border-color:var(--green); background:rgba(29,158,117,.1); color:var(--green-dark); }
+  .faq-scroll { padding:10px 14px 6px; }
+  .faq-title { margin-bottom:8px; color:#333; font-size:13px; font-weight:900; }
+  .faq-cards { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
+  .faq-cards::-webkit-scrollbar { display:none; }
+  .faq-cards a { flex:0 0 auto; background:#F1F8E9; border-radius:20px; padding:8px 14px; font-size:13px; color:var(--green-dark); font-weight:800; white-space:nowrap; }
   .status-line { display:flex; align-items:center; justify-content:space-between; padding:8px 16px 6px; color:#777; font-size:12px; font-weight:700; }
   .list { padding:0 14px 18px; }
   .post-card { background:var(--card); border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:14px; margin:10px 0; box-shadow:0 4px 14px rgba(0,0,0,.04); }
@@ -50,6 +55,14 @@
   .badge.blue { background:#E8F1FF; color:#2563EB; }
   .badge.orange { background:#FFF1E8; color:#EA580C; }
   .badge.teal { background:#E6FFFA; color:#0F766E; }
+
+  .category-tabs { display:flex; gap:8px; overflow-x:auto; padding:8px 14px 4px; scrollbar-width:none; }
+  .category-tabs::-webkit-scrollbar { display:none; }
+  .category-tab { flex:0 0 auto; height:32px; padding:0 13px; border:1px solid var(--border); border-radius:999px; background:#fff; color:#555; font-size:12px; font-weight:900; cursor:pointer; }
+  .category-tab.active { border-color:var(--green); background:rgba(29,158,117,.1); color:var(--green-dark); }
+  .category-badge { display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:7px; background:#E8F5E9; color:var(--green-dark); font-size:11px; font-weight:900; margin:0 0 8px 6px; }
+  .post-card.has-thumb { display:grid; grid-template-columns:1fr 86px; gap:10px; align-items:start; }
+  .post-thumb { width:86px; height:86px; object-fit:cover; border-radius:12px; border:1px solid var(--border); background:#F3F4F6; }
   .post-title { font-size:15px; font-weight:900; line-height:1.35; margin-bottom:7px; color:#111; }
   .post-content { font-size:13px; color:#555; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:9px; }
   .meta { display:flex; flex-wrap:wrap; gap:8px; color:#8A8A8A; font-size:11px; font-weight:700; }
@@ -116,6 +129,32 @@
     <button class="chip" data-region="기타">기타</button>
   </div>
 
+  <div class="faq-scroll">
+    <div class="faq-title">자주 묻는 증상</div>
+    <div class="faq-cards">
+      <a href="/q/pepper-leaf-curling">고추 잎 말림</a>
+      <a href="/q/tomato-blossom-end-rot">토마토 배꼽썩음</a>
+      <a href="/q/monstera-yellow-leaves">몬스테라 황화</a>
+      <a href="/q/cucumber-powdery-mildew">오이 흰가루</a>
+      <a href="/q/potting-soil-white-mold">화분 곰팡이</a>
+      <a href="/q/lettuce-wilting">상추 처짐</a>
+      <a href="/q/succulent-wrinkled-leaves">다육이 쭈글</a>
+      <a href="/q/rice-seedling-tray-blackening">벼 모판 검게</a>
+      <a href="/q/basil-wilting-black-leaves">바질 처짐</a>
+      <a href="/q/fungus-gnats-in-pots">화분 날파리</a>
+    </div>
+  </div>
+
+  <div class="category-tabs" id="categoryTabs">
+    <button class="category-tab active" data-category="">전체</button>
+    <button class="category-tab" data-category="반려식물">반려식물</button>
+    <button class="category-tab" data-category="텃밭">텃밭</button>
+    <button class="category-tab" data-category="벼농사">벼농사</button>
+    <button class="category-tab" data-category="고추·마늘·양파">고추·마늘·양파</button>
+    <button class="category-tab" data-category="딸기·토마토">딸기·토마토</button>
+    <button class="category-tab" data-category="농약·비료·상토">농약·비료·상토</button>
+  </div>
+
   <div class="status-line">
     <span id="resultLabel">최신 글</span>
     <span id="resultCount"></span>
@@ -141,6 +180,7 @@
     <div class="modal-head"><div class="modal-title">커뮤니티에 글쓰기</div><button class="modal-close" type="button" onclick="closeWriteModal()">×</button></div>
     <div class="field"><div class="label">채널 선택</div><select class="select" id="channelSelect"></select></div>
     <div class="field"><div class="label">지역 태그</div><select class="select" id="regionSelect"><option value="">지역 선택</option><option>전남</option><option>경남</option><option>경북</option><option>충남</option><option>기타</option></select></div>
+    <div class="field"><div class="label">카테고리 선택</div><select class="select" id="postCategory"><option value="">카테고리 선택</option><option value="반려식물">반려식물</option><option value="텃밭">텃밭</option><option value="벼농사">벼농사</option><option value="고추·마늘·양파">고추·마늘·양파</option><option value="딸기·토마토">딸기·토마토</option><option value="농약·비료·상토">농약·비료·상토</option><option value="기타">기타</option></select></div>
     <div class="field"><div class="label">제목</div><input class="input" id="postTitle" placeholder="어떤 증상인가요?" autocomplete="off"></div>
     <div class="field"><div class="label">내용</div><textarea class="textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
     <button class="submit" id="submitBtn" type="button" onclick="submitPost()">등록하기</button>
@@ -183,10 +223,12 @@ let currentUser = null;
 let channels = [];
 let currentChannel = null;
 let activeRegion = '';
+let activeCategory = '';
 let keyword = '';
 let offset = 0;
 let isLoading = false;
 let hasMore = true;
+function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -196,6 +238,7 @@ async function init() {
   currentUser = authData?.user || null;
   await loadChannels();
   bindRegionChips();
+  bindCategoryTabs();
   document.getElementById('searchInput').addEventListener('search', applyKeywordSearch);
   document.getElementById('searchInput').addEventListener('input', debounce(applyKeywordSearch, 350));
   window.addEventListener('scroll', handleScroll, { passive:true });
@@ -225,6 +268,17 @@ async function loadChannels() {
 
 function defaultChannels() {
   return Object.entries(CHANNEL_CONFIG).map(([slug, name]) => ({ id: slug, slug, name }));
+}
+
+function bindCategoryTabs() {
+  document.getElementById('categoryTabs').addEventListener('click', e => {
+    const btn = e.target.closest('.category-tab');
+    if (!btn) return;
+    document.querySelectorAll('.category-tab').forEach(tab => tab.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = btn.dataset.category || '';
+    resetAndLoad();
+  });
 }
 
 function bindRegionChips() {
@@ -257,11 +311,12 @@ async function loadPosts() {
   try {
     let query = sb
       .from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name,slug),comments(count)', { count:'exact' })
+      .select('id,user_id,channel_id,title,content,category,crop_tag,region_tag,image_urls,view_count,created_at,channels(name,slug),comments(count)', { count:'exact' })
       .order('created_at', { ascending:false })
       .range(offset, offset + PAGE_SIZE - 1);
     if (currentChannel?.id) query = query.eq('channel_id', currentChannel.id);
     if (activeRegion) query = activeRegion === '기타' ? query.not('region_tag', 'in', '("전남","경남","경북","충남")') : query.ilike('region_tag', `%${activeRegion}%`);
+    if (activeCategory) query = query.eq('category', activeCategory);
     if (keyword) query = query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
     const { data, count, error } = await query;
     if (error) throw error;
@@ -278,7 +333,7 @@ async function loadPosts() {
 
 function renderPosts(posts, totalCount) {
   const list = document.getElementById('postList');
-  document.getElementById('resultLabel').textContent = activeRegion ? `${activeRegion} 글` : '최신 글';
+  document.getElementById('resultLabel').textContent = activeCategory || (activeRegion ? `${activeRegion} 글` : '최신 글');
   document.getElementById('resultCount').textContent = `${totalCount}개`;
   if (offset === 0) list.innerHTML = '';
   if (!posts.length && offset === 0) {
@@ -289,19 +344,16 @@ function renderPosts(posts, totalCount) {
     const slug = post.channels?.slug || channels.find(ch => ch.id === post.channel_id)?.slug || '';
     const badgeClass = CHANNEL_BADGE_COLORS[slug] || '';
     const commentCount = Array.isArray(post.comments) && post.comments[0]?.count !== undefined ? post.comments[0].count : 0;
+    const imageUrls = normalizeImages(post.image_urls);
+    const thumbHtml = imageUrls[0] ? `<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">` : '';
     const card = document.createElement('article');
-    card.className = 'post-card';
-    card.innerHTML = `
-      <span class="badge ${badgeClass}">${esc(post.channels?.name || channelName(slug))}</span>
+    card.className = 'post-card' + (thumbHtml ? ' has-thumb' : '');
+    card.innerHTML = `<div>
+      <span class="badge ${badgeClass}">${esc(post.channels?.name || channelName(slug))}</span>${post.category ? `<span class="category-badge">${esc(post.category)}</span>` : ''}
       <div class="post-title">${esc(post.title || '제목 없음')}</div>
       <div class="post-content">${esc(post.content || '')}</div>
-      <div class="meta">
-        <span>${post.user_id ? '회원' : '익명'} 작성자</span>
-        <span>댓글 ${commentCount}</span>
-        <span>조회 ${post.view_count || 0}</span>
-        <span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span>
-        <span>${timeAgo(post.created_at)}</span>
-      </div>`;
+      <div class="meta"><span>${post.user_id ? '회원' : '익명'} 작성자</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count || 0}</span><span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span><span>${timeAgo(post.created_at)}</span></div>
+    </div>${thumbHtml}`;
     card.style.cursor = 'pointer';
     card.onclick = () => { window.location.href = 'post.html?id=' + post.id; };
     list.appendChild(card);
@@ -314,33 +366,33 @@ function handleScroll() {
 }
 
 async function openWriteFlow() {
-  const { data } = await sb.auth.getUser();
-  currentUser = data?.user || null;
-  if (!currentUser) return openLoginModal();
   document.getElementById('writeModal').classList.add('open');
 }
+
 function closeWriteModal() { document.getElementById('writeModal').classList.remove('open'); }
 function openLoginModal() { document.getElementById('loginModal').classList.add('open'); }
 function closeLoginModal() { document.getElementById('loginModal').classList.remove('open'); }
 
 async function submitPost() {
   const channelId = document.getElementById('channelSelect').value;
+  const category = document.getElementById('postCategory').value;
   const title = document.getElementById('postTitle').value.trim();
   const content = document.getElementById('postContent').value.trim();
   const region = document.getElementById('regionSelect').value;
-  if (!channelId || !title || !content) return showToast('채널, 제목, 내용을 입력해주세요.');
+  if (!channelId || !category || !title || !content) return showToast('채널, 카테고리, 제목, 내용을 입력해주세요.');
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   try {
     const { data } = await sb.auth.getUser();
-    const user = data?.user;
-    if (!user) throw new Error('로그인이 필요합니다.');
-    const { error } = await sb.from('posts').insert({ user_id:user.id, channel_id:channelId, title, content, region_tag:region || null });
+    const userId = data?.user?.id || getLocalUserId();
+    localStorage.setItem('kfarmai_user_id', userId);
+    const { error } = await sb.from('posts').insert({ user_id:userId, channel_id:channelId, title, content, category, region_tag:region || null });
     if (error) throw error;
     showToast('게시글이 등록되었습니다.');
     closeWriteModal();
     document.getElementById('postTitle').value = '';
     document.getElementById('postContent').value = '';
+    document.getElementById('postCategory').value = '';
     resetAndLoad();
   } catch (err) {
     showToast(err.message || '등록에 실패했습니다.');
@@ -349,12 +401,22 @@ async function submitPost() {
   }
 }
 
+
 async function loginGoogle() {
   const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:location.href } });
   if (error) showToast('로그인 실패: ' + error.message);
 }
 
 function channelName(slug) { return CHANNEL_CONFIG[slug] || '일반'; }
+function normalizeImages(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean);
+  if (typeof value === 'string') {
+    try { const parsed = JSON.parse(value); return Array.isArray(parsed) ? parsed.filter(Boolean) : [value].filter(Boolean); }
+    catch (_) { return value.split(',').map(v => v.trim()).filter(Boolean); }
+  }
+  return [];
+}
 function esc(value) {
   return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }

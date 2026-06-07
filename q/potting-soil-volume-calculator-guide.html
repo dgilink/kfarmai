@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="화분 지름과 높이를 기준으로 분갈이에 필요한 상토 용량을 계산하는 방법을 안내합니다.">
+  <title>화분 상토 필요량 계산법 | 화분 크기별 흙 용량 가이드 — kFarmAI</title>
+  <link rel="canonical" href="https://kfarmai.com/q/potting-soil-volume-calculator-guide">
+  <meta property="og:title" content="화분 상토 필요량 계산법 | 화분 크기별 흙 용량 가이드 — kFarmAI">
+  <meta property="og:description" content="화분 지름과 높이를 기준으로 분갈이에 필요한 상토 용량을 계산하는 방법을 안내합니다.">
+  <meta property="og:url" content="https://kfarmai.com/q/potting-soil-volume-calculator-guide">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #222; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; }
+    header { background: #1B5E20; height: 56px; display: flex; align-items: center; justify-content: center; }
+    header a { display: flex; align-items: center; text-decoration: none; }
+    main { max-width: 480px; margin: 0 auto; padding: 18px 16px 32px; }
+    h1 { font-size: 22px; line-height: 1.35; color: #1B5E20; margin: 12px 0 16px; }
+    h2 { font-size: 16px; color: #333; margin-top: 20px; margin-bottom: 8px; }
+    h3 { font-size: 15px; color: #333; margin: 0 0 10px; }
+    p { margin: 0 0 12px; }
+    ul { margin: 0; padding-left: 20px; }
+    li { margin: 5px 0; }
+    .category-badge { display: inline-block; background: #E8F5E9; color: #2E7D32; border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; }
+    .content { margin-top: 8px; }
+    .safety-notice { background: #FFF8E1; border-left: 3px solid #F9A825; padding: 10px 14px; font-size: 13px; border-radius: 6px; margin-top: 16px; }
+    .safety-notice a { color: #8A5A00; font-weight: 700; }
+    .btn-map { background: #2E7D32; color: #fff; border-radius: 10px; padding: 12px 20px; display: block; text-align: center; margin: 16px 0; text-decoration: none; font-weight: 700; }
+    .ai-cta-card { background: #E8F5E9; border: 1.5px solid #4CAF50; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+    .ai-cta-icon { width: 34px; height: 34px; border-radius: 50%; background: #C8E6C9; position: relative; }
+    .ai-cta-icon::after { content: "AI"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #1B5E20; font-size: 12px; font-weight: 900; }
+    .ai-cta-text strong { display: block; color: #1B5E20; font-size: 16px; }
+    .ai-cta-text p { margin: 6px 0 0; font-size: 14px; }
+    .ai-cta-btn { background: #1B5E20; color: #fff; border-radius: 10px; padding: 12px; display: block; text-align: center; text-decoration: none; font-weight: 700; }
+    .related-questions { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .related-questions h3 { flex: 0 0 100%; }
+    .related-questions a { border: 1px solid #C8E6C9; border-radius: 20px; padding: 8px 14px; font-size: 13px; color: #2E7D32; display: inline-block; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/index.html">
+      <img src="/logo-transparent.png" alt="kFarmAI" height="36">
+    </a>
+  </header>
+
+  <main>
+    <div class="category-badge">농자재/상토</div>
+    <h1>화분 상토 필요량 계산법 | 화분 크기별 흙 용량 가이드</h1>
+
+    <section class="content">
+      <p>분갈이 상토 필요량은 화분 모양과 크기에 따라 달라집니다. 원형 화분은 대략 원기둥 부피로 계산할 수 있고, 실제로는 배수층·기존 뿌리분·빈 공간을 고려해 계산값보다 조금 적게 필요합니다. kFarmAI에서는 지름과 높이를 입력하면 예상 L 수를 계산하는 도구로 연결하면 좋습니다.</p>
+    </section>
+
+    <section class="causes">
+      <h2>가능한 원인</h2>
+      <ul>
+        <li>화분 지름·높이에 따른 부피 차이</li>
+        <li>기존 뿌리분 크기</li>
+        <li>배수층 사용 여부</li>
+        <li>흙 압축 정도</li>
+        <li>화분 형태가 원형인지 사각형인지</li>
+      </ul>
+    </section>
+
+    <section class="photo-tips">
+      <h2>사진으로 확인할 포인트</h2>
+      <ul>
+        <li>화분 윗지름과 높이 측정</li>
+        <li>기존 식물 뿌리분 크기 확인</li>
+        <li>배수층을 넣을지 결정</li>
+        <li>흙을 꽉 누르지 않고 채울지 확인</li>
+        <li>여분 흙 10~20% 확보</li>
+      </ul>
+    </section>
+
+    <section class="actions">
+      <h2>바로 해야 할 조치</h2>
+      <ul>
+        <li>원형 화분은 지름과 높이를 입력해 대략 부피를 계산합니다.</li>
+        <li>분갈이 시에는 계산량보다 여유 있게 준비합니다.</li>
+        <li>배수성과 보수성을 식물 종류에 맞춥니다.</li>
+        <li>계산기 페이지에서 바로 L 수를 확인하도록 유도합니다.</li>
+      </ul>
+    </section>
+
+    <section class="warnings">
+      <h2>하지 말아야 할 행동</h2>
+      <ul>
+        <li>화분 크기만 보고 임의로 1봉 구매하지 않기</li>
+        <li>식물 특성 없이 아무 흙이나 쓰지 않기</li>
+      </ul>
+    </section>
+
+    <div class="ai-cta-card">
+      <div class="ai-cta-icon"></div>
+      <div class="ai-cta-text">
+        <strong>직접 사진으로 진단받기</strong>
+        <p>사진을 올리면 AI가 증상 후보, 확인 포인트, 조치 순서를 정리해드립니다.</p>
+      </div>
+      <a href="/diagnosis.html" class="ai-cta-btn">AI 진단 시작하기 →</a>
+    </div>
+
+    <div class="related-questions">
+      <h3>비슷한 증상 보기</h3>
+      <a href="/q/fungus-gnats-in-pots">화분 흙 고르는 법</a>
+      <a href="/q/succulent-wrinkled-leaves">분갈이 후 물주는 방법</a>
+      <a href="/q/pesticide-dilution-calculator-safety">상토 계산기</a>
+    </div>
+  </main>
+</body>
+</html>

@@ -246,6 +246,9 @@
   .section-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; }
   .section-more { font-size: 12px; color: var(--sub); cursor: pointer; }
   .section-more::after { content: ' ›'; }
+  .tools-card { display: flex; gap: 8px; margin: 12px 0 14px; overflow-x: auto; scrollbar-width: none; }
+  .tools-card::-webkit-scrollbar { display: none; }
+  .tools-card a { flex: 0 0 auto; border: 1.5px solid #C8E6C9; border-radius: 20px; background: #F1F8E9; color: #1B5E20; padding: 9px 14px; font-size: 13px; font-weight: 800; text-decoration: none; white-space: nowrap; }
 
   /* ===== Hero ===== */
   .hero {
@@ -542,6 +545,14 @@
     width: 100%; padding: 14px; background: var(--green); color: #fff; border: 0; border-radius: 12px;
     font-size: 15px; font-weight: 800; cursor: pointer;
   }
+
+  .image-input { display:none; }
+  .image-upload-btn { display:inline-flex; align-items:center; justify-content:center; height:38px; padding:0 13px; border:1.5px solid var(--border); border-radius:10px; background:#fff; color:var(--text); font-size:13px; font-weight:800; cursor:pointer; }
+  .image-preview-row { display:flex; gap:8px; overflow-x:auto; padding:2px 0 4px; scrollbar-width:none; }
+  .image-preview-row::-webkit-scrollbar { display:none; }
+  .image-thumb { position:relative; flex:0 0 auto; width:72px; height:72px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#F3F4F6; }
+  .image-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .image-remove { position:absolute; top:4px; right:4px; width:22px; height:22px; border:0; border-radius:50%; background:rgba(0,0,0,.62); color:#fff; font-size:14px; font-weight:900; cursor:pointer; line-height:22px; }
   .my-panel-overlay {
     display: flex; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 60;
     align-items: flex-end; opacity: 0; pointer-events: none; transition: opacity .22s ease;
@@ -1045,6 +1056,11 @@
           <a class="ql" href="news_sub.html"><div class="ql-icon"><svg><use href="#ql-gov"/></svg></div><div class="ql-name">보조사업</div></a>
           <a class="ql" href="links.html"><div class="ql-icon"><svg><use href="#ql-link"/></svg></div><div class="ql-name">농업링크</div></a>
         </div>
+        <div class="tools-card">
+          <a href="/tools-soil.html">상토 계산기</a>
+          <a href="/tools-fertilizer.html">액비 계산기</a>
+          <a href="/tools-pesticide.html">농약 계산기</a>
+        </div>
 
         <div class="promo-banner" onclick="showToast('우리 동네 시세를 확인합니다')">
           <div>
@@ -1088,9 +1104,16 @@
     <div class="modal-handle"></div>
     <div class="modal-title">커뮤니티에 질문하기</div>
     <div class="modal-field"><div class="modal-label">채널 선택</div><select class="modal-select" id="channelSelect"><option value="">채널을 선택하세요</option></select></div>
+    <div class="modal-field"><div class="modal-label">카테고리 선택</div><select class="modal-select" id="postCategory"><option value="">카테고리 선택</option><option value="반려식물">반려식물</option><option value="텃밭">텃밭</option><option value="벼농사">벼농사</option><option value="고추·마늘·양파">고추·마늘·양파</option><option value="딸기·토마토">딸기·토마토</option><option value="농약·비료·상토">농약·비료·상토</option><option value="기타">기타</option></select></div>
     <div class="modal-field"><div class="modal-label">제목</div><input class="modal-input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
     <div class="modal-field"><div class="modal-label">내용</div><textarea class="modal-textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
-    <button class="modal-submit" onclick="submitPost()">질문 등록하기</button>
+    <div class="modal-field">
+      <div class="modal-label">사진 업로드 <span style="font-weight:600;color:var(--muted)">(선택, 최대 3장)</span></div>
+      <label class="image-upload-btn" for="postImages">사진 선택</label>
+      <input class="image-input" type="file" id="postImages" accept="image/*" multiple onchange="handlePostImages(this)">
+      <div class="image-preview-row" id="postImagePreview"></div>
+    </div>
+    <button class="modal-submit" id="postSubmitBtn" onclick="submitPost()">질문 등록하기</button>
   </div>
 </div>
 
@@ -1632,7 +1655,13 @@ function saveRecentSearch(kw){const list=getRecentSearches().filter(item=>item!=
 function removeRecentSearch(event,kw){event.stopPropagation();localStorage.setItem(SEARCH_STORAGE_KEY,JSON.stringify(getRecentSearches().filter(item=>item!==kw)));renderSearchDropdown(document.getElementById('globalSearch')?.value||'');}
 function clearRecentSearches(event){event.stopPropagation();localStorage.removeItem(SEARCH_STORAGE_KEY);renderSearchDropdown(document.getElementById('globalSearch')?.value||'');}
 initSearch();
-async function submitPost(){const channelId=document.getElementById('channelSelect').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!title){alert('채널과 제목을 입력해주세요.');return;}const {data:{session}}=await _sb.auth.getSession();const {error}=await _sb.from('posts').insert({channel_id:channelId,title,content,user_id:session?.user?.id||null});if(error){alert('등록 실패: '+error.message);return;}closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';loadFeed();}
+let selectedPostImages = [];
+function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
+function handlePostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
+function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');if(!wrap)return;wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
+function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
+async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await _sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=_sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
+async function submitPost(){const channelId=document.getElementById('channelSelect').value;const category=document.getElementById('postCategory').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!category||!title){showToast('채널, 카테고리, 제목을 입력해주세요.');return;}const btn=document.getElementById('postSubmitBtn');if(btn)btn.disabled=true;try{const {data:{session}}=await _sb.auth.getSession();const userId=session?.user?.id||getLocalUserId();localStorage.setItem('kfarmai_user_id',userId);const imageUrls=await uploadPostImages(userId);const {error}=await _sb.from('posts').insert({channel_id:channelId,title,content,category,user_id:userId,image_urls:imageUrls});if(error)throw error;showToast('질문이 등록되었습니다');closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postCategory').value='';selectedPostImages=[];renderPostImagePreview();loadFeed();}catch(err){showToast('등록 실패: '+(err.message||err));}finally{if(btn)btn.disabled=false;}}
 function openModal(){document.getElementById('writeModal').classList.add('open');}
 function closeModal(){document.getElementById('writeModal').classList.remove('open');}
 function openMyPanel(){document.getElementById('myPanel').classList.add('open');}
