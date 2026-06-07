@@ -613,6 +613,30 @@
     border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 700; color: #222;
   }
   .my-row .count, .my-row .muted { color: var(--muted); font-size: 12px; font-weight: 700; }
+  .my-row.clickable { cursor: pointer; }
+  .my-list { display: none; padding: 0 0 6px; }
+  .my-list.open { display: block; }
+  .my-list-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #F0F0F0;
+    cursor: pointer;
+  }
+  .my-list-badge {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 11px;
+  }
+  .my-list-title {
+    font-size: 13px;
+    color: #333;
+    margin: 4px 0 2px;
+  }
+  .my-list-date {
+    font-size: 11px;
+    color: #9E9E9E;
+  }
   .my-row.logout { color: #DC2626; cursor: pointer; }
   .my-version { padding-top: 14px; color: var(--muted); font-size: 12px; text-align: center; font-weight: 700; }
   .feed-loading { text-align: center; padding: 20px 10px; color: var(--muted); font-size: 13px; }
@@ -1159,8 +1183,10 @@
         </div>
       </div>
       <div class="my-menu">
-        <div class="my-row"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
-        <div class="my-row"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
+        <div class="my-row clickable" onclick="toggleMyList('myPostList')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
+        <div class="my-list" id="myPostList"></div>
+        <div class="my-row clickable" onclick="toggleMyList('myDiagList')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
+        <div class="my-list" id="myDiagList"></div>
         <div class="my-row"><span>저장한 정보</span><span class="muted">준비중</span></div>
         <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
         <div class="my-row"><span>공지사항</span><span class="muted">준비중</span></div>
@@ -1328,6 +1354,7 @@ async function runDiagnosis() {
     if (!res.ok) throw new Error('서버 오류 ' + res.status);
     const data = await res.json();
     renderDiagResult(data, resultWrap);
+    saveDiagnosisHistory(symptom, data);
   } catch (err) {
     resultWrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-body" style="color:#DC2626">진단에 실패했습니다.<br>${err.message || '잠시 후 다시 시도해주세요.'}</div></div>`;
   } finally {
@@ -1464,6 +1491,12 @@ function setMyState(user){
   const loggedIn=document.getElementById('myLoggedIn');
   if(loggedOut)loggedOut.style.display = user ? 'none' : 'block';
   if(loggedIn)loggedIn.style.display = user ? 'block' : 'none';
+  if(!user){
+    ['myPostList','myDiagList'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.classList.remove('open');el.innerHTML='';}
+    });
+  }
 }
 function renderHeaderProfile(user){
   const bell=document.getElementById('headerProfile');
@@ -1486,16 +1519,88 @@ function renderMyProfile(user){
 async function loadMyCounts(userId){
   if(!window._sb||!userId)return;
   try{
-    const [{count:postCount},{count:diagnosisCount}] = await Promise.all([
-      _sb.from('posts').select('id',{count:'exact',head:true}).eq('user_id',userId),
-      _sb.from('diagnoses').select('id',{count:'exact',head:true}).eq('user_id',userId)
-    ]);
+    const {count:postCount} = await _sb.from('posts').select('id',{count:'exact',head:true}).eq('user_id',userId);
     document.getElementById('myPostCount').textContent=postCount ?? 0;
-    document.getElementById('myDiagnosisCount').textContent=diagnosisCount ?? 0;
   }catch(e){
     document.getElementById('myPostCount').textContent='0';
+  }
+  try{
+    const {count:diagnosisCount} = await _sb.from('diagnoses').select('id',{count:'exact',head:true}).eq('user_id',userId);
+    document.getElementById('myDiagnosisCount').textContent=diagnosisCount ?? 0;
+  }catch(e){
     document.getElementById('myDiagnosisCount').textContent='0';
   }
+  loadMyPosts(userId);
+  loadMyDiagnoses(userId);
+}
+function toggleMyList(id){
+  const list=document.getElementById(id);
+  if(!list||!currentUser)return;
+  list.classList.toggle('open');
+}
+async function loadMyPosts(userId){
+  const list=document.getElementById('myPostList');
+  if(!list||!window._sb||!userId)return;
+  try{
+    const {data,error}=await _sb.from('posts')
+      .select('id, title, category, created_at')
+      .eq('user_id',userId)
+      .order('created_at',{ascending:false})
+      .limit(10);
+    if(error)throw error;
+    list.innerHTML=(data||[]).map(post=>`<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'">
+      <span class="my-list-badge">${escHtml(post.category||'기타')}</span>
+      <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
+      <div class="my-list-date">${formatMyDate(post.created_at)}</div>
+    </div>`).join('');
+  }catch(e){
+    list.innerHTML='';
+  }
+}
+async function loadMyDiagnoses(userId){
+  const list=document.getElementById('myDiagList');
+  if(!list||!window._sb||!userId)return;
+  try{
+    const {data,error}=await _sb.from('diagnoses')
+      .select('id, crop, symptom, created_at')
+      .eq('user_id',userId)
+      .order('created_at',{ascending:false})
+      .limit(10);
+    if(error)throw error;
+    list.innerHTML=(data||[]).map(item=>{
+      const symptom=item.symptom||'증상 입력 없음';
+      const title=symptom.length>20?`${symptom.slice(0,20)}...`:symptom;
+      return `<div class="my-list-item">
+        <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+        <div class="my-list-title">${escHtml(title)}</div>
+        <div class="my-list-date">${formatMyDate(item.created_at)}</div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    list.innerHTML='';
+  }
+}
+async function saveDiagnosisHistory(symptomText, resultData){
+  if(!window._sb)return;
+  try{
+    const {data:{session}}=await _sb.auth.getSession();
+    if(!session?.user?.id)return;
+    const selectedCrop='미선택';
+    const diagResult=typeof resultData==='string'?resultData:JSON.stringify(resultData);
+    await _sb.from('diagnoses').insert({
+      user_id: session.user.id,
+      crop: selectedCrop || '미선택',
+      symptom: symptomText || '',
+      result: diagResult
+    });
+    loadMyCounts(session.user.id);
+  }catch(e){}
+}
+function formatMyDate(value){
+  if(!value)return '';
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime()))return '';
+  return d.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
 }
 function getInitial(user){return (user.user_metadata?.full_name||user.user_metadata?.name||user.email||'U').trim()[0].toUpperCase();}
 async function loadChannels(){const grid=document.getElementById('channelGrid');const select=document.getElementById('channelSelect');if(!grid||!select||!window._sb)return;try{const {data}=await _sb.from('channels').select('*').order('slug');renderChannels(data&&data.length?data:defaultChannels(),grid,select);}catch(e){renderChannels(defaultChannels(),grid,select);}}
