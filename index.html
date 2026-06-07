@@ -349,41 +349,33 @@
   }
 
   /* ===== AI Diagnosis ===== */
-  .diag-title { margin: 4px 2px 14px; }
-  .diag-title h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.35; }
-  .diag-title h2 .ai { color: var(--orange); }
-  .diag-title p { font-size: 12.5px; color: var(--sub); margin-top: 5px; }
-
-  .upload-card {
-    background: #fff; border-radius: 16px; padding: 20px 14px;
-    border: 2px dashed #CFD4DA; text-align: center;
+  .diag-panel {
+    background: #F1F8E9;
+    border-radius: 16px;
+    padding: 14px 12px 16px;
     margin-bottom: 12px;
   }
-  .upload-icon { width: 68px; height: 68px; margin: 0 auto 10px; }
+  .diag-title { margin: 0 2px 10px; }
+  .diag-title h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.35; }
+  .diag-title h2 .ai { color: var(--orange); }
+
+  .upload-card {
+    background: #fff; border-radius: 16px; padding: 14px 12px;
+    border: 2px dashed #CFD4DA; text-align: center;
+    margin-bottom: 10px;
+  }
+  .upload-icon { width: 50px; height: 50px; margin: 0 auto 7px; }
   .upload-icon svg { width: 100%; height: 100%; }
   .upload-card .label { font-size: 14px; font-weight: 700; }
-  .upload-card .sub { font-size: 12px; color: var(--sub); margin-top: 4px; }
-  .upload-buttons { display: flex; gap: 8px; margin-top: 14px; }
+  .upload-card .sub { font-size: 11.5px; color: var(--sub); margin-top: 3px; }
+  .upload-buttons { display: flex; gap: 8px; margin-top: 10px; }
   .ub {
-    flex: 1; padding: 11px 0; border-radius: 11px;
+    flex: 1; padding: 9px 0; border-radius: 11px;
     font-size: 13.5px; font-weight: 700; cursor: pointer;
     display: inline-flex; align-items: center; justify-content: center; gap: 5px;
   }
   .ub.primary { background: var(--green); color: #fff; border: 0; }
   .ub.outline { background: #fff; color: #333; border: 1.5px solid var(--border); }
-
-  .crop-row {
-    display: flex; gap: 7px; overflow-x: auto; padding: 2px 0 6px;
-    scrollbar-width: none;
-  }
-  .crop-row::-webkit-scrollbar { display: none; }
-  .crop {
-    flex-shrink: 0; padding: 7px 13px; border-radius: 18px;
-    background: #fff; border: 1px solid var(--border);
-    font-size: 12.5px; font-weight: 700; color: #444;
-    cursor: pointer;
-  }
-  .crop.on { background: var(--green); color: #fff; border-color: var(--green); }
 
   .diag-case {
     background: #fff; border-radius: 12px; padding: 10px 12px;
@@ -416,14 +408,14 @@
   .case-pct .lbl { font-size: 10px; color: var(--muted); margin-top: 1px; }
 
   /* ===== Page 2: 진단 입력/결과 ===== */
-  .diag-preview-wrap { margin-top: 12px; display: none; }
+  .diag-preview-wrap { margin-top: 10px; display: none; }
   .diag-preview-wrap.show { display: block; }
-  .diag-preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 12px; }
+  .diag-preview-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; }
   .diag-preview-clear { display: block; width: 100%; margin-top: 6px; background: none; border: none; color: var(--sub); font-size: 12px; cursor: pointer; text-align: center; padding: 0; }
-  .symptom-area { margin-top: 14px; }
-  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 11px 12px; font-size: 14px; font-family: inherit; min-height: 76px; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
+  .symptom-area { margin-top: 10px; }
+  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: inherit; min-height: 64px; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
   .symptom-textarea:focus { border-color: var(--green); }
-  .diag-start-btn { width: 100%; height: 50px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 12px; opacity: .4; transition: opacity .2s; }
+  .diag-start-btn { width: 100%; height: 46px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; opacity: .4; transition: opacity .2s; }
   .diag-start-btn:not([disabled]) { opacity: 1; }
   .diag-result-wrap { margin-top: 4px; }
   .diag-loading { text-align: center; padding: 24px 0; display: none; }
@@ -951,44 +943,32 @@
 
       <!-- ============ PAGE 2: AI 진단 ============ -->
       <section class="page">
-        <div class="diag-title">
-          <h2>식물 사진을 올리면 <span class="ai">AI</span>가 진단해드려요</h2>
-          <p>병해충, 영양 상태까지 30초 안에 분석</p>
-        </div>
-
-        <div class="upload-card">
-          <div class="upload-icon"><svg><use href="#ic-upload-leaf"/></svg></div>
-          <div class="label">진단할 사진을 올려주세요</div>
-          <div class="sub">잎·줄기·열매가 잘 보이게 촬영하세요</div>
-          <div class="upload-buttons">
-            <button class="ub primary" onclick="diagOpenCamera()">📷 촬영하기</button>
-            <button class="ub outline" onclick="diagOpenAlbum()">🖼 앨범에서</button>
+        <div class="diag-panel">
+          <div class="diag-title">
+            <h2>식물 사진을 올리면 <span class="ai">AI</span>가 진단해드려요</h2>
           </div>
-          <div class="diag-preview-wrap" id="diagPreviewWrap">
-            <img id="diagPreviewImg" class="diag-preview-img" src="" alt="업로드 이미지">
-            <button class="diag-preview-clear" onclick="diagClearImage()">✕ 이미지 제거</button>
+
+          <div class="upload-card">
+            <div class="upload-icon"><svg><use href="#ic-upload-leaf"/></svg></div>
+            <div class="label">진단할 사진을 올려주세요</div>
+            <div class="sub">잎·줄기·열매가 잘 보이게 촬영하세요</div>
+            <div class="upload-buttons">
+              <button class="ub primary" onclick="diagOpenCamera()">📷 촬영하기</button>
+              <button class="ub outline" onclick="diagOpenAlbum()">🖼 앨범에서</button>
+            </div>
+            <div class="diag-preview-wrap" id="diagPreviewWrap">
+              <img id="diagPreviewImg" class="diag-preview-img" src="" alt="업로드 이미지">
+              <button class="diag-preview-clear" onclick="diagClearImage()">✕ 이미지 제거</button>
+            </div>
+            <input type="file" id="diagCameraInput" accept="image/*" capture="environment" style="display:none" onchange="diagHandleFile(this)">
+            <input type="file" id="diagAlbumInput" accept="image/*" style="display:none" onchange="diagHandleFile(this)">
           </div>
-          <input type="file" id="diagCameraInput" accept="image/*" capture="environment" style="display:none" onchange="diagHandleFile(this)">
-          <input type="file" id="diagAlbumInput" accept="image/*" style="display:none" onchange="diagHandleFile(this)">
-        </div>
 
-        <div class="section-head" style="margin-top:6px"><div class="section-title">작물 선택</div></div>
-        <div class="crop-row">
-          <div class="crop on">전체</div>
-          <div class="crop">토마토</div>
-          <div class="crop">고추</div>
-          <div class="crop">상추</div>
-          <div class="crop">오이</div>
-          <div class="crop">벼</div>
-          <div class="crop">딸기</div>
-          <div class="crop">포도</div>
-          <div class="crop">사과</div>
+          <div class="symptom-area">
+            <textarea class="symptom-textarea" id="diagSymptom" placeholder="증상을 설명해주세요. 예) 잎이 노랗게 변했어요" oninput="updateDiagBtn()"></textarea>
+          </div>
+          <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">🔍 AI 진단 시작</button>
         </div>
-
-        <div class="symptom-area">
-          <textarea class="symptom-textarea" id="diagSymptom" placeholder="증상을 설명해주세요. 예) 잎이 노랗게 변했어요" oninput="updateDiagBtn()"></textarea>
-        </div>
-        <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">🔍 AI 진단 시작</button>
         <div class="diag-loading" id="diagLoading"><div class="spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--sub)">AI가 분석 중입니다...</div></div>
         <div class="diag-result-wrap" id="diagResultWrap"></div>
 
@@ -1255,14 +1235,6 @@
     toastTimer = setTimeout(()=>toast.classList.remove('show'), 1800);
   };
 
-  document.querySelectorAll('.crop').forEach(c=>{
-    c.addEventListener('click', ()=>{
-      c.parentElement.querySelectorAll('.crop').forEach(x=>x.classList.remove('on'));
-      c.classList.add('on');
-      if(window.updateDiagBtn) window.updateDiagBtn();
-    });
-  });
-
   go(0);
 })();
 
@@ -1295,16 +1267,12 @@ function diagClearImage() {
 }
 
 function updateDiagBtn() {
-  const cropEl = document.querySelector('.crop.on');
-  const crop = cropEl ? cropEl.textContent.trim() : '';
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
-  const hasCrop = crop && crop !== '전체';
   const btn = document.getElementById('diagStartBtn');
-  if (btn) btn.disabled = !(hasCrop && (symptom || diagImageBase64));
+  if (btn) btn.disabled = !(symptom || diagImageBase64);
 }
 
 async function runDiagnosis() {
-  const crop = (document.querySelector('.crop.on')?.textContent || '').trim();
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
   const region = localStorage.getItem('kfarmai_region') || '';
   const loading = document.getElementById('diagLoading');
@@ -1316,7 +1284,7 @@ async function runDiagnosis() {
   btn.disabled = true;
   btn.textContent = '분석 중...';
 
-  const body = { symptom, crop_type: crop, region };
+  const body = { symptom, region };
   if (diagImageBase64) body.image_base64 = diagImageBase64;
 
   try {
