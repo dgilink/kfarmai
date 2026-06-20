@@ -7,6 +7,9 @@
 <meta name="description" content="식물 이상 증상, 병해충, 상토·종자·비료·작물보호제 정보를 검색하고 질문하는 농업·식물 AI 커뮤니티입니다.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://kfarmai.com/">
+<link rel="preload" as="image" href="logo-transparent.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="kFarmAI">
@@ -44,6 +47,7 @@
 }
 </script>
 <style>
+  html { visibility: hidden; }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
     --green: #1D9E75;
@@ -247,6 +251,7 @@
   .section-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; }
   .section-more { font-size: 12px; color: var(--sub); cursor: pointer; }
   .section-more::after { content: ' ›'; }
+  .channel-count::after { content: none; }
   .tools-card { display: flex; gap: 8px; margin: 12px 0 14px; overflow-x: auto; scrollbar-width: none; }
   .tools-card::-webkit-scrollbar { display: none; }
   .tools-card a { flex: 0 0 auto; border: 1.5px solid #C8E6C9; border-radius: 20px; background: #F1F8E9; color: #1B5E20; padding: 9px 14px; font-size: 13px; font-weight: 800; text-decoration: none; white-space: nowrap; }
@@ -646,6 +651,11 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.style.visibility = 'visible';
+  });
+</script>
 </head>
 <body>
 
@@ -966,10 +976,41 @@
 
         <div class="section-head">
           <div class="section-title" data-i18n="exploreChannels">채널 둘러보기</div>
-          <div class="section-more" onclick="location.href='channel.html'">전체보기</div>
+          <div class="section-more channel-count">8개 채널</div>
         </div>
         <div class="channels" id="channelGrid">
-          <div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>
+          <div class="channel" style="background:#E8F5E9" onclick="location.href='channel.html?slug=plant-hospital'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-hospital"/></svg></div>
+            <div class="ch-name">식물 병원</div>
+          </div>
+          <div class="channel" style="background:#E3F2FD" onclick="location.href='channel.html?slug=plant-question'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-chat"/></svg></div>
+            <div class="ch-name">식물 질문방</div>
+          </div>
+          <div class="channel" style="background:#FFF8E1" onclick="location.href='channel.html?slug=crop-consult'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-wheat"/></svg></div>
+            <div class="ch-name">작물 상담방</div>
+          </div>
+          <div class="channel" style="background:#FCE4EC" onclick="location.href='channel.html?slug=plant-brag'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-camera"/></svg></div>
+            <div class="ch-name">내 식물 자랑</div>
+          </div>
+          <div class="channel" style="background:#FFF3E0" onclick="location.href='channel.html?slug=farmer-lounge'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-house"/></svg></div>
+            <div class="ch-name">농부 사랑방</div>
+          </div>
+          <div class="channel" style="background:#E0F7FA" onclick="location.href='channel.html?slug=plant-share'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-pot"/></svg></div>
+            <div class="ch-name">나눔·직거래</div>
+          </div>
+          <div class="channel" style="background:#F9FBE7" onclick="location.href='channel.html?slug=garden-class'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-class"/></svg></div>
+            <div class="ch-name">✂️ 원예 클래스</div>
+          </div>
+          <div class="channel" style="background:#FFFDE7" onclick="location.href='channel.html?slug=plant-meet'">
+            <div class="ch-icon-wrap"><svg><use href="#ic-people"/></svg></div>
+            <div class="ch-name">식집사 모임</div>
+          </div>
         </div>
 
         <div class="section-head">
@@ -1138,7 +1179,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">커뮤니티에 질문하기</div>
-    <div class="modal-field"><div class="modal-label">채널 선택</div><select class="modal-select" id="channelSelect"><option value="">채널을 선택하세요</option></select></div>
+    <div class="modal-field"><div class="modal-label">채널 선택</div><select class="modal-select" id="channelSelect"><option value="">채널을 선택하세요</option><option value="d88ba519-68fd-488f-8311-e316838ac4cf">식물 병원</option><option value="c7315bd6-eb60-484c-9c07-6def8f93ddc1">식물 질문방</option><option value="f586c6a8-882a-45d0-89e6-6d20fd9675de">작물 상담방</option><option value="9191bf52-84b6-42ca-b2c7-c886bde5d450">내 식물 자랑</option><option value="364c2c71-c313-47fc-a986-3124393bf381">농부 사랑방</option><option value="4619a407-a214-4555-8e63-06fa96ed87a2">나눔·직거래</option><option value="a6095ae4-1d7e-4671-a6b1-4277d343e586">✂️ 원예 클래스</option><option value="ae71a389-0723-4e76-b421-789a1474fd49">식집사 모임</option></select></div>
     <div class="modal-field"><div class="modal-label">카테고리 선택</div><select class="modal-select" id="postCategory"><option value="">카테고리 선택</option><option value="반려식물">반려식물</option><option value="텃밭">텃밭</option><option value="벼농사">벼농사</option><option value="고추·마늘·양파">고추·마늘·양파</option><option value="딸기·토마토">딸기·토마토</option><option value="농약·비료·상토">농약·비료·상토</option><option value="기타">기타</option></select></div>
     <div class="modal-field"><div class="modal-label">제목</div><input class="modal-input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
     <div class="modal-field"><div class="modal-label">내용</div><textarea class="modal-textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
@@ -1399,7 +1440,6 @@ function renderMarkdown(text) {
 
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
-const CHANNEL_CONFIG = {'plant-hospital':{icon:'ic-hospital',name:'식물 병원'},'plant-question':{icon:'ic-chat',name:'식물 질문방'},'crop-consult':{icon:'ic-wheat',name:'작물 상담방'},'plant-brag':{icon:'ic-camera',name:'내 식물 자랑'},'farmer-lounge':{icon:'ic-house',name:'농부 사랑방'},'plant-share':{icon:'ic-pot',name:'나눔·직거래'},'garden-class':{icon:'ic-class',name:'원예 클래스'},'plant-meet':{icon:'ic-people',name:'식집사 모임'}};
 const CHANNEL_BADGE_COLORS = {'plant-hospital':'green','plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const sbScript = document.createElement('script');
 sbScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -1467,7 +1507,6 @@ async function initSupabaseApp(){
     if(session)updateUserUI(session.user);
     else resetUserUI();
   });
-  loadChannels();
   loadFeed();
 }
 function updateUserUI(user){
@@ -1608,9 +1647,6 @@ function formatMyDate(value){
   return d.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
 }
 function getInitial(user){return (user.user_metadata?.full_name||user.user_metadata?.name||user.email||'U').trim()[0].toUpperCase();}
-async function loadChannels(){const grid=document.getElementById('channelGrid');const select=document.getElementById('channelSelect');if(!grid||!select||!window._sb)return;try{const {data}=await _sb.from('channels').select('*').order('slug');renderChannels(data&&data.length?data:defaultChannels(),grid,select);}catch(e){renderChannels(defaultChannels(),grid,select);}}
-function defaultChannels(){return Object.entries(CHANNEL_CONFIG).map(([slug,cfg])=>({slug,name:cfg.name,id:slug}));}
-function renderChannels(channels,grid,select){grid.innerHTML='';select.innerHTML='<option value="">채널을 선택하세요</option>';channels.forEach(ch=>{const cfg=CHANNEL_CONFIG[ch.slug]||{icon:'ic-chat',name:ch.name||'일반'};const card=document.createElement('div');card.className='channel';card.innerHTML=`<div class="ch-icon-wrap"><svg><use href="#${cfg.icon}"/></svg></div><div class="ch-name">${escHtml(ch.name||cfg.name)}</div>`;card.onclick=()=>{location.href=ch.slug?`channel.html?slug=${encodeURIComponent(ch.slug)}`:'channel.html';};grid.appendChild(card);const opt=document.createElement('option');opt.value=ch.id;opt.textContent=ch.name||cfg.name;select.appendChild(opt);});}
 async function loadFeed(channelId=null){const feed=document.getElementById('recentFeed');if(!feed||!window._sb)return;feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';try{let query=_sb.from('posts').select('*, channels(name, slug)').order('created_at',{ascending:false}).limit(5);if(channelId)query=query.eq('channel_id',channelId);const {data}=await query;if(!data||data.length===0){feed.innerHTML='<div class="feed-loading">아직 질문이 없습니다.<br>첫 질문을 올려보세요.</div>';return;}feed.innerHTML='';data.forEach(post=>{const slug=post.channels?.slug||'';const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';const card=document.createElement('div');card.className='q-card';card.style.cursor='pointer';card.onclick=()=>{location.href=`post.html?id=${post.id}`;};card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span><div class="q-title">${escHtml(post.title)}</div><div class="q-meta"><span>${post.user_id?'회원':'익명 작성자'}</span><span>댓글 ${post.comment_count||0}</span><span>좋아요 ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div>`;feed.appendChild(card);});}catch(e){feed.innerHTML='<div class="feed-loading">불러오기 실패. 새로고침해주세요.</div>';}}
 function filterByChannel(id,name){loadFeed(id);const title=document.querySelector('#recentFeed')?.previousElementSibling?.querySelector('.section-title');if(title)title.textContent=`${name} 질문`;}
 const SEARCH_STORAGE_KEY='kfarmai_recent_searches';
