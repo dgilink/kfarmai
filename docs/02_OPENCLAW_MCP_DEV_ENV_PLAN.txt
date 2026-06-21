@@ -1,0 +1,501 @@
+================================================================
+02_OPENCLAW_MCP_DEV_ENV_PLAN
+kFarmAI OpenClaw / MCP 통합개발환경 운영 설계서
+================================================================
+
+용도:
+이 파일은 OpenClaw, MCP, Claude, Codex, Gemini, Lovable, Higgsfield를 kFarmAI에서 어떻게 역할 분담해 사용할지 정리한 “운영 매뉴얼”이다.
+
+이 파일은 매번 개발 전에 붙이는 파일이 아니다. OpenClaw 설치, MCP 설정, AI 역할 분담을 다시 확인할 때 참고한다.
+
+저장 위치:
+C:\Users\user\PERSONAL\dev\kfarmai-web\docs\02_OPENCLAW_MCP_DEV_ENV_PLAN.txt
+
+================================================================
+0. 핵심 결론
+================================================================
+
+1. OpenClaw는 kFarmAI 개발을 직접 대신하는 도구가 아니다.
+2. OpenClaw는 여러 AI 도구와 로컬 작업을 연결하는 개발 지휘실/게이트웨이로 본다.
+3. 실제 코드 수정은 A 개인 개발 PC에서만 한다.
+4. B 회사 PC와 C 회사 핸드폰은 kFarmAI 개인 개발에 사용하지 않는다.
+5. D 개인 핸드폰은 확인/모니터링/비상중지 용도로만 사용한다.
+6. OpenClaw는 A 개인 PC에만 설치·운영한다.
+7. MCP는 무조건 많이 연결하지 않는다.
+8. kFarmAI에 필요한 최소 기능만 안전하게 연결한다.
+9. 지금 당장 추천하는 MCP는 Claude ↔ Higgsfield 정도이다.
+10. 파일시스템, GitHub, 터미널 MCP는 초기에는 보류한다.
+
+================================================================
+1. 장비 기준
+================================================================
+
+A = 개인 개발 PC
+- kFarmAI 개발 중심 장비
+- OpenClaw 설치 가능
+- Codex/ChatGPT/Claude/Gemini/Lovable 작업 가능
+- kfarmai-web 코드 수정
+- SEO worker 실행
+- Git 관리
+- 문서화
+
+D = 개인 핸드폰
+- 모바일 화면 확인
+- Tailscale 또는 원격접속 상태 확인
+- 비상중지
+- 코드 수정 금지
+
+B = 회사 PC
+- 회사 자산
+- kFarmAI 개인 프로젝트 사용 금지
+- OpenClaw 설치 금지
+- kFarmAI 코드 저장 금지
+- 자동작업 실행 금지
+- API 키 저장 금지
+
+C = 회사 핸드폰
+- 회사 자산
+- kFarmAI 개인 프로젝트 사용 금지
+- 모바일 확인용으로도 사용하지 않음
+
+기본 원칙:
+개발은 A, 확인은 D, B/C는 제외
+
+================================================================
+2. OpenClaw의 개념
+================================================================
+
+OpenClaw는 여러 AI 모델과 채널, 로컬 작업을 연결하는 개발 지휘실이다.
+
+역할 비유:
+대표님 = 총괄 PM
+OpenClaw = AI 작업 지휘실/게이트웨이
+Codex/ChatGPT = 코드 작성·수정
+Claude = 긴 문서 검토·리스크 분석·설계 정리
+Gemini = 최신 자료 조사·공식자료 확인
+Lovable = UI 프로토타입 제작
+Higgsfield = 이미지/영상 생성
+GitHub = 코드 저장소
+A 개인 PC = 실제 작업 공간
+
+OpenClaw는 작업을 정리하고, 모델별 역할을 나누고, 로그를 남기고, 필요한 경우 외부 도구를 연결하는 운영 도구이다.
+
+================================================================
+3. 이 파일은 Codex/Claude 프롬프트인가?
+================================================================
+
+아니다. 이 파일은 운영 설계서이다.
+
+구분:
+1. 01_KFarmAI_DEV_RULES_MASTER.txt
+- kFarmAI 전체 개발 원칙
+- SEO, AI 진단, 농약 안전, 데이터, Git, 테스트 기준
+
+2. 02_OPENCLAW_MCP_DEV_ENV_PLAN.txt
+- OpenClaw, MCP, AI 역할분담, A/D/B/C 장비 운영 설계
+
+3. 03_BEFORE_WORK_SAFETY_PROMPT.txt
+- 매번 Codex/OpenClaw/Claude Code 작업 전에 붙이는 짧은 안전 프롬프트
+
+긴 원칙 = 01번
+OpenClaw 운영 = 02번
+매일 붙이는 실행 프롬프트 = 03번
+
+================================================================
+4. 어디서 작업하는가?
+================================================================
+
+모든 kFarmAI 개인 개발 작업은 A 개인 PC에서 한다.
+
+작업 폴더:
+C:\Users\user\PERSONAL\dev\kfarmai-web
+
+PowerShell 기본 진입 명령:
+cd C:\Users\user\PERSONAL\dev\kfarmai-web
+
+작업 전:
+git status
+
+B 회사 PC, C 회사 핸드폰에서 금지:
+- OpenClaw 설치
+- Codex 실행
+- kFarmAI 코드 수정
+- kFarmAI GitHub 로그인
+- kFarmAI 자동작업 실행
+- kFarmAI API 키 저장
+- kFarmAI 백업/로그 저장
+
+================================================================
+5. OpenClaw 설치 위치
+================================================================
+
+OpenClaw는 A 개인 PC에만 설치한다.
+
+처음에는 Windows PowerShell 설치로 시작한다. 장기적으로 안정성을 원하면 WSL2를 검토할 수 있다.
+
+절대 하지 말 것:
+- B 회사 PC에 OpenClaw 설치
+- C 회사 핸드폰에 kFarmAI 개발 관련 계정 연결
+- 회사 자산에 API 키 저장
+
+================================================================
+6. OpenClaw 설치 PowerShell 명령어
+================================================================
+
+A 개인 PC에서 PowerShell 실행.
+
+1) 작업 폴더 이동:
+cd C:\Users\user\PERSONAL\dev\kfarmai-web
+
+2) Git 상태 확인:
+git status
+
+3) OpenClaw 설치:
+iwr -useb https://openclaw.ai/install.ps1 | iex
+
+4) 온보딩:
+openclaw onboard --install-daemon
+
+5) Gateway 상태 확인:
+openclaw gateway status
+
+6) Dashboard 실행:
+openclaw dashboard
+
+정상 기준:
+Gateway가 18789 포트에서 listening 중이면 기본 설치 성공.
+
+================================================================
+7. OpenClaw 기본 운영 명령어
+================================================================
+
+Gateway 상태 확인:
+openclaw gateway status
+
+Dashboard 열기:
+openclaw dashboard
+
+도움말:
+openclaw --help
+
+온보딩 재확인:
+openclaw onboard
+
+명령어가 작동하지 않으면 PowerShell을 새로 열거나 PC를 재시작한 뒤 PATH 문제를 확인한다.
+
+================================================================
+8. OpenClaw 역할 제한
+================================================================
+
+OpenClaw 역할:
+1. 작업 요청 정리
+2. 어떤 AI에게 맡길지 분류
+3. 작업 전 체크리스트 출력
+4. 수정 대상 파일 목록 정리
+5. 작업 로그 작성
+6. Codex/Claude/Gemini/Lovable용 프롬프트 생성
+7. 보안 원칙 확인
+
+OpenClaw가 직접 하면 안 되는 것:
+1. 사용자 허락 없는 Git push
+2. 사용자 허락 없는 배포
+3. 장시간 자동 실행
+4. 대량 파일 삭제
+5. API 키 입력
+6. 회사 장비 접근
+7. 개인정보 저장
+8. 농약/병해충 글 자동 공개
+
+================================================================
+9. AI별 역할 분담
+================================================================
+
+Codex / ChatGPT:
+- 코드 작성, 버그 수정, SEO worker 수정, HTML/CSS/JS 수정, sitemap/robots 처리, Git 변경사항 설명
+
+Claude:
+- 긴 문서 검토, 보안 정책 문서 정리, 법적 리스크 검토, 사업계획서 정리, 코드 리뷰, 개발 원칙 재정리
+
+Gemini:
+- 최신 공식자료 검색, 농사로/농약안전정보/지자체 자료 확인, SEO 출처 검증, Google Search Console 관련 자료 확인
+
+Lovable:
+- 모바일 홈 UI 시안, AI 진단 화면 시안, 질문 작성 화면 시안, 관리자 화면 프로토타입
+- 최종 운영 코드가 아니라 참고용 UI 시안
+
+Higgsfield:
+- 상토 광고 이미지, 홈가드닝 이미지, AI 진단 예시 이미지, SEO 글 썸네일, 짧은 세로형 영상
+
+================================================================
+10. kFarmAI 프로젝트 안에 둘 구조
+================================================================
+
+C:\Users\user\PERSONAL\dev\kfarmai-web\
+  docs\
+    01_KFarmAI_DEV_RULES_MASTER.txt
+    02_OPENCLAW_MCP_DEV_ENV_PLAN.txt
+    AI_DEV_ENV_DESIGN.md
+    AI_ROLE_GUIDE.md
+    PROMPT_LIBRARY.md
+    RUNBOOK.md
+    CHANGELOG.md
+    AI_WORK_LOG.md
+    SECURITY_POLICY.md
+    DEVICE_OPERATION_POLICY.md
+
+  prompts\
+    codex\
+      03_BEFORE_WORK_SAFETY_PROMPT.txt
+      seo_worker_task.txt
+      page_update_task.txt
+      bugfix_task.txt
+      security_docs_task.txt
+
+    claude\
+      code_review_prompt.txt
+      business_plan_review.txt
+      legal_risk_review.txt
+      security_review_prompt.txt
+
+    gemini\
+      official_source_check.txt
+      agriculture_research_prompt.txt
+      seo_source_prompt.txt
+
+    lovable\
+      mobile_home_ui_prompt.txt
+      ai_diagnosis_page_prompt.txt
+      question_form_ui_prompt.txt
+
+  logs\
+    ai_tasks\
+
+목적:
+- 매번 새로 프롬프트 만들지 않기
+- AI별 역할 구분
+- 작업 기록 축적
+- 유지보수 가능성 확보
+
+================================================================
+11. MCP 설정 판단
+================================================================
+
+결론:
+지금은 “필수 MCP만 최소로” 설정한다.
+
+추천:
+1. Claude ↔ Higgsfield MCP
+- 추천
+- 목적: 이미지/영상 생성
+- kFarmAI 광고 이미지, 상토 썸네일, AI 진단 예시 이미지 제작
+
+보류:
+2. 파일시스템 MCP
+- 보류 또는 읽기 전용 테스트
+- 이유: .env/API 키/개인 파일 접근 위험
+
+3. GitHub MCP
+- 보류
+- 이유: 자동 커밋/푸시 위험
+
+4. 터미널/PowerShell 실행 MCP
+- 비추천
+- 이유: 파일 삭제, 자동 실행, 보안 사고 위험
+
+5. 브라우저/웹검색 MCP
+- 공식자료 검색용으로 나중에 검토
+- 현재는 ChatGPT/Gemini 수동 검색이 더 안전
+
+핵심:
+MCP는 많이 연결할수록 편하지만 위험도 커진다. 초기에는 Higgsfield MCP 정도만 우선 연결한다.
+
+================================================================
+12. Claude ↔ Higgsfield MCP 설정
+================================================================
+
+Claude에서 Higgsfield MCP 연결:
+1. Claude 실행
+2. Settings 이동
+3. Connectors 메뉴 열기
+4. Add custom connector 선택
+5. 이름: Higgsfield
+6. URL: https://mcp.higgsfield.ai
+7. Add 또는 Connect 클릭
+8. Higgsfield 계정으로 로그인
+9. Claude 채팅창에서 이미지/영상 생성을 요청
+
+테스트 프롬프트:
+Higgsfield를 사용해서 kFarmAI용 세로형 9:16 상토 광고 이미지를 만들어줘.
+밝은 베란다, 홈가드닝, 깨끗한 화분, 고급스러운 실사 광고 느낌으로.
+
+주의:
+- 회사 장비 B/C에는 설정하지 않는다.
+- 개인 계정에서만 연결한다.
+- 크레딧 소모를 확인한다.
+- 제품 로고/포대/상표 표현은 검수한다.
+- 농약/병해충 이미지는 오해 없게 예시 이미지로 표시한다.
+
+================================================================
+13. OpenClaw에 MCP 연결 시 원칙
+================================================================
+
+1. A 개인 PC에서만 설정
+2. 검증된 MCP 서버만 사용
+3. 회사 장비 B/C 연결 금지
+4. .env, secrets, API 키 접근 금지
+5. 파일 수정 권한 최소화
+6. 자동 배포/자동 Git push 금지
+7. 터미널 실행 권한은 기본 비활성
+8. 처음에는 읽기 전용/테스트용으로만 연결
+9. 연결 후 docs/AI_WORK_LOG.md에 기록
+
+MCP 설정 시 기록할 내용:
+- MCP 이름
+- 연결 URL 또는 명령
+- 연결 목적
+- 접근 권한
+- 위험 요소
+- 테스트 결과
+- 제거 방법
+
+================================================================
+14. 지금 당장 추천 진행 순서
+================================================================
+
+1단계: A 개인 PC에서 OpenClaw 설치
+
+PowerShell:
+cd C:\Users\user\PERSONAL\dev\kfarmai-web
+git status
+iwr -useb https://openclaw.ai/install.ps1 | iex
+openclaw onboard --install-daemon
+openclaw gateway status
+openclaw dashboard
+
+2단계:
+kfarmai-web 프로젝트에 docs/prompts 구조 생성
+
+3단계:
+Claude ↔ Higgsfield MCP만 설정
+용도: kFarmAI 이미지/영상 제작
+
+4단계:
+OpenClaw에는 아직 위험한 MCP 연결하지 않음
+파일시스템, GitHub, 터미널 MCP는 보류
+
+5단계:
+OpenClaw를 작업 지휘실로 사용
+- 작업 분류
+- 프롬프트 생성
+- 로그 작성
+- 보안 체크리스트 확인
+
+6단계:
+실제 코드 수정은 Codex 중심
+A 개인 PC의 kfarmai-web에서만 수행
+
+================================================================
+15. PowerShell 명령어 모음
+================================================================
+
+작업 폴더 이동:
+cd C:\Users\user\PERSONAL\dev\kfarmai-web
+
+Git 상태 확인:
+git status
+
+OpenClaw 설치:
+iwr -useb https://openclaw.ai/install.ps1 | iex
+
+OpenClaw 온보딩:
+openclaw onboard --install-daemon
+
+Gateway 상태 확인:
+openclaw gateway status
+
+Dashboard 실행:
+openclaw dashboard
+
+SEO worker 30분 테스트:
+python kfarmai_10h_seo_worker.py --root . --hours 0.5 --interval 60 --max-items 20
+
+SEO worker 10시간 실행:
+python kfarmai_10h_seo_worker.py --root . --hours 10 --interval 180 --max-items 150
+
+작업 스케줄러 등록:
+schtasks /Create /TN "kFarmAI_Nightly_SEO_Draft_Worker" /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command cd C:\Users\user\PERSONAL\dev\kfarmai-web; python kfarmai_10h_seo_worker.py --root . --hours 10 --interval 180 --max-items 150" /SC DAILY /ST 20:00
+
+작업 스케줄러 확인:
+schtasks /Query /TN "kFarmAI_Nightly_SEO_Draft_Worker"
+
+작업 스케줄러 수동 실행:
+schtasks /Run /TN "kFarmAI_Nightly_SEO_Draft_Worker"
+
+작업 스케줄러 삭제:
+schtasks /Delete /TN "kFarmAI_Nightly_SEO_Draft_Worker" /F
+
+================================================================
+16. 보안 체크리스트
+================================================================
+
+OpenClaw/MCP 작업 전:
+- 지금 장비가 A 개인 PC인지 확인
+- B/C 회사 장비가 아닌지 확인
+- 작업 폴더가 kfarmai-web인지 확인
+- git status 확인
+- .env/API 키 노출 여부 확인
+- 수정 파일 백업
+- 장시간 자동 실행 여부 확인
+
+MCP 연결 전:
+- 꼭 필요한 MCP인지 확인
+- 공식/신뢰 가능한 서버인지 확인
+- 어떤 권한을 주는지 확인
+- 파일 수정/터미널 실행 권한이 있는지 확인
+- 회사 장비와 연결되지 않는지 확인
+- 제거 방법을 기록
+
+작업 후:
+- 변경 파일 목록 확인
+- docs/AI_WORK_LOG.md 기록
+- 테스트 결과 기록
+- Git 커밋 전 .env 포함 여부 확인
+- 검수 없는 배포 금지
+
+================================================================
+17. 최종 판단
+================================================================
+
+kFarmAI에 가장 맞는 OpenClaw/MCP 전략:
+
+OpenClaw:
+A 개인 PC에서만 사용
+개발 지휘실/작업 분류/프롬프트 관리/로그 관리용
+
+Codex/ChatGPT:
+실제 코드 작성 중심
+
+Claude:
+문서 검토, 코드 리뷰, 리스크 분석
+
+Gemini:
+공식자료 검색, 최신 정보 확인
+
+Lovable:
+UI 시안 제작
+
+Higgsfield MCP:
+Claude와 연결해 이미지/영상 제작
+
+파일시스템/GitHub/터미널 MCP:
+초기에는 보류, 나중에 최소권한으로 검토
+
+B/C 회사 장비:
+kFarmAI 개인 프로젝트에서 완전 제외
+
+최종 원칙:
+A 개인 PC에서만 개발하고, D 개인 폰으로만 확인하며, MCP는 필요한 것만 최소권한으로 연결하고, OpenClaw는 자동개발자가 아니라 AI 작업 지휘실로 쓴다.
+
+================================================================
+끝.
+================================================================
