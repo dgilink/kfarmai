@@ -1,6 +1,14 @@
 ﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P6FSHHD8D1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-P6FSHHD8D1');
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 <title>kFarmAI - 농업·식물 AI 진단 커뮤니티</title>
@@ -303,6 +311,7 @@
     display: flex; align-items: center; justify-content: center;
     overflow: hidden; position: relative;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+    font-size: 22px; line-height: 1;
   }
   .ch-icon-wrap svg { width: 100%; height: 100%; display: block; }
   .ch-name {
@@ -980,35 +989,35 @@
         </div>
         <div class="channels" id="channelGrid">
           <div class="channel" style="background:#E8F5E9" onclick="location.href='channel.html?slug=plant-hospital'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-hospital"/></svg></div>
+            <div class="ch-icon-wrap">🌿</div>
             <div class="ch-name">식물 병원</div>
           </div>
           <div class="channel" style="background:#E3F2FD" onclick="location.href='channel.html?slug=plant-question'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-chat"/></svg></div>
+            <div class="ch-icon-wrap">💬</div>
             <div class="ch-name">식물 질문방</div>
           </div>
           <div class="channel" style="background:#FFF8E1" onclick="location.href='channel.html?slug=crop-consult'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-wheat"/></svg></div>
+            <div class="ch-icon-wrap">🌾</div>
             <div class="ch-name">작물 상담방</div>
           </div>
           <div class="channel" style="background:#FCE4EC" onclick="location.href='channel.html?slug=plant-brag'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-camera"/></svg></div>
+            <div class="ch-icon-wrap">📷</div>
             <div class="ch-name">내 식물 자랑</div>
           </div>
           <div class="channel" style="background:#FFF3E0" onclick="location.href='channel.html?slug=farmer-lounge'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-house"/></svg></div>
+            <div class="ch-icon-wrap">🏡</div>
             <div class="ch-name">농부 사랑방</div>
           </div>
           <div class="channel" style="background:#E0F7FA" onclick="location.href='channel.html?slug=plant-share'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-pot"/></svg></div>
+            <div class="ch-icon-wrap">🪴</div>
             <div class="ch-name">나눔·직거래</div>
           </div>
           <div class="channel" style="background:#F9FBE7" onclick="location.href='channel.html?slug=garden-class'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-class"/></svg></div>
-            <div class="ch-name">✂️ 원예 클래스</div>
+            <div class="ch-icon-wrap">✂️</div>
+            <div class="ch-name">원예 클래스</div>
           </div>
           <div class="channel" style="background:#FFFDE7" onclick="location.href='channel.html?slug=plant-meet'">
-            <div class="ch-icon-wrap"><svg><use href="#ic-people"/></svg></div>
+            <div class="ch-icon-wrap">🤝</div>
             <div class="ch-name">식집사 모임</div>
           </div>
         </div>
