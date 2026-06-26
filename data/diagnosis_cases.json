@@ -1,0 +1,248 @@
+[
+  {
+    "caseId": "case-tomato-leaf-mold",
+    "label": "공공자료 기반 데모 사례",
+    "crop": "토마토",
+    "title": "토마토 잎곰팡이병 의심",
+    "userQuestion": "데모 입력 예시: 하우스 토마토 잎 뒷면에 연한 회색 곰팡이처럼 보이는 부분이 있고, 잎 앞면은 누렇게 변합니다.",
+    "symptoms": [
+      "잎 앞면에 옅은 황색 반점이 보임",
+      "잎 뒷면에 회갈색 곰팡이 형태의 포자가 보일 수 있음",
+      "시설 재배에서 습도가 높고 통풍이 약할 때 의심"
+    ],
+    "aiSummary": "사진과 증상만으로 단정할 수는 없지만, 잎 앞면 황화와 뒷면 곰팡이성 병징이 함께 보이면 토마토 잎곰팡이병 가능성을 공공자료 기준으로 확인할 수 있습니다.",
+    "causeCandidates": [
+      "토마토 잎곰팡이병",
+      "잎마름성 병해",
+      "환기 부족에 따른 생리 장해"
+    ],
+    "publicDataCheck": [
+      "농사로 병해충 자료에서 토마토 잎곰팡이병의 잎 앞면 변색과 뒷면 곰팡이 병징을 대조합니다.",
+      "비슷한 반점성 병해와 구분하기 위해 잎 뒷면의 포자 형태, 발생 위치, 시설 내 습도 조건을 함께 확인합니다."
+    ],
+    "generalCare": [
+      "하우스 내부 습도를 낮추고 환기를 늘립니다.",
+      "병든 잎은 주변 잎으로 번지지 않도록 제거 후 폐기합니다.",
+      "물 주기는 잎이 젖은 상태로 오래 남지 않게 조정합니다."
+    ],
+    "nextActions": [
+      "잎 앞면과 뒷면을 각각 가까이 촬영해 AI 진단에 다시 입력합니다.",
+      "공공자료 병징과 직접 비교합니다.",
+      "농약 사용 전 등록 작물과 병해충, 안전사용기준을 확인합니다."
+    ],
+    "linkedPages": [
+      { "label": "AI 진단 다시하기", "url": "diagnosis.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "가까운 농약사 찾기", "url": "agri_map.html" },
+      { "label": "커뮤니티 질문하기", "url": "channel.html" }
+    ],
+    "sourceName": "농사로 토마토 잎곰팡이병",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00001533",
+    "disclaimer": "AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요."
+  },
+  {
+    "caseId": "case-pepper-anthracnose",
+    "label": "공공자료 기반 데모 사례",
+    "crop": "고추",
+    "title": "고추 탄저병 초기 의심",
+    "userQuestion": "데모 입력 예시: 고추 열매에 작고 둥근 검은 반점이 생기고, 비가 온 뒤 반점이 조금씩 커지는 것 같습니다.",
+    "symptoms": [
+      "열매 표면에 둥근 갈색 또는 검은 반점",
+      "습한 날씨 뒤 병반이 커지는 양상",
+      "병반 주변이 움푹 들어가 보일 수 있음"
+    ],
+    "aiSummary": "고추 열매의 둥근 함몰 반점은 탄저병 가능성을 먼저 확인해야 하는 신호입니다. 다만 흠집, 햇빛 데임, 다른 과실 병해와 구분이 필요합니다.",
+    "causeCandidates": [
+      "고추 탄저병",
+      "열매 상처 부위 2차 감염",
+      "일소 또는 생리 장해"
+    ],
+    "publicDataCheck": [
+      "농사로 고추 탄저병 자료의 열매 병반 형태와 발생 조건을 대조합니다.",
+      "최근 강우, 과습, 병든 과실 방치 여부를 함께 확인합니다."
+    ],
+    "generalCare": [
+      "의심 과실은 포장 안에 방치하지 않고 제거합니다.",
+      "비가림, 배수, 통풍 상태를 점검합니다.",
+      "수확 작업 중 병든 열매와 정상 열매가 접촉하지 않게 관리합니다."
+    ],
+    "nextActions": [
+      "열매 전체 사진과 병반 근접 사진을 함께 기록합니다.",
+      "공공자료 병징과 비교한 뒤 지역 농업기술센터나 전문가에게 확인합니다.",
+      "약제 사용이 필요하면 등록 작물과 병해충 기준을 먼저 확인합니다."
+    ],
+    "linkedPages": [
+      { "label": "AI 진단 다시하기", "url": "diagnosis.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "가까운 농약사 찾기", "url": "agri_map.html" },
+      { "label": "커뮤니티 질문하기", "url": "channel.html" }
+    ],
+    "sourceName": "농사로 고추 탄저병",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00000195",
+    "disclaimer": "AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요."
+  },
+  {
+    "caseId": "case-cucumber-downy-mildew",
+    "label": "공공자료 기반 데모 사례",
+    "crop": "오이",
+    "title": "오이 노균병 의심",
+    "userQuestion": "데모 입력 예시: 오이 잎에 잎맥을 따라 각진 노란 반점이 생기고 아래쪽 잎부터 퍼집니다.",
+    "symptoms": [
+      "잎맥에 둘러싸인 각진 황색 반점",
+      "아래쪽 잎부터 증상이 보일 수 있음",
+      "습도가 높을 때 잎 뒷면에 어두운 곰팡이성 흔적이 나타날 수 있음"
+    ],
+    "aiSummary": "오이 잎의 각진 황색 반점은 노균병에서 자주 확인되는 특징입니다. 잎 뒷면 상태와 시설 내 습도 조건을 함께 확인해야 합니다.",
+    "causeCandidates": [
+      "오이 노균병",
+      "영양 불균형",
+      "약해 또는 환경 스트레스"
+    ],
+    "publicDataCheck": [
+      "농사로 오이 노균병 자료에서 각진 병반, 잎 뒷면 병징, 다습 조건을 확인합니다.",
+      "반점이 잎맥을 경계로 형성되는지 관찰해 다른 황화 증상과 구분합니다."
+    ],
+    "generalCare": [
+      "잎 표면이 젖어 있는 시간을 줄입니다.",
+      "시설 내부 환기와 배수를 점검합니다.",
+      "아래쪽 병든 잎은 전염원 관리 관점에서 제거합니다."
+    ],
+    "nextActions": [
+      "잎 앞면과 뒷면 사진을 같은 위치에서 촬영합니다.",
+      "공공 병해충 자료의 병반 형태와 비교합니다.",
+      "방제 판단 전 등록 약제와 안전사용기준을 확인합니다."
+    ],
+    "linkedPages": [
+      { "label": "AI 진단 다시하기", "url": "diagnosis.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "가까운 농약사 찾기", "url": "agri_map.html" },
+      { "label": "커뮤니티 질문하기", "url": "channel.html" }
+    ],
+    "sourceName": "농사로 오이 노균병",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00001402",
+    "disclaimer": "AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요."
+  },
+  {
+    "caseId": "case-strawberry-powdery-mildew",
+    "label": "공공자료 기반 데모 사례",
+    "crop": "딸기",
+    "title": "딸기 흰가루병 의심",
+    "userQuestion": "데모 입력 예시: 딸기 잎과 과실 주변에 흰 가루 같은 것이 보이고 잎이 조금 말리는 느낌입니다.",
+    "symptoms": [
+      "잎, 꽃받침, 과실 주변에 흰 가루 형태 병징",
+      "잎 가장자리가 말리거나 생육이 위축될 수 있음",
+      "시설 재배에서 온습도 조건 변화와 함께 나타날 수 있음"
+    ],
+    "aiSummary": "흰 가루 형태의 표면 병징은 딸기 흰가루병 가능성을 검토할 수 있는 단서입니다. 먼지, 약제 잔류물, 다른 곰팡이 병징과 구분이 필요합니다.",
+    "causeCandidates": [
+      "딸기 흰가루병",
+      "약제 또는 물질 잔류",
+      "환기 부족에 따른 곰팡이성 문제"
+    ],
+    "publicDataCheck": [
+      "농사로 딸기 흰가루병 자료에서 흰 가루 병징과 잎 말림 여부를 비교합니다.",
+      "발생 부위가 잎, 꽃받침, 과실 주변 중 어디인지 기록합니다."
+    ],
+    "generalCare": [
+      "과습과 과밀을 줄이고 통풍을 확보합니다.",
+      "증상이 뚜렷한 잎과 과실은 주변 전염을 줄이도록 분리 관리합니다.",
+      "시설 내부 온습도 변화를 기록합니다."
+    ],
+    "nextActions": [
+      "흰 가루가 있는 부위를 근접 촬영합니다.",
+      "공공자료와 대조한 뒤 전문가 확인을 받습니다.",
+      "농약 사용 전 딸기 등록 여부와 수확 전 사용 가능 기간을 확인합니다."
+    ],
+    "linkedPages": [
+      { "label": "AI 진단 다시하기", "url": "diagnosis.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "가까운 농약사 찾기", "url": "agri_map.html" },
+      { "label": "커뮤니티 질문하기", "url": "channel.html" }
+    ],
+    "sourceName": "농사로 딸기 흰가루병",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00000459",
+    "disclaimer": "AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요."
+  },
+  {
+    "caseId": "case-rice-seedling-tray-stress",
+    "label": "공공자료 기반 데모 사례",
+    "crop": "벼",
+    "title": "벼 상자모 뜸모/고온 피해 의심",
+    "userQuestion": "데모 입력 예시: 육묘 상자 일부가 누렇게 뜨고 모가 약해 보입니다. 낮에 온도가 높았고 상자 안이 답답했습니다.",
+    "symptoms": [
+      "상자모 일부가 누렇게 변하거나 생육이 고르지 않음",
+      "모가 힘없이 쓰러지거나 뿌리 활력이 약해 보일 수 있음",
+      "고온, 과습, 밀폐 조건 뒤 증상이 나타날 수 있음"
+    ],
+    "aiSummary": "벼 육묘 단계에서 황화와 생육 저하가 보이면 뜸모, 고온 피해, 과습 관리 문제를 함께 확인해야 합니다.",
+    "causeCandidates": [
+      "상자모 뜸모",
+      "고온 또는 밀폐 피해",
+      "과습과 통기 불량"
+    ],
+    "publicDataCheck": [
+      "농사로 벼 육묘 관련 자료에서 뜸모와 고온 피해의 관리 기준을 확인합니다.",
+      "발생 위치, 상토 수분, 상자 내부 온도, 환기 상태를 함께 기록합니다."
+    ],
+    "generalCare": [
+      "육묘 상자의 과습과 밀폐를 피하고 환기를 확보합니다.",
+      "한낮 고온 시간대에는 온도 상승을 줄이는 관리가 필요합니다.",
+      "피해가 심한 상자와 정상 상자를 구분해 관찰합니다."
+    ],
+    "nextActions": [
+      "상자 전체 사진과 피해 부위 근접 사진을 남깁니다.",
+      "온도, 물관리, 환기 기록을 정리합니다.",
+      "지역 농업기술센터나 전문가에게 육묘 상태를 확인받습니다."
+    ],
+    "linkedPages": [
+      { "label": "AI 진단 다시하기", "url": "diagnosis.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "가까운 농약사 찾기", "url": "agri_map.html" },
+      { "label": "커뮤니티 질문하기", "url": "channel.html" }
+    ],
+    "sourceName": "농사로 벼 상자모 관리 자료",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/psz/psza/contentSub.ps?cntntsNo=229644&menuId=PS00077",
+    "disclaimer": "AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요."
+  },
+  {
+    "caseId": "case-houseplant-yellowing-overwatering",
+    "label": "공공자료 기반 데모 사례",
+    "crop": "반려식물",
+    "title": "반려식물 잎 황화/과습·환경 스트레스 의심",
+    "userQuestion": "데모 입력 예시: 화분 식물 아래쪽 잎이 노랗게 변하고 흙이 오래 젖어 있습니다. 최근 실내 위치를 바꿨습니다.",
+    "symptoms": [
+      "아래쪽 잎부터 노랗게 변함",
+      "화분 흙이 오래 젖어 있거나 배수가 느림",
+      "빛, 온도, 물주기 변화 뒤 증상이 나타날 수 있음"
+    ],
+    "aiSummary": "반려식물 잎 황화는 과습, 배수 불량, 빛 부족, 온도 변화 등 여러 환경 요인이 겹쳐 나타날 수 있습니다. 병해충 여부도 함께 확인해야 합니다.",
+    "causeCandidates": [
+      "과습 또는 배수 불량",
+      "빛 부족과 위치 변화 스트레스",
+      "뿌리 활력 저하"
+    ],
+    "publicDataCheck": [
+      "농사로 실내정원 물관리 자료에서 물주기와 배수 관리 기준을 확인합니다.",
+      "흙 마름 속도, 화분 배수구, 최근 위치 변화, 잎 뒷면 해충 여부를 함께 점검합니다."
+    ],
+    "generalCare": [
+      "겉흙과 속흙의 마름 상태를 확인한 뒤 물을 줍니다.",
+      "화분 배수구가 막혀 있지 않은지 확인합니다.",
+      "갑작스러운 위치 변경 뒤에는 빛과 온도 변화에 천천히 적응시킵니다."
+    ],
+    "nextActions": [
+      "잎 앞뒤, 줄기, 흙 표면, 화분 배수구 사진을 함께 촬영합니다.",
+      "최근 물 준 날짜와 실내 위치 변화를 기록합니다.",
+      "뿌리 썩음이 의심되면 분갈이 전 전문가나 경험자 의견을 확인합니다."
+    ],
+    "linkedPages": [
+      { "label": "AI 진단 다시하기", "url": "diagnosis.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "가까운 농약사 찾기", "url": "agri_map.html" },
+      { "label": "커뮤니티 질문하기", "url": "channel.html" }
+    ],
+    "sourceName": "농사로 실내정원 물관리",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/psz/psza/contentMain.ps?menuId=PS04108",
+    "disclaimer": "AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요."
+  }
+]

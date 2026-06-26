@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P6FSHHD8D1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-P6FSHHD8D1');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>kFarmAI 공모전 3분 데모</title>
+<meta name="description" content="kFarmAI 공모전 심사용 3분 시연 동선과 MVP 구현 현황입니다.">
+<meta name="theme-color" content="#1D9E75">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --green:#1D9E75; --green-dark:#157A5A; --green-soft:#E8F6F0;
+    --orange:#FF6B2B; --orange-soft:#FFF0E5;
+    --bg:#F5F6F8; --card:#fff; --text:#1A1A1A; --sub:#6B7280; --muted:#9AA0A6; --border:#ECEEF2;
+  }
+  html, body { min-height:100%; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕","Noto Sans KR","Pretendard",sans-serif; background:#0a0a0a; color:var(--text); }
+  body { display:flex; justify-content:center; }
+  a { color:inherit; text-decoration:none; }
+  .phone { width:100%; max-width:480px; min-height:100dvh; background:var(--bg); }
+  @media (min-width:520px) {
+    body { align-items:center; min-height:100dvh; padding:24px 0; }
+    .phone { min-height:min(920px,92dvh); border-radius:36px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.35); }
+  }
+  .header { background:#fff; border-bottom:1px solid var(--border); padding:13px 14px 16px; }
+  .top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { display:flex; align-items:center; gap:8px; }
+  .brand img { width:36px; height:36px; object-fit:contain; }
+  .brand-name { font-size:20px; line-height:1; font-weight:850; color:#111827; }
+  .brand-name span { color:var(--orange); }
+  .home { border:1px solid #CDEBDD; background:var(--green-soft); color:var(--green-dark); border-radius:999px; padding:8px 10px; font-size:12px; font-weight:900; }
+  .hero { padding:18px 14px 4px; background:#fff; }
+  .eyebrow { color:var(--orange); font-size:11px; line-height:1; font-weight:900; letter-spacing:.6px; }
+  h1 { margin-top:8px; font-size:25px; line-height:1.24; font-weight:950; letter-spacing:-.45px; }
+  .lead { margin-top:10px; color:#4B5563; font-size:13.5px; line-height:1.6; font-weight:650; }
+  .content { padding:14px 14px 88px; }
+  .section-head { margin:18px 2px 10px; display:flex; align-items:end; justify-content:space-between; gap:10px; }
+  .section-title { font-size:16px; font-weight:950; }
+  .section-meta { color:var(--muted); font-size:11px; font-weight:850; }
+  .quick-grid, .status-grid, .value-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .quick { min-height:48px; border-radius:14px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px 8px; background:#fff; border:1px solid var(--border); box-shadow:0 6px 18px rgba(17,24,39,.04); color:#1F2937; font-size:12.5px; line-height:1.25; font-weight:900; }
+  .quick:nth-child(2), .quick:nth-child(4), .quick:nth-child(6), .quick:nth-child(11) { background:var(--green-soft); border-color:#CDEBDD; color:var(--green-dark); }
+  .quick:nth-child(3), .quick:nth-child(5), .quick:nth-child(12) { background:var(--orange-soft); border-color:#FFD7C2; color:#B94712; }
+  .flow { display:grid; gap:9px; }
+  .flow-card, .card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:14px; box-shadow:0 8px 24px rgba(17,24,39,.06); }
+  .flow-card { display:flex; gap:11px; align-items:flex-start; }
+  .num { width:32px; height:32px; border-radius:50%; background:var(--green-soft); color:var(--green-dark); display:flex; align-items:center; justify-content:center; flex:0 0 auto; font-size:13px; font-weight:950; }
+  .flow-card:nth-child(2) .num { background:var(--orange-soft); color:#B94712; }
+  .flow-card:nth-child(3) .num { background:#111827; color:#fff; }
+  .card-title { font-size:14px; font-weight:950; line-height:1.35; }
+  .card-text { margin-top:5px; color:#4B5563; font-size:12.7px; line-height:1.55; font-weight:650; }
+  .status-item { background:#fff; border:1px solid var(--border); border-radius:14px; padding:12px 10px; min-height:72px; }
+  .status-k { color:var(--green-dark); font-size:12px; font-weight:950; line-height:1.35; }
+  .status-v { margin-top:5px; color:#4B5563; font-size:12px; line-height:1.45; font-weight:700; }
+  .notice { margin-top:10px; border-radius:16px; background:#FFF7ED; border:1px solid #FED7AA; color:#9A3412; padding:14px; font-size:12.7px; line-height:1.6; font-weight:850; }
+  .data-list { display:grid; gap:8px; }
+  .data-row { display:grid; grid-template-columns:96px 1fr; gap:8px; background:#fff; border:1px solid var(--border); border-radius:14px; padding:11px; }
+  .data-name { color:var(--green-dark); font-size:12px; line-height:1.35; font-weight:950; }
+  .data-use { color:#4B5563; font-size:12px; line-height:1.45; font-weight:700; }
+  .case-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:12px; }
+  .case-badge { display:inline-flex; border-radius:999px; background:var(--green-soft); color:var(--green-dark); padding:5px 8px; font-size:10.5px; line-height:1; font-weight:950; }
+  .case-title { margin-top:7px; font-size:13.5px; line-height:1.35; font-weight:950; }
+  .path { background:#111827; color:#fff; border-radius:16px; padding:14px; font-size:13px; line-height:1.7; font-weight:850; }
+  .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+  .btn { min-height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; text-align:center; padding:9px 8px; background:var(--green); color:#fff; font-size:12.5px; line-height:1.25; font-weight:950; }
+  .btn.secondary { background:var(--green-soft); color:var(--green-dark); border:1px solid #CDEBDD; }
+  .value-card { background:#fff; border:1px solid var(--border); border-radius:14px; padding:12px; }
+  .value-card strong { display:block; color:#111827; font-size:13px; line-height:1.35; }
+  .value-card span { display:block; margin-top:5px; color:#4B5563; font-size:12px; line-height:1.45; font-weight:650; }
+  @media (max-width:360px) {
+    h1 { font-size:22px; }
+    .quick-grid, .status-grid, .value-grid, .btn-row { grid-template-columns:1fr; }
+    .data-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<main class="phone">
+  <header class="header">
+    <div class="top">
+      <a class="brand" href="index.html" aria-label="kFarmAI 홈">
+        <img src="logo-transparent.png" alt="kFarmAI">
+        <div class="brand-name">kFarm<span>AI</span></div>
+      </a>
+      <a class="home" href="index.html">홈</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">CONTEST DEMO · 3 MIN</div>
+    <h1>AI가 진단하고, 공공데이터가 검증하며, 커뮤니티가 해결 경험을 축적하는 농업·식물 문제해결 플랫폼</h1>
+    <p class="lead">kFarmAI는 홈가드닝 사용자와 농업인이 식물·농업 문제를 검색하고, AI로 원인 후보를 확인하고, 공공데이터로 안전정보를 검증하며, 커뮤니티와 지역정보로 해결 경험을 축적하는 실제 작동형 모바일 웹 MVP입니다.</p>
+  </section>
+
+  <section class="content">
+    <div class="section-head"><div class="section-title">현재 MVP 바로가기</div><div class="section-meta">운영 동선</div></div>
+    <div class="quick-grid">
+      <a class="quick" href="index.html">홈/커뮤니티</a>
+      <a class="quick" href="diagnosis.html">AI 진단</a>
+      <a class="quick" href="diagnosis-cases.html">공공자료 기반 진단사례 6개</a>
+      <a class="quick" href="public-data.html">공공데이터 검증 레이어</a>
+      <a class="quick" href="agri_map.html">농약사 지도</a>
+      <a class="quick" href="channel.html">커뮤니티 질문</a>
+      <a class="quick" href="related-sites.html">농업 관련 사이트</a>
+      <a class="quick" href="tools-soil.html">상토 계산기</a>
+      <a class="quick" href="tools-fertilizer.html">액비 계산기</a>
+      <a class="quick" href="tools-pesticide.html">농약 계산기</a>
+      <a class="quick" href="ai-safety.html">신뢰/안전 원칙</a>
+      <a class="quick" href="knowledge-hub.html">농업 정보 허브</a>
+    </div>
+
+    <div class="section-head"><div class="section-title">3단 작동 구조</div><div class="section-meta">문제 해결 흐름</div></div>
+    <div class="flow">
+      <div class="flow-card"><div class="num">1</div><div><div class="card-title">AI 진단</div><div class="card-text">사진과 증상을 입력하면 AI가 원인 후보와 일반 관리 방향을 제시합니다.</div></div></div>
+      <div class="flow-card"><div class="num">2</div><div><div class="card-title">공공데이터 검증</div><div class="card-text">농약안전사용지침, 병해충 정보, 판매업체 표준데이터, 보조사업 정보를 통해 확인 기준을 제공합니다.</div></div></div>
+      <div class="flow-card"><div class="num">3</div><div><div class="card-title">커뮤니티 축적</div><div class="card-text">질문, 진단 사례, 해결 경험이 채널별로 축적되어 재방문과 정보 확산을 만듭니다.</div></div></div>
+    </div>
+
+    <div class="section-head"><div class="section-title">현재 구현 현황</div><div class="section-meta">시제품 기준</div></div>
+    <div class="status-grid">
+      <div class="status-item"><div class="status-k">kfarmai.com</div><div class="status-v">모바일 웹 MVP 운영</div></div>
+      <div class="status-item"><div class="status-k">AI 진단</div><div class="status-v">독립 페이지 운영</div></div>
+      <div class="status-item"><div class="status-k">AI 구조</div><div class="status-v">Claude API → Supabase Edge Function 구조</div></div>
+      <div class="status-item"><div class="status-k">지도</div><div class="status-v">Kakao Maps 기반 농약사 지도/로드뷰</div></div>
+      <div class="status-item"><div class="status-k">계산기</div><div class="status-v">상토·액비·농약 계산기</div></div>
+      <div class="status-item"><div class="status-k">콘텐츠</div><div class="status-v">q/ 100개, kb/ 56개, 총 콘텐츠 159개</div></div>
+      <div class="status-item"><div class="status-k">검색 제출</div><div class="status-v">sitemap 168개 URL 제출 이력</div></div>
+      <div class="status-item"><div class="status-k">분석</div><div class="status-v">GA4 분석 환경 구축</div></div>
+      <div class="status-item"><div class="status-k">안전</div><div class="status-v">AI 진단 안전 원칙과 개인정보 최소수집 고지</div></div>
+      <div class="status-item"><div class="status-k">허브</div><div class="status-v">농업 정보 허브와 계산기 진입 동선</div></div>
+    </div>
+    <div class="notice">공공데이터 기반 1차 정제 데이터 3,019개를 지도화했으며, 이는 전국 전체 점포 수가 아니라 시제품 1차 구축 데이터입니다. 향후 지자체별 추가 공개자료와 업체 직접 등록을 통해 커버리지 확대를 추진합니다.</div>
+    <div class="btn-row"><a class="btn" href="ai-safety.html">신뢰/안전 원칙</a><a class="btn secondary" href="knowledge-hub.html">농업 정보 허브</a></div>
+
+    <div class="section-head"><div class="section-title">공공데이터 활용 요약</div><div class="section-meta">검증 레이어</div></div>
+    <div class="data-list">
+      <div class="data-row"><div class="data-name">농약안전사용지침</div><div class="data-use">농약 사용 전 안전기준 확인</div></div>
+      <div class="data-row"><div class="data-name">병해충 발생·예찰정보</div><div class="data-use">지역·시기별 의심 원인 검증</div></div>
+      <div class="data-row"><div class="data-name">전국농약및비료판매업체표준데이터</div><div class="data-use">지도화 및 지역 연결</div></div>
+      <div class="data-row"><div class="data-name">기상청 단기예보</div><div class="data-use">병해충·작업환경 참고</div></div>
+      <div class="data-row"><div class="data-name">보조사업 정보</div><div class="data-use">영농 보조금 캘린더 고도화</div></div>
+      <div class="data-row"><div class="data-name">농업 관련 기관</div><div class="data-use">신뢰 가능한 정보 연결</div></div>
+    </div>
+    <div class="btn-row"><a class="btn" href="public-data.html">공공데이터 검증 보기</a><a class="btn secondary" href="agri_map.html">지도 확인</a></div>
+
+    <div class="section-head"><div class="section-title">공공자료 기반 데모 진단사례</div><div class="section-meta">6개</div></div>
+    <div class="notice">시제품 단계에서는 공공 농업자료를 바탕으로 대표 진단사례 6개를 구축했습니다. 실제 사용자 사례는 향후 개인정보·사진 공개 동의와 비식별화 절차를 거쳐 축적합니다.</div>
+    <div class="status-grid" id="caseGrid"></div>
+    <div class="btn-row"><a class="btn" href="diagnosis-cases.html">진단사례 6개 보기</a><a class="btn secondary" href="diagnosis.html">AI 진단하기</a></div>
+
+    <div class="section-head"><div class="section-title">단계형 수익화</div><div class="section-meta">보수적 접근</div></div>
+    <div class="card">
+      <div class="card-title">트래픽 확보 → 신뢰/재방문 → 제한적 제휴/유료등록 → 익명 통계 리포트 → 공공기관·농업단체 PoC</div>
+      <div class="card-text">허용 방향은 농약사·농자재점 유료 프로필 등록, 스폰서 표시가 명확한 콘텐츠 협찬, 원예 클래스/교육 제휴, 익명화된 병해충·증상 트렌드 리포트, 공공기관/농업단체 PoC입니다.</div>
+    </div>
+
+    <div class="section-head"><div class="section-title">ESG/공공가치</div><div class="section-meta">4개 축</div></div>
+    <div class="value-grid">
+      <div class="value-card"><strong>농약 오남용 예방</strong><span>AI 답변을 공공 안전정보 확인으로 연결합니다.</span></div>
+      <div class="value-card"><strong>농업 정보격차 해소</strong><span>초보 사용자도 진단·공공자료·질문 흐름을 따라갈 수 있습니다.</span></div>
+      <div class="value-card"><strong>지역 농자재 상권 연결</strong><span>지역 판매업체를 지도 기반으로 확인합니다.</span></div>
+      <div class="value-card"><strong>개인정보 최소수집 및 AI 안전 고지</strong><span>실제 사례 축적 전 동의와 비식별화 절차를 전제로 합니다.</span></div>
+    </div>
+
+    <div class="section-head"><div class="section-title">추천 시연 순서</div><div class="section-meta">3분</div></div>
+    <div class="path">홈 → AI 진단 → 진단사례 6개 → 공공데이터 확인 → 농약사 지도/로드뷰 → 보조사업/관련 사이트 → 커뮤니티 질문</div>
+  </section>
+</main>
+<script>
+'use strict';
+const caseGrid = document.getElementById('caseGrid');
+function escHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+fetch('data/diagnosis_cases.json', { cache:'no-store' })
+  .then(res => res.ok ? res.json() : [])
+  .then(cases => {
+    caseGrid.innerHTML = (cases || []).slice(0, 6).map(item => `
+      <a class="case-card" href="diagnosis-cases.html#${escHtml(item.caseId)}">
+        <span class="case-badge">${escHtml(item.crop)}</span>
+        <div class="case-title">${escHtml(item.title)}</div>
+      </a>
+    `).join('');
+  })
+  .catch(() => {
+    caseGrid.innerHTML = '<div class="card-text">진단사례 요약을 불러오지 못했습니다. 진단사례 페이지에서 확인할 수 있습니다.</div>';
+  });
+</script>
+</body>
+</html>

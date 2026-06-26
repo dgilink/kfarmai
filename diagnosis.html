@@ -101,6 +101,14 @@
   .tabs { display: flex; gap: 6px; background: var(--pill); border-radius: 22px; padding: 4px; margin: 2px 0 10px; }
   .tab { flex: 1; text-align: center; padding: 9px 0; font-size: 13.5px; font-weight: 700; color: #6B7280; border-radius: 18px; cursor: pointer; user-select: none; transition: all .25s; }
   .tab.active { background: #111; color: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+  .case-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    margin: 0 0 10px; padding: 10px 12px;
+    border-radius: 14px; border: 1px solid #CDEBDD;
+    background: #E8F6F0; color: #157A5A;
+    text-decoration: none; font-size: 12.5px; font-weight: 800;
+  }
+  .case-link span { color: #FF6B2B; font-weight: 900; flex-shrink: 0; }
 
   /* ===== Scroll area (dark tech bg) ===== */
   .scroll-area {
@@ -386,6 +394,86 @@
   .result-list { list-style: none; padding: 0; }
   .result-list li { font-size: 14px; color: var(--txt-on-dark); line-height: 1.8; }
   .result-list li::before { content: "▸ "; color: var(--lime); font-weight: 700; }
+  .public-check {
+    margin-top: 16px;
+    border: 1px solid rgba(34,211,238,.25);
+    border-radius: 14px;
+    background: rgba(34,211,238,.08);
+    padding: 14px;
+  }
+  .public-check-title {
+    color: var(--cyan);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: .2px;
+  }
+  .public-check-desc {
+    margin-top: 7px;
+    color: var(--txt-on-dark);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .public-check-list {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: grid;
+    gap: 6px;
+  }
+  .public-check-list li {
+    color: rgba(232,245,238,.9);
+    font-size: 12.5px;
+    line-height: 1.45;
+    padding-left: 17px;
+    position: relative;
+  }
+  .public-check-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .45em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--lime);
+    box-shadow: 0 0 8px rgba(182,255,60,.45);
+  }
+  .public-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .public-action {
+    min-height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    padding: 8px 7px;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 850;
+    border: 1px solid rgba(182,255,60,.32);
+    background: rgba(182,255,60,.11);
+    color: var(--lime);
+  }
+  .public-action:nth-child(2) { border-color: rgba(34,211,238,.35); background: rgba(34,211,238,.10); color: var(--cyan); }
+  .public-action:nth-child(3) { border-color: rgba(255,107,43,.38); background: rgba(255,107,43,.12); color: #FFB089; }
+  .public-action:nth-child(4) { border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #fff; }
+  .result-disclaimer {
+    margin-top: 12px;
+    border-radius: 12px;
+    background: rgba(255,107,43,.12);
+    border: 1px solid rgba(255,107,43,.28);
+    color: #FFD7C2;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.55;
+    font-weight: 700;
+  }
   .diag-result-card h2, .result-card h2 { font-size:16px; font-weight:500; color:#1B5E20; margin:14px 0 6px; }
   .diag-result-card h3, .result-card h3 { font-size:14px; font-weight:500; color:#333; margin:10px 0 4px; }
   .diag-result-card p, .result-card p { font-size:14px; line-height:1.7; color:#333; margin:4px 0; }
@@ -459,6 +547,10 @@
       <div class="tab active" data-tab="diagnosis">AI 진단</div>
       <div class="tab" data-tab="supplies">농자재</div>
     </div>
+    <a class="case-link" href="diagnosis-cases.html">
+      공공자료 기반 진단사례 보기
+      <span>6개</span>
+    </a>
   </header>
 
   <!-- ===== Scroll area ===== -->
@@ -844,7 +936,7 @@ function showResult(result) {
       <div class="result-header">
         ${urgentBadge}
         <div class="result-title">${renderMarkdown(result.diagnosis)}</div>
-        <div class="result-confidence ${confClass}">신뢰도: ${escHtml(result.confidence)}</div>
+        <div class="result-confidence ${confClass}">AI 추정 강도: ${escHtml(result.confidence)}</div>
       </div>
       <div class="result-section">
         <div class="result-section-label">원인</div>
@@ -857,6 +949,24 @@ function showResult(result) {
       <div class="result-section">
         <div class="result-section-label">예방법</div>
         <div class="result-section-body">${renderMarkdown(result.prevention)}</div>
+      </div>
+      <div class="public-check">
+        <div class="public-check-title">공공데이터 확인</div>
+        <div class="public-check-desc">AI가 제시한 원인 후보는 참고 진단입니다. 실제 방제·관리 전 아래 공공정보를 확인하세요.</div>
+        <ul class="public-check-list">
+          <li>농촌진흥청 병해충 정보 확인</li>
+          <li>농약안전사용지침 확인</li>
+          <li>등록 작물·병해충 여부 확인</li>
+          <li>지역 병해충 발생정보 확인</li>
+          <li>가까운 농약사 또는 전문가 상담</li>
+        </ul>
+        <div class="public-actions">
+          <a class="public-action" href="public-data.html">공공데이터 확인하기</a>
+          <a class="public-action" href="diagnosis-cases.html">비슷한 진단 사례 보기</a>
+          <a class="public-action" href="agri_map.html">가까운 농약사 찾기</a>
+          <a class="public-action" href="channel.html">커뮤니티에 질문하기</a>
+        </div>
+        <div class="result-disclaimer">AI 참고 진단이며, 실제 농약 사용 전 제품 라벨, 등록 작물·병해충 여부, 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.</div>
       </div>
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 진단하기</button>

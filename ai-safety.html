@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P6FSHHD8D1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-P6FSHHD8D1');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>AI 진단 안전 원칙 - kFarmAI</title>
+<meta name="description" content="kFarmAI AI 진단의 참고용 원칙, 공공데이터 확인, 개인정보 보호와 안전 고지입니다.">
+<meta name="theme-color" content="#1D9E75">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root { --green:#1D9E75; --green-dark:#157A5A; --green-soft:#E8F6F0; --orange:#FF6B2B; --orange-soft:#FFF0E5; --bg:#F5F6F8; --text:#1A1A1A; --sub:#6B7280; --border:#ECEEF2; }
+  html, body { min-height:100%; font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕","Noto Sans KR","Pretendard",sans-serif; background:#0a0a0a; color:var(--text); }
+  body { display:flex; justify-content:center; }
+  a { color:inherit; text-decoration:none; }
+  .phone { width:100%; max-width:480px; min-height:100dvh; background:var(--bg); }
+  @media (min-width:520px) { body { align-items:center; min-height:100dvh; padding:24px 0; } .phone { min-height:min(920px,92dvh); border-radius:36px; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.35); } }
+  .header { position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--border); padding:12px 14px 14px; }
+  .top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { display:flex; align-items:center; gap:8px; }
+  .brand img { width:36px; height:36px; object-fit:contain; }
+  .brand-name { font-size:20px; line-height:1; font-weight:850; color:#111827; }
+  .brand-name span { color:var(--orange); }
+  .home { border:1px solid #CDEBDD; background:var(--green-soft); color:var(--green-dark); border-radius:999px; padding:8px 10px; font-size:12px; font-weight:900; }
+  h1 { margin-top:14px; font-size:23px; line-height:1.25; font-weight:950; letter-spacing:-.3px; }
+  .subtitle { margin-top:7px; color:var(--sub); font-size:13.5px; line-height:1.55; font-weight:650; }
+  .content { padding:14px 14px 88px; }
+  .card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:14px; margin-bottom:10px; box-shadow:0 8px 24px rgba(17,24,39,.06); }
+  .card h2 { font-size:15px; line-height:1.35; font-weight:950; margin-bottom:8px; color:#111827; }
+  .card p, .card li { color:#4B5563; font-size:13px; line-height:1.6; font-weight:650; }
+  ul { list-style:none; display:grid; gap:7px; }
+  li { position:relative; padding-left:15px; }
+  li::before { content:""; position:absolute; left:0; top:.7em; width:6px; height:6px; border-radius:50%; background:var(--green); }
+  .warning { background:#FFF7ED; border-color:#FED7AA; color:#9A3412; }
+  .warning p, .warning li { color:#9A3412; font-weight:800; }
+  .cta-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; }
+  .cta { min-height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; text-align:center; padding:9px 8px; background:var(--green-soft); border:1px solid #CDEBDD; color:var(--green-dark); font-size:12.5px; line-height:1.25; font-weight:950; }
+  .cta:nth-child(2) { background:var(--orange-soft); border-color:#FFD7C2; color:#B94712; }
+  .cta:nth-child(4) { background:#111827; border-color:#111827; color:#fff; }
+  @media (max-width:360px) { .cta-grid { grid-template-columns:1fr; } h1 { font-size:21px; } }
+</style>
+</head>
+<body>
+<main class="phone">
+  <header class="header">
+    <div class="top">
+      <a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="logo-transparent.png" alt="kFarmAI"><div class="brand-name">kFarm<span>AI</span></div></a>
+      <a class="home" href="contest-demo.html">데모</a>
+    </div>
+    <h1>AI 진단 안전 원칙</h1>
+    <p class="subtitle">AI는 원인 후보와 확인 포인트를 제시하고, 공공데이터가 실제 판단 기준을 제공합니다.</p>
+  </header>
+  <section class="content">
+    <div class="card warning">
+      <h2>참고용 진단 원칙</h2>
+      <p>kFarmAI의 AI 진단은 참고용 정보입니다. 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고, 농약사·농업기술센터·전문가 상담을 권장합니다.</p>
+    </div>
+    <div class="card">
+      <h2>AI와 공공데이터 역할 분리</h2>
+      <ul>
+        <li>AI는 사진과 증상에서 가능한 원인 후보를 정리합니다.</li>
+        <li>공공데이터는 병해충 정보, 안전사용기준, 지역 정보를 확인하는 기준을 제공합니다.</li>
+        <li>최종 판단은 사용자가 공공자료와 전문가 상담을 함께 확인한 뒤 진행합니다.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>개인정보와 공개 사례 원칙</h2>
+      <ul>
+        <li>진단과 질문 흐름에서 개인정보 최소수집을 원칙으로 합니다.</li>
+        <li>사진 업로드 시 EXIF/GPS 메타데이터 제거 또는 제거 계획을 적용합니다.</li>
+        <li>공개 사례는 별도 동의 후 익명화한 자료만 사용합니다.</li>
+        <li>실제 사용자 후기처럼 보이는 가짜 사례는 만들지 않습니다.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>금지 원칙</h2>
+      <ul>
+        <li>농약 직접 판매 기능을 제공하지 않습니다.</li>
+        <li>시세 비교, 담기형 구매 흐름, 온라인 대금 처리, 통화 주문 유도 기능을 제공하지 않습니다.</li>
+        <li>특정 약제 사용을 단정 처방하지 않습니다.</li>
+      </ul>
+    </div>
+    <div class="cta-grid">
+      <a class="cta" href="diagnosis.html">AI 진단하기</a>
+      <a class="cta" href="diagnosis-cases.html">진단사례 보기</a>
+      <a class="cta" href="public-data.html">공공데이터 검증 보기</a>
+      <a class="cta" href="channel.html">커뮤니티 질문하기</a>
+    </div>
+  </section>
+</main>
+</body>
+</html>

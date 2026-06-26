@@ -253,6 +253,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://kfarmai.com/diagnosis-cases.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kfarmai.com/public-data.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kfarmai.com/contest-demo.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kfarmai.com/ai-safety.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kfarmai.com/knowledge-hub.html</loc>
+    <lastmod>2026-06-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://kfarmai.com/q/agricultural-insurance.html</loc>
     <lastmod>2026-06-21</lastmod>
     <changefreq>weekly</changefreq>

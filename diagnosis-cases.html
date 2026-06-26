@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>공공자료 기반 진단사례 - kFarmAI</title>
+<meta name="description" content="kFarmAI 공공자료 기반 진단사례. AI가 가능성을 제시하고 공공데이터가 확인 기준을 제공합니다.">
+<meta name="theme-color" content="#1D9E75">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --green: #1D9E75;
+    --green-dark: #157A5A;
+    --green-soft: #E8F6F0;
+    --orange: #FF6B2B;
+    --orange-soft: #FFF0E5;
+    --bg: #F5F6F8;
+    --card: #FFFFFF;
+    --text: #1A1A1A;
+    --sub: #6B7280;
+    --muted: #9AA0A6;
+    --border: #ECEEF2;
+    --warn: #B45309;
+    --warn-bg: #FEF3C7;
+  }
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", "Pretendard", sans-serif;
+    background: #0a0a0a;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  body { display: flex; justify-content: center; }
+  a { color: inherit; }
+  .phone {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100dvh;
+    background: var(--bg);
+  }
+  @media (min-width: 520px) {
+    body { align-items: center; min-height: 100dvh; padding: 24px 0; }
+    .phone { min-height: min(920px, 92dvh); border-radius: 36px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  }
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px 14px;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .brand img { width: 36px; height: 36px; object-fit: contain; flex: 0 0 auto; }
+  .brand-name {
+    font-size: 20px;
+    line-height: 1;
+    font-weight: 850;
+    color: #111827;
+  }
+  .brand-name span { color: var(--orange); }
+  .home-link {
+    flex: 0 0 auto;
+    text-decoration: none;
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 800;
+    border: 1px solid #CDEBDD;
+    background: var(--green-soft);
+    border-radius: 999px;
+    padding: 8px 10px;
+  }
+  .top-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .top-link {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 12px;
+    padding: 8px 7px;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 900;
+    border: 1px solid #CDEBDD;
+    background: var(--green-soft);
+    color: var(--green-dark);
+  }
+  .top-link:nth-child(2) { background: #111827; border-color: #111827; color: #fff; }
+  .top-link:nth-child(3) { background: var(--orange-soft); border-color: #FFD7C2; color: #B94712; }
+  .top-link:nth-child(4) { background: #fff; border-color: #E2E8F0; color: #334155; }
+  .top-link:nth-child(5) { grid-column: 1 / -1; background: #111827; border-color: #111827; color: #fff; }
+  .headline { margin-top: 14px; }
+  h1 {
+    font-size: 23px;
+    line-height: 1.25;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+  }
+  .subtitle {
+    margin-top: 7px;
+    color: var(--sub);
+    font-size: 13.5px;
+    line-height: 1.55;
+    font-weight: 600;
+  }
+  .content { padding: 14px 14px 88px; }
+  .summary-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .summary-item {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 8px;
+    text-align: center;
+    box-shadow: 0 5px 18px rgba(17,24,39,.04);
+  }
+  .summary-num { color: var(--green-dark); font-size: 17px; font-weight: 900; }
+  .summary-label { margin-top: 3px; color: var(--muted); font-size: 10.5px; font-weight: 800; }
+  .cases {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .case-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 15px;
+    box-shadow: 0 8px 24px rgba(17,24,39,.07);
+  }
+  .case-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    background: var(--green-soft);
+    color: var(--green-dark);
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 900;
+    padding: 6px 9px;
+    white-space: nowrap;
+  }
+  .risk {
+    background: var(--warn-bg);
+    color: var(--warn);
+  }
+  .crop {
+    margin-top: 10px;
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 900;
+  }
+  .case-title {
+    margin-top: 4px;
+    font-size: 19px;
+    line-height: 1.3;
+    font-weight: 900;
+    letter-spacing: -0.2px;
+  }
+  .demo-question {
+    margin-top: 10px;
+    background: #FAFAFA;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+    color: #374151;
+    font-size: 13px;
+    line-height: 1.55;
+    font-weight: 650;
+  }
+  .section {
+    margin-top: 13px;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .section-title {
+    color: #111827;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .body-text {
+    color: #374151;
+    font-size: 13.5px;
+    line-height: 1.62;
+  }
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  li {
+    position: relative;
+    padding-left: 13px;
+    color: #374151;
+    font-size: 13.2px;
+    line-height: 1.55;
+  }
+  li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: .68em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .candidate-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .candidate {
+    border-radius: 999px;
+    background: var(--orange-soft);
+    color: #B94712;
+    padding: 6px 8px;
+    font-size: 11.5px;
+    font-weight: 850;
+  }
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .action {
+    min-height: 42px;
+    border-radius: 12px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 9px 8px;
+    font-size: 12.5px;
+    line-height: 1.25;
+    font-weight: 900;
+    border: 1px solid #DDEFE6;
+    background: var(--green-soft);
+    color: var(--green-dark);
+  }
+  .action:nth-child(2) { background: #F8FAFC; color: #334155; border-color: #E2E8F0; }
+  .action:nth-child(3) { background: var(--orange-soft); color: #B94712; border-color: #FFD7C2; }
+  .action:nth-child(4) { background: #111827; color: #fff; border-color: #111827; }
+  .source {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    color: var(--sub);
+    font-size: 12px;
+    font-weight: 750;
+  }
+  .source a {
+    flex: 0 0 auto;
+    color: var(--green-dark);
+    text-decoration: none;
+    font-weight: 900;
+  }
+  .disclaimer {
+    margin-top: 12px;
+    border-radius: 12px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    color: #9A3412;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 1.55;
+    font-weight: 750;
+  }
+  .page-disclaimer {
+    margin-top: 14px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #FED7AA;
+    padding: 14px;
+    color: #9A3412;
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-weight: 800;
+  }
+  .loading, .error {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    color: var(--sub);
+    font-size: 14px;
+    text-align: center;
+  }
+  @media (max-width: 360px) {
+    .actions { grid-template-columns: 1fr; }
+    h1 { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+<main class="phone">
+  <header class="header">
+    <div class="top">
+      <a class="brand" href="index.html" aria-label="kFarmAI 홈">
+        <img src="logo-transparent.png" alt="kFarmAI">
+        <div class="brand-name">kFarm<span>AI</span></div>
+      </a>
+      <a class="home-link" href="index.html">홈</a>
+    </div>
+    <div class="headline">
+      <h1>공공자료 기반 진단사례</h1>
+      <p class="subtitle">AI가 가능성을 제시하고, 공공데이터가 확인 기준을 제공합니다.</p>
+    </div>
+    <nav class="top-links" aria-label="진단사례 관련 페이지">
+      <a class="top-link" href="public-data.html">공공데이터 검증 보기</a>
+      <a class="top-link" href="diagnosis.html">AI 진단하기</a>
+      <a class="top-link" href="agri_map.html">농약사 지도 보기</a>
+      <a class="top-link" href="channel.html">커뮤니티 질문하기</a>
+      <a class="top-link" href="contest-demo.html">공모전 데모 보기</a>
+    </nav>
+  </header>
+
+  <section class="content">
+    <div class="summary-bar" aria-label="진단사례 요약">
+      <div class="summary-item">
+        <div class="summary-num">6</div>
+        <div class="summary-label">데모 사례</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num">공공</div>
+        <div class="summary-label">자료 기준</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-num">확인</div>
+        <div class="summary-label">중심 흐름</div>
+      </div>
+    </div>
+
+    <div id="cases" class="cases">
+      <div class="loading">진단사례를 불러오는 중입니다.</div>
+    </div>
+
+    <div class="page-disclaimer">
+      AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.
+    </div>
+  </section>
+</main>
+
+<script>
+'use strict';
+
+const casesEl = document.getElementById('cases');
+
+function escHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
+
+function listHtml(items) {
+  return `<ul>${(items || []).map(item => `<li>${escHtml(item)}</li>`).join('')}</ul>`;
+}
+
+function actionsHtml(links) {
+  return `<div class="actions">${(links || []).map(link =>
+    `<a class="action" href="${escHtml(link.url)}">${escHtml(link.label)}</a>`
+  ).join('')}</div>`;
+}
+
+function renderCase(item) {
+  const candidates = (item.causeCandidates || []).map(name => `<span class="candidate">${escHtml(name)}</span>`).join('');
+  return `
+    <article class="case-card" id="${escHtml(item.caseId)}">
+      <div class="case-top">
+        <span class="badge">${escHtml(item.label)}</span>
+        <span class="badge risk">주의</span>
+      </div>
+      <div class="crop">${escHtml(item.crop)}</div>
+      <h2 class="case-title">${escHtml(item.title)}</h2>
+      <p class="demo-question">${escHtml(item.userQuestion)}</p>
+
+      <div class="section">
+        <div class="section-title">AI 요약</div>
+        <p class="body-text">${escHtml(item.aiSummary)}</p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">의심 가능성</div>
+        <div class="candidate-row">${candidates}</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">주요 증상</div>
+        ${listHtml(item.symptoms)}
+      </div>
+
+      <div class="section">
+        <div class="section-title">공공데이터 확인 기준</div>
+        ${listHtml(item.publicDataCheck)}
+      </div>
+
+      <div class="section">
+        <div class="section-title">일반 관리 방향</div>
+        ${listHtml(item.generalCare)}
+      </div>
+
+      <div class="section">
+        <div class="section-title">다음 행동</div>
+        ${listHtml(item.nextActions)}
+      </div>
+
+      ${actionsHtml(item.linkedPages)}
+
+      <div class="source">
+        <span>${escHtml(item.sourceName)}</span>
+        <a href="${escHtml(item.sourceUrl)}" target="_blank" rel="noopener">출처 보기</a>
+      </div>
+      <div class="disclaimer">${escHtml(item.disclaimer)}</div>
+    </article>`;
+}
+
+async function loadCases() {
+  try {
+    const res = await fetch('data/diagnosis_cases.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP_' + res.status);
+    const cases = await res.json();
+    casesEl.innerHTML = cases.map(renderCase).join('');
+  } catch (err) {
+    casesEl.innerHTML = '<div class="error">진단사례 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';
+  }
+}
+
+loadCases();
+</script>
+</body>
+</html>

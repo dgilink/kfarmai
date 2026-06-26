@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P6FSHHD8D1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-P6FSHHD8D1');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>공공데이터 검증 레이어 - kFarmAI</title>
+<meta name="description" content="kFarmAI는 AI 진단 결과를 농업 공공데이터와 연결하여 더 안전하고 신뢰 가능한 의사결정을 돕습니다.">
+<meta name="theme-color" content="#1D9E75">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --green: #1D9E75;
+    --green-dark: #157A5A;
+    --green-soft: #E8F6F0;
+    --orange: #FF6B2B;
+    --orange-soft: #FFF0E5;
+    --bg: #F5F6F8;
+    --card: #FFFFFF;
+    --text: #1A1A1A;
+    --sub: #6B7280;
+    --muted: #9AA0A6;
+    --border: #ECEEF2;
+    --warn: #9A3412;
+    --warn-bg: #FFF7ED;
+  }
+  html, body {
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", "Pretendard", sans-serif;
+    background: #0a0a0a;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  body { display: flex; justify-content: center; }
+  a { color: inherit; }
+  .phone { width: 100%; max-width: 480px; min-height: 100dvh; background: var(--bg); }
+  @media (min-width: 520px) {
+    body { align-items: center; min-height: 100dvh; padding: 24px 0; }
+    .phone { min-height: min(920px, 92dvh); border-radius: 36px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  }
+  .header {
+    position: sticky; top: 0; z-index: 10;
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 12px 14px 14px;
+  }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; min-width: 0; }
+  .brand img { width: 36px; height: 36px; object-fit: contain; }
+  .brand-name { font-size: 20px; line-height: 1; font-weight: 850; color: #111827; }
+  .brand-name span { color: var(--orange); }
+  .home-link {
+    flex: 0 0 auto; text-decoration: none;
+    color: var(--green-dark); font-size: 12px; font-weight: 850;
+    border: 1px solid #CDEBDD; background: var(--green-soft);
+    border-radius: 999px; padding: 8px 10px;
+  }
+  h1 { margin-top: 14px; font-size: 23px; line-height: 1.25; font-weight: 900; letter-spacing: -0.3px; }
+  .subtitle { margin-top: 7px; color: var(--sub); font-size: 13.5px; line-height: 1.55; font-weight: 650; }
+  .content { padding: 14px 14px 88px; }
+  .flow {
+    display: grid; grid-template-columns: 1fr; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .flow-card {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border: 1px solid var(--border); border-radius: 16px;
+    padding: 13px; box-shadow: 0 8px 24px rgba(17,24,39,.05);
+  }
+  .step {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--green-soft); color: var(--green-dark);
+    font-size: 13px; font-weight: 900; flex: 0 0 auto;
+  }
+  .flow-card:nth-child(2) .step { background: var(--orange-soft); color: #B94712; }
+  .flow-card:nth-child(3) .step { background: #111827; color: #fff; }
+  .flow-title { font-size: 14px; font-weight: 900; }
+  .flow-text { margin-top: 3px; color: var(--sub); font-size: 12px; line-height: 1.45; font-weight: 650; }
+  .highlight {
+    margin: 12px 0;
+    background: var(--warn-bg); border: 1px solid #FED7AA; border-radius: 18px;
+    padding: 14px; color: var(--warn);
+    font-size: 13px; line-height: 1.55; font-weight: 850;
+  }
+  .section-head {
+    margin: 17px 2px 10px;
+    display: flex; align-items: end; justify-content: space-between; gap: 10px;
+  }
+  .section-title { font-size: 16px; font-weight: 900; }
+  .section-meta { color: var(--muted); font-size: 11px; font-weight: 850; }
+  .sources { display: flex; flex-direction: column; gap: 10px; }
+  .source-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+    padding: 14px; box-shadow: 0 8px 24px rgba(17,24,39,.06);
+  }
+  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .provider {
+    display: inline-flex; border-radius: 999px; background: var(--green-soft);
+    color: var(--green-dark); padding: 6px 9px;
+    font-size: 11px; line-height: 1; font-weight: 900;
+  }
+  .status {
+    flex: 0 0 auto; border-radius: 999px; background: #F8FAFC;
+    border: 1px solid #E2E8F0; color: #475569;
+    padding: 6px 8px; font-size: 10.5px; line-height: 1; font-weight: 900;
+  }
+  .source-title { margin-top: 10px; font-size: 17px; font-weight: 900; line-height: 1.35; }
+  .source-block { margin-top: 10px; display: grid; gap: 8px; }
+  .source-row {
+    background: #FAFAFA; border: 1px solid var(--border); border-radius: 12px;
+    padding: 10px;
+  }
+  .source-label { color: var(--orange); font-size: 11px; line-height: 1; font-weight: 900; }
+  .source-text { margin-top: 5px; color: #374151; font-size: 13px; line-height: 1.55; font-weight: 650; }
+  .source-safe { color: var(--warn); background: var(--warn-bg); border-color: #FED7AA; }
+  .source-link {
+    margin-top: 12px; min-height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; background: var(--green-soft); border: 1px solid #CDEBDD;
+    color: var(--green-dark); font-size: 12.5px; font-weight: 900;
+  }
+  .cta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-top: 14px;
+  }
+  .cta {
+    min-height: 42px; display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; text-decoration: none; text-align: center;
+    padding: 9px 8px; font-size: 12.5px; line-height: 1.25; font-weight: 900;
+    border: 1px solid #DDEFE6; background: var(--green-soft); color: var(--green-dark);
+  }
+  .cta:nth-child(2) { background: #111827; color: #fff; border-color: #111827; }
+  .cta:nth-child(3) { background: var(--orange-soft); color: #B94712; border-color: #FFD7C2; }
+  .cta:nth-child(4) { background: #fff; color: #334155; border-color: #E2E8F0; }
+  .cta:nth-child(5) { grid-column: 1 / -1; background: #111827; color: #fff; border-color: #111827; }
+  .notice {
+    margin-top: 14px; border-radius: 16px; background: var(--warn-bg);
+    border: 1px solid #FED7AA; color: var(--warn);
+    padding: 14px; font-size: 12.5px; line-height: 1.6; font-weight: 800;
+  }
+  .loading, .error {
+    background: #fff; border: 1px solid var(--border); border-radius: 16px;
+    padding: 18px; color: var(--sub); font-size: 14px; text-align: center;
+  }
+  @media (max-width: 360px) {
+    .cta-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 21px; }
+  }
+</style>
+</head>
+<body>
+<main class="phone">
+  <header class="header">
+    <div class="top">
+      <a class="brand" href="index.html" aria-label="kFarmAI 홈">
+        <img src="logo-transparent.png" alt="kFarmAI">
+        <div class="brand-name">kFarm<span>AI</span></div>
+      </a>
+      <a class="home-link" href="index.html">홈</a>
+    </div>
+    <h1>공공데이터 검증 레이어</h1>
+    <p class="subtitle">kFarmAI는 AI 진단 결과를 농업 공공데이터와 연결하여 사용자가 더 안전하고 신뢰 가능한 의사결정을 하도록 돕습니다.</p>
+  </header>
+
+  <section class="content">
+    <div class="flow" aria-label="AI 진단과 공공데이터 확인 흐름">
+      <div class="flow-card">
+        <div class="step">1</div>
+        <div>
+          <div class="flow-title">사용자 질문·사진 입력</div>
+          <div class="flow-text">잎, 줄기, 열매, 화분 상태와 증상 메모를 함께 기록합니다.</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="step">2</div>
+        <div>
+          <div class="flow-title">AI 참고 진단</div>
+          <div class="flow-text">가능한 원인 후보와 일반 관리 방향을 먼저 정리합니다.</div>
+        </div>
+      </div>
+      <div class="flow-card">
+        <div class="step">3</div>
+        <div>
+          <div class="flow-title">공공데이터 확인</div>
+          <div class="flow-text">병해충 정보, 안전사용기준, 지역 자료로 실제 판단 기준을 확인합니다.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      공공데이터 기반 1차 정제 데이터 3,019개를 지도화했으며, 이는 전국 전체 점포 수가 아니라 시제품 1차 구축 데이터입니다. 향후 지자체별 추가 공개자료와 업체 직접 등록을 통해 커버리지 확대를 추진합니다.
+    </div>
+
+    <div class="section-head">
+      <div class="section-title">공공데이터 활용 현황</div>
+      <div class="section-meta">6개 데이터 축</div>
+    </div>
+
+    <div id="sources" class="sources">
+      <div class="loading">공공데이터 활용 목록을 불러오는 중입니다.</div>
+    </div>
+
+    <div class="cta-grid" aria-label="주요 기능 이동">
+      <a class="cta" href="diagnosis-cases.html">진단 사례 보기</a>
+      <a class="cta" href="diagnosis.html">AI 진단하기</a>
+      <a class="cta" href="agri_map.html">농약사 지도 보기</a>
+      <a class="cta" href="channel.html">커뮤니티 질문하기</a>
+      <a class="cta" href="contest-demo.html">공모전 데모 보기</a>
+    </div>
+
+    <div class="notice">
+      AI 진단은 참고용 정보이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.
+    </div>
+  </section>
+</main>
+
+<script>
+'use strict';
+
+const sourcesEl = document.getElementById('sources');
+
+function escHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
+
+function renderSource(item) {
+  return `
+    <article class="source-card">
+      <div class="card-top">
+        <span class="provider">${escHtml(item.provider)}</span>
+        <span class="status">${escHtml(item.status)}</span>
+      </div>
+      <h2 class="source-title">${escHtml(item.name)}</h2>
+      <div class="source-block">
+        <div class="source-row">
+          <div class="source-label">서비스 활용</div>
+          <div class="source-text">${escHtml(item.serviceUse)}</div>
+        </div>
+        <div class="source-row">
+          <div class="source-label">중요성</div>
+          <div class="source-text">${escHtml(item.importance)}</div>
+        </div>
+        <div class="source-row source-safe">
+          <div class="source-label">안전 표현</div>
+          <div class="source-text">${escHtml(item.safeExpression)}</div>
+        </div>
+      </div>
+      <a class="source-link" href="${escHtml(item.linkedPage)}">연결 화면 보기</a>
+    </article>`;
+}
+
+async function loadSources() {
+  try {
+    const res = await fetch('data/public_data_sources.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP_' + res.status);
+    const data = await res.json();
+    sourcesEl.innerHTML = data.map(renderSource).join('');
+  } catch (err) {
+    sourcesEl.innerHTML = '<div class="error">공공데이터 활용 목록을 불러오지 못했습니다. 아래 주요 기능 버튼은 계속 사용할 수 있습니다.</div>';
+  }
+}
+
+loadSources();
+</script>
+</body>
+</html>
