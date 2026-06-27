@@ -739,7 +739,12 @@ async function startCamera(facingMode) {
   }
   try {
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode }, audio: false });
+    const requestedFacingMode = facingMode || { ideal: 'environment' };
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: requestedFacingMode }, audio: false });
+    } catch (firstErr) {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    }
     video.srcObject = stream;
     video.style.display = 'block';
     camFb.style.display = 'none';

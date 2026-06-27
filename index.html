@@ -990,7 +990,7 @@
 
       <!-- ============ PAGE 1: 커뮤니티 ============ -->
       <section class="page">
-        <div class="hero">
+        <div class="hero" role="button" tabindex="0" aria-label="AI 진단으로 이동" onclick="switchMainTab('diagnosis')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchMainTab('diagnosis');}">
           <div class="hero-img"></div>
           <div class="hero-content">
             <span class="badge-orange">★ AI 식물 주치의</span>
@@ -1195,7 +1195,7 @@
   <nav class="bnav">
     <div class="b on"><svg><use href="#nav-home"/></svg><span>홈</span></div>
     <a class="b" href="channel.html"><svg><use href="#nav-q"/></svg><span data-i18n="qa">질문</span></a>
-    <div class="b"><svg><use href="#nav-d"/></svg><span data-i18n="diagnosisShort">진단</span></div>
+    <div class="b" onclick="switchMainTab('diagnosis')"><svg><use href="#nav-d"/></svg><span data-i18n="diagnosisShort">진단</span></div>
     <a class="b" href="agri_map.html"><svg><use href="#nav-pin"/></svg><span data-i18n="nearby">주변</span></a>
     <div class="b" onclick="safeOpenMyPanel()"><svg><use href="#nav-my"/></svg><span>MY</span></div>
   </nav>
@@ -1242,9 +1242,10 @@
       <div class="email-auth" aria-label="이메일 로그인">
         <input id="authEmail" type="email" placeholder="이메일" autocomplete="email">
         <input id="authPassword" type="password" placeholder="비밀번호 6자 이상" autocomplete="current-password">
+        <button class="btn-email secondary" id="magicLinkBtn" type="button" onclick="sendMagicLink()">이메일로 로그인 링크 받기</button>
         <div class="email-auth-actions">
-          <button class="btn-email secondary" type="button" onclick="loginEmail()">로그인</button>
-          <button class="btn-email" type="button" onclick="signupEmail()">회원가입</button>
+          <button class="btn-email secondary" id="emailLoginBtn" type="button" onclick="loginEmail()">이메일/비밀번호 로그인</button>
+          <button class="btn-email" id="emailSignupBtn" type="button" onclick="signupEmail()">이메일/비밀번호로 가입</button>
         </div>
       </div>
     </div>
@@ -1300,6 +1301,8 @@
     if(fab){ fab.style.opacity = current === 0 ? '1' : '0'; fab.style.pointerEvents = current === 0 ? '' : 'none'; }
   }
   window.goMainPage = () => go(0);
+  window.switchMainTab = name => go(name === 'diagnosis' ? 1 : name === 'agriData' ? 2 : 0, true);
+  window.activateTab = window.switchMainTab;
   tabs.forEach(t => t.addEventListener('click', () => go(parseInt(t.dataset.i), true)));
 
   // Touch swipe
@@ -1747,6 +1750,8 @@ async function renderFeedFallback(message){
 }
 function filterByChannel(id,name){loadFeed(id);const title=document.querySelector('#recentFeed')?.previousElementSibling?.querySelector('.section-title');if(title)title.textContent=`${name} 질문`;}
 const SEARCH_STORAGE_KEY='kfarmai_recent_searches';
+let staticSearchIndex = null;
+let staticSearchIndexPromise = null;
 const CHO_LIST=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 const AGRI_LINKS=[
   {type:'map',label:'농약사',initial:'ㄴㅇㅅ',url:'agri_map.html',text:'농약사 - 지도에서 보기'},
@@ -1782,8 +1787,10 @@ async function renderSearchDropdown(raw){
   const posts=await searchPosts(kw,3);
   const shopItems=getShopSuggestions(kw,2);
   const matItems=getMaterialSuggestions(kw,2);
+  const staticItems=await searchStaticIndex(kw,5);
   const recent=getRecentSearches();
   dd.innerHTML=[
+    renderSuggestSection('통합 검색',staticItems.map(item=>staticSuggestHtml(item,kw))),
     renderSuggestSection('커뮤니티 게시글',posts.map(p=>postSuggestHtml(p,kw))),
     renderSuggestSection('농약사',shopItems.map(item=>linkSuggestHtml(item,kw,'지도'))),
     renderSuggestSection('농자재',matItems.map(item=>linkSuggestHtml(item,kw,'정보'))),
@@ -1821,7 +1828,8 @@ async function runSearch(raw){
   const posts=await searchPosts(kw,30);
   const shops=getShopSuggestions(kw,20);
   const materials=getMaterialSuggestions(kw,30);
-  renderSearchResults(kw,posts,shops,materials);
+  const staticItems=await searchStaticIndex(kw,60);
+  renderSearchResults(kw,posts,shops,materials,staticItems);
 }
 async function searchPosts(kw,limit){
   if(!window._sb)return [];
@@ -1836,11 +1844,11 @@ async function searchPosts(kw,limit){
     return list;
   }catch(e){return [];}
 }
-function renderSearchResults(kw,posts,shops,materials){
+function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
   const feed=document.getElementById('recentFeed');
-  const total=posts.length+shops.length+materials.length;
+  const total=posts.length+shops.length+materials.length+staticItems.length;
   const head=`<div class="search-result-head"><span>'${escHtml(kw)}' 검색 결과 ${total}개</span><button class="search-close" onclick="clearSearchResults()">×</button></div>`;
-  if(!total){feed.innerHTML=head+'<div class="feed-loading">검색 결과가 없습니다</div>';return;}
+  if(!total){feed.innerHTML=head+'<div class="feed-loading">검색 결과가 없습니다. AI 진단 또는 질문하기로 문의해 주세요.<br><button class="modal-submit" style="margin-top:10px" onclick="switchMainTab(&quot;diagnosis&quot;)">AI 진단하기</button><button class="modal-submit" style="margin-top:8px;background:#111" onclick="openModal()">질문하기</button></div>';return;}
   const postHtml=posts.map(post=>{
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
@@ -1848,13 +1856,74 @@ function renderSearchResults(kw,posts,shops,materials){
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'농약사')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
+  const grouped=groupStaticResults(staticItems);
   feed.innerHTML=head+
+    renderStaticResultGroup('AI 진단/진단사례',grouped.ai,kw)+
+    renderStaticResultGroup('질문·정보',grouped.questions,kw)+
+    renderStaticResultGroup('농업 지식',grouped.knowledge,kw)+
+    renderStaticResultGroup('커뮤니티 질문',grouped.community,kw)+
+    renderStaticResultGroup('공공데이터 기관',grouped.publicData,kw)+
+    renderStaticResultGroup('계산기 도구',grouped.tools,kw)+
+    renderStaticResultGroup('농자재 업체',grouped.materials,kw)+
     (posts.length?'<div class="search-group-title">커뮤니티 게시글</div>'+postHtml:'')+
     (shops.length?'<div class="search-group-title">농약사 지도·로드뷰</div>'+shopHtml:'')+
     (materials.length?'<div class="search-group-title">농자재 회사 정보</div>'+materialHtml:'');
 }
 function resultLinkCard(item,kw,badge){
   return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${badge}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
+}
+async function loadStaticSearchIndex(){
+  if(staticSearchIndex)return staticSearchIndex;
+  if(!staticSearchIndexPromise){
+    staticSearchIndexPromise=fetch('data/search_index.json',{cache:'no-store'})
+      .then(res=>res.ok?res.json():[])
+      .then(list=>staticSearchIndex=Array.isArray(list)?list:[])
+      .catch(()=>staticSearchIndex=[]);
+  }
+  return staticSearchIndexPromise;
+}
+async function searchStaticIndex(kw,limit=20){
+  const list=await loadStaticSearchIndex();
+  const needle=normalizeKeyword(kw).toLowerCase();
+  const compact=needle.replace(/\s/g,'');
+  const initial=isInitialQuery(needle);
+  return list.map(item=>{
+    const text=item.searchText||`${item.title||''} ${item.description||''} ${(item.keywords||[]).join(' ')}`.toLowerCase();
+    const cho=item.chosung||getInitials(text);
+    let score=0;
+    if(initial&&cho.includes(needle))score+=90;
+    if(text.includes(needle))score+=70;
+    if(text.replace(/\s/g,'').includes(compact))score+=50;
+    if((item.title||'').toLowerCase().includes(needle))score+=40;
+    if((item.keywords||[]).some(k=>String(k).toLowerCase().includes(needle)))score+=25;
+    return {...item,score};
+  }).filter(item=>item.score>0).sort((a,b)=>b.score-a.score).slice(0,limit);
+}
+function staticSuggestHtml(item,kw){
+  return `<a class="s-item" href="${safeSearchUrl(item.url)}"><div class="s-ico">S</div><div class="s-main"><div class="s-title">${highlightText(item.title,kw)}</div><div class="s-meta">${escHtml(item.type||'통합 검색')}</div></div></a>`;
+}
+function groupStaticResults(items){
+  const grouped={ai:[],questions:[],knowledge:[],community:[],publicData:[],tools:[],materials:[]};
+  items.forEach(item=>{
+    const type=item.type||'';
+    if(type.includes('진단'))grouped.ai.push(item);
+    else if(type.includes('질문·정보'))grouped.questions.push(item);
+    else if(type.includes('지식'))grouped.knowledge.push(item);
+    else if(type.includes('커뮤니티'))grouped.community.push(item);
+    else if(type.includes('공공데이터'))grouped.publicData.push(item);
+    else if(type.includes('계산기'))grouped.tools.push(item);
+    else if(type.includes('업체')||type.includes('농약사'))grouped.materials.push(item);
+    else grouped.knowledge.push(item);
+  });
+  return grouped;
+}
+function renderStaticResultGroup(title,items,kw){
+  if(!items.length)return '';
+  return `<div class="search-group-title">${title}</div>`+items.slice(0,12).map(item=>`<a class="q-card" href="${safeSearchUrl(item.url)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${escHtml(item.type||'검색')}</span><div class="q-title">${highlightText(item.title,kw)}</div><div class="q-meta"><span>${escHtml((item.description||'').slice(0,80))}</span></div></a>`).join('');
+}
+function safeSearchUrl(url){
+  const value=String(url||'index.html').replace(/^\/+/,'');
+  return value&&value!=='null' ? value : 'index.html';
 }
 function clearSearchResults(){
   const input=document.getElementById('globalSearch');
@@ -1939,18 +2008,60 @@ async function loginEmail(){
   const email=document.getElementById('authEmail')?.value.trim();
   const password=document.getElementById('authPassword')?.value;
   if(!email||!password)return showToast('이메일과 비밀번호를 입력해주세요.');
-  const {error}=await _sb.auth.signInWithPassword({email,password});
-  if(error)return showToast('로그인 실패: '+error.message);
-  showToast('로그인되었습니다');
+  const btn=document.getElementById('emailLoginBtn');
+  setAuthButtonLoading(btn,true);
+  try{
+    const {error}=await _sb.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    showToast('로그인되었습니다');
+  }catch(error){
+    showToast('로그인 정보를 다시 확인해주세요.');
+  }finally{
+    setAuthButtonLoading(btn,false);
+  }
 }
 async function signupEmail(){
   const email=document.getElementById('authEmail')?.value.trim();
   const password=document.getElementById('authPassword')?.value;
   if(!email||!password)return showToast('이메일과 비밀번호를 입력해주세요.');
   if(password.length<6)return showToast('비밀번호는 6자 이상 입력해주세요.');
-  const {error}=await _sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/index.html'}});
-  if(error)return showToast('회원가입 실패: '+error.message);
-  showToast('가입 확인 메일을 확인해주세요.');
+  const btn=document.getElementById('emailSignupBtn');
+  setAuthButtonLoading(btn,true);
+  try{
+    const {error}=await _sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
+    if(error)throw error;
+    showToast('확인 메일을 보냈습니다. 메일의 확인 버튼을 눌러 가입을 완료하세요.');
+  }catch(error){
+    showToast('가입을 처리하지 못했습니다. 입력 정보를 확인해주세요.');
+  }finally{
+    setAuthButtonLoading(btn,false);
+  }
+}
+async function sendMagicLink(){
+  const email=document.getElementById('authEmail')?.value.trim();
+  if(!email)return showToast('이메일을 입력해주세요.');
+  const btn=document.getElementById('magicLinkBtn');
+  setAuthButtonLoading(btn,true);
+  try{
+    const {error}=await _sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
+    if(error)throw error;
+    showToast('로그인 링크를 보냈습니다. 메일을 확인해주세요.');
+  }catch(error){
+    showToast('로그인 링크를 보내지 못했습니다.');
+  }finally{
+    setAuthButtonLoading(btn,false);
+  }
+}
+function setAuthButtonLoading(btn,loading){
+  if(!btn)return;
+  if(loading){
+    btn.dataset.originalText=btn.textContent;
+    btn.textContent='처리 중...';
+    btn.disabled=true;
+  }else{
+    btn.textContent=btn.dataset.originalText||btn.textContent;
+    btn.disabled=false;
+  }
 }
 async function loginGoogle(){
   const btn=document.getElementById('googleBtn');
@@ -1959,7 +2070,7 @@ async function loginGoogle(){
     btn.disabled=true;
     btn.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" style="animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" fill="none" stroke="#4285F4" stroke-width="3" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg>`;
   }
-  const {error}=await _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://kfarmai.com'}});
+  const {error}=await _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+'/auth-callback.html'}});
   if(error){
     alert('로그인 실패: '+error.message);
     if(btn){
