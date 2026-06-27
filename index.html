@@ -405,7 +405,14 @@
     margin-bottom: 8px;
     display: flex; align-items: center; gap: 10px;
     border: 1px solid var(--border);
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
   }
+  .diag-case:hover, .diag-case:focus-visible { border-color: rgba(29,158,117,.42); box-shadow: 0 8px 20px rgba(29,158,117,.12); transform: translateY(-1px); outline: none; }
   .case-thumb {
     width: 48px; height: 48px; border-radius: 12px;
     flex-shrink: 0; overflow: hidden;
@@ -575,6 +582,19 @@
     width: 100%; padding: 14px; background: var(--green); color: #fff; border: 0; border-radius: 12px;
     font-size: 15px; font-weight: 800; cursor: pointer;
   }
+  .demo-modal { max-height: 88vh; overflow-y: auto; }
+  .demo-case-badge { display:inline-flex; align-items:center; min-height:24px; padding:4px 9px; border-radius:999px; background:#E8F6F0; color:var(--green-dark); font-size:11px; font-weight:900; margin-bottom:10px; }
+  .demo-case-grid { display:grid; gap:10px; }
+  .demo-case-section { border:1px solid var(--border); border-radius:12px; padding:11px 12px; background:#fff; }
+  .demo-case-section strong { display:block; color:#111; font-size:12px; margin-bottom:5px; }
+  .demo-case-section p, .demo-case-section ul { color:#4B5563; font-size:13px; line-height:1.5; }
+  .demo-case-section ul { padding-left:18px; }
+  .demo-case-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; }
+  .demo-case-actions a { min-height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; text-align:center; padding:9px 8px; background:#E8F6F0; color:var(--green-dark); border:1px solid #CDEBDD; font-size:12.5px; font-weight:900; text-decoration:none; }
+  .demo-case-actions a:nth-child(2) { background:#111827; color:#fff; border-color:#111827; }
+  .demo-case-actions a:nth-child(3) { background:#FFF1E8; color:#EA580C; border-color:#FFD7C2; }
+  .demo-case-actions a:nth-child(4) { background:#F8FAFC; color:#334155; border-color:#E2E8F0; }
+  .demo-safe { margin-top:12px; border-radius:12px; padding:11px 12px; background:#FFF8E1; border:1px solid #FDE68A; color:#5D4400; font-size:12.5px; line-height:1.55; font-weight:750; }
 
   .image-input { display:none; }
   .image-upload-btn { display:inline-flex; align-items:center; justify-content:center; height:38px; padding:0 13px; border:1.5px solid var(--border); border-radius:10px; background:#fff; color:var(--text); font-size:13px; font-weight:800; cursor:pointer; }
@@ -1089,7 +1109,7 @@
           <div class="section-more">전체보기</div>
         </div>
 
-        <div class="diag-case">
+        <button class="diag-case" type="button" onclick="openDiagnosisDemoCase('tomato-leaf-mold')">
           <div class="case-thumb"><svg><use href="#ct-tomato"/></svg></div>
           <div class="case-info">
             <div class="case-name-row">
@@ -1099,8 +1119,8 @@
             <div class="case-meta">잎 뒷면에 회색 곰팡이층 발견</div>
           </div>
           <div class="case-pct"><div class="num danger">높음</div><div class="lbl">AI 추정 강도</div></div>
-        </div>
-        <div class="diag-case">
+        </button>
+        <button class="diag-case" type="button" onclick="openDiagnosisDemoCase('pepper-anthracnose')">
           <div class="case-thumb"><svg><use href="#ct-chili"/></svg></div>
           <div class="case-info">
             <div class="case-name-row">
@@ -1110,8 +1130,8 @@
             <div class="case-meta">공공정보 확인 필요 · 전문가 상담 권장</div>
           </div>
           <div class="case-pct"><div class="num warn">중간</div><div class="lbl">AI 추정 강도</div></div>
-        </div>
-        <div class="diag-case">
+        </button>
+        <button class="diag-case" type="button" onclick="openDiagnosisDemoCase('cucumber-downy-or-good')">
           <div class="case-thumb"><svg><use href="#ct-cucumber"/></svg></div>
           <div class="case-info">
             <div class="case-name-row">
@@ -1121,8 +1141,8 @@
             <div class="case-meta">건강한 상태 · 생육 양호</div>
           </div>
           <div class="case-pct"><div class="num">낮음</div><div class="lbl">AI 추정 강도</div></div>
-        </div>
-        <div class="diag-case">
+        </button>
+        <button class="diag-case" type="button" onclick="openDiagnosisDemoCase('strawberry-powdery-mildew')">
           <div class="case-thumb"><svg><use href="#ct-strawberry"/></svg></div>
           <div class="case-info">
             <div class="case-name-row">
@@ -1132,7 +1152,7 @@
             <div class="case-meta">잎 표면 흰 분말 · 관찰 필요</div>
           </div>
           <div class="case-pct"><div class="num warn">중간</div><div class="lbl">AI 추정 강도</div></div>
-        </div>
+        </button>
       </section>
 
       <!-- ============ PAGE 3: 농자재 ============ -->
@@ -1217,6 +1237,15 @@
       <div class="image-preview-row" id="postImagePreview"></div>
     </div>
     <button class="modal-submit" id="postSubmitBtn" onclick="submitPost()">질문 등록하기</button>
+  </div>
+</div>
+
+<!-- DIAGNOSIS DEMO CASE MODAL -->
+<div class="modal-overlay" id="diagnosisDemoModal" onclick="if(event.target===this)closeDiagnosisDemoCase()">
+  <div class="modal demo-modal">
+    <button class="modal-handle" type="button" onclick="closeDiagnosisDemoCase()" aria-label="닫기"></button>
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">공공자료 기반 데모 진단사례 <button class="my-close" type="button" onclick="closeDiagnosisDemoCase()" aria-label="닫기">×</button></div>
+    <div id="diagnosisDemoBody"></div>
   </div>
 </div>
 
@@ -1982,6 +2011,78 @@ function saveRecentSearch(kw){const list=getRecentSearches().filter(item=>item!=
 function removeRecentSearch(event,kw){event.stopPropagation();localStorage.setItem(SEARCH_STORAGE_KEY,JSON.stringify(getRecentSearches().filter(item=>item!==kw)));renderSearchDropdown(document.getElementById('globalSearch')?.value||'');}
 function clearRecentSearches(event){event.stopPropagation();localStorage.removeItem(SEARCH_STORAGE_KEY);renderSearchDropdown(document.getElementById('globalSearch')?.value||'');}
 initSearch();
+const DIAGNOSIS_DEMO_CASES = {
+  'tomato-leaf-mold': {
+    plant: '토마토',
+    symptom: '잎 뒷면에 회색 곰팡이층이 보이고 잎 앞면은 옅은 노란 반점처럼 보입니다.',
+    diagnosis: '토마토 잎곰팡이병 가능성을 참고 진단으로 제시합니다.',
+    causes: ['시설 내 높은 습도와 환기 부족', '잎 표면의 장시간 결로', '밀식으로 인한 통풍 저하'],
+    checks: ['잎 뒷면의 회색 또는 올리브색 곰팡이층', '아래 잎부터 번지는 황화 반점', '시설 내부 습도와 결로 시간'],
+    care: ['병든 잎은 주변 전염을 줄이도록 분리하고 작업 도구를 청결히 관리합니다.', '환기와 관수 시간을 조정해 잎이 젖어 있는 시간을 줄입니다.'],
+    publicData: ['등록 작물: 토마토', '확인 병해: 잎곰팡이병', '안전사용기준과 수확 전 사용 가능 일수'],
+    next: '공공데이터에서 등록 여부를 확인한 뒤, 사진과 재배환경을 함께 적어 커뮤니티에 질문합니다.'
+  },
+  'pepper-anthracnose': {
+    plant: '고추',
+    symptom: '열매 표면에 작은 검은 반점이 생기고 일부는 둥근 함몰 반점처럼 보입니다.',
+    diagnosis: '고추 탄저병 초기 가능성을 참고 진단으로 제시합니다.',
+    causes: ['비가 잦거나 습도가 높은 환경', '감염된 잔재물 또는 주변 열매 접촉', '열매 표면 상처와 물 튐'],
+    checks: ['둥글고 함몰되는 병반', '검은 점 형태의 포자층', '비 온 뒤 병반 확대 여부'],
+    care: ['의심 열매는 따로 분리해 확산 여부를 관찰합니다.', '물 튐을 줄이고 포장 내 통풍을 확보합니다.'],
+    publicData: ['등록 작물: 고추', '확인 병해: 탄저병', '작물보호제 등록 여부와 안전사용기준'],
+    next: '반점이 생긴 열매 사진과 최근 강우·관수 정보를 함께 남겨 전문가 확인을 받습니다.'
+  },
+  'cucumber-downy-or-good': {
+    plant: '오이',
+    symptom: '잎 일부에 옅은 반점이 보이나 새잎과 생장점은 비교적 양호합니다.',
+    diagnosis: '오이 노균병 가능성과 정상 생육 변화를 함께 확인해야 하는 사례입니다.',
+    causes: ['일시적인 수분 스트레스 또는 광량 변화', '잎 뒷면 습도 증가', '초기 병반과 생리장해의 혼동'],
+    checks: ['잎맥을 따라 각진 노란 반점이 있는지', '잎 뒷면에 회색빛 균사가 있는지', '새잎과 생장점의 정상 생육 여부'],
+    care: ['증상이 번지는지 1~2일 간격으로 같은 위치를 촬영합니다.', '환기와 배수 상태를 점검하고 과습을 피합니다.'],
+    publicData: ['등록 작물: 오이', '확인 병해: 노균병', '정상 생육 사례와 병해 증상 구분'],
+    next: '증상 확대 여부를 관찰하고, 추가 사진을 올려 공공자료 기준 확인 포인트를 질문합니다.'
+  },
+  'strawberry-powdery-mildew': {
+    plant: '딸기',
+    symptom: '잎 표면과 가장자리에 흰 가루 같은 흔적이 보이고 일부 잎이 말리는 듯합니다.',
+    diagnosis: '딸기 흰가루병 가능성을 참고 진단으로 제시합니다.',
+    causes: ['시설 내 건조와 다습이 반복되는 환경', '통풍 부족', '잎과 잎 사이 접촉 증가'],
+    checks: ['잎 표면의 흰 분말 형태', '잎 가장자리 말림', '꽃대와 과실 주변으로 번지는지 여부'],
+    care: ['잎 사이 통풍을 확보하고 과도한 밀식을 줄입니다.', '발생 부위를 표시해 확산 속도를 관찰합니다.'],
+    publicData: ['등록 작물: 딸기', '확인 병해: 흰가루병', '시설재배 안전사용기준'],
+    next: '잎 표면과 뒷면 사진을 함께 올리고 시설 습도·환기 상황을 적어 질문합니다.'
+  }
+};
+const DIAGNOSIS_DEMO_SAFE_TEXT = 'AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.';
+function renderDemoList(items){return `<ul>${items.map(item=>`<li>${escHtml(item)}</li>`).join('')}</ul>`;}
+function openDiagnosisDemoCase(caseId){
+  const item=DIAGNOSIS_DEMO_CASES[caseId];
+  const modal=document.getElementById('diagnosisDemoModal');
+  const body=document.getElementById('diagnosisDemoBody');
+  if(!item||!modal||!body)return;
+  body.innerHTML=`
+    <div class="demo-case-badge">공공자료 기반 데모 진단사례</div>
+    <div class="demo-case-grid">
+      <div class="demo-case-section"><strong>작물/식물명</strong><p>${escHtml(item.plant)}</p></div>
+      <div class="demo-case-section"><strong>사용자가 올린 증상 예시</strong><p>${escHtml(item.symptom)}</p></div>
+      <div class="demo-case-section"><strong>AI 참고 진단</strong><p>${escHtml(item.diagnosis)}</p></div>
+      <div class="demo-case-section"><strong>원인 후보</strong>${renderDemoList(item.causes)}</div>
+      <div class="demo-case-section"><strong>확인해야 할 증상</strong>${renderDemoList(item.checks)}</div>
+      <div class="demo-case-section"><strong>일반 관리 방향</strong>${renderDemoList(item.care)}</div>
+      <div class="demo-case-section"><strong>공공데이터 확인 항목</strong>${renderDemoList(item.publicData)}</div>
+      <div class="demo-case-section"><strong>다음 행동</strong><p>${escHtml(item.next)}</p></div>
+    </div>
+    <div class="demo-safe">${escHtml(DIAGNOSIS_DEMO_SAFE_TEXT)}</div>
+    <div class="demo-case-actions">
+      <a href="public-data.html">공공데이터 확인</a>
+      <a href="channel.html?write=1&case=${encodeURIComponent(caseId)}">질문하기</a>
+      <a href="agri_map.html">농약사 찾기</a>
+      <a href="diagnosis-cases.html">전체보기</a>
+    </div>`;
+  modal.classList.add('open');
+  lockBodyScroll();
+}
+function closeDiagnosisDemoCase(){document.getElementById('diagnosisDemoModal')?.classList.remove('open');unlockBodyScroll();}
 let selectedPostImages = [];
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function handlePostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
@@ -2086,6 +2187,7 @@ function escAttr(str){return escHtml(str).replace(/'/g,'&#39;');}
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeModal();
+    closeDiagnosisDemoCase();
     closeMyPanel();
   }
 });

@@ -209,6 +209,33 @@ const CHANNEL_BADGE_COLORS = {'plant-hospital':'','plant-question':'blue','crop-
 const PAGE_SIZE = 20;
 const params = new URLSearchParams(location.search);
 const slugParam = params.get('slug') || '';
+const DEMO_CASE_WRITE_PRESETS = {
+  'tomato-leaf-mold': {
+    channelSlug: 'plant-hospital',
+    category: '딸기·토마토',
+    title: '토마토 잎 뒷면에 회색 곰팡이가 보입니다',
+    content: 'AI 참고 진단에서 잎곰팡이병 가능성을 확인했습니다. 공공자료 기준으로 어떤 점을 더 확인하면 좋을까요?'
+  },
+  'pepper-anthracnose': {
+    channelSlug: 'crop-consult',
+    category: '고추·마늘·양파',
+    title: '고추 열매에 작은 검은 반점이 생겼습니다',
+    content: 'AI 참고 진단에서 탄저병 초기 가능성을 확인했습니다. 공공자료 기준으로 사진에서 어떤 증상을 더 확인하면 좋을까요?'
+  },
+  'cucumber-downy-or-good': {
+    channelSlug: 'plant-hospital',
+    category: '텃밭',
+    title: '오이 잎 반점이 노균병인지 정상 생육인지 궁금합니다',
+    content: 'AI 참고 진단에서 노균병 가능성과 정상 생육 변화를 함께 확인해야 한다고 나왔습니다. 어떤 관찰 포인트를 더 보면 좋을까요?'
+  },
+  'strawberry-powdery-mildew': {
+    channelSlug: 'crop-consult',
+    category: '딸기·토마토',
+    title: '딸기 잎 표면에 흰 가루 같은 흔적이 보입니다',
+    content: 'AI 참고 진단에서 흰가루병 가능성을 확인했습니다. 공공자료 기준으로 어떤 증상을 더 확인하면 좋을까요?'
+  }
+};
+let didApplyDemoWritePreset = false;
 let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', keyword='', offset=0, isLoading=false, hasMore=true, demoThreads=null, selectedPostImages=[];
 
 document.addEventListener('DOMContentLoaded', init);
@@ -223,6 +250,7 @@ async function init(){
   window.addEventListener('scroll', handleScroll, {passive:true});
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){closeWriteModal();closeLoginModal();} });
   resetAndLoad();
+  applyDemoWriteQuery();
 }
 async function loadChannels(){
   try{
@@ -352,8 +380,31 @@ async function renderDemoThreads(message){
     </article>`).join('');
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
-async function openWriteFlow(){renderChannelSelect();document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
+async function openWriteFlow(preset){renderChannelSelect();if(preset)fillWritePreset(preset);document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
 function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');unlockBodyScroll();}
+function applyDemoWriteQuery(){
+  if(didApplyDemoWritePreset || params.get('write')!=='1')return;
+  const preset=DEMO_CASE_WRITE_PRESETS[params.get('case')||''];
+  if(!preset)return;
+  didApplyDemoWritePreset=true;
+  openWriteFlow(preset);
+}
+function fillWritePreset(preset){
+  const channel=channels.find(ch=>ch.slug===preset.channelSlug) || channels.find(ch=>ch.slug==='plant-hospital') || channels[0];
+  const channelSelect=document.getElementById('channelSelect');
+  const categorySelect=document.getElementById('postCategory');
+  if(channelSelect&&channel)channelSelect.value=channel.id;
+  setSelectValueOrText(categorySelect,preset.category);
+  const title=document.getElementById('postTitle');
+  const content=document.getElementById('postContent');
+  if(title)title.value=preset.title;
+  if(content)content.value=preset.content;
+}
+function setSelectValueOrText(select,value){
+  if(!select||!value)return;
+  const option=Array.from(select.options).find(opt=>opt.value===value || opt.textContent.trim()===value);
+  if(option)select.value=option.value;
+}
 async function safeOpenMyPanel(){renderMyModal();openLoginModal();}
 function openLoginModal(){renderMyModal();document.getElementById('loginModal').classList.add('open');lockBodyScroll();}
 function closeLoginModal(){document.getElementById('loginModal').classList.remove('open');unlockBodyScroll();}
