@@ -523,7 +523,7 @@
     <div class="top-bar">
       <div class="brand">
         <a href="index.html" style="text-decoration:none; display:flex; align-items:center;">
-          <img src="logo-transparent.png" alt="kFarmAI" style="height:36px; width:auto;">
+          <img src="static/kfarmai-logo-horizontal.png" alt="kFarmAI" style="max-width:180px; width:auto; height:auto; object-fit:contain;">
         </a>
       </div>
       <div class="bell" aria-label="알림">
@@ -718,6 +718,8 @@ document.querySelectorAll('.tab').forEach(tab => {
 /* ── Camera ── */
 let stream = null;
 let facing = 'environment';
+let videoDevices = [];
+let activeDeviceId = null;
 const video  = document.getElementById('camVideo');
 const camFb  = document.getElementById('camFb');
 const secure = location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname);
@@ -730,7 +732,9 @@ function setFallback(html) {
 
 async function startCamera(facingMode) {
   if (!secure) {
-    setFallback(`<div style="font-size:28px;margin-bottom:8px">📷</div>`);
+    setFallback(`<div style="font-size:28px;margin-bottom:8px">📷</div>
+      <div>카메라는 HTTPS 또는 localhost에서 사용할 수 있습니다</div>
+      <div style="font-size:11px;margin-top:4px;opacity:.7">앨범 업로드를 이용하세요</div>`);
     return;
   }
   if (!navigator.mediaDevices?.getUserMedia) {
@@ -738,33 +742,94 @@ async function startCamera(facingMode) {
     return;
   }
   try {
-    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    const requestedFacingMode = facingMode || { ideal: 'environment' };
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: requestedFacingMode }, audio: false });
-    } catch (firstErr) {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+    const mode = facingMode || 'environment';
+    if (mode === 'environment') {
+      try {
+        await openCameraStream({ video: { facingMode: { exact: 'environment' } }, audio: false });
+      } catch (exactErr) {
+        try {
+          await openCameraStream({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+        } catch (idealErr) {
+          const rearDeviceId = await findRearCameraDeviceId();
+          if (rearDeviceId) {
+            await openCameraStream({ video: { deviceId: { exact: rearDeviceId } }, audio: false });
+          } else {
+            await openCameraStream({ video: true, audio: false });
+          }
+        }
+      }
+    } else {
+      try {
+        await openCameraStream({ video: { facingMode: { exact: 'user' } }, audio: false });
+      } catch (exactErr) {
+        try {
+          await openCameraStream({ video: { facingMode: { ideal: 'user' } }, audio: false });
+        } catch (idealErr) {
+          await openCameraStream({ video: true, audio: false });
+        }
+      }
     }
-    video.srcObject = stream;
-    video.style.display = 'block';
-    camFb.style.display = 'none';
   } catch (err) {
     const denied = err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError';
     setFallback(denied
-      ? `<div style="font-size:28px;margin-bottom:8px">🚫</div>
+      ? `<div style="font-size:28px;margin-bottom:8px">🔒</div>
          <div>카메라 권한이 필요합니다</div>
          <div style="font-size:11px;margin-top:4px;opacity:.7">설정에서 허용 후 새로고침하세요</div>`
-      : `<div style="font-size:28px;margin-bottom:8px">⚠️</div>
+      : `<div style="font-size:28px;margin-bottom:8px">📷</div>
          <div>카메라를 시작할 수 없습니다</div>
+         <button type="button" onclick="flipCamera()" style="margin-top:10px;border:1px solid rgba(182,255,60,.5);border-radius:999px;background:transparent;color:#B6FF3C;padding:8px 12px;font-weight:800">카메라 전환</button>
          <div style="font-size:11px;margin-top:4px;opacity:.7">앨범 버튼을 이용하세요</div>`);
   }
 }
 
-function flipCamera() {
+function stopCameraStream() {
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+  }
+}
+
+async function openCameraStream(constraints) {
+  stopCameraStream();
+  stream = await navigator.mediaDevices.getUserMedia(constraints);
+  video.srcObject = stream;
+  video.style.display = 'block';
+  camFb.style.display = 'none';
+  const track = stream.getVideoTracks()[0];
+  activeDeviceId = track?.getSettings?.().deviceId || null;
+  await refreshVideoDevices();
+}
+
+async function refreshVideoDevices() {
+  if (!navigator.mediaDevices?.enumerateDevices) return;
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  videoDevices = devices.filter(device => device.kind === 'videoinput');
+}
+
+async function findRearCameraDeviceId() {
+  await refreshVideoDevices();
+  const rearPattern = /(back|rear|environment|back camera|\uD6C4\uBA74|\uB4A4)/i;
+  const rearCamera = videoDevices.find(device => rearPattern.test(device.label || ''));
+  return rearCamera?.deviceId || null;
+}
+
+async function flipCamera() {
+  await refreshVideoDevices();
+  if (videoDevices.length > 1) {
+    const currentIndex = videoDevices.findIndex(device => device.deviceId === activeDeviceId);
+    const nextDevice = videoDevices[(currentIndex + 1 + videoDevices.length) % videoDevices.length];
+    if (nextDevice?.deviceId) {
+      try {
+        await openCameraStream({ video: { deviceId: { exact: nextDevice.deviceId } }, audio: false });
+        return;
+      } catch (err) {
+        showToast('카메라 전환에 실패했습니다');
+      }
+    }
+  }
   facing = facing === 'environment' ? 'user' : 'environment';
   startCamera(facing);
 }
-
 function capturePhoto() {
   document.getElementById('cameraInput').click();
 }
