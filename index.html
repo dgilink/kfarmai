@@ -15,7 +15,7 @@
 <meta name="description" content="식물 이상 증상, 병해충, 상토·종자·비료·작물보호제 정보를 검색하고 질문하는 농업·식물 AI 커뮤니티입니다.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://kfarmai.com/">
-<link rel="preload" as="image" href="logo-transparent.png">
+<link rel="preload" as="image" href="/static/kfarmai-logo-horizontal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -979,7 +979,7 @@
     <div class="top-bar">
       <div class="brand">
         <a href="index.html" style="text-decoration:none; display:flex; align-items:center;">
-          <img src="logo-transparent.png" alt="kFarmAI" style="height:36px; width:auto;">
+          <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" style="max-width:180px; width:auto; height:36px; object-fit:contain;">
         </a>
       </div>
       <div class="header-actions">
@@ -1337,6 +1337,10 @@
   // Touch swipe
   let startX = 0, startY = 0, dx = 0, dragging = false, axis = null;
   wrap.addEventListener('touchstart', e => {
+    if(e.target.closest('a, button, input, textarea, select, label')){
+      dragging = false; axis = null; dx = 0;
+      return;
+    }
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
     dx = 0; dragging = true; axis = null;
   }, {passive:true});

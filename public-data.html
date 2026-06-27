@@ -52,7 +52,7 @@
   }
   .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; min-width: 0; }
-  .brand img { width: 36px; height: 36px; object-fit: contain; }
+  .brand img { max-width: 180px; width: auto; height: 36px; object-fit: contain; }
   .brand-name { font-size: 20px; line-height: 1; font-weight: 850; color: #111827; }
   .brand-name span { color: var(--orange); }
   .home-link {
@@ -160,8 +160,7 @@
   <header class="header">
     <div class="top">
       <a class="brand" href="index.html" aria-label="kFarmAI 홈">
-        <img src="logo-transparent.png" alt="kFarmAI">
-        <div class="brand-name">kFarm<span>AI</span></div>
+        <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI">
       </a>
       <a class="home-link" href="index.html">홈</a>
     </div>

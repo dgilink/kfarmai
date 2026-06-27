@@ -25,7 +25,7 @@
   .header { background:#fff; border-bottom:1px solid var(--border); padding:12px 14px 14px; }
   .top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
   .brand { display:flex; align-items:center; gap:8px; }
-  .brand img { width:36px; height:36px; object-fit:contain; }
+  .brand img { max-width:180px; width:auto; height:36px; object-fit:contain; }
   .brand-name { font-size:20px; line-height:1; font-weight:850; color:#111827; }
   .brand-name span { color:var(--orange); }
   .home { border:1px solid #CDEBDD; background:var(--green-soft); color:var(--green-dark); border-radius:999px; padding:8px 10px; font-size:12px; font-weight:900; }
@@ -51,7 +51,7 @@
 <main class="phone">
   <header class="header">
     <div class="top">
-      <a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="logo-transparent.png" alt="kFarmAI"><div class="brand-name">kFarm<span>AI</span></div></a>
+      <a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a>
       <a class="home" href="contest-demo.html">데모</a>
     </div>
     <h1>농업·식물 지식 허브</h1>
