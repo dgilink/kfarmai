@@ -1,0 +1,167 @@
+{
+  "source": "기상청_단기예보 조회서비스 기반 농작업 참고 정보",
+  "updatedAt": "2026-06-27T22:26:07.407Z",
+  "notice": "공공데이터 API 응답을 변환한 농작업 참고 정보입니다.",
+  "regions": [
+    {
+      "id": "suncheon",
+      "name": "전남 순천",
+      "grid": {
+        "nx": 70,
+        "ny": 70
+      },
+      "today": {
+        "tempC": 22,
+        "rainProbability": 0,
+        "rainMm": 0,
+        "humidity": 90,
+        "windMs": 0.5,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "1"
+      },
+      "tomorrow": {
+        "tempC": 21,
+        "rainProbability": 20,
+        "rainMm": 0,
+        "humidity": 90,
+        "windMs": 0.1,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "3"
+      }
+    },
+    {
+      "id": "naju",
+      "name": "전남 나주",
+      "grid": {
+        "nx": 56,
+        "ny": 71
+      },
+      "today": {
+        "tempC": 22,
+        "rainProbability": 0,
+        "rainMm": 0,
+        "humidity": 90,
+        "windMs": 1.4,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "1"
+      },
+      "tomorrow": {
+        "tempC": 22,
+        "rainProbability": 20,
+        "rainMm": 0,
+        "humidity": 85,
+        "windMs": 0.7,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "3"
+      }
+    },
+    {
+      "id": "haenam",
+      "name": "전남 해남",
+      "grid": {
+        "nx": 54,
+        "ny": 61
+      },
+      "today": {
+        "tempC": 20,
+        "rainProbability": 20,
+        "rainMm": 0,
+        "humidity": 95,
+        "windMs": 1.4,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "3"
+      },
+      "tomorrow": {
+        "tempC": 21,
+        "rainProbability": 30,
+        "rainMm": 0,
+        "humidity": 95,
+        "windMs": 0.1,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "4"
+      }
+    },
+    {
+      "id": "andong",
+      "name": "경북 안동",
+      "grid": {
+        "nx": 91,
+        "ny": 106
+      },
+      "today": {
+        "tempC": 20,
+        "rainProbability": 0,
+        "rainMm": 0,
+        "humidity": 75,
+        "windMs": 1.3,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "1"
+      },
+      "tomorrow": {
+        "tempC": 20,
+        "rainProbability": 0,
+        "rainMm": 0,
+        "humidity": 75,
+        "windMs": 1.8,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "1"
+      }
+    },
+    {
+      "id": "hongseong",
+      "name": "충남 홍성",
+      "grid": {
+        "nx": 55,
+        "ny": 106
+      },
+      "today": {
+        "tempC": 22,
+        "rainProbability": 0,
+        "rainMm": 0,
+        "humidity": 85,
+        "windMs": 1.3,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "1"
+      },
+      "tomorrow": {
+        "tempC": 22,
+        "rainProbability": 30,
+        "rainMm": 0,
+        "humidity": 75,
+        "windMs": 0.5,
+        "heat": "보통",
+        "cold": "낮음",
+        "spray": "가능 조건 확인",
+        "precipitationType": "0",
+        "sky": "4"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "source": "국가농작물병해충관리시스템 NCPMS 샘플",
+  "updatedAt": "2026-06-27T22:03:00+09:00",
+  "notice": "NCPMS API 연동 실패 또는 키 미설정 시 사용하는 공공자료 검증 샘플입니다.",
+  "items": [
+    {
+      "sickKey": "sample-tomato-leaf-mold",
+      "sickNameKor": "토마토 잎곰팡이병",
+      "cropName": "토마토",
+      "symptoms": "잎 뒷면에 회색 또는 올리브색 곰팡이층이 보이고 잎 앞면은 황화될 수 있습니다.",
+      "environment": "시설 내 습도가 높고 환기가 부족할 때 발생 위험이 커질 수 있습니다.",
+      "preventionMethod": "환기와 잎 젖음 시간 관리를 우선 확인하고, 실제 방제는 등록 작물·병해충 및 안전사용기준 확인 후 전문가 상담과 함께 판단합니다.",
+      "pathogenName": "공공자료 확인 필요",
+      "image": ""
+    },
+    {
+      "sickKey": "sample-pepper-anthracnose",
+      "sickNameKor": "고추 탄저병",
+      "cropName": "고추",
+      "symptoms": "열매에 둥근 함몰 반점이 생기고 검은 점 형태의 포자층이 관찰될 수 있습니다.",
+      "environment": "강우가 잦거나 물 튐이 많고 습도가 높은 조건에서 확산 위험이 커질 수 있습니다.",
+      "preventionMethod": "의심 열매를 분리하고 포장 배수와 통풍을 확인합니다. 실제 방제 판단은 공공 안전기준과 전문가 상담을 함께 확인합니다.",
+      "pathogenName": "공공자료 확인 필요",
+      "image": ""
+    },
+    {
+      "sickKey": "sample-strawberry-powdery",
+      "sickNameKor": "딸기 흰가루병",
+      "cropName": "딸기",
+      "symptoms": "잎 표면에 흰 가루 같은 흔적이 보이고 잎 가장자리가 말릴 수 있습니다.",
+      "environment": "시설 내 통풍 부족과 온습도 변화가 반복되는 환경에서 주의가 필요합니다.",
+      "preventionMethod": "잎 사이 통풍을 확보하고 발생 부위를 관찰합니다. 실제 방제는 등록 여부와 안전사용기준 확인 후 진행합니다.",
+      "pathogenName": "공공자료 확인 필요",
+      "image": ""
+    }
+  ]
+}

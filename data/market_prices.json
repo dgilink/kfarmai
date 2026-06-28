@@ -1,0 +1,78 @@
+{
+  "updatedAt": "2026-06-27",
+  "notice": "샘플 데이터입니다. KAMIS 가격정보 Open API와 공영도매시장 경매정보 API 연동 전까지는 화면 구성 확인용입니다.",
+  "items": [
+    {
+      "item": "고추",
+      "date": "2026-06-27",
+      "type": "도매",
+      "unit": "10kg",
+      "price": 68000,
+      "change": "+2.1%",
+      "region": "전국"
+    },
+    {
+      "item": "토마토",
+      "date": "2026-06-27",
+      "type": "소매",
+      "unit": "1kg",
+      "price": 5200,
+      "change": "-0.8%",
+      "region": "전국"
+    },
+    {
+      "item": "딸기",
+      "date": "2026-06-27",
+      "type": "경락가",
+      "unit": "2kg",
+      "price": 23800,
+      "change": "+1.4%",
+      "region": "서울 가락"
+    },
+    {
+      "item": "오이",
+      "date": "2026-06-27",
+      "type": "도매",
+      "unit": "100개",
+      "price": 42000,
+      "change": "0.0%",
+      "region": "전국"
+    },
+    {
+      "item": "쌀",
+      "date": "2026-06-27",
+      "type": "소매",
+      "unit": "20kg",
+      "price": 54800,
+      "change": "+0.3%",
+      "region": "전국"
+    },
+    {
+      "item": "배추",
+      "date": "2026-06-27",
+      "type": "도매",
+      "unit": "10kg",
+      "price": 11800,
+      "change": "-1.2%",
+      "region": "전국"
+    },
+    {
+      "item": "마늘",
+      "date": "2026-06-27",
+      "type": "소매",
+      "unit": "1kg",
+      "price": 9200,
+      "change": "+0.5%",
+      "region": "전국"
+    },
+    {
+      "item": "양파",
+      "date": "2026-06-27",
+      "type": "경락가",
+      "unit": "15kg",
+      "price": 15400,
+      "change": "-0.4%",
+      "region": "대전 오정"
+    }
+  ]
+}
