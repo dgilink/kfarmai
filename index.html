@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>kFarmAI - 농업·식물 AI 진단 커뮤니티</title>
-<meta name="description" content="식물 이상 증상, 병해충, 상토·종자·비료·작물보호제 정보를 검색하고 질문하는 농업·식물 AI 커뮤니티입니다.">
+<title>kFarmAI - 농업·식물 AI 참고 진단 커뮤니티</title>
+<meta name="description" content="식물 이상 증상, 병해충, 상토·종자·비료·작물보호제 정보를 검색하고 질문하는 농업·식물 AI 참고 진단 커뮤니티입니다.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://kfarmai.com/">
 <link rel="preload" as="image" href="/static/kfarmai-logo-horizontal.png">
@@ -22,13 +22,13 @@
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="kFarmAI">
 <meta property="og:type" content="website">
-<meta property="og:title" content="kFarmAI - 농업·식물 AI 진단 커뮤니티">
+<meta property="og:title" content="kFarmAI - 농업·식물 AI 참고 진단 커뮤니티">
 <meta property="og:description" content="식물 이상 증상, 병해충, 농자재 정보를 검색하고 질문하는 농업·식물 AI 커뮤니티입니다.">
 <meta property="og:url" content="https://kfarmai.com/">
 <meta property="og:image" content="https://kfarmai.com/logo.png">
 
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="kFarmAI - 농업·식물 AI 진단 커뮤니티">
+<meta name="twitter:title" content="kFarmAI - 농업·식물 AI 참고 진단 커뮤니티">
 <meta name="twitter:description" content="식물 이상 증상, 병해충, 농자재 정보를 검색하고 질문하는 농업·식물 AI 커뮤니티입니다.">
 <meta name="twitter:image" content="https://kfarmai.com/logo.png">
 
@@ -41,7 +41,7 @@
   "name": "kFarmAI",
   "alternateName": "케이팜AI",
   "url": "https://kfarmai.com/",
-  "description": "농업·식물 AI 진단과 커뮤니티 기반 정보 플랫폼"
+  "description": "농업·식물 AI 참고 진단과 커뮤니티 기반 정보 플랫폼"
 }
 </script>
 
@@ -357,6 +357,148 @@
   .q-meta {
     font-size: 11.5px; color: var(--sub); margin-top: 6px;
     display: flex; align-items: center; gap: 9px;
+  }
+  .q-meta.wrap { flex-wrap: wrap; row-gap: 5px; }
+  .home-insights {
+    display: grid;
+    gap: 14px;
+    margin: 14px 0 16px;
+  }
+  .insight-block {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+  }
+  .insight-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .insight-title { font-size: 14.5px; font-weight: 900; color: #111; }
+  .insight-desc { font-size: 11.5px; color: var(--sub); line-height: 1.45; margin-top: 3px; }
+  .insight-note {
+    flex-shrink: 0;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #0D9488;
+    background: #E0F7F4;
+    border-radius: 999px;
+    padding: 4px 7px;
+  }
+  .insight-list { display: grid; gap: 8px; }
+  .insight-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    border: 1px solid #EEF0F3;
+    border-radius: 12px;
+    background: #FAFBFC;
+    padding: 11px;
+  }
+  .insight-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .insight-crop { font-size: 11px; font-weight: 900; color: var(--green); }
+  .insight-kind { font-size: 10.5px; color: var(--muted); }
+  .insight-card-title { margin-top: 5px; font-size: 13.5px; font-weight: 850; line-height: 1.35; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .mini-tag {
+    font-size: 10.5px;
+    font-weight: 750;
+    color: #4B5563;
+    background: #F0F2F4;
+    border-radius: 999px;
+    padding: 3px 7px;
+  }
+  .reaction-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 9px;
+    font-size: 11px;
+    color: var(--sub);
+  }
+  .reaction-pill {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px 7px;
+    white-space: nowrap;
+  }
+  .card-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .card-actions a,
+  .card-actions button {
+    min-width: 0;
+    border: 1px solid #DDE3EA;
+    background: #fff;
+    color: #263238;
+    border-radius: 9px;
+    padding: 7px 4px;
+    font-size: 11px;
+    font-weight: 850;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .card-actions a.primary,
+  .card-actions button.primary {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
+  }
+  .search-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .search-action {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .search-action strong { display: block; font-size: 12.5px; color: #111; line-height: 1.25; }
+  .search-action span { display: block; margin-top: 4px; font-size: 10.8px; color: var(--sub); line-height: 1.35; }
+  .empty-actions {
+    display: grid;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .empty-actions a,
+  .empty-actions button {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    color: #111;
+    padding: 11px 12px;
+    font-size: 13px;
+    font-weight: 850;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .empty-actions .primary {
+    background: var(--green);
+    border-color: var(--green);
+    color: #fff;
   }
 
   /* FAB */
@@ -999,7 +1141,7 @@
     </form>
     <div class="tabs">
       <div class="tab active" data-i="0" data-i18n="community">커뮤니티</div>
-      <div class="tab" data-i="1" data-i18n="diagnosis">AI 진단</div>
+      <div class="tab" data-i="1" data-i18n="diagnosis">AI 참고</div>
       <div class="tab" data-i="2" data-i18n="agriData">농자재</div>
     </div>
   </header>
@@ -1010,16 +1152,18 @@
 
       <!-- ============ PAGE 1: 커뮤니티 ============ -->
       <section class="page">
-        <div class="hero" role="button" tabindex="0" aria-label="AI 진단으로 이동" onclick="switchMainTab('diagnosis')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchMainTab('diagnosis');}">
+        <div class="hero" role="button" tabindex="0" aria-label="AI 참고 진단으로 이동" onclick="switchMainTab('diagnosis')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchMainTab('diagnosis');}">
           <div class="hero-img"></div>
           <div class="hero-content">
-            <span class="badge-orange">★ AI 식물 주치의</span>
+            <span class="badge-orange">AI 참고 진단</span>
             <div>
               <div class="hero-title" data-i18n="heroTitle">이상하다 싶을 때,<br/>바로 여기</div>
-              <div class="hero-sub">사진 한 장이면 AI가 진단해드려요</div>
+              <div class="hero-sub">사진·문장으로 원인 후보를 정리해요</div>
             </div>
           </div>
         </div>
+
+        <div class="home-insights" id="homeInsightSections" aria-label="농업·식물 문제해결 탐색"></div>
 
         <div class="section-head">
           <div class="section-title" data-i18n="exploreChannels">채널 둘러보기</div>
@@ -1073,11 +1217,11 @@
         </div>
       </section>
 
-      <!-- ============ PAGE 2: AI 진단 ============ -->
+      <!-- ============ PAGE 2: AI 참고 진단 ============ -->
       <section class="page">
         <div class="diag-panel">
           <div class="diag-title">
-            <h2>식물 사진을 올리면 <span class="ai">AI</span>가 진단해드려요</h2>
+            <h2>식물 사진을 올리면 <span class="ai">AI</span>가 원인 후보를 정리해요</h2>
           </div>
 
           <div class="upload-card">
@@ -1099,9 +1243,9 @@
           <div class="symptom-area">
             <textarea class="symptom-textarea" id="diagSymptom" placeholder="증상을 설명해주세요. 예) 잎이 노랗게 변했어요" oninput="updateDiagBtn()"></textarea>
           </div>
-          <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">🔍 AI 진단 시작</button>
+          <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">AI 참고 진단 시작</button>
         </div>
-        <div class="diag-loading" id="diagLoading"><div class="spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--sub)">AI가 분석 중입니다...</div></div>
+        <div class="diag-loading" id="diagLoading"><div class="spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--sub)">AI가 원인 후보를 정리 중입니다...</div></div>
         <div class="diag-result-wrap" id="diagResultWrap"></div>
 
         <div class="section-head">
@@ -1418,7 +1562,7 @@
   go(0);
 })();
 
-// ===== AI 진단 =====
+// ===== AI 참고 진단 =====
 let diagImageBase64 = null;
 const DIAG_ENDPOINT = 'https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/bright-action';
 
@@ -1481,7 +1625,7 @@ async function runDiagnosis() {
     resultWrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-body" style="color:#DC2626">진단에 실패했습니다.<br>${err.message || '잠시 후 다시 시도해주세요.'}</div></div>`;
   } finally {
     loading.classList.remove('show');
-    btn.textContent = '🔍 AI 진단 시작';
+    btn.textContent = 'AI 참고 진단 시작';
     updateDiagBtn();
   }
 }
@@ -1504,7 +1648,7 @@ function renderDiagResult(data, wrap) {
     const raw = data.result || data.message || data.answer || JSON.stringify(data);
     html = `<div class="diag-result-card"><div class="diag-rc-body">${renderMarkdown(String(raw))}</div></div>`;
   }
-  html += `<div class="diag-disclaimer">※ AI 참고 진단입니다. 정확한 처방은 농약사 또는 전문가에게 문의하세요.</div>`;
+  html += `<div class="diag-disclaimer">※ 이 결과는 AI 참고 진단이며 확정 안내가 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>`;
   html += `<button class="diag-map-btn" onclick="location.href='agri_map.html'">📍 가까운 농약사 문의하기</button>`;
   wrap.innerHTML = html;
 }
@@ -1530,8 +1674,8 @@ let currentUser = null;
 const I18N = {
   ko: {
     community: '커뮤니티',
-    diagnosis: 'AI 진단',
-    diagnosisShort: '진단',
+    diagnosis: 'AI 참고',
+    diagnosisShort: 'AI 참고',
     agriData: '농자재',
     qa: '질문',
     nearby: '주변',
@@ -1793,9 +1937,145 @@ async function renderFeedFallback(message){
 }
 function filterByChannel(id,name){loadFeed(id);const title=document.querySelector('#recentFeed')?.previousElementSibling?.querySelector('.section-title');if(title)title.textContent=`${name} 질문`;}
 const SEARCH_STORAGE_KEY='kfarmai_recent_searches';
+const FEATURE_TRENDING_QUESTIONS = true;
+const FEATURE_SAME_SYMPTOM_REACTION = true;
+const FEATURE_HELPFUL_REACTION = true;
+const FEATURE_SEARCH_ACTIONS = true;
 let staticSearchIndex = null;
 let staticSearchIndexPromise = null;
 const CHO_LIST=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+const HOME_SEARCH_HIGHLIGHTS=[
+  {
+    id:'pepper-leaf-curl',
+    title:'고추 잎이 말릴 때 확인할 점',
+    crop:'고추',
+    symptoms:['잎 말림','생육 저하'],
+    tags:['고추','잎 말림','고온'],
+    view_count:34,
+    same_symptom_count:12,
+    helpful_count:8,
+    url:'q/pepper-leaf-curling.html',
+    seasonal:true
+  },
+  {
+    id:'tomato-powdery',
+    title:'토마토 잎에 흰가루가 생겼어요',
+    crop:'토마토',
+    symptoms:['흰가루','잎 반점'],
+    tags:['토마토','흰가루','시설재배'],
+    view_count:29,
+    same_symptom_count:10,
+    helpful_count:7,
+    url:'q/tomato-leaf-brown-spots.html',
+    seasonal:false
+  },
+  {
+    id:'potting-soil-mold',
+    title:'상토에 곰팡이가 생겼을 때 확인할 점',
+    crop:'상토',
+    symptoms:['흰 곰팡이','과습'],
+    tags:['상토','곰팡이','물관리'],
+    view_count:24,
+    same_symptom_count:14,
+    helpful_count:9,
+    url:'q/potting-soil-white-mold.html',
+    seasonal:false
+  },
+  {
+    id:'monstera-yellow',
+    title:'몬스테라 잎이 노랗게 변해요',
+    crop:'몬스테라',
+    symptoms:['노란잎','과습 의심'],
+    tags:['몬스테라','노란잎','실내식물'],
+    view_count:21,
+    same_symptom_count:9,
+    helpful_count:6,
+    url:'q/monstera-yellow-leaves.html',
+    seasonal:false
+  },
+  {
+    id:'rainy-overwatering',
+    title:'장마철 과습 관리',
+    crop:'작물·화분',
+    symptoms:['과습','뿌리 활력 저하'],
+    tags:['장마','과습','배수'],
+    view_count:31,
+    same_symptom_count:11,
+    helpful_count:10,
+    url:'q/overwatering-signs.html',
+    seasonal:true
+  },
+  {
+    id:'hot-leaf-wilting',
+    title:'고온기 잎 말림과 시듦 확인',
+    crop:'고추·토마토',
+    symptoms:['잎 말림','시듦'],
+    tags:['고온','잎 말림','수분 스트레스'],
+    view_count:27,
+    same_symptom_count:13,
+    helpful_count:7,
+    url:'q/underwatering-signs.html',
+    seasonal:true
+  }
+];
+const LOCAL_SEARCH_INDEX=[
+  ...HOME_SEARCH_HIGHLIGHTS.map(item=>({
+    type:'관련 질문',
+    title:item.title,
+    description:`${item.crop} ${item.symptoms.join(', ')} 관련 확인 포인트와 비슷한 질문 흐름`,
+    keywords:[item.crop,...item.symptoms,...item.tags],
+    url:item.url
+  })),
+  {
+    type:'AI 참고 진단',
+    title:'AI 참고 진단으로 원인 후보 확인',
+    description:'사진이나 문장으로 원인 후보, 확인 포인트, AI 추정 강도를 정리합니다.',
+    keywords:['AI 참고 진단','원인 후보','확인 포인트','고추 잎 말림','토마토 흰가루','몬스테라 노란잎'],
+    url:'diagnosis.html'
+  },
+  {
+    type:'공공정보 확인',
+    title:'공공정보 확인',
+    description:'농약안전사용기준, 병해충 정보, 농업날씨, 시세, 지역 정보 확인 경로입니다.',
+    keywords:['공공정보','공공데이터','안전사용기준','병해충','농약','날씨'],
+    url:'public-data.html'
+  },
+  {
+    type:'도구',
+    title:'농업날씨 확인',
+    description:'기온, 강수, 습도 흐름을 참고합니다.',
+    keywords:['농업날씨','날씨','습도','장마','고온'],
+    url:'agri-weather.html'
+  },
+  {
+    type:'도구',
+    title:'농산물 시세 참고',
+    description:'시장 흐름을 참고하기 위한 공공 시세 정보입니다.',
+    keywords:['농산물 시세','시세','가격','시장'],
+    url:'market-prices.html'
+  },
+  {
+    type:'도구',
+    title:'계산기 도구',
+    description:'상토, 액비 희석, 농약 희석 계산 결과를 참고합니다.',
+    keywords:['계산기','상토 계산기','액비 희석','농약 희석'],
+    url:'tools-soil.html'
+  },
+  {
+    type:'지역 정보',
+    title:'농약·비료 판매업체 지도',
+    description:'지역 판매업체 위치와 관련기관 링크를 확인합니다.',
+    keywords:['지도','농약사','비료','농자재점','관련기관'],
+    url:'agri_map.html'
+  },
+  {
+    type:'지역 정보',
+    title:'관련기관 링크',
+    description:'공식 기관과 참고자료 확인 경로입니다.',
+    keywords:['관련기관','기관 링크','공공자료','농업링크'],
+    url:'links.html'
+  }
+];
 const AGRI_LINKS=[
   {type:'map',label:'농약사',initial:'ㄴㅇㅅ',url:'agri_map.html',text:'농약사 - 지도에서 보기'},
   {type:'material',label:'상토',initial:'ㅅㅌ',url:'santo.html',text:'상토 정보 보기'},
@@ -1810,6 +2090,65 @@ const SEARCH_ALIASES=[
   {label:'상토',initial:'ㅅㅌ'},
   {label:'비료',initial:'ㅂㄹ'}
 ];
+function renderHomeQuestionSections(){
+  const wrap=document.getElementById('homeInsightSections');
+  if(!wrap)return;
+  const sections=[
+    {
+      enabled:FEATURE_TRENDING_QUESTIONS,
+      title:'지금 많이 보는 질문',
+      desc:'최근 많이 확인한 식물·작물 문제입니다.',
+      note:'사용자 관심 참고 신호',
+      items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.view_count-a.view_count).slice(0,2)
+    },
+    {
+      enabled:FEATURE_SAME_SYMPTOM_REACTION,
+      title:'나도 같은 증상이 많아요',
+      desc:'비슷한 증상 반응이 많은 질문입니다.',
+      note:'비슷한 증상 반응',
+      items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.same_symptom_count-a.same_symptom_count).slice(0,2)
+    },
+    {
+      enabled:true,
+      title:'이번 주 많이 확인할 문제',
+      desc:'계절·날씨 흐름에 따라 확인하면 좋은 문제입니다.',
+      note:'관련 질문 흐름',
+      items:HOME_SEARCH_HIGHLIGHTS.filter(item=>item.seasonal).slice(0,2)
+    }
+  ].filter(section=>section.enabled&&section.items.length);
+  wrap.innerHTML=sections.map(section=>`
+    <section class="insight-block">
+      <div class="insight-head">
+        <div>
+          <div class="insight-title">${escHtml(section.title)}</div>
+          <div class="insight-desc">${escHtml(section.desc)}</div>
+        </div>
+        <span class="insight-note">${escHtml(section.note)}</span>
+      </div>
+      <div class="insight-list">${section.items.map(renderHomeQuestionCard).join('')}</div>
+    </section>
+  `).join('');
+}
+function renderHomeQuestionCard(item){
+  const diagUrl=`diagnosis.html?q=${encodeURIComponent(item.title)}`;
+  const publicUrl=`public-data.html?q=${encodeURIComponent(item.tags.join(' '))}`;
+  return `<article class="insight-card">
+    <a href="${safeSearchUrl(item.url)}" style="display:block;color:inherit;text-decoration:none">
+      <div class="insight-card-top"><span class="insight-crop">${escHtml(item.crop)}</span><span class="insight-kind">시제품 추천 질문</span></div>
+      <div class="insight-card-title">${escHtml(item.title)}</div>
+      <div class="tag-row">${item.symptoms.map(tag=>`<span class="mini-tag">${escHtml(tag)}</span>`).join('')}</div>
+      <div class="reaction-row">
+        <span class="reaction-pill">나도 같은 증상 ${Number(item.same_symptom_count)||0}</span>
+        <span class="reaction-pill">도움 됐어요 ${Number(item.helpful_count)||0}</span>
+      </div>
+    </a>
+    <div class="card-actions">
+      <a class="primary" href="${diagUrl}">AI 참고 진단</a>
+      <a href="${safeSearchUrl(item.url)}">관련 질문 보기</a>
+      <a href="${publicUrl}">공공정보 확인</a>
+    </div>
+  </article>`;
+}
 function initSearch(){
   const input=document.getElementById('globalSearch');
   if(!input)return;
@@ -1857,6 +2196,28 @@ function renderRecentSection(items){
   if(!items.length)return '';
   return `<div class="s-section"><div class="s-head"><span>최근 검색어</span><button class="s-clear" onclick="clearRecentSearches(event)">전체 삭제</button></div>${items.map(item=>`<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(item)}'))"><div class="s-ico">R</div><div class="s-main"><div class="s-title">${escHtml(item)}</div></div><button class="s-x" onclick="removeRecentSearch(event,decodeURIComponent('${encodeURIComponent(item)}'))">×</button></div>`).join('')}</div>`;
 }
+function renderSearchActionCards(kw){
+  if(!FEATURE_SEARCH_ACTIONS)return '';
+  const q=encodeURIComponent(kw);
+  const actions=[
+    {title:'AI 참고 진단으로 확인하기',desc:'원인 후보와 확인 포인트를 먼저 정리합니다.',url:`diagnosis.html?q=${q}`},
+    {title:'관련 질문 보기',desc:'비슷한 증상 반응과 질문 흐름을 확인합니다.',url:`channel.html?q=${q}`},
+    {title:'공공정보 확인',desc:'안전사용기준과 공공자료 확인 경로를 봅니다.',url:`public-data.html?q=${q}`},
+    {title:'도구·지도 보기',desc:'농업날씨, 시세, 계산기, 지역 정보를 확인합니다.',url:`agri-weather.html?q=${q}`}
+  ];
+  return `<div class="search-actions">${actions.map(item=>`<a class="search-action" href="${item.url}"><strong>${escHtml(item.title)}</strong><span>${escHtml(item.desc)}</span></a>`).join('')}</div>`;
+}
+function renderNoSearchResults(kw){
+  const q=encodeURIComponent(kw);
+  return `<div class="feed-loading">
+    검색 결과가 없습니다. 아래 경로로 다음 확인을 이어갈 수 있습니다.
+    <div class="empty-actions">
+      <a class="primary" href="diagnosis.html?q=${q}">AI 참고 진단으로 확인하기</a>
+      <button type="button" onclick="openModal()">커뮤니티에 질문하기</button>
+      <a href="public-data.html?q=${q}">공공정보 확인하기</a>
+    </div>
+  </div>`;
+}
 async function runSearch(raw){
   const input=document.getElementById('globalSearch');
   const kw=normalizeKeyword(raw || input?.value || '');
@@ -1891,26 +2252,28 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
   const feed=document.getElementById('recentFeed');
   const total=posts.length+shops.length+materials.length+staticItems.length;
   const head=`<div class="search-result-head"><span>'${escHtml(kw)}' 검색 결과 ${total}개</span><button class="search-close" onclick="clearSearchResults()">×</button></div>`;
-  if(!total){feed.innerHTML=head+'<div class="feed-loading">검색 결과가 없습니다. AI 진단 또는 질문하기로 문의해 주세요.<br><button class="modal-submit" style="margin-top:10px" onclick="switchMainTab(&quot;diagnosis&quot;)">AI 진단하기</button><button class="modal-submit" style="margin-top:8px;background:#111" onclick="openModal()">질문하기</button></div>';return;}
+  const actionCards=renderSearchActionCards(kw);
+  if(!total){feed.innerHTML=head+actionCards+renderNoSearchResults(kw);return;}
   const postHtml=posts.map(post=>{
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
-    return `<div class="q-card"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span><div class="q-title">${highlightText(post.title,kw)}</div><div class="q-meta"><span>${post.user_id?'회원':'익명 작성자'}</span><span>댓글 ${post.comment_count||0}</span><span>좋아요 ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></div>`;
+    const postUrl=post.id?`post.html?id=${encodeURIComponent(post.id)}`:'channel.html';
+    return `<a class="q-card" href="${postUrl}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span><div class="q-title">${highlightText(post.title,kw)}</div><div class="q-meta wrap"><span>${post.user_id?'회원':'익명 작성자'}</span><span>댓글 ${post.comment_count||0}</span><span>도움 됐어요 ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
-  const shopHtml=shops.map(item=>resultLinkCard(item,kw,'농약사')).join('');
+  const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
   const grouped=groupStaticResults(staticItems);
-  feed.innerHTML=head+
-    renderStaticResultGroup('AI 진단/진단사례',grouped.ai,kw)+
-    renderStaticResultGroup('질문·정보',grouped.questions,kw)+
-    renderStaticResultGroup('농업 지식',grouped.knowledge,kw)+
-    renderStaticResultGroup('커뮤니티 질문',grouped.community,kw)+
-    renderStaticResultGroup('공공데이터 기관',grouped.publicData,kw)+
-    renderStaticResultGroup('계산기 도구',grouped.tools,kw)+
-    renderStaticResultGroup('농자재 업체',grouped.materials,kw)+
-    (posts.length?'<div class="search-group-title">커뮤니티 게시글</div>'+postHtml:'')+
-    (shops.length?'<div class="search-group-title">농약사 지도·로드뷰</div>'+shopHtml:'')+
-    (materials.length?'<div class="search-group-title">농자재 회사 정보</div>'+materialHtml:'');
+  feed.innerHTML=head+actionCards+
+    renderStaticResultGroup('AI 참고 진단',grouped.ai,kw)+
+    renderStaticResultGroup('관련 질문',grouped.questions,kw)+
+    renderStaticResultGroup('공공자료 기반 참고 콘텐츠',grouped.knowledge,kw)+
+    renderStaticResultGroup('관련 질문',grouped.community,kw)+
+    renderStaticResultGroup('공공정보 확인',grouped.publicData,kw)+
+    renderStaticResultGroup('도구: 농업날씨, 농산물 시세, 계산기',grouped.tools,kw)+
+    renderStaticResultGroup('지역 정보: 농약·비료 판매업체 지도, 관련기관 링크',grouped.materials,kw)+
+    (posts.length?'<div class="search-group-title">관련 질문</div>'+postHtml:'')+
+    (shops.length?'<div class="search-group-title">지역 정보: 농약·비료 판매업체 지도</div>'+shopHtml:'')+
+    (materials.length?'<div class="search-group-title">공공자료 기반 참고 콘텐츠</div>'+materialHtml:'');
 }
 function resultLinkCard(item,kw,badge){
   return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${badge}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
@@ -1926,7 +2289,8 @@ async function loadStaticSearchIndex(){
   return staticSearchIndexPromise;
 }
 async function searchStaticIndex(kw,limit=20){
-  const list=await loadStaticSearchIndex();
+  const remoteList=await loadStaticSearchIndex();
+  const list=LOCAL_SEARCH_INDEX.concat(remoteList||[]);
   const needle=normalizeKeyword(kw).toLowerCase();
   const compact=needle.replace(/\s/g,'');
   const initial=isInitialQuery(needle);
@@ -1950,12 +2314,12 @@ function groupStaticResults(items){
   items.forEach(item=>{
     const type=item.type||'';
     if(type.includes('진단'))grouped.ai.push(item);
-    else if(type.includes('질문·정보'))grouped.questions.push(item);
+    else if(type.includes('관련 질문')||type.includes('질문·정보'))grouped.questions.push(item);
     else if(type.includes('지식'))grouped.knowledge.push(item);
     else if(type.includes('커뮤니티'))grouped.community.push(item);
-    else if(type.includes('공공데이터'))grouped.publicData.push(item);
-    else if(type.includes('계산기'))grouped.tools.push(item);
-    else if(type.includes('업체')||type.includes('농약사'))grouped.materials.push(item);
+    else if(type.includes('공공정보')||type.includes('공공데이터'))grouped.publicData.push(item);
+    else if(type.includes('도구')||type.includes('계산기'))grouped.tools.push(item);
+    else if(type.includes('지역 정보')||type.includes('업체')||type.includes('농약사'))grouped.materials.push(item);
     else grouped.knowledge.push(item);
   });
   return grouped;
@@ -2024,6 +2388,7 @@ function getRecentSearches(){try{return JSON.parse(localStorage.getItem(SEARCH_S
 function saveRecentSearch(kw){const list=getRecentSearches().filter(item=>item!==kw);list.unshift(kw);localStorage.setItem(SEARCH_STORAGE_KEY,JSON.stringify(list.slice(0,5)));}
 function removeRecentSearch(event,kw){event.stopPropagation();localStorage.setItem(SEARCH_STORAGE_KEY,JSON.stringify(getRecentSearches().filter(item=>item!==kw)));renderSearchDropdown(document.getElementById('globalSearch')?.value||'');}
 function clearRecentSearches(event){event.stopPropagation();localStorage.removeItem(SEARCH_STORAGE_KEY);renderSearchDropdown(document.getElementById('globalSearch')?.value||'');}
+renderHomeQuestionSections();
 initSearch();
 const DIAGNOSIS_DEMO_CASES = {
   'tomato-leaf-mold': {
