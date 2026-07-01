@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>공공데이터 검증 레이어 - kFarmAI</title>
-<meta name="description" content="kFarmAI는 AI 진단 결과를 농업 공공데이터와 연결하여 더 안전하고 신뢰 가능한 의사결정을 돕습니다.">
+<title>공공정보 확인 - kFarmAI</title>
+<meta name="description" content="AI 참고 진단 이후 등록 작물, 병해충, 안전사용기준, 날씨, 시세, 지역 정보를 함께 확인하는 공공정보 확인 화면입니다.">
 <meta name="theme-color" content="#1D9E75">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -53,8 +53,6 @@
   .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 8px; text-decoration: none; min-width: 0; }
   .brand img { max-width: 180px; width: auto; height: 36px; object-fit: contain; }
-  .brand-name { font-size: 20px; line-height: 1; font-weight: 850; color: #111827; }
-  .brand-name span { color: var(--orange); }
   .home-link {
     flex: 0 0 auto; text-decoration: none;
     color: var(--green-dark); font-size: 12px; font-weight: 850;
@@ -83,11 +81,11 @@
   .flow-card:nth-child(3) .step { background: #111827; color: #fff; }
   .flow-title { font-size: 14px; font-weight: 900; }
   .flow-text { margin-top: 3px; color: var(--sub); font-size: 12px; line-height: 1.45; font-weight: 650; }
-  .highlight {
+  .notice {
     margin: 12px 0;
-    background: var(--warn-bg); border: 1px solid #FED7AA; border-radius: 18px;
-    padding: 14px; color: var(--warn);
-    font-size: 13px; line-height: 1.55; font-weight: 850;
+    border-radius: 16px; background: var(--warn-bg);
+    border: 1px solid #FED7AA; color: var(--warn);
+    padding: 14px; font-size: 12.5px; line-height: 1.6; font-weight: 800;
   }
   .section-head {
     margin: 17px 2px 10px;
@@ -95,32 +93,26 @@
   }
   .section-title { font-size: 16px; font-weight: 900; }
   .section-meta { color: var(--muted); font-size: 11px; font-weight: 850; }
-  .sources { display: flex; flex-direction: column; gap: 10px; }
-  .source-card {
+  .info-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .info-card {
     background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-    padding: 14px; box-shadow: 0 8px 24px rgba(17,24,39,.06);
+    padding: 14px; text-decoration: none; box-shadow: 0 8px 24px rgba(17,24,39,.06);
   }
-  .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-  .provider {
+  .info-card:target { outline: 2px solid rgba(29,158,117,.45); outline-offset: 2px; }
+  .info-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .category {
     display: inline-flex; border-radius: 999px; background: var(--green-soft);
     color: var(--green-dark); padding: 6px 9px;
     font-size: 11px; line-height: 1; font-weight: 900;
   }
-  .status {
-    flex: 0 0 auto; border-radius: 999px; background: #F8FAFC;
-    border: 1px solid #E2E8F0; color: #475569;
-    padding: 6px 8px; font-size: 10.5px; line-height: 1; font-weight: 900;
+  .info-title { margin-top: 10px; font-size: 17px; font-weight: 900; line-height: 1.35; }
+  .info-desc { margin-top: 7px; color: #374151; font-size: 13px; line-height: 1.55; font-weight: 650; }
+  .tag-list { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    border-radius: 999px; background: #F8FAFC; border: 1px solid #E2E8F0;
+    color: #475569; padding: 5px 7px; font-size: 10.5px; line-height: 1; font-weight: 850;
   }
-  .source-title { margin-top: 10px; font-size: 17px; font-weight: 900; line-height: 1.35; }
-  .source-block { margin-top: 10px; display: grid; gap: 8px; }
-  .source-row {
-    background: #FAFAFA; border: 1px solid var(--border); border-radius: 12px;
-    padding: 10px;
-  }
-  .source-label { color: var(--orange); font-size: 11px; line-height: 1; font-weight: 900; }
-  .source-text { margin-top: 5px; color: #374151; font-size: 13px; line-height: 1.55; font-weight: 650; }
-  .source-safe { color: var(--warn); background: var(--warn-bg); border-color: #FED7AA; }
-  .source-link {
+  .info-link {
     margin-top: 12px; min-height: 40px; border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     text-decoration: none; background: var(--green-soft); border: 1px solid #CDEBDD;
@@ -139,18 +131,15 @@
   .cta:nth-child(2) { background: #111827; color: #fff; border-color: #111827; }
   .cta:nth-child(3) { background: var(--orange-soft); color: #B94712; border-color: #FFD7C2; }
   .cta:nth-child(4) { background: #fff; color: #334155; border-color: #E2E8F0; }
-  .cta:nth-child(5) { grid-column: 1 / -1; background: #111827; color: #fff; border-color: #111827; }
-  .notice {
-    margin-top: 14px; border-radius: 16px; background: var(--warn-bg);
-    border: 1px solid #FED7AA; color: var(--warn);
-    padding: 14px; font-size: 12.5px; line-height: 1.6; font-weight: 800;
-  }
+  .cta:nth-child(5) { background: #fff; color: #334155; border-color: #E2E8F0; }
+  .cta:nth-child(6) { grid-column: 1 / -1; background: #111827; color: #fff; border-color: #111827; }
   .loading, .error {
     background: #fff; border: 1px solid var(--border); border-radius: 16px;
-    padding: 18px; color: var(--sub); font-size: 14px; text-align: center;
+    padding: 18px; color: var(--sub); font-size: 14px; line-height: 1.55; text-align: center;
   }
   @media (max-width: 360px) {
     .cta-grid { grid-template-columns: 1fr; }
+    .cta:nth-child(6) { grid-column: auto; }
     h1 { font-size: 21px; }
   }
 </style>
@@ -164,58 +153,55 @@
       </a>
       <a class="home-link" href="index.html">홈</a>
     </div>
-    <h1>공공데이터 검증 레이어</h1>
-    <p class="subtitle">kFarmAI는 AI 진단 결과를 농업 공공데이터와 연결하여 사용자가 더 안전하고 신뢰 가능한 의사결정을 하도록 돕습니다.</p>
+    <h1>공공정보 확인</h1>
+    <p class="subtitle">AI 참고 진단 결과는 최종 판단이 아닙니다. 아래 공공정보를 함께 확인해 등록 작물, 병해충, 안전사용기준, 날씨, 시세, 지역 정보를 참고하세요.</p>
   </header>
 
   <section class="content">
-    <div class="flow" aria-label="AI 진단과 공공데이터 확인 흐름">
+    <div class="flow" aria-label="AI 참고 진단과 공공정보 확인 흐름">
       <div class="flow-card">
         <div class="step">1</div>
         <div>
-          <div class="flow-title">사용자 질문·사진 입력</div>
-          <div class="flow-text">잎, 줄기, 열매, 화분 상태와 증상 메모를 함께 기록합니다.</div>
+          <div class="flow-title">AI 참고 진단</div>
+          <div class="flow-text">사진과 증상 설명으로 원인 후보와 확인 포인트를 정리합니다.</div>
         </div>
       </div>
       <div class="flow-card">
         <div class="step">2</div>
         <div>
-          <div class="flow-title">AI 참고 진단</div>
-          <div class="flow-text">가능한 원인 후보와 일반 관리 방향을 먼저 정리합니다.</div>
+          <div class="flow-title">확인할 공공정보</div>
+          <div class="flow-text">AI 결과와 관련해 확인할 수 있는 공공정보 후보를 살펴봅니다.</div>
         </div>
       </div>
       <div class="flow-card">
         <div class="step">3</div>
         <div>
-          <div class="flow-title">공공데이터 확인</div>
-          <div class="flow-text">병해충 정보, 안전사용기준, 지역 자료로 실제 판단 기준을 확인합니다.</div>
+          <div class="flow-title">안전사용기준 확인</div>
+          <div class="flow-text">등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 확인합니다.</div>
         </div>
       </div>
     </div>
 
-    <div class="highlight">
-      공공데이터 기반 1차 정제 데이터 3,019개를 지도화했으며, 이는 전국 전체 점포 수가 아니라 시제품 1차 구축 데이터입니다. 향후 지자체별 추가 공개자료와 업체 직접 등록을 통해 커버리지 확대를 추진합니다.
+    <div class="notice">
+      농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.
     </div>
 
     <div class="section-head">
-      <div class="section-title">공공데이터 활용 현황</div>
-      <div class="section-meta">6개 데이터 축</div>
+      <div class="section-title">공공데이터 기반 확인 경로</div>
+      <div class="section-meta">참고자료</div>
     </div>
 
-    <div id="sources" class="sources">
-      <div class="loading">공공데이터 활용 목록을 불러오는 중입니다.</div>
+    <div id="publicInfo" class="info-grid">
+      <div class="loading">공공정보 목록을 불러오는 중입니다.</div>
     </div>
 
     <div class="cta-grid" aria-label="주요 기능 이동">
-      <a class="cta" href="diagnosis-cases.html">진단 사례 보기</a>
-      <a class="cta" href="diagnosis.html">AI 진단하기</a>
-      <a class="cta" href="agri_map.html">농약사 지도 보기</a>
-      <a class="cta" href="channel.html">커뮤니티 질문하기</a>
-      <a class="cta" href="contest-demo.html">공모전 데모 보기</a>
-    </div>
-
-    <div class="notice">
-      AI 진단은 참고용 정보이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.
+      <a class="cta" href="ai-safety.html">안전사용기준 확인</a>
+      <a class="cta" href="public-data.html#pest">병해충 정보 확인</a>
+      <a class="cta" href="agri-weather.html">농업날씨 확인</a>
+      <a class="cta" href="market-prices.html">농산물 시세 참고</a>
+      <a class="cta" href="agri_map.html">지역 정보 확인</a>
+      <a class="cta" href="diagnosis.html">AI 참고 진단으로 돌아가기</a>
     </div>
   </section>
 </main>
@@ -223,7 +209,61 @@
 <script>
 'use strict';
 
-const sourcesEl = document.getElementById('sources');
+const publicInfoEl = document.getElementById('publicInfo');
+
+const FALLBACK_PUBLIC_INFO = [
+  {
+    title: '농약안전사용기준 확인',
+    category: 'safety',
+    tags: ['농약', '방제', '병해충', '안전사용기준', '해충'],
+    description: '등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 확인합니다.',
+    url: 'ai-safety.html'
+  },
+  {
+    title: '병해충 정보 / NCPMS 확인',
+    category: 'pest',
+    tags: ['병해충', 'NCPMS', '고추', '토마토', '딸기', '오이', '벼', '잎말림', '반점', '해충'],
+    description: '작물별 병해충 정보와 발생환경을 확인합니다.',
+    url: 'public-data.html#pest'
+  },
+  {
+    title: '농업날씨 확인',
+    category: 'weather',
+    tags: ['고온', '강우', '습도', '풍속', '과습', '건조', '방제', '날씨'],
+    description: '기온, 강수, 습도, 풍속 등 농작업 환경을 참고합니다.',
+    url: 'agri-weather.html'
+  },
+  {
+    title: '농산물 시세 참고',
+    category: 'market',
+    tags: ['시세', '출하', '시장', '도매시장', '농산물'],
+    description: '공공 시세 정보를 통해 시장 흐름을 참고합니다.',
+    url: 'market-prices.html'
+  },
+  {
+    title: '지역 정보 확인',
+    category: 'local',
+    tags: ['농약사', '비료', '판매업체', '지도', '지역', '기관'],
+    description: '공공데이터 기반 농약·비료 판매업체 지도와 관련기관 정보를 확인합니다.',
+    url: 'agri_map.html'
+  },
+  {
+    title: '관련기관 링크',
+    category: 'agency',
+    tags: ['관련기관', '공공기관', '기관', '링크', '참고자료'],
+    description: '공식 제공처와 관련기관 링크를 확인합니다.',
+    url: 'links.html'
+  }
+];
+
+const CATEGORY_LABELS = {
+  safety: '안전사용기준',
+  pest: '병해충 정보',
+  weather: '농업날씨',
+  market: '농산물 시세',
+  local: '지역 정보',
+  agency: '관련기관'
+};
 
 function escHtml(value) {
   return String(value || '').replace(/[&<>"']/g, ch => ({
@@ -235,44 +275,45 @@ function escHtml(value) {
   }[ch]));
 }
 
-function renderSource(item) {
+function cardId(item) {
+  if (item.category === 'safety') return 'safety';
+  if (item.category === 'pest') return 'pest';
+  return '';
+}
+
+function renderInfoCard(item) {
+  const id = cardId(item);
+  const tags = Array.isArray(item.tags) ? item.tags.slice(0, 6) : [];
   return `
-    <article class="source-card">
-      <div class="card-top">
-        <span class="provider">${escHtml(item.provider)}</span>
-        <span class="status">${escHtml(item.status)}</span>
+    <article class="info-card" ${id ? `id="${escHtml(id)}"` : ''}>
+      <div class="info-top">
+        <span class="category">${escHtml(CATEGORY_LABELS[item.category] || '참고자료')}</span>
       </div>
-      <h2 class="source-title">${escHtml(item.name)}</h2>
-      <div class="source-block">
-        <div class="source-row">
-          <div class="source-label">서비스 활용</div>
-          <div class="source-text">${escHtml(item.serviceUse)}</div>
-        </div>
-        <div class="source-row">
-          <div class="source-label">중요성</div>
-          <div class="source-text">${escHtml(item.importance)}</div>
-        </div>
-        <div class="source-row source-safe">
-          <div class="source-label">안전 표현</div>
-          <div class="source-text">${escHtml(item.safeExpression)}</div>
-        </div>
+      <h2 class="info-title">${escHtml(item.title)}</h2>
+      <p class="info-desc">${escHtml(item.description)}</p>
+      <div class="tag-list">
+        ${tags.map(tag => `<span class="tag">${escHtml(tag)}</span>`).join('')}
       </div>
-      <a class="source-link" href="${escHtml(item.linkedPage)}">연결 화면 보기</a>
+      <a class="info-link" href="${escHtml(item.url)}">확인하기</a>
     </article>`;
 }
 
-async function loadSources() {
+function renderPublicInfo(items) {
+  publicInfoEl.innerHTML = items.map(renderInfoCard).join('');
+}
+
+async function loadPublicInfo() {
   try {
-    const res = await fetch('data/public_data_sources.json', { cache: 'no-store' });
+    const res = await fetch('data/public-info-index.json', { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP_' + res.status);
     const data = await res.json();
-    sourcesEl.innerHTML = data.map(renderSource).join('');
+    renderPublicInfo(Array.isArray(data) && data.length ? data : FALLBACK_PUBLIC_INFO);
   } catch (err) {
-    sourcesEl.innerHTML = '<div class="error">공공데이터 활용 목록을 불러오지 못했습니다. 아래 주요 기능 버튼은 계속 사용할 수 있습니다.</div>';
+    publicInfoEl.innerHTML = '<div class="error">현재 공공정보를 불러오지 못했습니다. 잠시 후 다시 확인하거나 공식 제공처를 확인해주세요.</div>' + FALLBACK_PUBLIC_INFO.map(renderInfoCard).join('');
   }
 }
 
-loadSources();
+loadPublicInfo();
 </script>
 </body>
 </html>

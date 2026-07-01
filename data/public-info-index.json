@@ -1,0 +1,44 @@
+[
+  {
+    "title": "농약안전사용기준 확인",
+    "category": "safety",
+    "tags": ["농약", "방제", "병해충", "안전사용기준", "해충"],
+    "description": "등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 확인합니다.",
+    "url": "ai-safety.html"
+  },
+  {
+    "title": "병해충 정보 / NCPMS 확인",
+    "category": "pest",
+    "tags": ["병해충", "NCPMS", "고추", "토마토", "딸기", "오이", "벼", "잎말림", "반점", "해충"],
+    "description": "작물별 병해충 정보와 발생환경을 확인합니다.",
+    "url": "public-data.html#pest"
+  },
+  {
+    "title": "농업날씨 확인",
+    "category": "weather",
+    "tags": ["고온", "강우", "습도", "풍속", "과습", "건조", "방제", "날씨"],
+    "description": "기온, 강수, 습도, 풍속 등 농작업 환경을 참고합니다.",
+    "url": "agri-weather.html"
+  },
+  {
+    "title": "농산물 시세 참고",
+    "category": "market",
+    "tags": ["시세", "출하", "시장", "도매시장", "농산물"],
+    "description": "공공 시세 정보를 통해 시장 흐름을 참고합니다.",
+    "url": "market-prices.html"
+  },
+  {
+    "title": "지역 정보 확인",
+    "category": "local",
+    "tags": ["농약사", "비료", "판매업체", "지도", "지역", "기관"],
+    "description": "공공데이터 기반 농약·비료 판매업체 지도와 관련기관 정보를 확인합니다.",
+    "url": "agri_map.html"
+  },
+  {
+    "title": "관련기관 링크",
+    "category": "agency",
+    "tags": ["관련기관", "공공기관", "기관", "링크", "참고자료"],
+    "description": "공식 제공처와 관련기관 링크를 확인합니다.",
+    "url": "links.html"
+  }
+]

@@ -466,6 +466,42 @@
   .public-action:nth-child(2) { border-color: rgba(34,211,238,.35); background: rgba(34,211,238,.10); color: var(--cyan); }
   .public-action:nth-child(3) { border-color: rgba(255,107,43,.38); background: rgba(255,107,43,.12); color: #FFB089; }
   .public-action:nth-child(4) { border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #fff; }
+  .public-info-grid {
+    display: grid;
+    gap: 9px;
+    margin-top: 12px;
+  }
+  .public-info-card {
+    display: block;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    padding: 11px;
+    text-decoration: none;
+  }
+  .public-info-card.priority {
+    border-color: rgba(182,255,60,.32);
+    background: rgba(182,255,60,.10);
+  }
+  .public-info-card-title {
+    color: var(--txt-on-dark);
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+  .public-info-card-desc {
+    margin-top: 5px;
+    color: rgba(232,245,238,.76);
+    font-size: 12px;
+    line-height: 1.45;
+    font-weight: 650;
+  }
+  .public-info-card-link {
+    margin-top: 7px;
+    color: var(--lime);
+    font-size: 11px;
+    font-weight: 900;
+  }
   .result-disclaimer {
     margin-top: 12px;
     border-radius: 12px;
@@ -931,6 +967,44 @@ function asArray(value) {
   return value ? [value] : [];
 }
 
+const PUBLIC_INFO_CARDS = [
+  {
+    title: '농약안전사용기준 확인',
+    category: 'safety',
+    tags: ['농약', '방제', '병해충', '안전사용기준', '해충'],
+    description: '등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 확인합니다.',
+    url: 'ai-safety.html'
+  },
+  {
+    title: '병해충 정보 / NCPMS 확인',
+    category: 'pest',
+    tags: ['병해충', 'NCPMS', '고추', '토마토', '딸기', '오이', '벼', '잎말림', '반점', '해충'],
+    description: '작물별 병해충 정보와 발생환경을 확인합니다.',
+    url: 'public-data.html#pest'
+  },
+  {
+    title: '농업날씨 확인',
+    category: 'weather',
+    tags: ['고온', '강우', '습도', '풍속', '과습', '건조', '방제', '날씨'],
+    description: '기온, 강수, 습도, 풍속 등 농작업 환경을 참고합니다.',
+    url: 'agri-weather.html'
+  },
+  {
+    title: '농산물 시세 참고',
+    category: 'market',
+    tags: ['시세', '출하', '시장', '도매시장', '농산물'],
+    description: '공공 시세 정보를 통해 시장 흐름을 참고합니다.',
+    url: 'market-prices.html'
+  },
+  {
+    title: '지역 정보 확인',
+    category: 'local',
+    tags: ['농약사', '비료', '판매업체', '지도', '지역', '기관'],
+    description: '공공데이터 기반 농약·비료 판매업체 지도와 관련기관 정보를 확인합니다.',
+    url: 'agri_map.html'
+  }
+];
+
 function normalizeDiagnosisResult(result) {
   const firstCandidate = Array.isArray(result.causeCandidates) ? result.causeCandidates[0] : null;
   const legacyCandidate = result.cause ? [{ name: result.diagnosis || '원인 후보', strength: result.confidence || '중간', reason: result.cause }] : [];
@@ -949,11 +1023,63 @@ function normalizeDiagnosisResult(result) {
     causeCandidates,
     checkPoints,
     publicDataNeeds,
+    tags: asArray(result.tags),
     strength,
     title: result.diagnosis || causeCandidates[0]?.name || '원인 후보 정리',
     urgent: Boolean(result.urgent),
     safetyNotice: result.safetyNotice || '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
   };
+}
+
+function normalizeTag(value) {
+  return String(value || '').toLowerCase().replace(/\s+/g, '');
+}
+
+function collectDiagnosisTags(result) {
+  const values = [
+    result.crop,
+    ...asArray(result.symptoms),
+    ...asArray(result.publicDataNeeds),
+    ...asArray(result.tags)
+  ];
+  asArray(result.causeCandidates).forEach(candidate => {
+    if (typeof candidate === 'string') {
+      values.push(candidate);
+    } else {
+      values.push(candidate?.name, candidate?.reason);
+    }
+  });
+  return values.map(normalizeTag).filter(Boolean);
+}
+
+function rankPublicInfoCards(result) {
+  const diagnosisTags = collectDiagnosisTags(result);
+  return PUBLIC_INFO_CARDS.map((card, index) => {
+    const score = card.tags.reduce((sum, tag) => {
+      const needle = normalizeTag(tag);
+      return sum + (diagnosisTags.some(source => source.includes(needle) || needle.includes(source)) ? 1 : 0);
+    }, 0);
+    return { ...card, score, index };
+  }).sort((a, b) => (b.score - a.score) || (a.index - b.index));
+}
+
+function renderPublicInfoCards(result) {
+  const cards = rankPublicInfoCards(result);
+  return `
+    <div class="public-check">
+      <div class="public-check-title">확인할 공공정보</div>
+      <div class="public-check-desc">AI 결과와 관련해 확인할 수 있는 공공정보 후보입니다. 실제 판단 전 공공정보와 안전사용기준을 함께 확인하세요.</div>
+      <div class="public-info-grid">
+        ${cards.map(card => `
+          <a class="public-info-card ${card.score ? 'priority' : ''}" href="${escHtml(card.url)}">
+            <div class="public-info-card-title">${escHtml(card.title)}</div>
+            <div class="public-info-card-desc">${escHtml(card.description)}</div>
+            <div class="public-info-card-link">확인하기</div>
+          </a>
+        `).join('')}
+      </div>
+      <div class="result-disclaimer">${escHtml(result.safetyNotice || '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.')}</div>
+    </div>`;
 }
 
 function renderPlainList(items, fallback) {
@@ -1059,13 +1185,16 @@ function showFallbackResult() {
         <div class="result-section-body">현재 AI 참고 진단 결과를 불러오지 못했습니다. 증상 설명을 다시 확인하거나 공공정보 확인 메뉴를 이용해주세요.</div>
       </div>
       <div class="public-check">
-        <div class="public-check-title">공공정보 확인</div>
-        <div class="public-check-desc">AI 결과가 없을 때도 안전사용기준과 병해충 정보는 직접 확인할 수 있습니다.</div>
-        <div class="public-actions">
-          <a class="public-action" href="public-data.html">공공정보 확인</a>
-          <a class="public-action" href="public-data.html#safety">안전사용기준 확인</a>
-          <a class="public-action" href="public-data.html#pest">병해충 정보 확인</a>
-          <a class="public-action" href="agri-weather.html">농업날씨 확인</a>
+        <div class="public-check-title">확인할 공공정보</div>
+        <div class="public-check-desc">AI 결과가 없을 때도 공공정보 확인 메뉴에서 안전사용기준, 병해충 정보, 날씨, 시세, 지역 정보를 확인할 수 있습니다.</div>
+        <div class="public-info-grid">
+          ${PUBLIC_INFO_CARDS.map(card => `
+            <a class="public-info-card" href="${escHtml(card.url)}">
+              <div class="public-info-card-title">${escHtml(card.title)}</div>
+              <div class="public-info-card-desc">${escHtml(card.description)}</div>
+              <div class="public-info-card-link">확인하기</div>
+            </a>
+          `).join('')}
         </div>
         <div class="result-disclaimer">이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
       </div>
@@ -1114,22 +1243,7 @@ function showResult(result) {
         <div class="result-section-label">확인 포인트</div>
         <ul class="result-list">${renderPlainList(safeResult.checkPoints, '잎 앞면·뒷면, 줄기, 열매, 토양 상태를 함께 확인하세요.')}</ul>
       </div>
-      <div class="public-check">
-        <div class="public-check-title">공공데이터 확인 필요</div>
-        <div class="public-check-desc">AI가 정리한 원인 후보는 참고자료입니다. 실제 방제·관리 전 공공정보와 안전사용기준을 확인하세요.</div>
-        <ul class="public-check-list">
-          ${renderPlainList(safeResult.publicDataNeeds, '농약안전사용지침')}
-          <li>등록 작물·병해충·사용시기·희석배수 확인</li>
-          <li>안전사용기준 확인</li>
-        </ul>
-        <div class="public-actions">
-          <a class="public-action" href="public-data.html">공공정보 확인</a>
-          <a class="public-action" href="public-data.html#safety">안전사용기준 확인</a>
-          <a class="public-action" href="public-data.html#pest">병해충 정보 확인</a>
-          <a class="public-action" href="agri-weather.html">농업날씨 확인</a>
-        </div>
-        <div class="result-disclaimer">${escHtml(safeResult.safetyNotice)}</div>
-      </div>
+      ${renderPublicInfoCards(safeResult)}
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
         <button class="btn-share" onclick="shareToCommunity()">관련 질문 작성</button>
