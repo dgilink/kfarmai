@@ -209,6 +209,7 @@ const CHANNEL_BADGE_COLORS = {'plant-hospital':'','plant-question':'blue','crop-
 const PAGE_SIZE = 20;
 const params = new URLSearchParams(location.search);
 const slugParam = params.get('slug') || '';
+const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
 const DEMO_CASE_WRITE_PRESETS = {
   'tomato-leaf-mold': {
     channelSlug: 'plant-hospital',
@@ -251,6 +252,7 @@ async function init(){
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){closeWriteModal();closeLoginModal();} });
   resetAndLoad();
   applyDemoWriteQuery();
+  applyPendingQuestionQuery();
 }
 async function loadChannels(){
   try{
@@ -376,7 +378,7 @@ async function renderDemoThreads(message){
       <div class="meta"><span>#${esc(item.region)}</span><span>시연</span><span>공공정보 연결</span></div>
       <div class="label-row">${(item.labels||[]).map(label=>`<span class="status-badge">${esc(label)}</span>`).join('')}</div>
       <div class="ai-summary"><strong>AI 참고 요약</strong><br>${esc(item.aiSummary)}</div>
-      <div class="demo-actions"><a href="diagnosis.html">AI 진단하기</a><a href="diagnosis-cases.html">비슷한 사례 보기</a><a href="public-data.html">공공데이터 확인</a><button type="button" onclick="openWriteFlow()">질문하기</button></div>
+      <div class="demo-actions"><a href="diagnosis.html">AI 참고 진단</a><a href="diagnosis-cases.html">비슷한 사례 보기</a><a href="public-data.html">공공데이터 확인</a><button type="button" onclick="openWriteFlow()">질문하기</button></div>
     </article>`).join('');
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
@@ -388,6 +390,49 @@ function applyDemoWriteQuery(){
   if(!preset)return;
   didApplyDemoWritePreset=true;
   openWriteFlow(preset);
+}
+function applyPendingQuestionQuery(){
+  if(didApplyDemoWritePreset || params.get('write')!=='1' || params.get('source')!=='ai-reference-diagnosis')return;
+  let pending=null;
+  try{
+    pending=JSON.parse(localStorage.getItem(PENDING_QUESTION_KEY)||'null');
+  }catch(e){
+    pending=null;
+  }
+  if(!pending || pending.source!=='ai-reference-diagnosis')return;
+  didApplyDemoWritePreset=true;
+  openWriteFlow(makePendingQuestionPreset(pending));
+}
+function makePendingQuestionPreset(pending){
+  const crop=String(pending.crop||'작물·식물');
+  const symptoms=Array.isArray(pending.symptoms)?pending.symptoms.filter(Boolean):[];
+  const causes=Array.isArray(pending.causeCandidates)?pending.causeCandidates.filter(Boolean):[];
+  const checks=Array.isArray(pending.checkPoints)?pending.checkPoints.filter(Boolean):[];
+  return {
+    channelSlug: guessChannelSlug(crop),
+    category: guessCategory(crop),
+    title: `${crop} ${symptoms[0]||'증상'} 관련 확인이 필요합니다`,
+    content: [
+      'AI 참고 진단 결과를 바탕으로 커뮤니티에 질문합니다.',
+      '',
+      `작물/식물명: ${crop}`,
+      `관찰 증상: ${symptoms.join(', ') || '추가 입력 필요'}`,
+      `원인 후보: ${causes.join(', ') || '추가 확인 필요'}`,
+      `확인 포인트: ${checks.join(', ') || '잎 앞면·뒷면, 줄기, 토양 상태 확인'}`,
+      '',
+      '비슷한 증상 경험이나 공공정보 확인에 도움이 되는 참고자료가 있으면 함께 알려주세요.'
+    ].join('\n')
+  };
+}
+function guessChannelSlug(crop){
+  return /몬스테라|화분|실내|상토/.test(crop) ? 'plant-hospital' : 'crop-consult';
+}
+function guessCategory(crop){
+  if(/몬스테라|화분|실내/.test(crop))return '반려식물';
+  if(/고추|마늘|양파/.test(crop))return '고추·마늘·양파';
+  if(/딸기|토마토/.test(crop))return '딸기·토마토';
+  if(/상토|농약|비료/.test(crop))return '농약·비료·상토';
+  return '기타';
 }
 function fillWritePreset(preset){
   const channel=channels.find(ch=>ch.slug===preset.channelSlug) || channels.find(ch=>ch.slug==='plant-hospital') || channels[0];

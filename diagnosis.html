@@ -502,6 +502,142 @@
     font-size: 11px;
     font-weight: 900;
   }
+  .community-connect {
+    margin-top: 14px;
+    border: 1px solid rgba(182,255,60,.24);
+    border-radius: 14px;
+    background: rgba(182,255,60,.07);
+    padding: 14px;
+  }
+  .community-connect-title {
+    color: var(--lime);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: .2px;
+  }
+  .community-connect-desc,
+  .community-safe-note {
+    margin-top: 7px;
+    color: rgba(232,245,238,.82);
+    font-size: 12.5px;
+    line-height: 1.55;
+    font-weight: 650;
+  }
+  .community-safe-note {
+    color: rgba(232,245,238,.66);
+    font-size: 11.5px;
+  }
+  .community-action-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .community-action,
+  .reaction-button {
+    min-height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    padding: 8px 9px;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 850;
+    border: 1px solid rgba(182,255,60,.32);
+    background: rgba(182,255,60,.11);
+    color: var(--lime);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .community-action.secondary,
+  .reaction-button.secondary {
+    border-color: rgba(34,211,238,.35);
+    background: rgba(34,211,238,.10);
+    color: var(--cyan);
+  }
+  .community-action.dark {
+    border-color: rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: #fff;
+  }
+  .related-question-list {
+    display: grid;
+    gap: 9px;
+    margin-top: 12px;
+  }
+  .related-question-card {
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    padding: 11px;
+  }
+  .related-question-title {
+    color: var(--txt-on-dark);
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.35;
+  }
+  .related-question-meta,
+  .related-question-status {
+    margin-top: 6px;
+    color: rgba(232,245,238,.72);
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+  .related-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+  .related-tag {
+    border-radius: 999px;
+    border: 1px solid rgba(34,211,238,.25);
+    background: rgba(34,211,238,.08);
+    color: var(--cyan);
+    padding: 4px 7px;
+    font-size: 10.5px;
+    font-weight: 800;
+  }
+  .related-question-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin-top: 10px;
+  }
+  .related-link {
+    min-height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    text-align: center;
+    padding: 8px 7px;
+    font-size: 11.5px;
+    line-height: 1.25;
+    font-weight: 850;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    color: #fff;
+  }
+  .community-empty {
+    margin-top: 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 12px;
+    color: rgba(232,245,238,.76);
+    font-size: 12.5px;
+    line-height: 1.55;
+  }
+  @media (min-width: 390px) {
+    .community-action-grid { grid-template-columns: 1fr 1fr; }
+    .community-action-grid .dark { grid-column: 1 / -1; }
+  }
   .result-disclaimer {
     margin-top: 12px;
     border-radius: 12px;
@@ -1005,6 +1141,40 @@ const PUBLIC_INFO_CARDS = [
   }
 ];
 
+const FEATURE_RELATED_QUESTIONS = true;
+const FEATURE_SAME_SYMPTOM_REACTION = true;
+const FEATURE_HELPFUL_REACTION = true;
+const COMMUNITY_REACTION_KEY = 'kfarmai_community_reactions';
+const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
+const COMMUNITY_QUESTION_FALLBACK = [
+  {
+    id: 'pepper-leaf-curling',
+    title: '고추 잎이 말릴 때 확인할 점',
+    crop: '고추',
+    symptoms: ['잎 말림', '생육 저하'],
+    causeCandidates: ['해충 가능성', '고온·건조 스트레스 가능성'],
+    tags: ['고추', '잎말림', '해충', '고온', '건조'],
+    season: '고온기',
+    url: 'q/pepper-leaf-curling.html',
+    sameSymptomCount: 18,
+    helpfulCount: 9,
+    status: '참고자료'
+  },
+  {
+    id: 'monstera-yellow-leaves',
+    title: '몬스테라 잎이 노랗게 변해요',
+    crop: '몬스테라',
+    symptoms: ['노란잎', '잎 변색'],
+    causeCandidates: ['과습 가능성', '빛 부족 가능성'],
+    tags: ['몬스테라', '노란잎', '과습', '빛부족', '실내식물'],
+    season: '실내관리',
+    url: 'q/monstera-yellow-leaves.html',
+    sameSymptomCount: 12,
+    helpfulCount: 7,
+    status: '관련 질문'
+  }
+];
+
 function normalizeDiagnosisResult(result) {
   const firstCandidate = Array.isArray(result.causeCandidates) ? result.causeCandidates[0] : null;
   const legacyCandidate = result.cause ? [{ name: result.diagnosis || '원인 후보', strength: result.confidence || '중간', reason: result.cause }] : [];
@@ -1050,6 +1220,172 @@ function collectDiagnosisTags(result) {
     }
   });
   return values.map(normalizeTag).filter(Boolean);
+}
+
+function collectQuestionTags(item) {
+  const values = [
+    item.crop,
+    item.season,
+    ...asArray(item.symptoms),
+    ...asArray(item.causeCandidates),
+    ...asArray(item.tags)
+  ];
+  return values.map(normalizeTag).filter(Boolean);
+}
+
+function calculateQuestionScore(result, item) {
+  const crop = normalizeTag(result.crop);
+  const symptomTags = asArray(result.symptoms).map(normalizeTag);
+  const causeTags = asArray(result.causeCandidates).map(candidate => normalizeTag(typeof candidate === 'string' ? candidate : candidate?.name));
+  const allDiagnosisTags = collectDiagnosisTags(result);
+  const itemTags = collectQuestionTags(item);
+  let score = 0;
+  if (crop && itemTags.some(tag => tag.includes(crop) || crop.includes(tag))) score += 3;
+  if (symptomTags.some(tag => itemTags.some(itemTag => itemTag.includes(tag) || tag.includes(itemTag)))) score += 3;
+  if (causeTags.some(tag => itemTags.some(itemTag => itemTag.includes(tag) || tag.includes(itemTag)))) score += 2;
+  if (allDiagnosisTags.some(tag => ['고온', '건조', '장마', '습도', '과습', '실내관리'].includes(tag) && itemTags.includes(tag))) score += 1;
+  return score;
+}
+
+function safeLocalRead(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (err) {
+    showToast('이 브라우저에서는 반응 저장이 제한될 수 있습니다.');
+    return fallback;
+  }
+}
+
+function safeLocalWrite(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch (err) {
+    showToast('이 브라우저에서는 반응 저장이 제한될 수 있습니다.');
+    return false;
+  }
+}
+
+function getReactionState() {
+  return safeLocalRead(COMMUNITY_REACTION_KEY, {});
+}
+
+function cardDomId(id, type) {
+  return `${type}_${String(id || 'item').replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+}
+
+function getDisplayCount(item, type, reactions) {
+  const base = type === 'same' ? Number(item.sameSymptomCount) || 0 : Number(item.helpfulCount) || 0;
+  const key = `${type}:${item.id}`;
+  return base + (reactions[key] ? 1 : 0);
+}
+
+function loadCommunityQuestions() {
+  return fetch('data/community-question-index.json', { cache: 'no-store' })
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP_' + res.status);
+      return res.json();
+    })
+    .then(data => Array.isArray(data) && data.length ? data : COMMUNITY_QUESTION_FALLBACK);
+}
+
+function renderCommunityConnect(result) {
+  if (!FEATURE_RELATED_QUESTIONS) return '';
+  return `
+    <div class="community-connect" id="communityConnect">
+      <div class="community-connect-title">비슷한 질문과 커뮤니티 경험</div>
+      <div class="community-connect-desc">비슷한 질문과 사용자 경험을 함께 확인해보세요. AI 참고 진단 결과를 바탕으로 커뮤니티에 질문을 남길 수 있습니다.</div>
+      <div class="community-action-grid">
+        <button class="community-action" type="button" onclick="scrollRelatedQuestions()">비슷한 질문 보기</button>
+        <button class="community-action secondary" type="button" onclick="markDiagnosisSameSymptom()">나도 같은 증상</button>
+        <button class="community-action dark" type="button" onclick="shareToCommunity()">커뮤니티에 질문하기</button>
+      </div>
+      <div class="community-safe-note">나도 같은 증상은 통계나 예측이 아니라 비슷한 증상 반응을 표시하는 사용자 관심 참고 신호입니다.</div>
+      <div id="relatedQuestions" class="related-question-list">
+        <div class="community-empty">관련 질문을 불러오는 중입니다.</div>
+      </div>
+    </div>`;
+}
+
+function renderRelatedQuestionCard(item, reactions) {
+  const tags = asArray(item.tags).slice(0, 4);
+  const sameCount = getDisplayCount(item, 'same', reactions);
+  const helpfulCount = getDisplayCount(item, 'helpful', reactions);
+  return `
+    <article class="related-question-card">
+      <div class="related-question-status">${escHtml(item.status || '참고자료')} · 커뮤니티 경험 축적</div>
+      <div class="related-question-title">${escHtml(item.title)}</div>
+      <div class="related-question-meta">${escHtml(item.crop || '작물·식물')} · ${asArray(item.symptoms).map(escHtml).join(' · ') || '증상 확인'}</div>
+      <div class="related-tag-row">${tags.map(tag => `<span class="related-tag">${escHtml(tag)}</span>`).join('')}</div>
+      <div class="related-question-actions">
+        <button class="reaction-button" type="button" onclick="handleCommunityReaction('same','${escHtml(item.id)}')">나도 같은 증상 <span id="${cardDomId(item.id, 'same')}">${sameCount}</span></button>
+        <button class="reaction-button secondary" type="button" onclick="handleCommunityReaction('helpful','${escHtml(item.id)}')">도움 됐어요 <span id="${cardDomId(item.id, 'helpful')}">${helpfulCount}</span></button>
+        <a class="related-link" href="public-data.html">공공정보 확인</a>
+        <a class="related-link" href="${escHtml(item.url)}">관련 질문 보기</a>
+      </div>
+    </article>`;
+}
+
+function renderRelatedQuestions(result, items, failed) {
+  const wrap = document.getElementById('relatedQuestions');
+  if (!wrap) return;
+  const reactions = getReactionState();
+  const ranked = items.map((item, index) => ({
+    ...item,
+    score: calculateQuestionScore(result, item),
+    index
+  })).sort((a, b) => (b.score - a.score) || (b.sameSymptomCount - a.sameSymptomCount) || (a.index - b.index)).slice(0, 4);
+  if (!ranked.length) {
+    wrap.innerHTML = '<div class="community-empty">관련 질문을 불러오지 못했습니다. 증상 키워드로 검색하거나 커뮤니티에 질문을 남겨보세요.</div>';
+    return;
+  }
+  const notice = failed ? '<div class="community-empty">관련 질문을 불러오지 못했습니다. 증상 키워드로 검색하거나 커뮤니티에 질문을 남겨보세요.</div>' : '';
+  wrap.innerHTML = notice + ranked.map(item => renderRelatedQuestionCard(item, reactions)).join('');
+}
+
+function loadAndRenderRelatedQuestions(result) {
+  loadCommunityQuestions()
+    .then(items => renderRelatedQuestions(result, items, false))
+    .catch(() => renderRelatedQuestions(result, COMMUNITY_QUESTION_FALLBACK, true));
+}
+
+function handleCommunityReaction(type, id) {
+  if (!FEATURE_SAME_SYMPTOM_REACTION && type === 'same') return;
+  if (!FEATURE_HELPFUL_REACTION && type === 'helpful') return;
+  const reactions = getReactionState();
+  const key = `${type}:${id}`;
+  if (reactions[key]) {
+    showToast(type === 'same' ? '이미 같은 증상으로 표시했습니다.' : '이미 도움 됐어요로 표시했습니다.');
+    return;
+  }
+  reactions[key] = new Date().toISOString();
+  if (!safeLocalWrite(COMMUNITY_REACTION_KEY, reactions)) return;
+  const el = document.getElementById(cardDomId(id, type));
+  if (el) el.textContent = String((Number(el.textContent) || 0) + 1);
+  showToast(type === 'same'
+    ? '같은 증상으로 표시되었습니다. 비슷한 문제를 겪는 사용자에게 참고 신호가 됩니다.'
+    : '도움 됐어요로 표시되었습니다.');
+}
+
+function markDiagnosisSameSymptom() {
+  handleCommunityReaction('same', 'diagnosis-current');
+}
+
+function scrollRelatedQuestions() {
+  document.getElementById('relatedQuestions')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function makePendingQuestion(result) {
+  const safeResult = normalizeDiagnosisResult(result || {});
+  return {
+    source: 'ai-reference-diagnosis',
+    crop: safeResult.crop,
+    symptoms: safeResult.symptoms,
+    causeCandidates: asArray(safeResult.causeCandidates).map(item => typeof item === 'string' ? item : item.name).filter(Boolean),
+    checkPoints: safeResult.checkPoints,
+    createdAt: new Date().toISOString()
+  };
 }
 
 function rankPublicInfoCards(result) {
@@ -1198,11 +1534,13 @@ function showFallbackResult() {
         </div>
         <div class="result-disclaimer">이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
       </div>
+      ${renderCommunityConnect({ crop: '작물·식물', symptoms: [], causeCandidates: [], tags: [] })}
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
         <button class="btn-share" onclick="location.href='public-data.html'">공공정보 확인</button>
       </div>
     </div>`;
+  loadAndRenderRelatedQuestions({ crop: '작물·식물', symptoms: [], causeCandidates: [], tags: [] });
 }
 
 function showResult(result) {
@@ -1244,11 +1582,13 @@ function showResult(result) {
         <ul class="result-list">${renderPlainList(safeResult.checkPoints, '잎 앞면·뒷면, 줄기, 열매, 토양 상태를 함께 확인하세요.')}</ul>
       </div>
       ${renderPublicInfoCards(safeResult)}
+      ${renderCommunityConnect(safeResult)}
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
-        <button class="btn-share" onclick="shareToCommunity()">관련 질문 작성</button>
+        <button class="btn-share" onclick="shareToCommunity()">커뮤니티에 질문하기</button>
       </div>
     </div>`;
+  loadAndRenderRelatedQuestions(safeResult);
 }
 
 function renderMarkdown(text) {
@@ -1278,8 +1618,9 @@ function resetDiagnosis() {
 }
 
 function shareToCommunity() {
-  console.log('커뮤니티 공유 결과:', lastResult);
-  showToast('커뮤니티 공유 기능은 준비 중입니다');
+  const pending = makePendingQuestion(lastResult || {});
+  safeLocalWrite(PENDING_QUESTION_KEY, pending);
+  location.href = 'channel.html?write=1&source=ai-reference-diagnosis';
 }
 
 /* ── Pull-to-refresh ── */

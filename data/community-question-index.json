@@ -1,0 +1,80 @@
+[
+  {
+    "id": "pepper-leaf-curling",
+    "title": "고추 잎이 말릴 때 확인할 점",
+    "crop": "고추",
+    "symptoms": ["잎 말림", "생육 저하"],
+    "causeCandidates": ["해충 가능성", "고온·건조 스트레스 가능성"],
+    "tags": ["고추", "잎말림", "해충", "고온", "건조"],
+    "season": "고온기",
+    "url": "q/pepper-leaf-curling.html",
+    "sameSymptomCount": 18,
+    "helpfulCount": 9,
+    "status": "참고자료"
+  },
+  {
+    "id": "tomato-leaf-brown-spots",
+    "title": "토마토 잎에 반점이 생겼어요",
+    "crop": "토마토",
+    "symptoms": ["잎 반점", "잎 변색"],
+    "causeCandidates": ["병해 가능성", "시설재배 환경 영향"],
+    "tags": ["토마토", "반점", "시설재배", "습도", "병해충"],
+    "season": "장마철",
+    "url": "q/tomato-leaf-brown-spots.html",
+    "sameSymptomCount": 15,
+    "helpfulCount": 8,
+    "status": "관련 질문"
+  },
+  {
+    "id": "potting-soil-white-mold",
+    "title": "상토에 곰팡이가 생겼을 때 확인할 점",
+    "crop": "상토",
+    "symptoms": ["흰 곰팡이", "과습"],
+    "causeCandidates": ["과습 가능성", "통풍 부족 가능성"],
+    "tags": ["상토", "곰팡이", "과습", "통풍", "배수"],
+    "season": "장마철",
+    "url": "q/potting-soil-white-mold.html",
+    "sameSymptomCount": 20,
+    "helpfulCount": 11,
+    "status": "참고자료"
+  },
+  {
+    "id": "monstera-yellow-leaves",
+    "title": "몬스테라 잎이 노랗게 변해요",
+    "crop": "몬스테라",
+    "symptoms": ["노란잎", "잎 변색"],
+    "causeCandidates": ["과습 가능성", "빛 부족 가능성"],
+    "tags": ["몬스테라", "노란잎", "과습", "빛부족", "실내식물"],
+    "season": "실내관리",
+    "url": "q/monstera-yellow-leaves.html",
+    "sameSymptomCount": 12,
+    "helpfulCount": 7,
+    "status": "관련 질문"
+  },
+  {
+    "id": "overwatering-signs",
+    "title": "장마철 과습 관리",
+    "crop": "작물·화분",
+    "symptoms": ["과습", "뿌리 활력 저하"],
+    "causeCandidates": ["배수 부족 가능성", "습도 영향"],
+    "tags": ["장마", "과습", "배수", "습도", "뿌리"],
+    "season": "장마철",
+    "url": "q/overwatering-signs.html",
+    "sameSymptomCount": 16,
+    "helpfulCount": 10,
+    "status": "참고자료"
+  },
+  {
+    "id": "underwatering-signs",
+    "title": "고온기 잎 말림과 시듦 확인",
+    "crop": "고추·토마토",
+    "symptoms": ["잎 말림", "시듦"],
+    "causeCandidates": ["고온 스트레스 가능성", "수분 부족 가능성"],
+    "tags": ["고온", "잎말림", "시듦", "수분스트레스", "건조"],
+    "season": "고온기",
+    "url": "q/underwatering-signs.html",
+    "sameSymptomCount": 17,
+    "helpfulCount": 9,
+    "status": "관련 질문"
+  }
+]
