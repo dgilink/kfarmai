@@ -14,8 +14,37 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>제조·공급업체 - kfarmai</title>
+<title>농자재·관리정보 허브 - kFarmAI</title>
 <link rel="stylesheet" href="style.css">
+<style>
+  .hub-wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+  .hub-hero { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .hub-hero h1 { margin: 0 0 8px; font-size: 24px; line-height: 1.25; color: #111827; }
+  .hub-hero p { margin: 0; font-size: 14px; line-height: 1.65; color: #4b5563; }
+  .hub-note { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: #fff7ed; color: #7c2d12; font-size: 12px; line-height: 1.55; }
+  .hub-section-title { display: flex; align-items: center; gap: 8px; margin: 18px 0 10px; font-size: 17px; font-weight: 900; color: #111827; }
+  .hub-section-title::before { content: ""; width: 4px; height: 18px; border-radius: 999px; background: #16a34a; }
+  .hub-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .hub-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; }
+  .hub-card h2 { margin: 0 0 7px; font-size: 15px; color: #111827; }
+  .hub-card p { margin: 0; font-size: 12px; line-height: 1.55; color: #4b5563; }
+  .hub-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .hub-link { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 9px; border-radius: 999px; background: #ecfdf5; color: #166534; font-size: 11px; font-weight: 800; text-decoration: none; }
+  .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .support-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
+  .support-card h3 { margin: 0 0 6px; font-size: 14px; color: #111827; }
+  .support-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+  .support-pill { padding: 4px 7px; border-radius: 999px; background: #f3f4f6; color: #4b5563; font-size: 11px; font-weight: 700; }
+  .support-card p { margin: 0; color: #4b5563; font-size: 12px; line-height: 1.55; }
+  .mfg-intro { max-width: 1100px; margin: 0 auto; padding: 8px 16px 0; color: #4b5563; font-size: 13px; line-height: 1.6; }
+  @media (max-width: 720px) {
+    .hub-wrap { padding: 12px; }
+    .hub-hero { border-radius: 12px; padding: 14px; }
+    .hub-hero h1 { font-size: 21px; }
+    .hub-grid, .support-grid { grid-template-columns: 1fr; }
+    .hub-card { min-height: auto; }
+  }
+</style>
 </head>
 <body>
 <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #f0f0f0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
@@ -25,8 +54,9 @@
   <button style="width:40px;height:40px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:20px;" onclick="openMenu()">☰</button>
 </header>
 <div style="padding:14px 16px 0;border-bottom:1px solid #e8e8e8;">
-  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">MANUFACTURERS</div>
-  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">제조·공급업체</div>
+  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">MANAGEMENT HUB</div>
+  <div style="font-size:20px;font-weight:900;">농자재·관리정보 허브</div>
+  <div style="font-size:12px;color:#666;line-height:1.55;margin-top:5px;">상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배 정보를 문제해결 관점에서 확인합니다.</div>
   <div class="kf-tabs" style="padding:12px 0 0;">
     <button class="kf-tab active" onclick="switchTab('all',this)">전체</button>
     <button class="kf-tab" onclick="switchTab('santo',this)">상토회사</button>
@@ -35,6 +65,66 @@
     <button class="kf-tab" onclick="switchTab('fert',this)">비료회사</button>
   </div>
 </div>
+<main class="hub-wrap">
+  <section class="hub-hero">
+    <h1>농자재·관리정보 허브</h1>
+    <p>농자재 구매가 아니라, 작물 관리와 공공정보 확인을 돕는 참고 정보입니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
+    <div class="hub-note">농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+  </section>
+
+  <section>
+    <div class="hub-section-title">관리정보 카테고리</div>
+    <div class="hub-grid">
+      <article class="hub-card">
+        <div><h2>작물보호</h2><p>병해충 정보, 안전사용기준, 방제 전 확인사항을 참고합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="public-data.html">공공정보 확인</a><a class="hub-link" href="tools-pesticide.html">농약 희석 계산기</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>토양·배지</h2><p>상토, 배양토, 분갈이, 토양개량 관련 정보를 확인합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="tools-soil.html">상토 계산기</a><a class="hub-link" href="q/potting-soil-white-mold.html">관련 질문 보기</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>비료·액비</h2><p>비료, 액비, 미량요소, 희석 계산 정보를 확인합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="tools-fertilizer.html">비료 계산기</a><a class="hub-link" href="fert.html">비료 참고 정보</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>종자·육묘</h2><p>종자, 모종, 육묘, 파종·정식 시기 정보를 확인합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="seed.html">종자 참고 정보</a><a class="hub-link" href="crop-calendar.html">재배달력 확인</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>관수·시설환경</h2><p>물관리, 과습·건조, 차광, 환기, 하우스 관리 정보를 확인합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="agri-weather.html">농업날씨 확인</a><a class="hub-link" href="q/overwatering-signs.html">관련 질문 보기</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>홈가드닝</h2><p>화분, 분갈이, 식물등, 실내식물 관리 정보를 확인합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="diagnosis.html">AI 참고 진단</a><a class="hub-link" href="q/monstera-yellow-leaves.html">관련 질문 보기</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>스마트팜·시설재배</h2><p>온도, 습도, EC, pH, 관수, 환기 등 시설재배 관리 항목을 참고 정보로 확장할 수 있습니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="agri-weather.html">농업날씨 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>보조사업</h2><p>지자체와 공공기관의 보조사업 공식 공고 확인 경로를 정리합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="subsidy-calendar.html">보조사업 공식 공고 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
+      </article>
+      <article class="hub-card">
+        <div><h2>관련기관</h2><p>농업기술센터, 농촌진흥청, 공공데이터 제공처 등 공식 확인 경로를 연결합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="links.html">관련기관 확인</a><a class="hub-link" href="public-data.html">공공정보 확인</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="hub-section-title">보조사업 확인 경로</div>
+    <p style="margin:0 0 10px;color:#4b5563;font-size:13px;line-height:1.6;">보조사업 정보는 공식 공고 확인을 돕는 참고자료입니다. 신청 전 지자체 공고와 담당기관 확인이 필요합니다.</p>
+    <div id="supportPrograms" class="support-grid">
+      <div class="support-card"><h3>관리정보를 불러오는 중입니다.</h3><p>데이터를 불러오지 못하면 기본 카테고리와 관련 페이지를 확인할 수 있습니다.</p></div>
+    </div>
+  </section>
+</main>
+<div class="mfg-intro">
+  주요 농자재 제조사 정보는 시제품에 일부 반영했으며, 향후 상토·종자·비료·작물보호·시설자재 등 카테고리별로 보완할 계획입니다.
+</div>
 <div class="kf-search-bar">
   <input type="text" id="keyword" placeholder="회사명·제품·지역 검색" onkeypress="if(event.keyCode==13) search()" style="flex:1;min-width:150px;">
   <button class="kf-btn kf-btn-primary" onclick="search()">검색</button>
@@ -42,12 +132,12 @@
   <span id="count" style="font-size:13px;color:#666;"></span>
 </div>
 <div class="kf-company-grid" id="grid"></div>
-<div style="text-align:center;padding:12px;font-size:11px;color:#aaa;">출처: 한국상토협회·한국종자협회·한국작물보호협회·한국비료협회 | © 2026 kfarmai.com</div>
+<div style="text-align:center;padding:12px;font-size:11px;color:#aaa;">초기 참고자료 출처: 한국상토협회·한국종자협회·한국작물보호협회·한국비료협회 | © 2026 kfarmai.com</div>
 
 <nav class="kf-bottom-nav">
   <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
   <a href="agri_map.html" class="kf-nav-item"><span class="kf-nav-icon">🗺️</span><span>농약사</span></a>
-  <a href="mfg.html" class="kf-nav-item active"><span class="kf-nav-icon">🏭</span><span>제조공급</span></a>
+  <a href="mfg.html" class="kf-nav-item active"><span class="kf-nav-icon">🏭</span><span>관리정보</span></a>
   <a href="news_sub.html" class="kf-nav-item"><span class="kf-nav-icon">📰</span><span>소식</span></a>
   <a href="links.html" class="kf-nav-item"><span class="kf-nav-icon">🔗</span><span>사이트</span></a>
 </nav>
@@ -120,6 +210,36 @@ function openMenu() { document.getElementById('overlay').classList.add('open'); 
 function closeMenu() { document.getElementById('overlay').classList.remove('open'); document.getElementById('menu').classList.remove('open'); }
 
 renderCards(buildAll());
+
+async function loadSupportPrograms() {
+  const box = document.getElementById('supportPrograms');
+  if(!box) return;
+  const fallback = `<div class="support-card"><h3>관리정보를 불러오지 못했습니다.</h3><p>기본 카테고리와 관련 페이지를 확인해주세요.</p><div class="hub-links"><a class="hub-link" href="subsidy-calendar.html">보조사업 공식 공고 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div></div><div class="support-card"><h3>수집·정리 중</h3><p>현재는 시제품 단계로 일부 보조사업 확인 경로를 수집·정리 중입니다.</p></div>`;
+  try {
+    const res = await fetch('data/support-program-index.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('support index load failed');
+    const items = await res.json();
+    if(!Array.isArray(items) || !items.length) throw new Error('support index empty');
+    box.innerHTML = items.map(item => `<article class="support-card">
+      <h3>${escapeHtml(item.title || '보조사업 확인')}</h3>
+      <div class="support-meta">
+        <span class="support-pill">${escapeHtml(item.region || '지역 확인')}</span>
+        <span class="support-pill">${escapeHtml(item.category || '분류 확인')}</span>
+        <span class="support-pill">${escapeHtml(item.status || '수집·정리 중')}</span>
+      </div>
+      <p>${escapeHtml(item.summary || '공식 공고 확인 경로를 참고하세요.')}</p>
+      <div class="hub-links"><a class="hub-link" href="${escapeHtml(item.url || 'subsidy-calendar.html')}">공식 공고 확인 경로</a></div>
+    </article>`).join('');
+  } catch(err) {
+    box.innerHTML = fallback;
+  }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+loadSupportPrograms();
 </script>
 </body>
 </html>

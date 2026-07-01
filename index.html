@@ -160,14 +160,14 @@
   .s-head { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 900; color: var(--muted); padding: 5px 4px; }
   .s-clear { border: 0; background: transparent; color: var(--green); font-size: 11px; font-weight: 800; cursor: pointer; }
   .s-item {
-    display: flex; align-items: center; gap: 9px; padding: 9px 6px;
+    display: flex; align-items: flex-start; gap: 0; padding: 10px 8px;
     border-radius: 10px; cursor: pointer; color: inherit; text-decoration: none;
   }
   .s-item:hover { background: #F7F8FA; }
-  .s-ico { width: 24px; height: 24px; border-radius: 8px; background: var(--green-soft); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .s-ico { display: none; }
   .s-main { flex: 1; min-width: 0; }
-  .s-title { font-size: 13px; font-weight: 800; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .s-meta { margin-top: 3px; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .s-title { font-size: 13px; font-weight: 800; color: #1f2937; line-height: 1.35; }
+  .s-meta { margin-top: 4px; font-size: 11px; line-height: 1.35; color: var(--muted); display: flex; align-items: center; gap: 6px; }
   .s-x { border: 0; background: transparent; color: #A1A7AE; font-size: 16px; cursor: pointer; padding: 4px; }
   .search-mark { color: var(--green); font-weight: 900; background: transparent; }
   .search-result-head {
@@ -2186,15 +2186,15 @@ function renderSuggestSection(title,items){
 function postSuggestHtml(post,kw){
   const slug=post.channels?.slug||'';
   const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
-  return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-ico">Q</div><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${getTimeAgo(post.created_at)}</div></div></div>`;
+  return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${getTimeAgo(post.created_at)}</div></div></div>`;
 }
 function linkSuggestHtml(item,kw,kind){
   const url=`${item.url}?q=${encodeURIComponent(item.query||kw)}`;
-  return `<a class="s-item" href="${url}"><div class="s-ico">${kind==='지도'?'M':'I'}</div><div class="s-main"><div class="s-title">${highlightText(item.text,kw)}</div><div class="s-meta">${escHtml(item.meta||`${kind}에서 보기`)}</div></div></a>`;
+  return `<a class="s-item" href="${url}"><div class="s-main"><div class="s-title">${highlightText(item.text,kw)}</div><div class="s-meta">${escHtml(item.meta||`${kind}에서 보기`)}</div></div></a>`;
 }
 function renderRecentSection(items){
   if(!items.length)return '';
-  return `<div class="s-section"><div class="s-head"><span>최근 검색어</span><button class="s-clear" onclick="clearRecentSearches(event)">전체 삭제</button></div>${items.map(item=>`<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(item)}'))"><div class="s-ico">R</div><div class="s-main"><div class="s-title">${escHtml(item)}</div></div><button class="s-x" onclick="removeRecentSearch(event,decodeURIComponent('${encodeURIComponent(item)}'))">×</button></div>`).join('')}</div>`;
+  return `<div class="s-section"><div class="s-head"><span>최근 검색어</span><button class="s-clear" onclick="clearRecentSearches(event)">전체 삭제</button></div>${items.map(item=>`<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(item)}'))"><div class="s-main"><div class="s-title">${escHtml(item)}</div></div><button class="s-x" onclick="removeRecentSearch(event,decodeURIComponent('${encodeURIComponent(item)}'))">×</button></div>`).join('')}</div>`;
 }
 function renderSearchActionCards(kw){
   if(!FEATURE_SEARCH_ACTIONS)return '';
@@ -2307,7 +2307,7 @@ async function searchStaticIndex(kw,limit=20){
   }).filter(item=>item.score>0).sort((a,b)=>b.score-a.score).slice(0,limit);
 }
 function staticSuggestHtml(item,kw){
-  return `<a class="s-item" href="${safeSearchUrl(item.url)}"><div class="s-ico">S</div><div class="s-main"><div class="s-title">${highlightText(item.title,kw)}</div><div class="s-meta">${escHtml(item.type||'통합 검색')}</div></div></a>`;
+  return `<a class="s-item" href="${safeSearchUrl(item.url)}"><div class="s-main"><div class="s-title">${highlightText(item.title,kw)}</div><div class="s-meta">${escHtml(item.type||'통합 검색')}</div></div></a>`;
 }
 function groupStaticResults(items){
   const grouped={ai:[],questions:[],knowledge:[],community:[],publicData:[],tools:[],materials:[]};

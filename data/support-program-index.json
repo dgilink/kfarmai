@@ -1,0 +1,32 @@
+[
+  {
+    "title": "농자재 지원사업 확인",
+    "region": "전국/지자체",
+    "category": "농자재",
+    "target": "농업인",
+    "source": "지자체 공고",
+    "summary": "상토, 시설, 농자재 관련 보조사업 공식 공고 확인 경로입니다.",
+    "url": "subsidy-calendar.html",
+    "status": "수집·정리 중"
+  },
+  {
+    "title": "스마트팜 지원사업 확인",
+    "region": "전국/지자체",
+    "category": "스마트팜",
+    "target": "농업인·청년농",
+    "source": "공공기관/지자체 공고",
+    "summary": "시설재배, 환경제어, 스마트팜 관련 지원사업 확인 경로입니다.",
+    "url": "subsidy-calendar.html",
+    "status": "수집·정리 중"
+  },
+  {
+    "title": "관련기관 공고 확인",
+    "region": "지역별",
+    "category": "관련기관",
+    "target": "농업인·홈가드닝 사용자",
+    "source": "공공기관/농업기술센터",
+    "summary": "농업기술센터와 공공기관의 안내 자료를 확인할 수 있는 경로입니다.",
+    "url": "links.html",
+    "status": "향후 보완 예정"
+  }
+]
