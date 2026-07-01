@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>AI 진단 — kFarmAI</title>
-<meta name="description" content="kFarmAI AI 진단 — 사진과 증상으로 작물의 병해충·영양 상태를 진단합니다.">
+<title>AI 참고 진단 — kFarmAI</title>
+<meta name="description" content="kFarmAI AI 참고 진단 — 사진과 증상으로 원인 후보, 확인 포인트, 공공정보 확인 항목을 정리합니다.">
 <meta name="theme-color" content="#0B1410">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
@@ -375,6 +375,7 @@
   .result-badge {
     display: inline-block; font-size: 11px; padding: 3px 9px;
     border-radius: 8px; margin-bottom: 8px; font-weight: 800; letter-spacing: .5px;
+    background: rgba(34,211,238,.12); color: var(--cyan); border: 1px solid rgba(34,211,238,.25);
   }
   .result-badge.urgent { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(255,85,119,.3); }
   .result-title {
@@ -394,6 +395,8 @@
   .result-list { list-style: none; padding: 0; }
   .result-list li { font-size: 14px; color: var(--txt-on-dark); line-height: 1.8; }
   .result-list li::before { content: "▸ "; color: var(--lime); font-weight: 700; }
+  .result-list strong { color: var(--lime); font-weight: 900; }
+  .result-list span { color: rgba(232,245,238,.78); font-size: 12.5px; line-height: 1.5; }
   .public-check {
     margin-top: 16px;
     border: 1px solid rgba(34,211,238,.25);
@@ -523,7 +526,7 @@
     <div class="top-bar">
       <div class="brand">
         <a href="index.html" style="text-decoration:none; display:flex; align-items:center;">
-          <img src="static/kfarmai-logo-horizontal.png" alt="kFarmAI" style="max-width:180px; width:auto; height:auto; object-fit:contain;">
+          <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" style="max-width:180px; width:auto; height:auto; object-fit:contain;">
         </a>
       </div>
       <div class="bell" aria-label="알림">
@@ -544,7 +547,7 @@
 
     <div class="tabs">
       <div class="tab" data-tab="community">커뮤니티</div>
-      <div class="tab active" data-tab="diagnosis">AI 진단</div>
+      <div class="tab active" data-tab="diagnosis">AI 참고 진단</div>
       <div class="tab" data-tab="supplies">농자재</div>
     </div>
     <a class="case-link" href="diagnosis-cases.html">
@@ -565,8 +568,8 @@
     <div class="diag-card">
       <div class="card-hd">
         <div class="dot"></div>
-        <span class="card-hd-txt">AI Diagnosis</span>
-        <span class="card-hd-tag">v2.0 · NEURAL</span>
+        <span class="card-hd-txt">AI 참고 진단</span>
+        <span class="card-hd-tag">원인 후보 정리</span>
       </div>
 
       <div class="diag-overlay" id="diagOverlay">
@@ -654,7 +657,7 @@
             <button class="diag-btn" id="diagBtn" onclick="startDiagnosis()">
               <span class="diag-btn-main">
                 <span class="btn-spin" id="btnSpin"></span>
-                <span id="btnText">⚡ AI 진단 시작</span>
+                <span id="btnText">AI 참고 진단 시작</span>
               </span>
               <span class="diag-btn-sub" id="btnSub">30초 안에 결과를 드려요</span>
             </button>
@@ -681,17 +684,24 @@
 // TODO: Edge Function 교체 필요 — API 키를 프론트엔드에 직접 노출하지 마세요
 const API_KEY = 'YOUR_API_KEY_HERE';
 
-const SYSTEM_PROMPT = `당신은 농업 전문가 AI입니다.
-사용자가 제공한 사진과 증상 설명을 바탕으로
-작물의 병해충, 영양 상태, 환경 스트레스를 진단합니다.
+const SYSTEM_PROMPT = `당신은 농업·식물 문제를 정리하는 AI 참고 진단 도우미입니다.
+절대 특정 농약을 추천하지 말 것.
+절대 확정 처방으로 말하지 말 것.
+절대 농약 사용이나 물품 선택을 유도하지 말 것.
+사진과 증상 설명을 바탕으로 원인 후보, 확인 포인트, AI 추정 강도, 공공데이터 확인 항목만 정리하세요.
+농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준 확인을 안내하세요.
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력:
 {
-  "diagnosis": "진단명 (20자 이내)",
-  "confidence": "높음/보통/낮음",
-  "cause": "원인 설명 (50자 이내)",
-  "solution": ["대처방법1", "대처방법2", "대처방법3"],
-  "prevention": "예방법 (50자 이내)",
-  "urgent": true
+  "mode": "AI 참고 진단",
+  "crop": "작물 또는 식물명",
+  "symptoms": ["관찰 증상1", "관찰 증상2"],
+  "causeCandidates": [
+    { "name": "원인 후보명", "strength": "높음/중간/낮음", "reason": "판단 이유" }
+  ],
+  "checkPoints": ["확인 포인트1", "확인 포인트2", "확인 포인트3"],
+  "publicDataNeeds": ["농약안전사용지침", "병해충 정보", "농업날씨"],
+  "safetyNotice": "이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.",
+  "urgent": false
 }`;
 
 let capturedFile = null;
@@ -898,7 +908,7 @@ function setLoading(on) {
   const overlay = document.getElementById('diagOverlay');
   btn.disabled = on;
   btnSpin.classList.toggle('show', on);
-  btnText.textContent  = on ? '분석 중...' : '⚡ AI 진단 시작';
+  btnText.textContent  = on ? '원인 후보 정리 중...' : 'AI 참고 진단 시작';
   btnSub.style.display = on ? 'none' : '';
   overlay.classList.toggle('show', on);
 }
@@ -914,6 +924,51 @@ function toBase64(file) {
 function escHtml(s) {
   return String(s || '').replace(/[&<>"']/g,
     c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function asArray(value) {
+  if (Array.isArray(value)) return value.filter(Boolean);
+  return value ? [value] : [];
+}
+
+function normalizeDiagnosisResult(result) {
+  const firstCandidate = Array.isArray(result.causeCandidates) ? result.causeCandidates[0] : null;
+  const legacyCandidate = result.cause ? [{ name: result.diagnosis || '원인 후보', strength: result.confidence || '중간', reason: result.cause }] : [];
+  const causeCandidates = asArray(result.causeCandidates).length ? asArray(result.causeCandidates) : legacyCandidate;
+  const checkPoints = asArray(result.checkPoints).length
+    ? asArray(result.checkPoints)
+    : asArray(result.solution).concat(asArray(result.prevention)).slice(0, 4);
+  const publicDataNeeds = asArray(result.publicDataNeeds).length
+    ? asArray(result.publicDataNeeds)
+    : ['농약안전사용지침', '병해충 정보', '농업날씨'];
+  const strength = result.confidence || firstCandidate?.strength || causeCandidates[0]?.strength || '중간';
+  return {
+    mode: result.mode || 'AI 참고 진단',
+    crop: result.crop || '작물·식물',
+    symptoms: asArray(result.symptoms),
+    causeCandidates,
+    checkPoints,
+    publicDataNeeds,
+    strength,
+    title: result.diagnosis || causeCandidates[0]?.name || '원인 후보 정리',
+    urgent: Boolean(result.urgent),
+    safetyNotice: result.safetyNotice || '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
+  };
+}
+
+function renderPlainList(items, fallback) {
+  const list = asArray(items);
+  if (!list.length && fallback) list.push(fallback);
+  return list.map(item => `<li>${escHtml(item)}</li>`).join('');
+}
+
+function renderCauseCandidates(items) {
+  const candidates = asArray(items);
+  if (!candidates.length) return '<li>증상 설명과 사진을 기준으로 원인 후보를 더 확인해야 합니다.</li>';
+  return candidates.map(item => {
+    if (typeof item === 'string') return `<li><strong>${escHtml(item)}</strong></li>`;
+    return `<li><strong>${escHtml(item.name || '원인 후보')}</strong>${item.strength ? ` · AI 추정 강도 ${escHtml(item.strength)}` : ''}<br><span>${escHtml(item.reason || '추가 확인이 필요합니다.')}</span></li>`;
+  }).join('');
 }
 
 async function startDiagnosis() {
@@ -976,16 +1031,49 @@ async function startDiagnosis() {
 
   } catch (err) {
     setLoading(false);
+    showFallbackResult();
     if (err.message === 'PARSE_ERROR') {
-      showToast('진단 결과를 불러오지 못했습니다. 다시 시도해주세요');
+      showToast('AI 참고 진단 결과를 불러오지 못했습니다. 다시 시도해주세요');
     } else if (err.message.startsWith('API_')) {
       showToast('서버 오류가 발생했습니다 (' + err.message.replace('API_', '') + ')');
     } else if (err.name === 'TypeError') {
       showToast('네트워크 연결을 확인해주세요');
     } else {
-      showToast('진단에 실패했습니다. 다시 시도해주세요');
+      showToast('AI 참고 진단에 실패했습니다. 다시 시도해주세요');
     }
   }
+}
+
+function showFallbackResult() {
+  setStep(2);
+  document.getElementById('inputView').style.display = 'none';
+  const rv = document.getElementById('resultView');
+  rv.style.display = 'block';
+  rv.innerHTML = `
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-title">AI 참고 진단 결과를 불러오지 못했습니다</div>
+      </div>
+      <div class="result-section">
+        <div class="result-section-label">다음 확인</div>
+        <div class="result-section-body">현재 AI 참고 진단 결과를 불러오지 못했습니다. 증상 설명을 다시 확인하거나 공공정보 확인 메뉴를 이용해주세요.</div>
+      </div>
+      <div class="public-check">
+        <div class="public-check-title">공공정보 확인</div>
+        <div class="public-check-desc">AI 결과가 없을 때도 안전사용기준과 병해충 정보는 직접 확인할 수 있습니다.</div>
+        <div class="public-actions">
+          <a class="public-action" href="public-data.html">공공정보 확인</a>
+          <a class="public-action" href="public-data.html#safety">안전사용기준 확인</a>
+          <a class="public-action" href="public-data.html#pest">병해충 정보 확인</a>
+          <a class="public-action" href="agri-weather.html">농업날씨 확인</a>
+        </div>
+        <div class="result-disclaimer">이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
+        <button class="btn-share" onclick="location.href='public-data.html'">공공정보 확인</button>
+      </div>
+    </div>`;
 }
 
 function showResult(result) {
@@ -996,51 +1084,55 @@ function showResult(result) {
   const rv = document.getElementById('resultView');
   rv.style.display = 'block';
 
-  const confMap     = { '높음': 'high', '보통': 'mid', '낮음': 'low' };
-  const confClass   = confMap[result.confidence] || 'mid';
-  const urgentBadge = result.urgent ? '<div class="result-badge urgent">긴급</div>' : '';
-  const solutions   = (result.solution || []).map(s => `<li>${renderMarkdown(s)}</li>`).join('');
+  const safeResult = normalizeDiagnosisResult(result || {});
+  const confMap = { '높음': 'high', '중간': 'mid', '보통': 'mid', '낮음': 'low' };
+  const confClass = confMap[safeResult.strength] || 'mid';
+  const urgentBadge = safeResult.urgent ? '<div class="result-badge urgent">주의 필요</div>' : '';
+  const symptomMeta = safeResult.symptoms.length ? `<div class="result-section-body">${safeResult.symptoms.map(escHtml).join(' · ')}</div>` : '';
 
   rv.innerHTML = `
     <div class="result-card">
       <div class="result-header">
         ${urgentBadge}
-        <div class="result-title">${renderMarkdown(result.diagnosis)}</div>
-        <div class="result-confidence ${confClass}">AI 추정 강도: ${escHtml(result.confidence)}</div>
+        <div class="result-badge">${escHtml(safeResult.mode)}</div>
+        <div class="result-title">${escHtml(safeResult.title)}</div>
+        <div class="result-confidence ${confClass}">AI 추정 강도: ${escHtml(safeResult.strength)}</div>
       </div>
       <div class="result-section">
-        <div class="result-section-label">원인</div>
-        <div class="result-section-body">${renderMarkdown(result.cause)}</div>
+        <div class="result-section-label">작물/식물명</div>
+        <div class="result-section-body">${escHtml(safeResult.crop)}</div>
       </div>
       <div class="result-section">
-        <div class="result-section-label">대처 방법</div>
-        <ul class="result-list">${solutions}</ul>
+        <div class="result-section-label">관찰 증상</div>
+        ${symptomMeta || '<div class="result-section-body">사진과 설명을 기준으로 추가 확인이 필요합니다.</div>'}
       </div>
       <div class="result-section">
-        <div class="result-section-label">예방법</div>
-        <div class="result-section-body">${renderMarkdown(result.prevention)}</div>
+        <div class="result-section-label">원인 후보</div>
+        <ul class="result-list">${renderCauseCandidates(safeResult.causeCandidates)}</ul>
+      </div>
+      <div class="result-section">
+        <div class="result-section-label">확인 포인트</div>
+        <ul class="result-list">${renderPlainList(safeResult.checkPoints, '잎 앞면·뒷면, 줄기, 열매, 토양 상태를 함께 확인하세요.')}</ul>
       </div>
       <div class="public-check">
-        <div class="public-check-title">공공데이터 확인</div>
-        <div class="public-check-desc">AI가 제시한 원인 후보는 참고 진단입니다. 실제 방제·관리 전 아래 공공정보를 확인하세요.</div>
+        <div class="public-check-title">공공데이터 확인 필요</div>
+        <div class="public-check-desc">AI가 정리한 원인 후보는 참고자료입니다. 실제 방제·관리 전 공공정보와 안전사용기준을 확인하세요.</div>
         <ul class="public-check-list">
-          <li>농촌진흥청 병해충 정보 확인</li>
-          <li>농약안전사용지침 확인</li>
-          <li>등록 작물·병해충 여부 확인</li>
-          <li>지역 병해충 발생정보 확인</li>
-          <li>가까운 농약사 또는 전문가 상담</li>
+          ${renderPlainList(safeResult.publicDataNeeds, '농약안전사용지침')}
+          <li>등록 작물·병해충·사용시기·희석배수 확인</li>
+          <li>안전사용기준 확인</li>
         </ul>
         <div class="public-actions">
-          <a class="public-action" href="public-data.html">공공데이터 확인하기</a>
-          <a class="public-action" href="diagnosis-cases.html">비슷한 진단 사례 보기</a>
-          <a class="public-action" href="agri_map.html">가까운 농약사 찾기</a>
-          <a class="public-action" href="channel.html">커뮤니티에 질문하기</a>
+          <a class="public-action" href="public-data.html">공공정보 확인</a>
+          <a class="public-action" href="public-data.html#safety">안전사용기준 확인</a>
+          <a class="public-action" href="public-data.html#pest">병해충 정보 확인</a>
+          <a class="public-action" href="agri-weather.html">농업날씨 확인</a>
         </div>
-        <div class="result-disclaimer">AI 참고 진단이며, 실제 농약 사용 전 제품 라벨, 등록 작물·병해충 여부, 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.</div>
+        <div class="result-disclaimer">${escHtml(safeResult.safetyNotice)}</div>
       </div>
       <div class="result-actions">
-        <button class="btn-retry" onclick="resetDiagnosis()">다시 진단하기</button>
-        <button class="btn-share" onclick="shareToCommunity()">커뮤니티 공유</button>
+        <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
+        <button class="btn-share" onclick="shareToCommunity()">관련 질문 작성</button>
       </div>
     </div>`;
 }

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>공공자료 기반 진단사례 - kFarmAI</title>
-<meta name="description" content="kFarmAI 공공자료 기반 진단사례. AI가 가능성을 제시하고 공공데이터가 확인 기준을 제공합니다.">
+<title>공공자료 기반 AI 참고 진단사례 - kFarmAI</title>
+<meta name="description" content="kFarmAI 공공자료 기반 AI 참고 진단사례. AI가 원인 후보를 정리하고 공공데이터가 확인 기준을 제공합니다.">
 <meta name="theme-color" content="#1D9E75">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -340,12 +340,12 @@
       <a class="home-link" href="index.html">홈</a>
     </div>
     <div class="headline">
-      <h1>공공자료 기반 진단사례</h1>
-      <p class="subtitle">AI가 가능성을 제시하고, 공공데이터가 확인 기준을 제공합니다.</p>
+      <h1>공공자료 기반 AI 참고 진단사례</h1>
+      <p class="subtitle">AI가 원인 후보를 정리하고, 공공데이터가 확인 기준을 제공합니다.</p>
     </div>
     <nav class="top-links" aria-label="진단사례 관련 페이지">
       <a class="top-link" href="public-data.html">공공데이터 검증 보기</a>
-      <a class="top-link" href="diagnosis.html">AI 진단하기</a>
+      <a class="top-link" href="diagnosis.html">AI 참고 진단하기</a>
       <a class="top-link" href="agri_map.html">농약사 지도 보기</a>
       <a class="top-link" href="channel.html">커뮤니티 질문하기</a>
       <a class="top-link" href="contest-demo.html">공모전 데모 보기</a>
@@ -373,7 +373,7 @@
     </div>
 
     <div class="page-disclaimer">
-      AI 참고 진단이며, 실제 농약 사용 전 등록 작물·병해충 여부와 안전사용기준을 확인하고 농약사 또는 전문가 상담 후 사용하세요.
+      이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.
     </div>
   </section>
 </main>
@@ -382,6 +382,52 @@
 'use strict';
 
 const casesEl = document.getElementById('cases');
+const FALLBACK_CASES = [
+  {
+    caseId: 'fallback-pepper-leaf-curl',
+    label: '공공자료 기반 참고 콘텐츠',
+    crop: '고추',
+    title: '고추 잎 말림 확인 포인트',
+    userQuestion: '고추 잎이 말리고 생육이 약해 보일 때 확인할 항목입니다.',
+    aiSummary: '잎 말림은 해충, 고온, 수분 스트레스 등 여러 원인 후보가 함께 검토되어야 합니다.',
+    causeCandidates: ['해충 가능성', '고온·건조 스트레스', '수분 관리 문제'],
+    symptoms: ['잎 말림', '생육 저하', '잎 뒷면 이상 여부 확인 필요'],
+    publicDataCheck: ['병해충 정보 확인', '농업날씨 확인', '농약 사용 전 안전사용기준 확인'],
+    generalCare: ['잎 앞면과 뒷면을 함께 관찰합니다.', '최근 고온·강수·관수 변화를 확인합니다.', '방제 판단 전 등록 작물과 병해충 기준을 확인합니다.'],
+    nextActions: ['AI 참고 진단에 증상 설명을 다시 입력합니다.', '공공정보 확인 메뉴에서 안전사용기준을 확인합니다.', '필요 시 지역 상담기관에 확인합니다.'],
+    linkedPages: [
+      { label: 'AI 참고 진단', url: 'diagnosis.html' },
+      { label: '공공정보 확인', url: 'public-data.html' },
+      { label: '농업날씨 확인', url: 'agri-weather.html' },
+      { label: '커뮤니티 질문하기', url: 'channel.html' }
+    ],
+    sourceName: '시제품 fallback 참고자료',
+    sourceUrl: 'public-data.html',
+    disclaimer: '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
+  },
+  {
+    caseId: 'fallback-potting-soil-mold',
+    label: '공공자료 기반 참고 콘텐츠',
+    crop: '상토·화분',
+    title: '상토 곰팡이와 과습 확인 포인트',
+    userQuestion: '상토 표면에 흰 곰팡이처럼 보이는 것이 생겼을 때 확인할 항목입니다.',
+    aiSummary: '상토 표면의 흰 흔적은 과습, 통풍 부족, 유기물 분해 등 원인 후보를 나누어 확인해야 합니다.',
+    causeCandidates: ['과습 가능성', '통풍 부족', '상토 표면 유기물 분해'],
+    symptoms: ['흰 곰팡이 흔적', '상토 표면 습함', '배수 상태 확인 필요'],
+    publicDataCheck: ['상토·배지 참고자료 확인', '실내 재배 관리 정보 확인', '병해충 정보 확인'],
+    generalCare: ['겉흙 마름 정도와 배수구 상태를 확인합니다.', '통풍과 관수 간격을 조정합니다.', '식물 뿌리 상태를 함께 확인합니다.'],
+    nextActions: ['사진과 물관리 이력을 함께 기록합니다.', '관련 질문 보기에서 비슷한 증상을 확인합니다.', '공공정보 확인 메뉴를 이용합니다.'],
+    linkedPages: [
+      { label: 'AI 참고 진단', url: 'diagnosis.html' },
+      { label: '공공정보 확인', url: 'public-data.html' },
+      { label: '관련 질문 보기', url: 'channel.html' },
+      { label: '상토 계산기', url: 'tools-soil.html' }
+    ],
+    sourceName: '시제품 fallback 참고자료',
+    sourceUrl: 'public-data.html',
+    disclaimer: '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
+  }
+];
 
 function escHtml(value) {
   return String(value || '').replace(/[&<>"']/g, ch => ({
@@ -393,35 +439,42 @@ function escHtml(value) {
   }[ch]));
 }
 
+function safeDisplayText(value) {
+  return String(value || '')
+    .replace(new RegExp('AI ' + '진단', 'g'), 'AI 참고 진단')
+    .replace(/진단사례/g, '참고 진단사례');
+}
+
 function listHtml(items) {
-  return `<ul>${(items || []).map(item => `<li>${escHtml(item)}</li>`).join('')}</ul>`;
+  return `<ul>${(items || []).map(item => `<li>${escHtml(safeDisplayText(item))}</li>`).join('')}</ul>`;
 }
 
 function actionsHtml(links) {
   return `<div class="actions">${(links || []).map(link =>
-    `<a class="action" href="${escHtml(link.url)}">${escHtml(link.label)}</a>`
+    `<a class="action" href="${escHtml(link.url)}">${escHtml(safeDisplayText(link.label))}</a>`
   ).join('')}</div>`;
 }
 
 function renderCase(item) {
-  const candidates = (item.causeCandidates || []).map(name => `<span class="candidate">${escHtml(name)}</span>`).join('');
+  const candidates = (item.causeCandidates || []).map(name => `<span class="candidate">${escHtml(safeDisplayText(name))}</span>`).join('');
+  const disclaimer = '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.';
   return `
     <article class="case-card" id="${escHtml(item.caseId)}">
       <div class="case-top">
-        <span class="badge">${escHtml(item.label)}</span>
+        <span class="badge">${escHtml(safeDisplayText(item.label))}</span>
         <span class="badge risk">주의</span>
       </div>
-      <div class="crop">${escHtml(item.crop)}</div>
-      <h2 class="case-title">${escHtml(item.title)}</h2>
-      <p class="demo-question">${escHtml(item.userQuestion)}</p>
+      <div class="crop">${escHtml(safeDisplayText(item.crop))}</div>
+      <h2 class="case-title">${escHtml(safeDisplayText(item.title))}</h2>
+      <p class="demo-question">${escHtml(safeDisplayText(item.userQuestion))}</p>
 
       <div class="section">
-        <div class="section-title">AI 요약</div>
-        <p class="body-text">${escHtml(item.aiSummary)}</p>
+        <div class="section-title">AI 참고 진단 요약</div>
+        <p class="body-text">${escHtml(safeDisplayText(item.aiSummary))}</p>
       </div>
 
       <div class="section">
-        <div class="section-title">의심 가능성</div>
+        <div class="section-title">원인 후보</div>
         <div class="candidate-row">${candidates}</div>
       </div>
 
@@ -431,7 +484,7 @@ function renderCase(item) {
       </div>
 
       <div class="section">
-        <div class="section-title">공공데이터 확인 기준</div>
+        <div class="section-title">공공데이터 확인 필요</div>
         ${listHtml(item.publicDataCheck)}
       </div>
 
@@ -448,10 +501,10 @@ function renderCase(item) {
       ${actionsHtml(item.linkedPages)}
 
       <div class="source">
-        <span>${escHtml(item.sourceName)}</span>
+        <span>${escHtml(safeDisplayText(item.sourceName))}</span>
         <a href="${escHtml(item.sourceUrl)}" target="_blank" rel="noopener">출처 보기</a>
       </div>
-      <div class="disclaimer">${escHtml(item.disclaimer)}</div>
+      <div class="disclaimer">${escHtml(safeDisplayText(disclaimer))}</div>
     </article>`;
 }
 
@@ -462,7 +515,7 @@ async function loadCases() {
     const cases = await res.json();
     casesEl.innerHTML = cases.map(renderCase).join('');
   } catch (err) {
-    casesEl.innerHTML = '<div class="error">진단사례 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';
+    casesEl.innerHTML = '<div class="error">현재 AI 참고 진단 결과를 불러오지 못했습니다. 증상 설명을 다시 확인하거나 공공정보 확인 메뉴를 이용해주세요.</div>' + FALLBACK_CASES.map(renderCase).join('');
   }
 }
 
