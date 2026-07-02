@@ -1,6 +1,34 @@
 <!DOCTYPE html>
-<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>재배가이드 - kFarmAI</title><style>
-*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}.app{max-width:480px;min-height:100dvh;margin:0 auto;background:#F5F6F8}.header{background:#fff;border-bottom:1px solid #ECEEF2;padding:12px 14px 14px}.top{display:flex;align-items:center;justify-content:space-between}.brand img{max-width:180px;height:auto}.home{border:1px solid #CDEBDD;background:#E8F6F0;color:#157A5A;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}h1{margin-top:12px;font-size:23px}.sub{margin-top:7px;color:#6B7280;font-size:13px;line-height:1.55}.content{padding:14px 14px 90px}.card{background:#fff;border:1px solid #ECEEF2;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 8px 24px rgba(17,24,39,.05)}.title{font-size:17px;font-weight:900}.meta{margin-top:7px;color:#4B5563;font-size:13px;line-height:1.55}.links{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.links a{min-height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;background:#E8F6F0;color:#157A5A;border:1px solid #CDEBDD;font-size:12px;font-weight:900}.links a:nth-child(2){background:#FFF0E5;color:#B94712;border-color:#FFD7C2}.safe{background:#FFF8E1;border-color:#FDE68A;color:#5D4400;font-weight:800}
-</style></head><body><main class="app"><header class="header"><div class="top"><a class="brand" href="index.html"><img src="static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div><h1>재배가이드 허브</h1><p class="sub">기존 q/ 질문형 콘텐츠와 kb/ 지식 콘텐츠를 작물별 관리법, 병해충 주의, 진단사례, 재배달력, 공공데이터 링크로 연결합니다. 농촌진흥청_작목별농업기술정보 기반 고도화 예정입니다.</p></header><section class="content"><div id="list"></div><div class="card safe">공공데이터 기반 의사결정 보조 정보이며, 실제 영농 판단은 지역 농업기술센터·전문가 상담과 함께 확인하세요.</div></section></main><script>
-'use strict';fetch('data/crop_guides.json',{cache:'no-store'}).then(r=>r.json()).then(rows=>{list.innerHTML=rows.map(x=>`<article class="card"><div class="title">${x.crop}</div><div class="meta">${x.basic}<br><b>병해충 주의:</b> ${x.pests}</div><div class="links"><a href="${x.cases}">진단사례</a><a href="${x.calendar}">재배달력</a><a href="${x.publicData}">공공데이터</a>${(x.links||[]).slice(0,2).map(u=>`<a href="${u}">관련 글</a>`).join('')}</div></article>`).join('')});
-</script></body></html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>재배가이드 - kFarmAI</title>
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}.app{max-width:480px;min-height:100dvh;margin:0 auto;background:#F5F6F8}.header{background:#fff;border-bottom:1px solid #ECEEF2;padding:12px 14px 14px}.top{display:flex;align-items:center;justify-content:space-between}.brand img{max-width:180px;height:auto}.home{border:1px solid #CDEBDD;background:#E8F6F0;color:#157A5A;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}h1{margin-top:12px;font-size:23px}.sub{margin-top:7px;color:#6B7280;font-size:13px;line-height:1.55}.content{padding:14px 14px 90px}.select{width:100%;height:42px;border:1.5px solid #DDE5E0;border-radius:12px;padding:0 12px;background:#fff;font-weight:800;margin-bottom:10px}.card{background:#fff;border:1px solid #ECEEF2;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 8px 24px rgba(17,24,39,.05)}.title{font-size:17px;font-weight:900}.meta{margin-top:7px;color:#4B5563;font-size:13px;line-height:1.55}.guide-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:10px}.guide-item{border:1px solid #E5E7EB;background:#F8FAFC;border-radius:13px;padding:12px}.guide-item b{display:block;font-size:14px}.guide-item p{margin-top:5px;color:#4B5563;font-size:12.5px;line-height:1.5}.links{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.links a{min-height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;background:#E8F6F0;color:#157A5A;border:1px solid #CDEBDD;font-size:12px;font-weight:900}.links a:nth-child(2n){background:#FFF0E5;color:#B94712;border-color:#FFD7C2}.safe{background:#FFF8E1;border-color:#FDE68A;color:#5D4400;font-size:12px;line-height:1.6;font-weight:800}.error{background:#fff;border:1px solid #FED7AA;color:#9A3412;border-radius:16px;padding:14px;margin-bottom:10px;font-size:13px;line-height:1.6;font-weight:800}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="header">
+    <div class="top"><a class="brand" href="index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div>
+    <h1>재배가이드</h1>
+    <p class="sub">긴 설명보다 정식 전 확인, 물관리, 웃거름, 병해충 주의, 고온기 관리, 수확 전 확인을 문제 중심 카드로 정리합니다.</p>
+  </header>
+  <section class="content">
+    <select id="crop" class="select" aria-label="작물 선택"></select>
+    <div id="list"></div>
+    <div class="card safe">재배가이드는 일반적인 참고자료이며, 지역·품종·재배환경에 따라 달라질 수 있습니다. 공공정보와 지역 농업기술센터 자료를 함께 확인하세요.</div>
+  </section>
+</main>
+<script>
+'use strict';
+const FALLBACK=[{crop:'고추',basic:'정식 후 활착, 물관리, 고온기 차광 상태를 함께 확인합니다.',items:[{title:'정식 전 확인',text:'토양 수분과 배수 상태를 확인합니다.'},{title:'물관리',text:'과습과 건조가 반복되지 않도록 확인합니다.'},{title:'웃거름',text:'생육 단계와 제품 기준을 확인합니다.'},{title:'병해충 주의',text:'잎 뒷면과 새순을 함께 확인합니다.'},{title:'고온기 관리',text:'잎 말림과 시듦이 보이면 관수와 차광 상태를 확인합니다.'},{title:'수확 전 확인',text:'수확 전 안전사용기준과 작업 이력을 확인합니다.'}]}];
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+let rows=FALLBACK;
+function draw(){const x=rows.find(r=>r.crop===crop.value)||rows[0];list.innerHTML=`<article class="card"><div class="title">${esc(x.crop)} 문제 중심 가이드</div><div class="meta">${esc(x.basic)}</div><div class="guide-grid">${(x.items||[]).map(item=>`<div class="guide-item"><b>${esc(item.title)}</b><p>${esc(item.text)}</p></div>`).join('')}</div><div class="links"><a href="public-data.html">공공정보 확인</a><a href="agri-weather.html">농업날씨 확인</a><a href="tools-fertilizer.html">비료·액비 계산기</a><a href="channel.html">관련 질문 보기</a><a href="crop-calendar.html">재배달력 보기</a><a href="diagnosis.html">AI 참고 진단</a></div></article>`}
+fetch('data/crop_guides.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('guides');return r.json()}).then(d=>{rows=Array.isArray(d)?d:FALLBACK;crop.innerHTML=rows.map(x=>`<option>${esc(x.crop)}</option>`).join('');crop.onchange=draw;draw();}).catch(()=>{rows=FALLBACK;crop.innerHTML=rows.map(x=>`<option>${esc(x.crop)}</option>`).join('');crop.onchange=draw;draw();list.insertAdjacentHTML('afterbegin','<div class="error">재배가이드 정보를 불러오지 못했습니다. 기본 작물 관리 정보를 확인해주세요.</div>');});
+</script>
+</body>
+</html>

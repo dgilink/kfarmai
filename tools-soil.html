@@ -4,36 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>상토 계산기 - kFarmAI</title>
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <style>
-  *{box-sizing:border-box} body{margin:0;background:#F6F8F5;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
-  header{height:58px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center}
-  .brand{display:flex;align-items:center;text-decoration:none}.brand img{max-width:180px;width:auto;height:auto;object-fit:contain}
-  main{max-width:480px;margin:0 auto;padding:18px 16px 28px}.card{background:#fff;border:1.5px solid #C8E6C9;border-radius:16px;padding:18px}
-  h1{margin:0 0 8px;color:#1B5E20;font-size:22px;line-height:1.35}.lead{margin:0 0 18px;color:#666;font-size:14px;line-height:1.5}.field{margin:14px 0}
-  label{display:block;margin-bottom:7px;color:#333;font-size:13px;font-weight:800}input,select{width:100%;border:1.5px solid #C8E6C9;border-radius:12px;padding:12px;font-size:15px;outline:0;background:#fff}input:focus,select:focus{border-color:#1B5E20}
-  .check{display:flex;align-items:center;gap:8px;margin:14px 0;color:#333;font-size:14px}.check input{width:auto}button{width:100%;border:0;border-radius:12px;padding:14px;background:#1B5E20;color:#fff;font-size:16px;font-weight:900;cursor:pointer}
-  .result{display:none;margin-top:18px;padding:14px;border-radius:14px;background:#F1F8E9}.result-main{color:#1B5E20;font-size:20px;font-weight:900}.result p{margin:8px 0 0;color:#444;font-size:14px}.note{margin-top:14px;color:#777;font-size:12px;line-height:1.5}.cta{display:block;margin-top:18px;padding:14px;border-radius:14px;background:#E8F5E9;color:#1B5E20;text-align:center;font-weight:900;text-decoration:none}.hidden{display:none}
+*{box-sizing:border-box}body{margin:0;background:#F6F8F5;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}header{height:58px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center}.brand{display:flex;align-items:center;text-decoration:none}.brand img{max-width:180px;width:auto;height:auto;object-fit:contain}main{max-width:480px;margin:0 auto;padding:18px 16px 28px}.card{background:#fff;border:1.5px solid #C8E6C9;border-radius:16px;padding:18px}h1{margin:0 0 8px;color:#1B5E20;font-size:22px;line-height:1.35}.lead{margin:0 0 18px;color:#666;font-size:14px;line-height:1.5}.field{margin:14px 0}label{display:block;margin-bottom:7px;color:#333;font-size:13px;font-weight:800}input,select{width:100%;border:1.5px solid #C8E6C9;border-radius:12px;padding:12px;font-size:15px;outline:0;background:#fff}input:focus,select:focus{border-color:#1B5E20}.check{display:flex;align-items:center;gap:8px;margin:14px 0;color:#333;font-size:14px}.check input{width:auto}button{width:100%;border:0;border-radius:12px;padding:14px;background:#1B5E20;color:#fff;font-size:16px;font-weight:900;cursor:pointer}.result{display:none;margin-top:18px;padding:14px;border-radius:14px;background:#F1F8E9}.result-main{color:#1B5E20;font-size:20px;font-weight:900}.result p{margin:8px 0 0;color:#444;font-size:14px}.note{margin-top:14px;color:#777;font-size:12px;line-height:1.5}.safe{margin-top:16px;padding:14px;border-left:4px solid #F9A825;border-radius:8px;background:#FFF8E1;color:#5D4400;font-size:13px;line-height:1.6;font-weight:800}.links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.links a{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;padding:10px;border-radius:12px;background:#E8F5E9;color:#1B5E20;font-size:12px;font-weight:900;text-decoration:none}.links a:nth-child(2n){background:#111827;color:#fff}.hidden{display:none}
 </style>
 </head>
 <body>
-<header><a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
+<header><a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
 <main><div class="card">
-  <h1>화분 상토 필요량 계산기</h1>
-  <p class="lead">화분 크기를 입력하면 필요한 상토 용량을 L 단위로 계산합니다.</p>
-  <div class="field"><label for="shape">화분 모양</label><select id="shape" onchange="toggleShapeFields()"><option value="round">원형</option><option value="square">사각형</option></select></div>
+  <h1>상토 필요량 계산기</h1>
+  <p class="lead">화분 모양과 크기를 입력하면 상토 필요량과 20L 포대 기준 수량을 참고용으로 계산합니다.</p>
+  <div class="field"><label for="shape">용기 모양</label><select id="shape" onchange="toggleShapeFields()"><option value="round">원형</option><option value="square">사각형</option></select></div>
   <div id="roundFields"><div class="field"><label for="diameter">지름(cm)</label><input id="diameter" type="number" min="0" step="0.1" inputmode="decimal"></div><div class="field"><label for="roundHeight">높이(cm)</label><input id="roundHeight" type="number" min="0" step="0.1" inputmode="decimal"></div></div>
   <div id="squareFields" class="hidden"><div class="field"><label for="width">가로(cm)</label><input id="width" type="number" min="0" step="0.1" inputmode="decimal"></div><div class="field"><label for="depth">세로(cm)</label><input id="depth" type="number" min="0" step="0.1" inputmode="decimal"></div><div class="field"><label for="squareHeight">높이(cm)</label><input id="squareHeight" type="number" min="0" step="0.1" inputmode="decimal"></div></div>
-  <label class="check"><input id="drainage" type="checkbox"> 배수층 포함(상토량 10% 차감)</label>
+  <label class="check"><input id="drainage" type="checkbox"> 배수층 포함으로 상토량 10% 차감</label>
   <button type="button" onclick="calculateSoil()">계산하기</button>
   <div class="result" id="result"><div class="result-main" id="needText"></div><p id="bagText"></p><p id="readyText"></p></div>
-  <div class="note">계산 결과는 참고용입니다. 실제 필요량은 화분 형태, 배수층 두께, 상토 다짐 정도에 따라 달라질 수 있습니다.</div>
-  <a class="cta" href="diagnosis.html">상토 선택이 고민될 때 AI 진단하기</a>
+  <div class="safe">계산 결과는 참고용이며 실제 필요량은 작물, 용기, 배수층, 사용 방식에 따라 달라질 수 있습니다.</div>
+  <div class="links"><a href="public-data.html">공공정보 확인</a><a href="channel.html">관련 질문 보기</a><a href="crop-guide.html">재배가이드 확인</a><a href="mfg.html">관리정보 허브</a></div>
 </div></main>
 <script>
 function num(id){return parseFloat(document.getElementById(id).value)||0}
 function toggleShapeFields(){const shape=document.getElementById('shape').value;document.getElementById('roundFields').classList.toggle('hidden',shape!=='round');document.getElementById('squareFields').classList.toggle('hidden',shape!=='square')}
 function fmt(value){return Number(value.toFixed(1)).toString()}
-function calculateSoil(){const shape=document.getElementById('shape').value;let liters=0;if(shape==='round'){liters=Math.PI*Math.pow(num('diameter')/2,2)*num('roundHeight')*0.001}else{liters=num('width')*num('depth')*num('squareHeight')*0.001}if(document.getElementById('drainage').checked)liters*=0.9;const bags=Math.ceil(liters/20);document.getElementById('needText').textContent=`약 ${fmt(liters)}L 필요`;document.getElementById('bagText').textContent=`20L 포대 기준 약 ${bags}포대`;document.getElementById('readyText').textContent='분갈이 전 배수와 뿌리 상태도 함께 확인하세요.';document.getElementById('result').style.display='block'}
+function calculateSoil(){const shape=document.getElementById('shape').value;let liters=0;if(shape==='round'){liters=Math.PI*Math.pow(num('diameter')/2,2)*num('roundHeight')*0.001}else{liters=num('width')*num('depth')*num('squareHeight')*0.001}if(document.getElementById('drainage').checked)liters*=0.9;const bags=Math.max(0,Math.ceil(liters/20));document.getElementById('needText').textContent=`약 ${fmt(liters)}L 필요`;document.getElementById('bagText').textContent=`20L 포대 기준 약 ${bags}포`;document.getElementById('readyText').textContent='분갈이 전 배수층, 뿌리 상태, 용기 깊이를 함께 확인하세요.';document.getElementById('result').style.display='block'}
 </script>
 </body>
 </html>

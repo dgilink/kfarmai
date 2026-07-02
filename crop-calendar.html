@@ -1,6 +1,36 @@
 <!DOCTYPE html>
-<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>재배달력 - kFarmAI</title><style>
-*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}.app{max-width:480px;min-height:100dvh;margin:0 auto;background:#F5F6F8}.header{background:#fff;border-bottom:1px solid #ECEEF2;padding:12px 14px 14px}.top{display:flex;align-items:center;justify-content:space-between}.brand img{max-width:180px;height:auto}.home{border:1px solid #CDEBDD;background:#E8F6F0;color:#157A5A;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}h1{margin-top:12px;font-size:23px}.sub{margin-top:7px;color:#6B7280;font-size:13px;line-height:1.55}.content{padding:14px 14px 90px}.select{width:100%;height:42px;border:1.5px solid #DDE5E0;border-radius:12px;padding:0 12px;background:#fff;font-weight:800;margin-bottom:10px}.card{background:#fff;border:1px solid #ECEEF2;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 8px 24px rgba(17,24,39,.05)}.pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#E8F6F0;color:#157A5A;font-size:11px;font-weight:900;margin:2px}.title{font-size:17px;font-weight:900;margin-bottom:8px}.tasks{padding-left:19px;color:#374151;font-size:13px;line-height:1.7}.safe{background:#FFF8E1;border-color:#FDE68A;color:#5D4400;font-weight:800}.cta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cta a{min-height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:#E8F6F0;color:#157A5A;border:1px solid #CDEBDD;font-size:12px;font-weight:900}.cta a:nth-child(2){background:#111827;color:#fff;border-color:#111827}
-</style></head><body><main class="app"><header class="header"><div class="top"><a class="brand" href="index.html"><img src="static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div><h1>작물별·식물별 재배달력</h1><p class="sub">어업에 금어기가 있듯이 농업에는 작물별 파종·정식·수확·방제 적기가 있습니다. 농촌진흥청_농작업일정 정보 기반으로 고도화 예정입니다.</p></header><section class="content"><select id="crop" class="select"></select><div id="summary"></div><div id="detail"></div><div class="card safe">공공데이터 기반 의사결정 보조 정보이며, 실제 영농 판단은 지역 농업기술센터·전문가 상담과 함께 확인하세요.</div><div class="cta"><a href="crop-guide.html">재배가이드</a><a href="agri-weather.html">농업날씨</a></div></section></main><script>
-'use strict';let data;function draw(){const c=data.crops.find(x=>x.name===crop.value)||data.crops[0];summary.innerHTML=`<div class="card"><div class="title">이번 달 할 일</div><div>${data.bestToPlantNow.map(x=>`<span class="pill">${x}</span>`).join('')}</div><p class="sub">지금 심기 좋은 작물 예시입니다.</p></div>`;detail.innerHTML=`<article class="card"><div class="title">${c.name} 월별 관리</div>${c.monthly.map(m=>`<div class="pill">${m.month}월</div><ul class="tasks">${m.tasks.map(t=>`<li>${t}</li>`).join('')}</ul>`).join('')}</article>`}fetch('data/crop_calendar.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{data=d;crop.innerHTML=d.crops.map(c=>`<option>${c.name}</option>`).join('');crop.onchange=draw;draw();});
-</script></body></html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>재배달력 - kFarmAI</title>
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}.app{max-width:480px;min-height:100dvh;margin:0 auto;background:#F5F6F8}.header{background:#fff;border-bottom:1px solid #ECEEF2;padding:12px 14px 14px}.top{display:flex;align-items:center;justify-content:space-between}.brand img{max-width:180px;height:auto}.home{border:1px solid #CDEBDD;background:#E8F6F0;color:#157A5A;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}h1{margin-top:12px;font-size:23px}.sub{margin-top:7px;color:#6B7280;font-size:13px;line-height:1.55}.content{padding:14px 14px 90px}.select{width:100%;height:42px;border:1.5px solid #DDE5E0;border-radius:12px;padding:0 12px;background:#fff;font-weight:800;margin-bottom:10px}.card{background:#fff;border:1px solid #ECEEF2;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 8px 24px rgba(17,24,39,.05)}.pill{display:inline-flex;padding:5px 8px;border-radius:999px;background:#E8F6F0;color:#157A5A;font-size:11px;font-weight:900;margin:2px}.title{font-size:17px;font-weight:900;margin-bottom:8px}.month{margin-top:12px;padding-top:12px;border-top:1px solid #ECEEF2}.month:first-child{margin-top:0;padding-top:0;border-top:0}.month-head{font-size:14px;font-weight:900;color:#111827}.tasks{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.task{display:inline-flex;border-radius:999px;padding:6px 8px;background:#F8FAFC;border:1px solid #E5E7EB;color:#374151;font-size:11px;font-weight:850}.safe{background:#FFF8E1;border-color:#FDE68A;color:#5D4400;font-size:12px;line-height:1.6;font-weight:800}.cta{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cta a{min-height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;background:#E8F6F0;color:#157A5A;border:1px solid #CDEBDD;font-size:12px;font-weight:900}.cta a:nth-child(2n){background:#111827;color:#fff;border-color:#111827}.error{background:#fff;border:1px solid #FED7AA;color:#9A3412;border-radius:16px;padding:14px;margin-bottom:10px;font-size:13px;line-height:1.6;font-weight:800}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="header">
+    <div class="top"><a class="brand" href="index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div>
+    <h1>작물별 재배달력</h1>
+    <p class="sub">고추, 토마토, 오이, 딸기, 벼, 상추의 파종, 정식, 생육관리, 병해충 주의, 수확 흐름을 참고자료로 정리합니다.</p>
+  </header>
+  <section class="content">
+    <select id="crop" class="select" aria-label="작물 선택"></select>
+    <div id="summary"></div>
+    <div id="detail"></div>
+    <div class="card safe">재배달력은 지역, 품종, 시설재배 여부에 따라 달라질 수 있는 참고자료입니다. 정확한 재배 일정은 지역 농업기술센터와 공식 재배자료를 함께 확인하세요.</div>
+    <div class="cta"><a href="crop-guide.html">재배가이드 보기</a><a href="agri-weather.html">농업날씨 확인</a><a href="channel.html">관련 질문 보기</a><a href="public-data.html">공공정보 확인</a></div>
+  </section>
+</main>
+<script>
+'use strict';
+const FALLBACK={bestToPlantNow:['고추 생육관리','토마토 병해충 주의','상추 수확 전 확인'],crops:[{name:'고추',summary:'고온기에는 잎 말림과 시듦을 함께 확인합니다.',monthly:[{month:'3월',tasks:['파종','육묘관리']},{month:'5월',tasks:['정식','관수 확인']},{month:'7월',tasks:['생육관리','병해충 주의']},{month:'9월',tasks:['수확','수확 전 확인']}]}]};
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+let data=FALLBACK;
+function draw(){const c=data.crops.find(x=>x.name===crop.value)||data.crops[0];summary.innerHTML=`<div class="card"><div class="title">이번 주 많이 확인할 문제</div><div>${(data.bestToPlantNow||[]).map(x=>`<span class="pill">${esc(x)}</span>`).join('')}</div><p class="sub">${esc(c.summary||'작물별 주요 관리 시기를 확인하세요.')}</p></div>`;detail.innerHTML=`<article class="card"><div class="title">${esc(c.name)} 월별 재배 흐름</div>${(c.monthly||[]).map(m=>`<div class="month"><div class="month-head">${esc(m.month)}</div><div class="tasks">${(m.tasks||[]).map(t=>`<span class="task">${esc(t)}</span>`).join('')}</div></div>`).join('')}</article>`}
+fetch('data/crop_calendar.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('calendar');return r.json()}).then(d=>{data=d;crop.innerHTML=d.crops.map(c=>`<option>${esc(c.name)}</option>`).join('');crop.onchange=draw;draw();}).catch(()=>{data=FALLBACK;crop.innerHTML=FALLBACK.crops.map(c=>`<option>${esc(c.name)}</option>`).join('');crop.onchange=draw;draw();summary.insertAdjacentHTML('afterbegin','<div class="error">재배달력 정보를 불러오지 못했습니다. 기본 작물 관리 정보를 확인해주세요.</div>');});
+</script>
+</body>
+</html>

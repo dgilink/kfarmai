@@ -4,33 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>농약 희석 계산기 - kFarmAI</title>
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <style>
-  *{box-sizing:border-box} body{margin:0;background:#F6F8F5;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
-  header{height:58px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center}
-  .brand{display:flex;align-items:center;text-decoration:none}.brand img{max-width:180px;width:auto;height:auto;object-fit:contain}
-  main{max-width:480px;margin:0 auto;padding:18px 16px 28px}.card{background:#fff;border:1.5px solid #C8E6C9;border-radius:16px;padding:18px}
-  h1{margin:0 0 8px;color:#1B5E20;font-size:22px;line-height:1.35}.lead{margin:0 0 18px;color:#666;font-size:14px;line-height:1.5}.field{margin:14px 0}
-  label{display:block;margin-bottom:7px;color:#333;font-size:13px;font-weight:800}input{width:100%;border:1.5px solid #C8E6C9;border-radius:12px;padding:12px;font-size:15px;outline:0;background:#fff}input:focus{border-color:#1B5E20}
-  button{width:100%;border:0;border-radius:12px;padding:14px;background:#1B5E20;color:#fff;font-size:16px;font-weight:900;cursor:pointer}.result{display:none;margin-top:18px;padding:14px;border-radius:14px;background:#F1F8E9}.result-main{color:#1B5E20;font-size:20px;font-weight:900}.safety{margin-top:16px;padding:14px;border-left:4px solid #F9A825;border-radius:8px;background:#FFF8E1;color:#5D4400;font-size:13px;line-height:1.6;font-weight:800}.safety a{color:#1B5E20;text-decoration:underline}.links{display:grid;gap:10px;margin-top:16px}.links a{display:block;padding:12px;border-radius:12px;background:#E8F5E9;color:#1B5E20;text-align:center;font-weight:900;text-decoration:none}.note{margin-top:14px;color:#777;font-size:12px;line-height:1.5}
+*{box-sizing:border-box}body{margin:0;background:#F6F8F5;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}header{height:58px;background:#fff;border-bottom:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center}.brand{display:flex;align-items:center;text-decoration:none}.brand img{max-width:180px;width:auto;height:auto;object-fit:contain}main{max-width:480px;margin:0 auto;padding:18px 16px 28px}.card{background:#fff;border:1.5px solid #C8E6C9;border-radius:16px;padding:18px}h1{margin:0 0 8px;color:#1B5E20;font-size:22px;line-height:1.35}.lead{margin:0 0 18px;color:#666;font-size:14px;line-height:1.5}.field{margin:14px 0}label{display:block;margin-bottom:7px;color:#333;font-size:13px;font-weight:800}input{width:100%;border:1.5px solid #C8E6C9;border-radius:12px;padding:12px;font-size:15px;outline:0;background:#fff}input:focus{border-color:#1B5E20}button{width:100%;border:0;border-radius:12px;padding:14px;background:#1B5E20;color:#fff;font-size:16px;font-weight:900;cursor:pointer}.result{display:none;margin-top:18px;padding:14px;border-radius:14px;background:#F1F8E9}.result-main{color:#1B5E20;font-size:20px;font-weight:900}.safety{margin-top:16px;padding:14px;border-left:4px solid #F9A825;border-radius:8px;background:#FFF8E1;color:#5D4400;font-size:13px;line-height:1.6;font-weight:800}.safety a{color:#1B5E20;text-decoration:underline}.links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.links a{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;padding:10px;border-radius:12px;background:#E8F5E9;color:#1B5E20;font-size:12px;font-weight:900;text-decoration:none}.links a:nth-child(2n){background:#111827;color:#fff}
 </style>
 </head>
 <body>
-<header><a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
+<header><a class="brand" href="index.html" aria-label="kFarmAI 홈"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
 <main><div class="card">
   <h1>농약 희석 계산기</h1>
-  <p class="lead">희석배수와 물 양을 입력하면 필요한 약제량 mL를 계산합니다.</p>
+  <p class="lead">희석배수와 물량을 입력하면 필요한 약제량을 참고용으로 계산합니다. 특정 제품 선택이나 사용 판단을 대신하지 않습니다.</p>
   <div class="field"><label for="ratio">희석배수</label><input id="ratio" type="number" min="1" step="1" inputmode="numeric" placeholder="예: 1000"></div>
-  <div class="field"><label for="liters">물 양(L)</label><input id="liters" type="number" min="0" step="0.1" inputmode="decimal"></div>
+  <div class="field"><label for="liters">물량(L)</label><input id="liters" type="number" min="0" step="0.1" inputmode="decimal"></div>
   <button type="button" onclick="calculatePesticide()">계산하기</button>
   <div class="result" id="result"><div class="result-main" id="needText"></div></div>
-  <div class="safety">농약 사용 전 <a href="https://psis.rda.go.kr" target="_blank" rel="noopener">농약안전정보시스템</a>에서 작물, 병해충, 등록 여부와 안전사용기준을 반드시 확인하세요.</div>
-  <div class="links"><a href="https://psis.rda.go.kr" target="_blank" rel="noopener">등록정보 확인</a><a href="/agri_map.html">주변 농약방 위치 보기</a></div>
-  <div class="note">계산 결과는 참고용입니다. 제품 라벨과 안전사용기준을 우선 적용하세요.</div>
+  <div class="safety">계산 결과는 참고용입니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+  <div class="links"><a href="ai-safety.html">안전사용기준 확인</a><a href="public-data.html">공공정보 확인</a><a href="channel.html">관련 질문 보기</a><a href="mfg.html">관리정보 허브</a></div>
 </div></main>
 <script>
 function num(id){return parseFloat(document.getElementById(id).value)||0}
 function fmt(value){return Number(value.toFixed(1)).toString()}
-function calculatePesticide(){const ratio=num('ratio');const liters=num('liters');const amount=ratio>0?liters*1000/ratio:0;document.getElementById('needText').textContent=`물 ${fmt(liters)}L에 약제 ${fmt(amount)}mL`;document.getElementById('result').style.display='block'}
+function calculatePesticide(){const ratio=num('ratio');const liters=num('liters');const amount=ratio>0?liters*1000/ratio:0;document.getElementById('needText').textContent=`물 ${fmt(liters)}L 기준 약제 ${fmt(amount)}mL`;document.getElementById('result').style.display='block'}
 </script>
 </body>
 </html>
