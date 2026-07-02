@@ -62,12 +62,10 @@ async function handleKamis(url, env, cors) {
 
   try {
     const apiUrl = new URL(KAMIS_ENDPOINT);
-    apiUrl.searchParams.set('action', 'dailyPriceByCategoryList');
+    apiUrl.searchParams.set('action', 'dailySalesList');
     apiUrl.searchParams.set('p_cert_key', env.KAMIS_API_KEY);
     apiUrl.searchParams.set('p_cert_id', env.KAMIS_API_ID);
     apiUrl.searchParams.set('p_returntype', 'json');
-    apiUrl.searchParams.set('p_product_cls_code', '01');
-    apiUrl.searchParams.set('p_regday', date);
 
     const response = await fetch(apiUrl, {
       headers: { Accept: 'application/json, text/plain, */*' },
@@ -131,9 +129,9 @@ async function handleNcpms(url, env, cors) {
 
 function normalizeKamisItems(payload, itemQuery, date) {
   const raw = firstArray(
+    payload?.price,
     payload?.data?.item,
     payload?.data,
-    payload?.price,
     payload?.response?.body?.items?.item,
     payload?.items?.item,
     payload?.items
@@ -141,13 +139,13 @@ function normalizeKamisItems(payload, itemQuery, date) {
 
   return raw
     .map(row => {
-      const item = pick(row, ['item_name', 'itemName', 'item', 'productName', 'product_name', '품목명'], itemQuery);
+      const item = compactName(pick(row, ['productName', 'item_name', 'itemname', 'itemName', 'item', 'product_name', '품목명'], itemQuery));
       return {
         item,
-        market: pick(row, ['market_name', 'marketName', 'market', 'countyname', '시장명'], '공공 시세'),
-        date: pick(row, ['regday', 'date', 'yyyy', '조사일자'], date),
+        market: pick(row, ['market_name', 'marketName', 'market', 'countyname', 'product_cls_name', '시장명'], '공공 시세'),
+        date: pick(row, ['lastest_day', 'day1', 'regday', 'date', 'yyyy', '조사일자'], date),
         unit: pick(row, ['unit', 'unit_name', 'unitName', '단위'], '확인 필요'),
-        price: toNullableNumber(pick(row, ['price', 'dpr1', 'dpr2', 'avg_price', '가격'], null)),
+        price: toNullableNumber(pick(row, ['dpr1', 'price', 'dpr2', 'avg_price', '가격'], null)),
         memo: '시장 흐름 참고자료입니다.',
         type: '공공 시세 정보'
       };
@@ -231,10 +229,10 @@ async function parseFlexibleResponse(response) {
 function xmlItems(text) {
   return (String(text).match(/<item[^>]*>[\s\S]*?<\/item>/gi) || []).map(item => ({
     item_name: xmlTag(item, 'item_name') || xmlTag(item, 'itemName'),
-    market_name: xmlTag(item, 'market_name') || xmlTag(item, 'marketName'),
-    regday: xmlTag(item, 'regday'),
+    market_name: xmlTag(item, 'market_name') || xmlTag(item, 'marketName') || xmlTag(item, 'product_cls_name'),
+    regday: xmlTag(item, 'lastest_day') || xmlTag(item, 'day1') || xmlTag(item, 'regday'),
     unit: xmlTag(item, 'unit'),
-    price: xmlTag(item, 'price') || xmlTag(item, 'dpr1')
+    price: xmlTag(item, 'dpr1') || xmlTag(item, 'price')
   }));
 }
 
@@ -293,6 +291,12 @@ function toNullableNumber(value) {
   if (!normalized) return null;
   const number = Number(normalized);
   return Number.isFinite(number) ? number : null;
+}
+
+function compactName(value) {
+  const parts = String(value || '').split('/').map(part => part.trim()).filter(Boolean);
+  if (!parts.length) return String(value || '');
+  return [...new Set(parts)].join(' ');
 }
 
 function cleanText(value) {
