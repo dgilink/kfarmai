@@ -1116,7 +1116,7 @@ const PUBLIC_INFO_CARDS = [
     category: 'pest',
     tags: ['병해충', 'NCPMS', '고추', '토마토', '딸기', '오이', '벼', '잎말림', '반점', '해충'],
     description: '작물별 병해충 정보와 발생환경을 확인합니다.',
-    url: 'public-data.html#pest'
+    url: 'public-data.html#ncpms'
   },
   {
     title: '농업날씨 확인',
@@ -1399,6 +1399,17 @@ function rankPublicInfoCards(result) {
   }).sort((a, b) => (b.score - a.score) || (a.index - b.index));
 }
 
+function publicInfoCardUrl(card, result) {
+  if (card.category !== 'pest') return card.url;
+  const crop = result.crop && result.crop !== '작물·식물' ? result.crop : '';
+  const keyword = asArray(result.symptoms)[0] || asArray(result.tags)[0] || '';
+  const query = new URLSearchParams();
+  query.set('ncpms', '1');
+  if (crop) query.set('crop', crop);
+  if (keyword) query.set('keyword', keyword);
+  return `public-data.html?${query.toString()}#ncpms`;
+}
+
 function renderPublicInfoCards(result) {
   const cards = rankPublicInfoCards(result);
   return `
@@ -1407,7 +1418,7 @@ function renderPublicInfoCards(result) {
       <div class="public-check-desc">AI 결과와 관련해 확인할 수 있는 공공정보 후보입니다. 실제 판단 전 공공정보와 안전사용기준을 함께 확인하세요.</div>
       <div class="public-info-grid">
         ${cards.map(card => `
-          <a class="public-info-card ${card.score ? 'priority' : ''}" href="${escHtml(card.url)}">
+          <a class="public-info-card ${card.score ? 'priority' : ''}" href="${escHtml(publicInfoCardUrl(card, result))}">
             <div class="public-info-card-title">${escHtml(card.title)}</div>
             <div class="public-info-card-desc">${escHtml(card.description)}</div>
             <div class="public-info-card-link">확인하기</div>

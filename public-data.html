@@ -118,6 +118,34 @@
     text-decoration: none; background: var(--green-soft); border: 1px solid #CDEBDD;
     color: var(--green-dark); font-size: 12.5px; font-weight: 900;
   }
+  .ncpms-panel {
+    margin-top: 14px; background: #fff; border: 1px solid var(--border); border-radius: 16px;
+    padding: 14px; box-shadow: 0 8px 24px rgba(17,24,39,.06);
+  }
+  .ncpms-panel:target { outline: 2px solid rgba(29,158,117,.45); outline-offset: 2px; }
+  .ncpms-title { font-size: 17px; font-weight: 900; }
+  .ncpms-desc { margin-top: 7px; color: #374151; font-size: 13px; line-height: 1.55; font-weight: 650; }
+  .ncpms-form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .ncpms-input {
+    width: 100%; height: 42px; border: 1.5px solid #DDE5E0; border-radius: 12px;
+    padding: 0 11px; background: #fff; color: var(--text); font-size: 13px; font-weight: 800;
+  }
+  .ncpms-action {
+    grid-column: 1 / -1; min-height: 42px; border: 0; border-radius: 12px;
+    background: var(--green); color: #fff; font-size: 13px; font-weight: 900; cursor: pointer;
+  }
+  .ncpms-examples { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .ncpms-example {
+    border: 1px solid #CDEBDD; background: var(--green-soft); color: var(--green-dark);
+    border-radius: 999px; padding: 7px 9px; font-size: 11.5px; font-weight: 900; cursor: pointer;
+  }
+  .ncpms-result { margin-top: 12px; display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .ncpms-card { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 14px; padding: 13px; }
+  .ncpms-card-title { margin-top: 8px; font-size: 16px; font-weight: 900; line-height: 1.35; }
+  .ncpms-card-text { margin-top: 7px; color: #374151; font-size: 12.5px; line-height: 1.55; font-weight: 650; white-space: pre-line; }
+  .ncpms-card-text span { display: block; margin-top: 3px; }
+  .ncpms-card-link { margin-top: 10px; display: inline-flex; color: var(--green-dark); font-size: 12px; font-weight: 900; }
+  .ncpms-safe { margin-top: 10px; color: var(--warn); font-size: 12px; line-height: 1.5; font-weight: 850; }
   .cta-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     margin-top: 14px;
@@ -195,9 +223,27 @@
       <div class="loading">공공정보 목록을 불러오는 중입니다.</div>
     </div>
 
+    <section class="ncpms-panel" id="ncpms" aria-label="NCPMS 병해충 정보 확인">
+      <div class="ncpms-title">NCPMS 병해충 정보 확인</div>
+      <p class="ncpms-desc">작물명과 증상 키워드로 공공 병해충 참고 정보를 확인합니다. 결과는 참고자료이며 병명을 확정하지 않습니다.</p>
+      <div class="ncpms-form">
+        <input id="ncpmsCrop" class="ncpms-input" placeholder="작물명 예: 고추">
+        <input id="ncpmsKeyword" class="ncpms-input" placeholder="증상 예: 잎말림">
+        <button id="ncpmsSearch" class="ncpms-action" type="button">공공정보 확인</button>
+      </div>
+      <div class="ncpms-examples">
+        <button class="ncpms-example" type="button" data-crop="고추" data-keyword="잎말림">고추 + 잎말림</button>
+        <button class="ncpms-example" type="button" data-crop="토마토" data-keyword="반점">토마토 + 반점</button>
+        <button class="ncpms-example" type="button" data-crop="딸기" data-keyword="잿빛곰팡이">딸기 + 잿빛곰팡이</button>
+        <button class="ncpms-example" type="button" data-crop="벼" data-keyword="도열병">벼 + 도열병</button>
+      </div>
+      <div class="ncpms-safe">NCPMS 정보는 공공정보 확인용 참고자료입니다. AI 참고 진단 결과를 확정 진단으로 보지 말고, 작물명·증상·발생환경을 함께 확인하세요.</div>
+      <div id="ncpmsResult" class="ncpms-result"></div>
+    </section>
+
     <div class="cta-grid" aria-label="주요 기능 이동">
       <a class="cta" href="ai-safety.html">안전사용기준 확인</a>
-      <a class="cta" href="public-data.html#pest">병해충 정보 확인</a>
+      <a class="cta" href="public-data.html#ncpms">병해충 정보 확인</a>
       <a class="cta" href="agri-weather.html">농업날씨 확인</a>
       <a class="cta" href="market-prices.html">농산물 시세 참고</a>
       <a class="cta" href="agri_map.html">지역 정보 확인</a>
@@ -210,6 +256,11 @@
 'use strict';
 
 const publicInfoEl = document.getElementById('publicInfo');
+const ncpmsCropEl = document.getElementById('ncpmsCrop');
+const ncpmsKeywordEl = document.getElementById('ncpmsKeyword');
+const ncpmsResultEl = document.getElementById('ncpmsResult');
+const KFARMAI_API_BASE = 'https://kfarmai-api.dgilink.workers.dev';
+const NCPMS_FALLBACK_TEXT = 'NCPMS 공공정보를 불러오지 못했습니다. 공식 제공처에서 작물명과 증상을 다시 확인해주세요.';
 
 const FALLBACK_PUBLIC_INFO = [
   {
@@ -224,7 +275,7 @@ const FALLBACK_PUBLIC_INFO = [
     category: 'pest',
     tags: ['병해충', 'NCPMS', '고추', '토마토', '딸기', '오이', '벼', '잎말림', '반점', '해충'],
     description: '작물별 병해충 정보와 발생환경을 확인합니다.',
-    url: 'public-data.html#pest'
+    url: 'public-data.html#ncpms'
   },
   {
     title: '농업날씨 확인',
@@ -275,10 +326,29 @@ function escHtml(value) {
   }[ch]));
 }
 
+function cleanPublicText(value) {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = String(value || '')
+    .replace(/&lt;br\s*\/?&gt;/gi, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/&#xD;|&#13;|\r/gi, '\n');
+  return textarea.value
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\n\s+/g, '\n')
+    .replace(/[ \t]+/g, ' ')
+    .trim();
+}
+
 function cardId(item) {
   if (item.category === 'safety') return 'safety';
   if (item.category === 'pest') return 'pest';
   return '';
+}
+
+function publicInfoUrl(item) {
+  if (item.category === 'pest') return 'public-data.html#ncpms';
+  return item.url;
 }
 
 function renderInfoCard(item) {
@@ -294,7 +364,7 @@ function renderInfoCard(item) {
       <div class="tag-list">
         ${tags.map(tag => `<span class="tag">${escHtml(tag)}</span>`).join('')}
       </div>
-      <a class="info-link" href="${escHtml(item.url)}">확인하기</a>
+      <a class="info-link" href="${escHtml(publicInfoUrl(item))}">확인하기</a>
     </article>`;
 }
 
@@ -314,6 +384,69 @@ async function loadPublicInfo() {
 }
 
 loadPublicInfo();
+
+function renderNcpmsMessage(message) {
+  ncpmsResultEl.innerHTML = `<div class="error">${escHtml(message)}</div>`;
+}
+
+function renderNcpmsCards(items) {
+  ncpmsResultEl.innerHTML = items.map(item => `
+    <article class="ncpms-card">
+      <span class="category">${escHtml(item.type || '참고자료')}</span>
+      <div class="ncpms-card-title">${escHtml(item.cropName || '작물명 확인')} · ${escHtml(item.name || '병해충명 확인')}</div>
+      <div class="ncpms-card-text"><strong>증상 참고</strong><span>${escHtml(cleanPublicText(item.symptoms) || '공식 제공처에서 증상 정보를 함께 확인하세요.')}</span></div>
+      <div class="ncpms-card-text"><strong>발생환경 참고</strong><span>${escHtml(cleanPublicText(item.environment) || '지역·재배환경에 따라 달라질 수 있습니다.')}</span></div>
+      <div class="ncpms-card-text"><strong>공공자료 기반 확인 정보</strong><span>${escHtml(cleanPublicText(item.prevention) || '공식 제공처와 안전사용기준을 함께 확인하세요.')}</span></div>
+      <a class="ncpms-card-link" href="${escHtml(item.officialUrl || 'https://ncpms.rda.go.kr/')}" target="_blank" rel="noopener">공식 정보 확인</a>
+    </article>
+  `).join('');
+}
+
+async function loadNcpmsInfo(crop, keyword) {
+  const safeCrop = String(crop || '').trim();
+  const safeKeyword = String(keyword || '').trim();
+  if (!safeCrop && !safeKeyword) {
+    renderNcpmsMessage('작물명 또는 증상 키워드를 입력해주세요.');
+    return;
+  }
+  ncpmsResultEl.innerHTML = '<div class="loading">NCPMS 공공정보를 확인하는 중입니다.</div>';
+  try {
+    const url = new URL('/api/ncpms/diseases', KFARMAI_API_BASE);
+    if (safeCrop) url.searchParams.set('crop', safeCrop);
+    if (safeKeyword) url.searchParams.set('keyword', safeKeyword);
+    const res = await fetch(url.toString(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP_' + res.status);
+    const data = await res.json();
+    if (data.fallback || !Array.isArray(data.items) || !data.items.length) {
+      renderNcpmsMessage(data.notice || NCPMS_FALLBACK_TEXT);
+      return;
+    }
+    renderNcpmsCards(data.items);
+  } catch (err) {
+    renderNcpmsMessage(NCPMS_FALLBACK_TEXT);
+  }
+}
+
+document.getElementById('ncpmsSearch')?.addEventListener('click', () => {
+  loadNcpmsInfo(ncpmsCropEl.value, ncpmsKeywordEl.value);
+});
+
+document.querySelectorAll('.ncpms-example').forEach(button => {
+  button.addEventListener('click', () => {
+    ncpmsCropEl.value = button.dataset.crop || '';
+    ncpmsKeywordEl.value = button.dataset.keyword || '';
+    loadNcpmsInfo(ncpmsCropEl.value, ncpmsKeywordEl.value);
+  });
+});
+
+const params = new URLSearchParams(location.search);
+if (params.get('crop') || params.get('keyword')) {
+  ncpmsCropEl.value = params.get('crop') || '';
+  ncpmsKeywordEl.value = params.get('keyword') || '';
+  if (location.hash === '#ncpms' || params.get('ncpms') === '1') {
+    loadNcpmsInfo(ncpmsCropEl.value, ncpmsKeywordEl.value);
+  }
+}
 </script>
 </body>
 </html>
