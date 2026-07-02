@@ -98,23 +98,18 @@ async function handleNcpms(url, env, cors) {
   }
 
   try {
-    const apiUrl = new URL(NCPMS_ENDPOINT);
-    apiUrl.searchParams.set('apiKey', env.NCPMS_API_KEY);
-    apiUrl.searchParams.set('serviceCode', 'SVC01');
-    apiUrl.searchParams.set('serviceType', 'AA001');
-    apiUrl.searchParams.set('displayCount', '30');
-    apiUrl.searchParams.set('startPoint', '1');
+    const listRows = await fetchNcpmsList(env.NCPMS_API_KEY, crop);
+    if (!listRows.length) throw new Error('ncpms_empty_list');
 
-    const response = await fetch(apiUrl, {
-      headers: { Accept: 'application/json, application/xml, text/xml, */*' },
-      cf: { cacheTtl: 86400, cacheEverything: true }
-    });
-    if (!response.ok) throw new Error(`ncpms_http_${response.status}`);
-
-    const text = await response.text();
-    const items = normalizeNcpmsItems(text)
-      .filter(row => matchesDisease(row, crop, keyword))
-      .slice(0, 20);
+    const detailRows = await Promise.all(
+      listRows.slice(0, 24).map(row => fetchNcpmsDetail(env.NCPMS_API_KEY, row))
+    );
+    const normalized = detailRows
+      .filter(row => row.name || row.cropName)
+      .sort((a, b) => diseaseScore(b, crop, keyword) - diseaseScore(a, crop, keyword));
+    const keywordMatches = keyword ? normalized.filter(row => diseaseScore(row, '', keyword) > 0) : normalized;
+    const items = (keywordMatches.length ? keywordMatches : normalized).slice(0, 12);
+    if (!items.length) throw new Error('ncpms_empty_items');
 
     return json({
       source: 'NCPMS',
@@ -124,6 +119,44 @@ async function handleNcpms(url, env, cors) {
     }, 200, cors, NCPMS_CACHE);
   } catch (error) {
     return json(ncpmsFallback(), 200, cors, NCPMS_CACHE);
+  }
+}
+
+async function fetchNcpmsList(apiKey, crop) {
+  const apiUrl = new URL(NCPMS_ENDPOINT);
+  apiUrl.searchParams.set('apiKey', apiKey);
+  apiUrl.searchParams.set('serviceCode', 'SVC01');
+  apiUrl.searchParams.set('serviceType', 'AA001');
+  apiUrl.searchParams.set('displayCount', '50');
+  apiUrl.searchParams.set('startPoint', '1');
+  if (crop) apiUrl.searchParams.set('cropName', crop);
+
+  const response = await fetch(apiUrl, {
+    headers: { Accept: 'application/xml, text/xml, */*' },
+    cf: { cacheTtl: 86400, cacheEverything: true }
+  });
+  if (!response.ok) throw new Error(`ncpms_list_http_${response.status}`);
+  return normalizeNcpmsList(await response.text());
+}
+
+async function fetchNcpmsDetail(apiKey, listRow) {
+  if (!listRow.sickKey) return normalizeNcpmsRow(listRow);
+
+  const apiUrl = new URL(NCPMS_ENDPOINT);
+  apiUrl.searchParams.set('apiKey', apiKey);
+  apiUrl.searchParams.set('serviceCode', 'SVC05');
+  apiUrl.searchParams.set('serviceType', 'AA001');
+  apiUrl.searchParams.set('sickKey', listRow.sickKey);
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: { Accept: 'application/xml, text/xml, */*' },
+      cf: { cacheTtl: 86400, cacheEverything: true }
+    });
+    if (!response.ok) throw new Error(`ncpms_detail_http_${response.status}`);
+    return normalizeNcpmsDetail(await response.text(), listRow);
+  } catch {
+    return normalizeNcpmsRow(listRow);
   }
 }
 
@@ -153,40 +186,60 @@ function normalizeKamisItems(payload, itemQuery, date) {
     .filter(row => matchesText(row.item, itemQuery));
 }
 
-function normalizeNcpmsItems(text) {
+function normalizeNcpmsList(text) {
   try {
     const jsonPayload = JSON.parse(text);
     const raw = firstArray(
+      jsonPayload?.service?.items?.item,
       jsonPayload?.response?.body?.items?.item,
       jsonPayload?.body?.items?.item,
       jsonPayload?.items?.item,
       jsonPayload?.items
     );
-    return raw.map(normalizeNcpmsRow).filter(row => row.sickNameKor || row.cropName);
+    return raw.map(normalizeNcpmsRow).filter(row => row.sickKey || row.name || row.cropName);
   } catch {
     const itemXml = String(text).match(/<item[^>]*>[\s\S]*?<\/item>/gi) || [];
     return itemXml.map(row => normalizeNcpmsRow({
       sickKey: xmlTag(row, 'sickKey'),
       sickNameKor: xmlTag(row, 'sickNameKor') || xmlTag(row, 'sickName'),
       cropName: xmlTag(row, 'cropName'),
-      symptoms: xmlTag(row, 'symptoms'),
-      preventionMethod: xmlTag(row, 'preventionMethod'),
-      pathogenName: xmlTag(row, 'pathogenName'),
-      occurrenceCondition: xmlTag(row, 'environment')
-    })).filter(row => row.sickNameKor || row.cropName);
+      thumbImg: xmlTag(row, 'thumbImg'),
+      oriImg: xmlTag(row, 'oriImg')
+    })).filter(row => row.sickKey || row.name || row.cropName);
+  }
+}
+
+function normalizeNcpmsDetail(text, fallbackRow) {
+  try {
+    const jsonPayload = JSON.parse(text);
+    return normalizeNcpmsRow({ ...fallbackRow, ...(jsonPayload?.service || jsonPayload) });
+  } catch {
+    return normalizeNcpmsRow({
+      ...fallbackRow,
+      cropName: xmlTag(text, 'cropName') || fallbackRow.cropName,
+      sickNameKor: xmlTag(text, 'sickNameKor') || fallbackRow.name,
+      symptoms: xmlTag(text, 'symptoms'),
+      developmentCondition: xmlTag(text, 'developmentCondition'),
+      preventionMethod: xmlTag(text, 'preventionMethod'),
+      pathogenName: xmlTag(text, 'pathogenName'),
+      thumbImg: xmlTag(text, 'thumbImg'),
+      oriImg: xmlTag(text, 'oriImg')
+    });
   }
 }
 
 function normalizeNcpmsRow(row) {
+  const name = pick(row, ['name', 'sickNameKor', 'sickName'], '');
   return {
     sickKey: pick(row, ['sickKey'], ''),
     cropName: pick(row, ['cropName'], ''),
-    sickNameKor: pick(row, ['sickNameKor', 'sickName'], ''),
-    symptoms: pick(row, ['symptoms'], ''),
-    occurrenceCondition: pick(row, ['environment', 'occurrenceCondition'], ''),
-    preventionMethod: pick(row, ['preventionMethod'], ''),
-    pathogenName: pick(row, ['pathogenName'], ''),
-    memo: '공공정보 확인과 안전사용기준 확인이 필요합니다.'
+    name,
+    type: classifyDisease(name),
+    symptoms: stripHtml(pick(row, ['symptoms'], '')),
+    environment: stripHtml(pick(row, ['developmentCondition', 'environment', 'occurrenceCondition'], '')),
+    prevention: stripHtml(pick(row, ['preventionMethod'], '')),
+    imageUrl: pick(row, ['thumbImg', 'oriImg', 'imageUrl', 'image'], ''),
+    officialUrl: 'https://ncpms.rda.go.kr/'
   };
 }
 
@@ -213,7 +266,7 @@ function ncpmsFallback() {
     source: 'NCPMS',
     items: [],
     fallback: true,
-    notice: SAFE_NCPMS_NOTICE
+    notice: 'NCPMS 공공정보를 불러오지 못했습니다. 공식 제공처에서 작물명과 증상을 다시 확인해주세요.'
   };
 }
 
@@ -281,9 +334,13 @@ function matchesText(value, query) {
   return String(value || '').toLowerCase().includes(String(query).toLowerCase());
 }
 
-function matchesDisease(row, crop, keyword) {
-  const text = [row.cropName, row.sickNameKor, row.symptoms, row.occurrenceCondition].join(' ');
-  return (!crop || matchesText(text, crop)) && (!keyword || matchesText(text, keyword));
+function diseaseScore(row, crop, keyword) {
+  const detailText = [row.symptoms, row.environment, row.prevention].join(' ');
+  let score = 0;
+  if (crop && matchesText(row.cropName, crop)) score += 2;
+  if (keyword && matchesText(row.name, keyword)) score += 8;
+  if (keyword && matchesText(detailText, keyword)) score += 3;
+  return score;
 }
 
 function toNullableNumber(value) {
@@ -297,6 +354,18 @@ function compactName(value) {
   const parts = String(value || '').split('/').map(part => part.trim()).filter(Boolean);
   if (!parts.length) return String(value || '');
   return [...new Set(parts)].join(' ');
+}
+
+function stripHtml(value) {
+  return String(value || '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function classifyDisease(name) {
+  return String(name || '').includes('충') ? '해충' : '병';
 }
 
 function cleanText(value) {
