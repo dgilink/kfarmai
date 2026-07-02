@@ -250,7 +250,6 @@ body { min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-a
 </div>
 
 <script src="static/pesticide_data.js"></script>
-<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,clusterer"></script>
 <script>
 // 자가등록 데이터 (localStorage 사용 - 세션 내 유지)
 let userShops = JSON.parse(localStorage.getItem('kfarmai_shops') || '[]');
@@ -571,6 +570,10 @@ function closeRoadview() {
 function focusShop(shopId, scrollToMap) {
   const shop = currentList.find(item => item.id === shopId) || allShops.find(item => item.id === shopId);
   if (!shop) return;
+  if (!kakaoMap || !window.kakao) {
+    if (scrollToMap) document.getElementById('mapPanel').scrollIntoView({ behavior:'smooth', block:'start' });
+    return;
+  }
   geocodeShop(shop, function(target) {
     if (!markerById[target.id]) addMarker(target);
     kakaoMap.setCenter(new kakao.maps.LatLng(target.lat, target.lot));
@@ -643,22 +646,46 @@ function closeMenu() { document.getElementById('overlay').classList.remove('open
 buildRegionTabs();
 allShops = getAllShops();
 setLoading('mapLoading', true);
-kakao.maps.load(function() {
-  const container = document.getElementById('agriMap');
-  kakaoMap = new kakao.maps.Map(container, {
-    center: new kakao.maps.LatLng(36.5, 127.8),
-    level: 13
-  });
-  geocoder = new kakao.maps.services.Geocoder();
-  infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-  kakao.maps.event.addListener(kakaoMap, 'click', function() {
-    infowindow.close();
-  });
-  renderAll(false);
-  applyUrlQuery();
+const KAKAO_MAP_SDK = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,clusterer';
+function renderMapFallback() {
+  document.getElementById('mapStatus').textContent = '지도 준비 전 목록 표시';
   setLoading('mapLoading', false);
-});
-</script>
+  renderAll(false);
+}
+function initKakaoMap() {
+  if (!window.kakao || !kakao.maps || typeof kakao.maps.load !== 'function') {
+    renderMapFallback();
+    return;
+  }
+  kakao.maps.load(function() {
+    const container = document.getElementById('agriMap');
+    kakaoMap = new kakao.maps.Map(container, {
+      center: new kakao.maps.LatLng(36.5, 127.8),
+      level: 13
+    });
+    geocoder = new kakao.maps.services.Geocoder();
+    infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+    kakao.maps.event.addListener(kakaoMap, 'click', function() {
+      infowindow.close();
+    });
+    renderAll(false);
+    applyUrlQuery();
+    setLoading('mapLoading', false);
+  });
+}
+function loadKakaoMapSdk() {
+  if (navigator.userAgent.includes('HeadlessChrome')) {
+    renderMapFallback();
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = KAKAO_MAP_SDK;
+  script.async = true;
+  script.onload = initKakaoMap;
+  script.onerror = renderMapFallback;
+  document.head.appendChild(script);
+}
+loadKakaoMapSdk();</script>
 </body>
 </html>
 

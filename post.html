@@ -193,7 +193,7 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="image-modal" id="imageModal" onclick="closeImageModal()"><button type="button" onclick="closeImageModal()">&times;</button><img id="imageModalImg" src="" alt="확대 이미지"></div>
+<div class="image-modal" id="imageModal" onclick="closeImageModal()"><button type="button" onclick="closeImageModal()">&times;</button><img id="imageModalImg" alt="확대 이미지"></div>
 <div class="edit-modal-overlay" id="editPostModal" onclick="if(event.target===this)closeEditPostModal()">
   <div class="edit-modal">
     <div class="edit-modal-title">게시글 수정</div>
@@ -278,7 +278,7 @@ function renderPost(post) {
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
-function closeImageModal(){document.getElementById('imageModal').classList.remove('show');document.getElementById('imageModalImg').src='';}
+function closeImageModal(){document.getElementById('imageModal').classList.remove('show');document.getElementById('imageModalImg').removeAttribute('src');}
 function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.category||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=currentPost.content||'';document.getElementById('editPostModal').classList.add('open');}
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
 async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const {error}=await sb.from('posts').update({title,content,category:category||null}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){showToast(err.message||'수정에 실패했습니다.');}finally{btn.disabled=false;}}

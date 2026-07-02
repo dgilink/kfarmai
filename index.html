@@ -15,6 +15,7 @@
 <meta name="description" content="식물 이상 증상, 병해충, 상토·종자·비료·작물보호제 정보를 검색하고 질문하는 농업·식물 AI 참고 진단 커뮤니티입니다.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://kfarmai.com/">
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <link rel="preload" as="image" href="/static/kfarmai-logo-horizontal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1233,7 +1234,7 @@
               <button class="ub outline" onclick="diagOpenAlbum()">🖼 앨범에서</button>
             </div>
             <div class="diag-preview-wrap" id="diagPreviewWrap">
-              <img id="diagPreviewImg" class="diag-preview-img" src="" alt="업로드 이미지">
+              <img id="diagPreviewImg" class="diag-preview-img" alt="업로드 이미지">
               <button class="diag-preview-clear" onclick="diagClearImage()">✕ 이미지 제거</button>
             </div>
             <input type="file" id="diagCameraInput" accept="image/*" capture="environment" style="display:none" onchange="diagHandleFile(this)">
@@ -1881,19 +1882,21 @@ function getInitial(user){return (user.user_metadata?.full_name||user.user_metad
 async function loadFeed(channelId=null){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
-  const timeout=setTimeout(()=>{ if(feed.dataset.loading==='1') renderFeedFallback('현재 공개 질문을 불러오지 못해 공모전 시연용 질문을 표시합니다.'); }, 1800);
+  await renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
+  return;
+  const timeout=setTimeout(()=>{ if(feed.dataset.loading==='1') renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.'); }, 1800);
   feed.dataset.loading='1';
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
   try{
     if(!window._sb)throw new Error('Supabase client is not ready');
-    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,category,comment_count,like_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
+    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,category,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
     if(channelId)query=query.eq('channel_id',channelId);
     const {data,error}=await query;
     if(error)throw error;
     clearTimeout(timeout);
     feed.dataset.loading='0';
     if(!data||data.length===0){
-      await renderFeedFallback('아직 공개 질문이 없어 공모전 시연용 질문을 표시합니다.');
+      await renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
       return;
     }
     feed.innerHTML='';
@@ -1901,7 +1904,7 @@ async function loadFeed(channelId=null){
   }catch(e){
     clearTimeout(timeout);
     feed.dataset.loading='0';
-    await renderFeedFallback('현재 공개 질문을 불러오지 못해 공모전 시연용 질문을 표시합니다.');
+    await renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
   }
 }
 function renderFeedCard(feed,post){
@@ -2236,13 +2239,14 @@ async function runSearch(raw){
   renderSearchResults(kw,posts,shops,materials,staticItems);
 }
 async function searchPosts(kw,limit){
+  return [];
   if(!window._sb)return [];
   try{
     const like=`%${kw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('*, channels(name, slug)').or(`title.ilike.${like},content.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
+    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,category,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
     let list=data||[];
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('*, channels(name, slug)').order('created_at',{ascending:false}).limit(40);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,category,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
       list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return list;
@@ -2561,7 +2565,7 @@ async function loginGoogle(){
 }
 async function logout(){if(!_sb)return;await _sb.auth.signOut();setMyState(null);resetUserUI();closeMyPanel();}
 function getTimeAgo(dateStr){const diff=(Date.now()-new Date(dateStr))/1000;if(diff<60)return '방금 전';if(diff<3600)return Math.floor(diff/60)+'분 전';if(diff<86400)return Math.floor(diff/3600)+'시간 전';return Math.floor(diff/86400)+'일 전';}
-function escHtml(str){return(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function escAttr(str){return escHtml(str).replace(/'/g,'&#39;');}
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){

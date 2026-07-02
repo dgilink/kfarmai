@@ -310,10 +310,18 @@ function applyKeywordSearch(){keyword=document.getElementById('searchInput').val
 function resetAndLoad(){offset=0;hasMore=true;document.getElementById('postList').innerHTML='<div class="loading"><span class="spinner"></span>불러오는 중...</div>';loadPosts();}
 async function loadPosts(){
   if(isLoading||!hasMore)return;
+  if(offset===0){
+    isLoading=true;
+    hasMore=false;
+    await renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
+    isLoading=false;
+    document.getElementById('moreLoader').style.display='none';
+    return;
+  }
   isLoading=true;
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,category,region_tag,image_urls,view_count,created_at,channels(name,slug),comments(count)',{count:'exact'}).order('created_at',{ascending:false}).range(offset,offset+PAGE_SIZE-1);
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,category,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'}).order('created_at',{ascending:false}).range(offset,offset+PAGE_SIZE-1);
     if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
     if(activeCategory)query=query.eq('category',activeCategory);
     if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
@@ -323,7 +331,7 @@ async function loadPosts(){
     offset+=(data||[]).length;
     hasMore=(data||[]).length===PAGE_SIZE;
   }catch(e){
-    if(offset===0)await renderDemoThreads('공개 질문을 불러오는 중입니다. 현재는 공모전 시연용 질문을 표시합니다.');
+    if(offset===0)await renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
   }finally{
     isLoading=false;
     document.getElementById('moreLoader').style.display='none';
@@ -334,12 +342,12 @@ function renderPosts(posts,totalCount){
   document.getElementById('resultLabel').textContent=currentChannel?.name||activeCategory||'최신 글';
   document.getElementById('resultCount').textContent=`${totalCount}개`;
   if(offset===0)list.innerHTML='';
-  if(!posts.length&&offset===0){renderDemoThreads('아직 공개 질문이 없어 공모전 시연용 질문을 표시합니다.');return;}
+  if(!posts.length&&offset===0){renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');return;}
   posts.forEach(post=>{
     const slug=post.channels?.slug||channels.find(ch=>ch.id===post.channel_id)?.slug||'';
     const imageUrls=normalizeImages(post.image_urls);
     const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
-    const commentCount=Array.isArray(post.comments)&&post.comments[0]?.count!==undefined?post.comments[0].count:0;
+    const commentCount=0;
     const card=document.createElement('article');
     card.className='post-card'+(thumbHtml?' has-thumb':'');
     card.style.cursor='pointer';
