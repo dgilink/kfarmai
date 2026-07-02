@@ -1,0 +1,8 @@
+name = "kfarmai-api"
+main = "src/index.js"
+compatibility_date = "2026-07-02"
+
+# Register secrets outside Git:
+# wrangler secret put KAMIS_API_KEY
+# wrangler secret put KAMIS_API_ID
+# wrangler secret put NCPMS_API_KEY
