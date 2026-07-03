@@ -5,36 +5,108 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>농업날씨 - kFarmAI</title>
 <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
-<meta name="description" content="기온, 강수확률, 강수량, 습도, 풍속을 농작업 참고 정보로 확인합니다.">
+<meta name="description" content="기온, 강수, 습도, 풍속을 농작업 참고 정보와 작물별 체크포인트로 확인합니다.">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}.app{max-width:480px;min-height:100dvh;margin:0 auto;background:#F5F6F8}.header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ECEEF2;padding:12px 14px 14px;z-index:5}.top{display:flex;align-items:center;justify-content:space-between}.brand img{max-width:180px;height:auto}.home{border:1px solid #CDEBDD;background:#E8F6F0;color:#157A5A;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}h1{margin-top:12px;font-size:23px;line-height:1.28}.sub{margin-top:7px;color:#6B7280;font-size:13px;line-height:1.55}.content{padding:14px 14px 90px}.card{background:#fff;border:1px solid #ECEEF2;border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 8px 24px rgba(17,24,39,.05)}.label{font-size:12px;font-weight:900;color:#157A5A}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.metric{border-radius:12px;background:#F8FAFC;border:1px solid #E5E7EB;padding:10px;min-height:72px}.metric b{display:block;font-size:17px}.metric span{display:block;margin-top:4px;font-size:11px;color:#6B7280;font-weight:800}.select{width:100%;height:42px;border:1.5px solid #DDE5E0;border-radius:12px;padding:0 12px;background:#fff;font-weight:800}.advice{margin-top:10px;padding:11px;border-radius:12px;background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;font-size:12.5px;line-height:1.55;font-weight:750}.warn{background:#FFF7ED;border-color:#FED7AA;color:#9A3412}.cta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.cta a{min-height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:9px;background:#E8F6F0;color:#157A5A;border:1px solid #CDEBDD;font-size:12px;font-weight:900}.cta a:nth-child(2n){background:#111827;color:#fff;border-color:#111827}.safe{font-size:12px;line-height:1.6;color:#5D4400;background:#FFF8E1;border:1px solid #FDE68A;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.source{font-size:11px;color:#6B7280;margin-top:7px}.error{background:#fff;border:1px solid #FED7AA;color:#9A3412;border-radius:16px;padding:14px;margin-bottom:10px;font-size:13px;line-height:1.6;font-weight:800}
+*{box-sizing:border-box;margin:0;padding:0}body{background:#0a0a0a;color:#17202a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}a{text-decoration:none;color:inherit}.app{max-width:480px;min-height:100dvh;margin:0 auto;background:#F5F6F8}.header{position:sticky;top:0;background:#fff;border-bottom:1px solid #ECEEF2;padding:12px 14px 14px;z-index:5}.top{display:flex;align-items:center;justify-content:space-between}.brand img{max-width:180px;height:auto}.home{border:1px solid #CDEBDD;background:#E8F6F0;color:#157A5A;border-radius:999px;padding:8px 11px;font-size:12px;font-weight:900}h1{margin-top:12px;font-size:23px;line-height:1.28}.sub{margin-top:7px;color:#4B5563;font-size:13px;line-height:1.55}.content{padding:14px 14px 90px}.card{background:#fff;border:1px solid #ECEEF2;border-radius:16px;padding:13px;margin-bottom:10px;box-shadow:0 8px 24px rgba(17,24,39,.05)}.label{font-size:12px;font-weight:950;color:#157A5A;margin-bottom:8px}.hint{font-size:12px;color:#6B7280;line-height:1.5}.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:3px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}.chip{flex:0 0 auto;border:1px solid #DDE5E0;background:#fff;color:#374151;border-radius:999px;padding:8px 10px;font-size:12px;font-weight:900;cursor:pointer}.chip.active{background:#157A5A;border-color:#157A5A;color:#fff}.chip.secondary.active{background:#111827;border-color:#111827}.search{width:100%;height:40px;border:1.5px solid #DDE5E0;border-radius:12px;padding:0 11px;background:#fff;font-size:13px;font-weight:850;margin:10px 0 8px}.crop-list{display:flex;flex-wrap:wrap;gap:7px;max-height:148px;overflow-y:auto;padding-right:2px}.crop-chip{border:1px solid #DDE5E0;background:#fff;border-radius:999px;padding:7px 9px;font-size:12px;font-weight:850;color:#263238;cursor:pointer}.crop-chip.active{border-color:#157A5A;background:#E8F6F0;color:#157A5A}.weather-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.metric{border-radius:12px;background:#F8FAFC;border:1px solid #E5E7EB;padding:9px;min-height:68px}.metric b{display:block;font-size:15px;line-height:1.25}.metric span{display:block;margin-top:4px;font-size:10.5px;color:#6B7280;font-weight:850}.summary{background:#F0FDF4;border-color:#BBF7D0}.summary b,.work-card b{display:block;font-size:14px;margin-bottom:6px}.summary p,.work-card p{font-size:12.5px;line-height:1.62;color:#1F2937}.type-note{background:#F8FAFC;border-color:#E5E7EB}.work-grid{display:grid;grid-template-columns:1fr;gap:8px}.work-card{border-radius:14px;border:1px solid #E5E7EB;background:#fff;padding:11px}.point-list{display:grid;gap:8px;margin-top:8px}.point{border-left:3px solid #157A5A;background:#F8FAFC;border-radius:10px;padding:9px 10px;font-size:12.5px;line-height:1.55;color:#263238}.safe{font-size:12px;line-height:1.6;color:#5D4400;background:#FFF8E1;border:1px solid #FDE68A;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.cta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.cta a{min-height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;text-align:center;padding:9px;background:#E8F6F0;color:#157A5A;border:1px solid #CDEBDD;font-size:12px;font-weight:900}.cta a:nth-child(2n){background:#111827;color:#fff;border-color:#111827}.official{margin-top:10px;background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:12px}.official p{font-size:12px;line-height:1.55;color:#4B5563}.official a{display:inline-flex;margin-top:8px;color:#157A5A;font-size:12px;font-weight:950}.error{background:#fff;border:1px solid #FED7AA;color:#9A3412;border-radius:16px;padding:14px;margin-bottom:10px;font-size:13px;line-height:1.6;font-weight:800}
+body{background:#E8F1EA;color:#111827}.app{background:linear-gradient(180deg,#F3F7F2 0%,#F7F9F6 46%,#F5F7F5 100%)}.header{border-bottom:1px solid #DDE8DF;box-shadow:0 8px 28px rgba(22,122,82,.08)}.brand img{display:block;max-width:172px}.home{border-color:#BFE5D2;background:#E7F6EE;color:#167A52}.content{padding:12px 12px 88px}.card{border-color:#E1E8E2;border-radius:15px;padding:12px;margin-bottom:9px;box-shadow:0 10px 24px rgba(17,24,39,.055)}.label{font-size:13px;color:#167A52;letter-spacing:0}.label::before{content:"";display:inline-block;width:5px;height:14px;margin-right:6px;border-radius:99px;background:#167A52;vertical-align:-2px}.sub,.hint{color:#64748B}.chip{border-color:#D9E4DA;color:#243128;background:#fff}.chip.active{background:#167A52;border-color:#167A52;color:#fff}.chip.secondary.active{background:#14532D;border-color:#14532D}.search{border-color:#D8E5DA;border-radius:11px}.crop-list{max-height:170px}.crop-chip{border-color:#DDE7DF;background:#fff;color:#1F2937}.crop-chip.active{border-color:#167A52;background:#E8F6F0;color:#166534}.metric{background:#FAFCFA;border-color:#E1E8E2;min-height:62px}.metric b{color:#111827}.summary{background:#EFFAF2;border-color:#BDE8C9}.point{border-left-color:#167A52;background:#F8FAF8}.safe{background:#FFF7ED;border-color:#FED7AA;color:#7C2D12}.cta a{background:#E8F6F0;color:#166534;border-color:#BFE5D2}.cta a:nth-child(2n){background:#167A52;border-color:#167A52;color:#fff}.official{border-color:#E1E8E2}
 </style>
 </head>
 <body>
 <main class="app">
   <header class="header">
     <div class="top"><a class="brand" href="index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div>
-    <h1>농업날씨</h1>
-    <p class="sub">기온, 강수확률, 강수량, 습도, 풍속을 함께 보며 농작업 전 참고할 정보를 정리합니다. 날씨 정보는 농작업 참고자료이며, 실제 작업 여부는 현장 상황을 함께 확인하세요.</p>
+    <h1>농업날씨 체크포인트</h1>
+    <p class="sub">농작업 전 기온, 강수, 습도, 풍속을 함께 확인하세요. 실제 작업 여부는 현장 상황과 공식 정보를 함께 확인해야 합니다.</p>
   </header>
   <section class="content">
-    <div class="card"><div class="label">지역 선택</div><select class="select" id="regionSelect"></select><div class="source" id="sourceText"></div></div>
-    <div id="weatherCards"></div>
-    <div class="card warn"><b>농작업 참고 문구</b><p class="sub">비가 오거나 습도가 높을 경우 방제 작업 전후 주의가 필요할 수 있습니다. 고온이 지속될 경우 잎 말림, 시듦, 생육 저하가 나타날 수 있으므로 관수와 차광 상태를 확인하세요.</p></div>
-    <div class="safe">날씨 정보는 공공정보 기반 참고자료입니다. 병해충 발생을 예측하거나 작업을 단정하지 않으며, 기상청 등 공식 제공처와 현장 상황을 함께 확인하세요.</div>
-    <div class="cta"><a href="diagnosis.html">AI 참고 진단</a><a href="public-data.html">공공정보 확인</a><a href="channel.html">관련 질문 보기</a><a href="crop-guide.html">재배가이드 확인</a></div>
+    <div class="card">
+      <div class="label">권역 선택</div>
+      <div class="chips" id="areaChips"></div>
+      <div class="label" style="margin-top:11px">지역 선택</div>
+      <div class="chips" id="regionChips"></div>
+    </div>
+    <div class="card">
+      <div class="label">재배유형</div>
+      <div class="chips" id="typeChips"></div>
+      <div id="typeNote" class="point type-note"></div>
+    </div>
+    <div class="card">
+      <div class="label">작물·식물 선택</div>
+      <div class="chips" id="categoryChips"></div>
+      <input id="cropSearch" class="search" placeholder="작물명 또는 초성 예: ㄱㅊ, ㅌㅁㅌ, ㅁㅅㅌㄹ">
+      <div class="crop-list" id="cropList"></div>
+    </div>
+    <div id="weatherPanel"></div>
+    <div id="summaryPanel"></div>
+    <div id="workPanel"></div>
+    <div id="cropPanel"></div>
+    <div class="safe">날씨 정보는 농작업 참고자료입니다. 작업 여부를 단정하지 않으며, 현장 상황과 공식 제공처 정보를 함께 확인하세요.</div>
+    <div class="cta">
+      <a href="diagnosis.html">AI 참고 진단</a>
+      <a id="ncpmsLink" href="public-data.html#ncpms">NCPMS 병해충 정보</a>
+      <a href="crop-guide.html">재배가이드</a>
+      <a href="channel.html">관련 질문 보기</a>
+      <a href="public-data.html">공공정보 확인</a>
+      <a href="https://weather.rda.go.kr/" target="_blank" rel="noopener">농업날씨365 공식 확인</a>
+    </div>
+    <div class="official">
+      <p>농업날씨365는 농업기상 정보를 확인할 수 있는 공식 서비스입니다. kFarmAI의 농업날씨 요약은 참고자료이며, 자세한 관측 정보는 공식 서비스를 함께 확인하세요.</p>
+      <a href="https://weather.rda.go.kr/" target="_blank" rel="noopener">농업날씨365 공식 서비스 열기</a>
+    </div>
   </section>
 </main>
 <script>
 'use strict';
 const $=s=>document.querySelector(s);
-const FALLBACK={source:'시제품 단계 샘플 날씨 참고 정보',regions:[{id:'suncheon',name:'전남 순천',today:{tempC:27,rainProbability:30,rainMm:1,humidity:78,windMs:1.8},tomorrow:{tempC:29,rainProbability:40,rainMm:3,humidity:82,windMs:2.2}},{id:'naju',name:'전남 나주',today:{tempC:28,rainProbability:20,rainMm:0,humidity:72,windMs:1.5},tomorrow:{tempC:30,rainProbability:30,rainMm:1,humidity:76,windMs:2.0}}]};
-function display(value,suffix=''){return value===undefined||value===null||value===''?'확인 필요':`${value}${suffix}`}
-function metric(label,value){return `<div class="metric"><b>${value}</b><span>${label}</span></div>`}
-function advice(d){const notes=[];if(Number(d.rainProbability)>=40||Number(d.rainMm)>0||Number(d.humidity)>=80)notes.push('비 또는 높은 습도가 예상되면 방제 작업 전후 주의가 필요할 수 있습니다.');if(Number(d.tempC)>=30)notes.push('고온이 지속될 경우 관수와 차광 상태를 확인하세요.');if(Number(d.windMs)>=4)notes.push('풍속이 높을 경우 살포 작업과 시설물 상태를 다시 확인하세요.');return notes.length?notes.join(' '):'현재 수치는 농작업 전 확인할 참고 정보입니다. 실제 작업 여부는 현장 상황과 공식 정보를 함께 확인하세요.'}
-function renderDay(title,d){return `<article class="card"><div class="label">${title}</div><div class="grid">${metric('기온',display(d.tempC,'℃'))}${metric('강수확률',display(d.rainProbability,'%'))}${metric('강수량',display(d.rainMm,'mm'))}${metric('습도',display(d.humidity,'%'))}${metric('풍속',display(d.windMs,'m/s'))}</div><div class="advice">${advice(d)}</div></article>`}
-async function loadWeather(){try{const res=await fetch('data/agri_weather.json',{cache:'no-store'});if(res.ok)return await res.json();}catch(e){}return FALLBACK}
-loadWeather().then(data=>{const sel=$('#regionSelect');const regions=Array.isArray(data.regions)&&data.regions.length?data.regions:FALLBACK.regions;$('#sourceText').textContent=data.source||FALLBACK.source;sel.innerHTML=regions.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');function draw(){const r=regions.find(x=>x.id===sel.value)||regions[0];$('#weatherCards').innerHTML=renderDay(r.name+' 오늘 농작업 참고',r.today||{})+renderDay(r.name+' 내일 농작업 참고',r.tomorrow||{})}sel.onchange=draw;draw();}).catch(()=>{$('#weatherCards').innerHTML='<div class="error">현재 날씨 정보를 불러오지 못했습니다. 잠시 후 다시 확인하거나 기상청 등 공식 정보를 확인해주세요.</div>';});
+const DEFAULT_REGION_GROUPS={
+  '서울':['서울'],
+  '경기':['수원','이천','여주','평택','남양주','고양'],
+  '강원':['춘천','강릉','원주','평창'],
+  '충북':['청주','충주','제천','괴산'],
+  '충남':['홍성','논산','부여','천안','공주'],
+  '전북':['전주','김제','고창','익산','남원'],
+  '전남':['순천','나주','해남','보성','담양','영암'],
+  '경북':['안동','상주','김천','의성','영주'],
+  '경남':['밀양','진주','창원','함안','김해'],
+  '제주':['제주','서귀포']
+};
+let regionGroups=DEFAULT_REGION_GROUPS;
+const CULTIVATION_TYPES=[
+  {name:'베란다·실내',note:'외부 날씨보다 실내 온도, 창가 일조, 환기, 흙 마름 속도를 함께 확인하세요.'},
+  {name:'텃밭',note:'비 온 뒤 배수, 흙 마름, 잎 병반, 작은 면적의 과습·건조 변화를 함께 확인하세요.'},
+  {name:'노지',note:'강수, 풍속, 고온·저온 영향을 현장 상황과 함께 확인하세요.'},
+  {name:'시설재배',note:'시설 내부 온습도, 결로, 환기 상태를 함께 확인하세요.'},
+  {name:'스마트팜',note:'외부 기상은 냉난방, 환기, 차광, 제습 부하를 참고하는 자료입니다. 시설 내부 센서값과 함께 확인하세요.'}
+];
+const CATEGORIES=['전체','홈가드닝','텃밭·채소','과채류','과수','벼·곡류','시설·스마트팜','특용·화훼'];
+const DEFAULT_WEATHER={source:'시제품 단계 기본 참고 정보',regions:[{id:'seoul',name:'서울',today:{tempC:27,maxTempC:31,minTempC:23,rainProbability:30,rainMm:1,humidity:72,windMs:2.1,sky:'구름많음'}},{id:'suncheon',name:'전남 순천',today:{tempC:28,maxTempC:32,minTempC:24,rainProbability:40,rainMm:2,humidity:78,windMs:1.8,sky:'흐림'}}]};
+const DEFAULT_PROFILES=[{id:'pepper',name:'고추',icon:'🌶️',category:'과채류',cultivationTypes:['텃밭','노지','시설재배'],keywords:['고추','풋고추','홍고추'],chosung:['ㄱㅊ'],ncpmsQueries:['고추','탄저병','역병','모자이크병','잎말림'],weatherPoints:['고온·건조가 이어지면 잎 말림, 시듦, 생육 저하를 확인하세요.','강우 후에는 열매 반점, 줄기 밑부분 시듦, 배수 상태를 함께 확인하세요.'],nextActions:['AI 참고 진단','NCPMS 병해충 정보','재배가이드','관련 질문 보기']},{id:'tomato',name:'토마토',icon:'🍅',category:'과채류',cultivationTypes:['텃밭','시설재배','스마트팜'],keywords:['토마토'],chosung:['ㅌㅁㅌ'],ncpmsQueries:['토마토','반점','잎말림'],weatherPoints:['고온과 환기 부족이 겹치면 착과 상태, 꽃 떨어짐, 잎 말림을 확인하세요.','수분 변화가 클 때는 열과와 배꼽썩음 증상을 함께 확인하세요.'],nextActions:['AI 참고 진단','NCPMS 병해충 정보','재배가이드']},{id:'monstera',name:'몬스테라',icon:'🪴',category:'홈가드닝',cultivationTypes:['베란다·실내'],keywords:['몬스테라','실내식물'],chosung:['ㅁㅅㅌㄹ'],ncpmsQueries:['몬스테라','잎 노래짐'],weatherPoints:['흐린 날이 이어지면 웃자람, 잎 색 변화, 과습 여부를 확인하세요.','실내 온도, 창가 일조, 환기, 흙 마름 속도를 함께 확인하세요.'],nextActions:['AI 참고 진단','관련 질문 보기']}];
+const WORK_CARDS=[
+  ['방제 참고','비 예보와 높은 습도가 있을 경우 방제 작업 전후 주의가 필요할 수 있습니다. 작업 전에는 풍속, 강수예보, 안전사용기준을 함께 확인하세요.'],
+  ['관수 참고','고온이 지속되거나 바람이 강한 날에는 토양 수분과 작물 시듦 상태를 함께 확인하세요.'],
+  ['고온·저온 참고','고온이 지속될 경우 잎 말림, 시듦, 생육 저하가 나타날 수 있어 관수와 차광 상태를 확인하세요.'],
+  ['과습·건조 참고','강수 후에는 배수 상태와 뿌리 과습 여부를 확인하고, 건조가 이어지면 관수 상태를 함께 점검하세요.'],
+  ['시설재배 환기 참고','습도가 높거나 일교차가 클 경우 시설 내부 결로와 환기 상태를 확인하는 데 참고할 수 있습니다.'],
+  ['병해충 주의 참고','고온다습한 환경은 일부 병해충 발생에 유리할 수 있으므로, 이상 증상이 보이면 NCPMS 병해충 정보를 함께 확인하세요.']
+];
+let weatherData=DEFAULT_WEATHER, profiles=DEFAULT_PROFILES, selectedArea='서울', selectedRegion='서울', selectedType='베란다·실내', selectedCategory='전체', selectedCropId='monstera';
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function display(v,s=''){return v===undefined||v===null||v===''?'확인 필요':`${v}${s}`}
+function initials(text){const cho=['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];return String(text||'').split('').map(ch=>{const code=ch.charCodeAt(0)-44032;return code>=0&&code<=11171?cho[Math.floor(code/588)]:''}).join('')}
+function findWeather(){const regions=Array.isArray(weatherData.regions)?weatherData.regions:[];return regions.find(r=>r.name===selectedRegion||r.name?.endsWith(' '+selectedRegion)||r.id===selectedRegion)||{id:selectedRegion,name:selectedRegion,today:{tempC:27,maxTempC:31,minTempC:23,rainProbability:30,rainMm:0,humidity:70,windMs:2,sky:'확인 필요'}}}
+function normalizeDay(d={}){const temp=Number(d.tempC);const max=d.maxTempC??(Number.isFinite(temp)?temp+4:null);const min=d.minTempC??(Number.isFinite(temp)?temp-4:null);return{tempC:d.tempC,maxTempC:max,minTempC:min,rainProbability:d.rainProbability,rainMm:d.rainMm,humidity:d.humidity,windMs:d.windMs,sky:d.sky||'확인 필요',dailyTempRange:Number.isFinite(Number(max))&&Number.isFinite(Number(min))?Math.round((Number(max)-Number(min))*10)/10:null}}
+function metric(label,value){return `<div class="metric"><b>${esc(value)}</b><span>${esc(label)}</span></div>`}
+function renderChips(el,items,active,onClick,cls=''){el.innerHTML=items.map(item=>`<button class="chip ${cls} ${item===active?'active':''}" type="button" data-value="${esc(item)}">${esc(item)}</button>`).join('');el.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>onClick(btn.dataset.value)))}
+function profileCategories(profile){return Array.isArray(profile.categories)&&profile.categories.length?profile.categories:['전체',profile.primaryCategory||profile.category].filter(Boolean)}
+function isHomeProfile(profile){return profileCategories(profile).includes('홈가드닝')}
+async function loadRegionGroups(){try{const res=await fetch('data/weather-regions.json',{cache:'no-store'});if(res.ok){const data=await res.json();if(Array.isArray(data.areas)&&data.areas.length){return Object.fromEntries(data.areas.map(area=>[area.name,(area.regions||[]).map(region=>typeof region==='string'?region:region.name).filter(Boolean)]).filter(([,regions])=>regions.length))}}}catch(e){}return DEFAULT_REGION_GROUPS}
+function renderRegions(){const areas=Object.keys(regionGroups);if(!areas.includes(selectedArea))selectedArea=areas[0]||'서울';const regions=regionGroups[selectedArea]||[];if(!regions.includes(selectedRegion))selectedRegion=regions[0]||selectedArea;renderChips($('#areaChips'),areas,selectedArea,area=>{selectedArea=area;selectedRegion=(regionGroups[area]||[])[0]||area;renderAll()});renderChips($('#regionChips'),regions,selectedRegion,region=>{selectedRegion=region;renderAll()},'secondary')}function renderTypes(){renderChips($('#typeChips'),CULTIVATION_TYPES.map(x=>x.name),selectedType,type=>{selectedType=type;renderAll()});$('#typeNote').textContent=CULTIVATION_TYPES.find(x=>x.name===selectedType)?.note||''}
+function cropMatches(profile,q){const query=String(q||'').trim().toLowerCase();if(!query)return true;const text=[profile.name,profile.primaryCategory,profile.category,...profileCategories(profile),...(profile.aliases||[]),...(profile.keywords||[]),...(profile.chosung||[]),initials(profile.name)].join(' ').toLowerCase();return text.includes(query)}
+function renderCrops(){renderChips($('#categoryChips'),CATEGORIES,selectedCategory,category=>{selectedCategory=category;renderCrops();renderPanels()});const q=$('#cropSearch').value;let list=profiles.filter(p=>(selectedCategory==='전체'||profileCategories(p).includes(selectedCategory))&&cropMatches(p,q));if(!list.length)list=profiles.filter(p=>cropMatches(p,q)).slice(0,18);$('#cropList').innerHTML=list.map(p=>`<button class="crop-chip ${p.id===selectedCropId?'active':''}" type="button" data-id="${esc(p.id)}">${esc(p.icon||'•')} ${esc(p.name)}</button>`).join('')||'<div class="hint">검색 결과가 없습니다. 다른 작물명이나 초성을 입력해보세요.</div>';$('#cropList').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{selectedCropId=btn.dataset.id;renderPanels()}))}function renderWeather(){const day=normalizeDay(findWeather().today);$('#weatherPanel').innerHTML=`<article class="card"><div class="label">${esc(selectedRegion)} 오늘 기상 항목</div><div class="weather-grid">${metric('기온',display(day.tempC,'℃'))}${metric('최고기온',display(day.maxTempC,'℃'))}${metric('최저기온',display(day.minTempC,'℃'))}${metric('강수확률',display(day.rainProbability,'%'))}${metric('강수량',display(day.rainMm,'mm'))}${metric('습도',display(day.humidity,'%'))}${metric('풍속',display(day.windMs,'m/s'))}${metric('하늘상태',day.sky)}${metric('일교차',display(day.dailyTempRange,'℃'))}</div><p class="hint" style="margin-top:9px">${esc(weatherData.source||DEFAULT_WEATHER.source)}</p></article>`}
+function summaryText(day,profile){const humid=Number(day.humidity)>=80||Number(day.rainProbability)>=40||Number(day.rainMm)>0;const hot=Number(day.maxTempC)>=30||Number(day.tempC)>=30;const low=Number(day.minTempC)<=8;const crop=profile.name;if(selectedType==='베란다·실내'||isHomeProfile(profile))return '베란다·실내 재배에서는 외부 날씨보다 실내 온도, 창가 일조, 환기, 흙 마름 속도를 함께 확인하세요.';if(crop.includes('고추')&&humid)return '강수와 습도가 높을 수 있는 날에는 고추의 열매 반점, 잎 병반, 배수 상태를 함께 확인하세요. 방제 작업 전후에는 비 예보와 풍속, 안전사용기준을 함께 확인하는 데 참고할 수 있습니다.';if(crop.includes('토마토')&&hot)return '고온과 환기 조건을 함께 확인하면 좋습니다. 토마토 재배 중이라면 환기, 차광, 착과 상태, 잎 말림 여부를 함께 확인하세요.';if(crop==='딸기 육묘기'&&humid)return '고온다습한 날씨에서는 딸기 육묘장의 배수 상태, 포트 과습, 잎 병반 여부를 함께 확인하세요.';if(crop==='딸기 본포 재배기'&&(low||humid))return '야간 저온과 결로가 생기기 쉬운 날에는 하우스 내부 온도와 환기 상태, 꽃과 과실 주변의 곰팡이성 증상을 함께 확인하세요.';if(crop.includes('수국')&&(humid||selectedType==='시설재배'))return '수국 시설재배에서는 습도와 결로가 높아지기 쉬운 날에 꽃과 잎 주변의 곰팡이성 증상을 함께 확인하세요.';return `${crop} 재배 전 ${selectedRegion}의 기온, 강수, 습도, 풍속을 함께 확인하세요. 날씨 정보는 참고할 수 있는 자료이며, 실제 관리는 현장 상황과 공식 정보를 함께 확인하세요.`}
+function renderPanels(){const day=normalizeDay(findWeather().today);const profile=profiles.find(p=>p.id===selectedCropId)||profiles[0]||DEFAULT_PROFILES[0];renderWeather();$('#summaryPanel').innerHTML=`<article class="card summary"><b>오늘 농업날씨 요약</b><p>${esc(summaryText(day,profile))}</p></article>`;$('#workPanel').innerHTML=`<article class="card"><div class="label">농작업 참고 카드</div><div class="work-grid">${WORK_CARDS.map(([t,p])=>`<div class="work-card"><b>${esc(t)}</b><p>${esc(p)}</p></div>`).join('')}</div></article>`;$('#cropPanel').innerHTML=`<article class="card"><div class="label">${esc(profile.icon||'•')} ${esc(profile.name)} 체크포인트</div><div class="point-list">${(profile.weatherPoints||[]).map(p=>`<div class="point">${esc(p)}</div>`).join('')||'<div class="point">선택한 작물의 재배환경과 날씨 조건을 함께 확인하세요.</div>'}</div></article>`;$('#ncpmsLink').href=`public-data.html?ncpms=1&crop=${encodeURIComponent(profile.name)}&keyword=${encodeURIComponent((profile.ncpmsQueries||profile.keywords||[profile.name])[0]||profile.name)}#ncpms`}
+function renderAll(){renderRegions();renderTypes();renderCrops();renderPanels()}
+async function init(){try{const [weatherRes,profileRes,regionData]=await Promise.all([fetch('data/agri_weather.json',{cache:'no-store'}),fetch('data/weather-crop-profiles.json',{cache:'no-store'}),loadRegionGroups()]);regionGroups=regionData;if(weatherRes.ok)weatherData=await weatherRes.json();if(profileRes.ok){const data=await profileRes.json();if(Array.isArray(data)&&data.length)profiles=data}}catch(e){}if(!profiles.find(p=>p.id===selectedCropId))selectedCropId=profiles.find(isHomeProfile)?.id||profiles[0]?.id||'pepper';$('#cropSearch').addEventListener('input',renderCrops);renderAll()}init().catch(()=>{$('#weatherPanel').innerHTML='<div class="error">현재 날씨 정보를 불러오지 못했습니다. 기본 참고 정보와 공식 기상 정보를 함께 확인해주세요.</div>'});
 </script>
 </body>
 </html>

@@ -1,0 +1,1495 @@
+{
+    "areas":  [
+                  {
+                      "name":  "서울",
+                      "regions":  [
+                                      {
+                                          "name":  "서울",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "종로구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "중구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "용산구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "성동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광진구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "동대문구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "중랑구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "성북구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강북구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "도봉구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "노원구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "은평구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "서대문구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "마포구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "양천구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "구로구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "금천구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영등포구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "동작구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "관악구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "서초구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강남구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "송파구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "인천",
+                      "regions":  [
+                                      {
+                                          "name":  "인천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "중구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "미추홀구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "연수구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "남동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부평구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "계양구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강화군",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "옹진군",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "경기",
+                      "regions":  [
+                                      {
+                                          "name":  "수원",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "성남",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "의정부",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "안양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광명",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "평택",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "동두천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "안산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "고양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "과천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "구리",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "남양주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "오산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "시흥",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "군포",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "의왕",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "하남",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "용인",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "파주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "이천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "안성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "김포",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "화성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "양주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "포천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "여주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "연천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "가평",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "양평",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "강원",
+                      "regions":  [
+                                      {
+                                          "name":  "춘천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "원주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강릉",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "동해",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "태백",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "속초",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "삼척",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "홍천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "횡성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영월",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "평창",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "정선",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "철원",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "화천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "양구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "인제",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "고성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "양양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "대전·세종",
+                      "regions":  [
+                                      {
+                                          "name":  "대전",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대전 동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대전 중구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대전 서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대전 유성구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대전 대덕구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "세종",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "충북",
+                      "regions":  [
+                                      {
+                                          "name":  "청주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "충주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "제천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "보은",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "옥천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영동",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "증평",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "진천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "괴산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "음성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "단양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "충남",
+                      "regions":  [
+                                      {
+                                          "name":  "천안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "공주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "보령",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "아산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "서산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "논산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "계룡",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "당진",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "금산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부여",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "서천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "청양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "홍성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "예산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "태안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "광주",
+                      "regions":  [
+                                      {
+                                          "name":  "광주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광주 동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광주 서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광주 남구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광주 북구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광주 광산구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "전북",
+                      "regions":  [
+                                      {
+                                          "name":  "전주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "군산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "익산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "정읍",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "남원",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "김제",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "완주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "진안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "무주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "장수",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "임실",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "순창",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "고창",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "전남",
+                      "regions":  [
+                                      {
+                                          "name":  "목포",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "여수",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "순천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "나주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "광양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "담양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "곡성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "구례",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "고흥",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "보성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "화순",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "장흥",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "강진",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "해남",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영암",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "무안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "함평",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영광",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "장성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "완도",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "진도",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "신안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "대구",
+                      "regions":  [
+                                      {
+                                          "name":  "대구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 중구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 남구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 북구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 수성구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "대구 달서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "달성군",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "군위군",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "경북",
+                      "regions":  [
+                                      {
+                                          "name":  "포항",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "경주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "김천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "안동",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "구미",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "상주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "문경",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "경산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "의성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "청송",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "영덕",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "청도",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "고령",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "성주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "칠곡",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "예천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "봉화",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울진",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울릉",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "부산·울산",
+                      "regions":  [
+                                      {
+                                          "name":  "부산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 중구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 영도구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 부산진구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 동래구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 남구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 북구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 해운대구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 사하구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 금정구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 강서구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 연제구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 수영구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "부산 사상구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "기장군",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울산 중구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울산 남구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울산 동구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울산 북구",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "울주군",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "경남",
+                      "regions":  [
+                                      {
+                                          "name":  "창원",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "진주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "통영",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "사천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "김해",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "밀양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "거제",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "양산",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "의령",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "함안",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "창녕",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "고성",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "남해",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "하동",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "산청",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "함양",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "거창",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "합천",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  },
+                  {
+                      "name":  "제주",
+                      "regions":  [
+                                      {
+                                          "name":  "제주",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      },
+                                      {
+                                          "name":  "서귀포",
+                                          "nx":  null,
+                                          "ny":  null,
+                                          "status":  "좌표 확인 필요"
+                                      }
+                                  ]
+                  }
+              ]
+}
