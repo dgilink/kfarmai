@@ -462,6 +462,26 @@
     border-radius: 999px;
     padding: 4px 7px;
   }
+  .insight-head-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .insight-more,
+  .section-more-btn {
+    border: 0;
+    background: transparent;
+    color: var(--sub);
+    font-size: 11.5px;
+    font-weight: 900;
+    cursor: pointer;
+    padding: 4px 0;
+    white-space: nowrap;
+  }
+  .popular-questions .insight-more { color: #C2410C; }
+  .same-symptom .insight-more { color: #15803D; }
+  .recent-question-head .section-more-btn { color: #1D4ED8; }
   .popular-questions .insight-note { color: #C2410C; background: #FFEDD5; }
   .same-symptom .insight-note { color: #15803D; background: #DCFCE7; }
   .recent-question-head .live-dot {
@@ -671,6 +691,9 @@
   .diag-preview-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; }
   .diag-preview-clear { display: block; width: 100%; margin-top: 6px; background: none; border: none; color: var(--sub); font-size: 12px; cursor: pointer; text-align: center; padding: 0; }
   .symptom-area { margin-top: 10px; }
+  .diag-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .diag-mini-input { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 13px; font-family: inherit; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
+  .diag-mini-input:focus { border-color: var(--green); }
   .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: inherit; min-height: 64px; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
   .symptom-textarea:focus { border-color: var(--green); }
   .diag-start-btn { width: 100%; height: 46px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; opacity: .4; transition: opacity .2s; }
@@ -1483,7 +1506,7 @@
             </div>
             <div class="section-copy">최근 등록된 질문을 바로 확인하세요.</div>
           </div>
-          <div class="section-more">더보기</div>
+          <button class="section-more-btn" type="button" onclick="openQuestionList('latest')">더보기 &gt;</button>
         </div>
 
         <div id="recentFeed" class="recent-question-panel">
@@ -1514,8 +1537,12 @@
             <input type="file" id="diagAlbumInput" accept="image/*" style="display:none" onchange="diagHandleFile(this)">
           </div>
 
+          <div class="diag-mini-grid">
+            <input class="diag-mini-input" id="diagCrop" type="text" placeholder="작물명 예: 고추, 몬스테라" oninput="updateDiagBtn()">
+            <input class="diag-mini-input" id="diagEnv" type="text" placeholder="재배환경 예: 하우스, 실내" oninput="updateDiagBtn()">
+          </div>
           <div class="symptom-area">
-            <textarea class="symptom-textarea" id="diagSymptom" placeholder="증상을 설명해주세요. 예) 잎이 노랗게 변했어요" oninput="updateDiagBtn()"></textarea>
+            <textarea class="symptom-textarea" id="diagSymptom" placeholder="사진이 없어도 증상, 작물명, 재배환경을 적어주세요. 예: 고추 잎이 노랗게 변하고 아래잎부터 말라갑니다." oninput="updateDiagBtn()"></textarea>
           </div>
           <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">AI 참고 진단 시작</button>
         </div>
@@ -1924,12 +1951,16 @@ function diagClearImage() {
 
 function updateDiagBtn() {
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
+  const crop = (document.getElementById('diagCrop')?.value || '').trim();
+  const env = (document.getElementById('diagEnv')?.value || '').trim();
   const btn = document.getElementById('diagStartBtn');
-  if (btn) btn.disabled = !(symptom || diagImageBase64);
+  if (btn) btn.disabled = !(symptom || crop || env || diagImageBase64);
 }
 
 async function runDiagnosis() {
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
+  const crop = (document.getElementById('diagCrop')?.value || '').trim();
+  const env = (document.getElementById('diagEnv')?.value || '').trim();
   const region = localStorage.getItem('kfarmai_region') || '';
   const loading = document.getElementById('diagLoading');
   const resultWrap = document.getElementById('diagResultWrap');
@@ -1940,7 +1971,12 @@ async function runDiagnosis() {
   btn.disabled = true;
   btn.textContent = '분석 중...';
 
-  const body = { symptom, region };
+  const detail = [
+    crop ? `작물명: ${crop}` : '',
+    env ? `재배환경: ${env}` : '',
+    symptom ? `증상: ${symptom}` : ''
+  ].filter(Boolean).join('\n');
+  const body = { symptom: detail || symptom, region, crop, cultivationEnv: env };
   if (diagImageBase64) body.image_base64 = diagImageBase64;
 
   try {
@@ -1952,7 +1988,7 @@ async function runDiagnosis() {
     if (!res.ok) throw new Error('서버 오류 ' + res.status);
     const data = await res.json();
     renderDiagResult(data, resultWrap);
-    saveDiagnosisHistory(symptom, data);
+    saveDiagnosisHistory(detail || symptom, data);
   } catch (err) {
     resultWrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-body" style="color:#DC2626">진단에 실패했습니다.<br>${err.message || '잠시 후 다시 시도해주세요.'}</div></div>`;
   } finally {
@@ -2281,9 +2317,7 @@ function getInitial(user){return (user.user_metadata?.full_name||user.user_metad
 async function loadFeed(channelId=null){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
-  await renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
-  return;
-  const timeout=setTimeout(()=>{ if(feed.dataset.loading==='1') renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.'); }, 1800);
+  const timeout=setTimeout(()=>{ if(feed.dataset.loading==='1') renderFeedFallback('현재 데이터를 불러오지 못했습니다. 공개 예시 질문을 표시합니다.'); }, 1800);
   feed.dataset.loading='1';
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
   try{
@@ -2295,7 +2329,7 @@ async function loadFeed(channelId=null){
     clearTimeout(timeout);
     feed.dataset.loading='0';
     if(!data||data.length===0){
-      await renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
+      feed.innerHTML='<div class="feed-loading">아직 등록된 질문이 없습니다.</div>';
       return;
     }
     feed.innerHTML='';
@@ -2303,7 +2337,7 @@ async function loadFeed(channelId=null){
   }catch(e){
     clearTimeout(timeout);
     feed.dataset.loading='0';
-    await renderFeedFallback('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
+    await renderFeedFallback('현재 데이터를 불러오지 못했습니다. 공개 예시 질문을 표시합니다.');
   }
 }
 function renderFeedCard(feed,post){
@@ -2505,6 +2539,7 @@ function renderHomeQuestionSections(){
       icon:'⚡',
       desc:'최근 조회가 많은 질문을 모았습니다.',
       note:'인기',
+      sort:'popular',
       className:'popular-questions',
       items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.view_count-a.view_count).slice(0,2)
     },
@@ -2514,6 +2549,7 @@ function renderHomeQuestionSections(){
       icon:'◎',
       desc:'비슷한 고민이 많이 모인 질문입니다.',
       note:'공감',
+      sort:'same',
       className:'same-symptom',
       items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.same_symptom_count-a.same_symptom_count).slice(0,2)
     }
@@ -2525,7 +2561,10 @@ function renderHomeQuestionSections(){
           <div class="insight-title"><span class="insight-icon" aria-hidden="true">${escHtml(section.icon||'')}</span>${escHtml(section.title)}</div>
           <div class="insight-desc">${escHtml(section.desc)}</div>
         </div>
-        <span class="insight-note">${escHtml(section.note)}</span>
+        <div class="insight-head-actions">
+          <span class="insight-note">${escHtml(section.note)}</span>
+          <button class="insight-more" type="button" onclick="openQuestionList('${escAttr(section.sort)}')">더보기 &gt;</button>
+        </div>
       </div>
       <div class="insight-list">${section.items.map(renderHomeQuestionCard).join('')}</div>
     </section>
@@ -2550,6 +2589,32 @@ function renderHomeQuestionCard(item){
       <a href="${publicUrl}">공공정보 확인</a>
     </div>
   </article>`;
+}
+async function openQuestionList(sort='latest'){
+  const feed=document.getElementById('recentFeed');
+  if(!feed)return;
+  const titleMap={popular:'지금 많이 보는 질문',same:'나도 같은 증상',latest:'방금 올라온 질문'};
+  const descMap={
+    popular:'조회가 많은 질문을 전체 목록으로 확인합니다.',
+    same:'비슷한 증상 반응이 많은 질문을 전체 목록으로 확인합니다.',
+    latest:'최근 등록된 질문을 최신순으로 확인합니다.'
+  };
+  const sectionTitle=document.querySelector('.recent-question-head .section-title');
+  const sectionCopy=document.querySelector('.recent-question-head .section-copy');
+  if(sectionTitle)sectionTitle.innerHTML=`<span class="insight-icon" aria-hidden="true">✨</span>${escHtml(titleMap[sort]||titleMap.latest)}`;
+  if(sectionCopy)sectionCopy.textContent=descMap[sort]||descMap.latest;
+  feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>질문 목록을 불러오는 중...</div>';
+  if(sort==='latest'){
+    await loadFeed();
+    return;
+  }
+  const items=[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>{
+    if(sort==='same')return (Number(b.same_symptom_count)||0)-(Number(a.same_symptom_count)||0);
+    return (Number(b.view_count)||0)-(Number(a.view_count)||0);
+  });
+  feed.innerHTML=items.length
+    ? items.map(item=>renderHomeQuestionCard(item)).join('')
+    : '<div class="feed-loading">아직 등록된 질문이 없습니다.</div>';
 }
 function initSearch(){
   const input=document.getElementById('globalSearch');
@@ -2638,7 +2703,6 @@ async function runSearch(raw){
   renderSearchResults(kw,posts,shops,materials,staticItems);
 }
 async function searchPosts(kw,limit){
-  return [];
   if(!window._sb)return [];
   try{
     const like=`%${kw.replace(/[%_]/g,'')}%`;
@@ -2874,7 +2938,7 @@ async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPost
 function cleanPayload(obj){return Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!==''));}
 function contentWithCategory(content,category){const clean=String(content||'').trim();return category?`[카테고리: ${category}]\n\n${clean}`:clean;}
 function friendlyPostError(err){console.error('post submit failed',err);return '질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';}
-async function submitPost(){const channelId=document.getElementById('channelSelect').value;const category=document.getElementById('postCategory').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!category||!title){showToast('채널, 카테고리, 제목을 입력해주세요.');return;}const btn=document.getElementById('postSubmitBtn');if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}try{const {data:{session}}=await _sb.auth.getSession();const userId=session?.user?.id;if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openMyPanel();return;}localStorage.setItem('kfarmai_user_id',userId);const imageUrls=await uploadPostImages(userId);const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,category),user_id:userId,image_urls:imageUrls.length?imageUrls:undefined});const {error}=await _sb.from('posts').insert(payload);if(error)throw error;showToast('질문이 등록되었습니다.');closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postCategory').value='';selectedPostImages=[];renderPostImagePreview();loadFeed();}catch(err){showToast(friendlyPostError(err));}finally{if(btn){btn.textContent=btn.dataset.originalText||'질문 등록하기';btn.disabled=false;}}}
+async function submitPost(){const channelId=document.getElementById('channelSelect').value;const category=document.getElementById('postCategory').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!category||!title){showToast('채널, 카테고리, 제목을 입력해주세요.');return;}const btn=document.getElementById('postSubmitBtn');if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}try{const {data:{session}}=await _sb.auth.getSession();const userId=session?.user?.id;if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openMyPanel();return;}localStorage.setItem('kfarmai_user_id',userId);const imageUrls=await uploadPostImages(userId);const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,category),user_id:userId,image_urls:imageUrls.length?imageUrls:undefined});const {error}=await _sb.from('posts').insert(payload);if(error)throw error;showToast('질문이 등록되었습니다.');closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postCategory').value='';selectedPostImages=[];renderPostImagePreview();await loadFeed();loadMyCounts(userId);}catch(err){showToast(friendlyPostError(err));}finally{if(btn){btn.textContent=btn.dataset.originalText||'질문 등록하기';btn.disabled=false;}}}
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
 function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;modal.classList.add('open');lockBodyScroll();}
@@ -2883,6 +2947,10 @@ async function safeOpenMyPanel(){
   if(window._sb){
     const {data:{session}}=await _sb.auth.getSession();
     setMyState(session?.user||null);
+    if(session?.user){
+      renderMyProfile(session.user);
+      loadMyCounts(session.user.id);
+    }
   }
   openMyPanel();
 }

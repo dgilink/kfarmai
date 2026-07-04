@@ -83,6 +83,12 @@
   .edit-label { font-size:13px; font-weight:800; color:#777; margin-bottom:6px; }
   .edit-input, .edit-select, .edit-textarea { width:100%; border:1.5px solid var(--border); border-radius:11px; padding:10px 12px; font-size:14px; font-family:inherit; outline:0; }
   .edit-textarea { min-height:120px; resize:vertical; }
+  .edit-image-row { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
+  .edit-image-thumb { position:relative; flex:0 0 86px; width:86px; height:72px; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:#F3F4F6; }
+  .edit-image-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .edit-image-remove { position:absolute; top:4px; right:4px; width:22px; height:22px; border:0; border-radius:50%; background:rgba(17,17,17,.72); color:#fff; font-size:16px; line-height:1; cursor:pointer; }
+  .edit-image-add { width:100%; min-height:40px; border:1.5px dashed var(--border); border-radius:11px; background:#fff; color:var(--green-dark); font-size:13px; font-weight:900; cursor:pointer; }
+  .edit-help { margin-top:5px; color:#777; font-size:11.5px; line-height:1.45; }
   .edit-modal-actions { display:flex; gap:8px; }
   .edit-submit { flex:1; background:var(--green); border-color:var(--green); color:#fff; height:42px; }
   .edit-cancel { flex:1; height:42px; }
@@ -200,6 +206,13 @@
     <div class="edit-field"><div class="edit-label">카테고리 선택</div><select class="edit-select" id="editPostCategory"><option value="">카테고리 선택</option><option value="반려식물">반려식물</option><option value="텃밭">텃밭</option><option value="벼농사">벼농사</option><option value="고추·마늘·양파">고추·마늘·양파</option><option value="딸기·토마토">딸기·토마토</option><option value="농약·비료·상토">농약·비료·상토</option><option value="기타">기타</option></select></div>
     <div class="edit-field"><div class="edit-label">제목</div><input class="edit-input" id="editPostTitle" autocomplete="off"></div>
     <div class="edit-field"><div class="edit-label">내용</div><textarea class="edit-textarea" id="editPostContent"></textarea></div>
+    <div class="edit-field">
+      <div class="edit-label">사진 첨부</div>
+      <div class="edit-image-row" id="editImagePreview"></div>
+      <button class="edit-image-add" type="button" onclick="document.getElementById('editPostImages').click()">사진 추가</button>
+      <input type="file" id="editPostImages" accept="image/*" multiple style="display:none" onchange="handleEditPostImages(this)">
+      <div class="edit-help">기존 사진은 유지하거나 삭제할 수 있고, 새 사진을 추가할 수 있습니다. 최대 3장까지 저장합니다.</div>
+    </div>
     <div class="edit-modal-actions"><button class="edit-cancel" type="button" onclick="closeEditPostModal()">취소</button><button class="edit-submit" id="editPostSubmit" type="button" onclick="savePostEdit()">저장</button></div>
   </div>
 </div>
@@ -227,6 +240,8 @@ let sb;
 let currentUser = null;
 let currentPost = null;
 let localLiked = false;
+let editExistingImages = [];
+let editNewImages = [];
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function ownerId(){return localStorage.getItem('kfarmai_user_id') || getLocalUserId();}
 
@@ -282,9 +297,14 @@ function renderPost(post) {
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
 function closeImageModal(){document.getElementById('imageModal').classList.remove('show');document.getElementById('imageModalImg').removeAttribute('src');}
-function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.category||extractCategoryFromContent(currentPost.content)||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=stripCategoryPrefix(currentPost.content||'');document.getElementById('editPostModal').classList.add('open');}
+function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.category||extractCategoryFromContent(currentPost.content)||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=stripCategoryPrefix(currentPost.content||'');editExistingImages=normalizeImages(currentPost.image_urls);editNewImages=[];renderEditImagePreview();document.getElementById('editPostModal').classList.add('open');}
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
-async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const {error}=await sb.from('posts').update({title,content:contentWithCategory(content,category)}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast('수정에 실패했습니다. 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
+function handleEditPostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));const remain=3-editExistingImages.length-editNewImages.length;if(remain<=0){showToast('사진은 최대 3장까지 첨부할 수 있습니다.');input.value='';return;}editNewImages=editNewImages.concat(incoming.slice(0,remain));input.value='';renderEditImagePreview();}
+function removeEditExistingImage(idx){editExistingImages.splice(idx,1);renderEditImagePreview();}
+function removeEditNewImage(idx){editNewImages.splice(idx,1);renderEditImagePreview();}
+function renderEditImagePreview(){const wrap=document.getElementById('editImagePreview');if(!wrap)return;const existing=editExistingImages.map((url,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(url)}" alt="기존 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditExistingImage(${idx})">&times;</button></div>`).join('');const added=editNewImages.map((file,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(URL.createObjectURL(file))}" alt="새 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditNewImage(${idx})">&times;</button></div>`).join('');wrap.innerHTML=existing+added||'<div class="empty" style="padding:12px;width:100%">첨부된 사진이 없습니다.</div>';}
+async function uploadEditPostImages(userId){const urls=[];for(let i=0;i<editNewImages.length;i++){const file=editNewImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
+async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(ownerId());const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const {error}=await sb.from('posts').update({title,content:contentWithCategory(content,category),image_urls}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast('수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
 async function deletePost(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',ownerId());if(error)throw error;location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
 
 

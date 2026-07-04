@@ -687,6 +687,135 @@
     box-shadow: 0 6px 20px rgba(0,0,0,.4);
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* index.html AI 참고 진단 탭과 화면 톤 통일 */
+  html, body { background:#F7F8F6; align-items:stretch; }
+  .phone { background:#F7F8F6; max-width:520px; box-shadow:none; }
+  @media (min-width:520px){ .phone { border-radius:0; height:100dvh; max-height:none; } }
+  .header { box-shadow:0 2px 10px rgba(0,0,0,.04); }
+  .tabs, .case-link { display:none; }
+  .search { display:none; }
+  .bell { display:none; }
+  .scroll-area {
+    background:#F7F8F6;
+    padding:14px;
+    display:block;
+  }
+  .ptr, .steps, .card-hd, .cam-hint, .guide, .cam-btns { display:none !important; }
+  .diag-card {
+    min-height:auto;
+    background:#F1F8E9;
+    border:0;
+    border-radius:16px;
+    padding:14px 12px 16px;
+    box-shadow:none;
+    overflow:visible;
+  }
+  .diag-card::before { display:none; }
+  .diag-card::after {
+    content:'식물 사진이나 증상 설명을 바탕으로 원인 후보와 확인 포인트를 정리합니다.';
+    display:block;
+    color:#666;
+    font-size:12.5px;
+    line-height:1.5;
+    margin:4px 2px 12px;
+    order:-1;
+  }
+  .inner { padding:0; display:block; }
+  .inner::before {
+    content:'AI 참고 진단';
+    display:block;
+    color:#111;
+    font-size:19px;
+    font-weight:900;
+    line-height:1.35;
+    margin:0 2px 4px;
+  }
+  #inputView { display:block; }
+  .cam-wrap {
+    min-height:0;
+    height:auto;
+    background:#fff;
+    border:2px dashed #CFD4DA;
+    border-radius:16px;
+    padding:16px 12px;
+    display:block;
+    text-align:center;
+  }
+  .cam-fb {
+    color:#333;
+    font-size:14px;
+    padding:0;
+    display:flex !important;
+    min-height:74px;
+  }
+  #camVideo { display:none !important; }
+  .img-badge {
+    position:static;
+    display:none;
+    width:max-content;
+    margin:10px auto 0;
+    background:#E8F5E9;
+    color:var(--green-dark);
+    box-shadow:none;
+  }
+  .img-badge.show { display:block; }
+  .input-actions { display:flex; gap:8px; margin-top:12px; }
+  .input-action {
+    flex:1;
+    min-height:40px;
+    border-radius:11px;
+    border:1.5px solid var(--border);
+    background:#fff;
+    color:#333;
+    font-size:13.5px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .input-action.primary { border:0; background:var(--green); color:#fff; }
+  .diag-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+  .diag-form-input {
+    width:100%;
+    border:1.5px solid var(--border);
+    border-radius:12px;
+    padding:10px 12px;
+    font-size:13px;
+    outline:0;
+    background:#fff;
+    color:var(--text);
+  }
+  .sec { margin-top:10px; }
+  .sec-label { color:#333; margin-bottom:8px; }
+  .optional { color:var(--green-dark); border-color:#CDEBDD; }
+  .num-badge { background:var(--green); color:#fff; box-shadow:none; }
+  #symptomBody { display:block !important; }
+  #symptomInput {
+    background:#fff;
+    border:1.5px solid var(--border);
+    color:var(--text);
+    min-height:76px;
+    resize:vertical;
+    overflow:auto;
+  }
+  #symptomInput:focus, .diag-form-input:focus { border-color:var(--green); box-shadow:none; }
+  #symptomInput::placeholder { color:#8A8A8A; }
+  .diag-btn-wrap { position:static; background:transparent; padding-top:10px; }
+  .diag-btn {
+    background:var(--green);
+    border-radius:14px;
+    box-shadow:none;
+    padding:13px;
+  }
+  .diag-btn::before { display:none; }
+  .diag-btn-main { color:#fff; font-size:15px; }
+  .diag-btn-sub { color:rgba(255,255,255,.82); }
+  .diag-overlay { border-radius:16px; background:rgba(255,255,255,.88); }
+  .overlay-txt { color:var(--green-dark); }
+  .overlay-sub { color:#666; }
+  .result-card { background:#fff; border-color:var(--border); color:var(--text); }
+  .result-title { color:var(--green-dark); background:none; -webkit-text-fill-color:currentColor; }
+  .result-section-body, .result-list li, .result-disclaimer, .community-connect-desc, .community-safe-note { color:#333; }
+  .result-list span { color:#666; }
 </style>
 </head>
 <body>
@@ -782,6 +911,10 @@
               <div class="scan"></div>
             </div>
             <div class="img-badge" id="imgBadge">📸 사진 선택됨</div>
+            <div class="input-actions">
+              <button class="input-action primary" type="button" onclick="capturePhoto()">📷 촬영하기</button>
+              <button class="input-action" type="button" onclick="openAlbum()">🖼 앨범에서</button>
+            </div>
             <div class="cam-btns">
               <button class="cam-btn" onclick="openAlbum()" aria-label="앨범">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -807,20 +940,24 @@
           </div>
 
           <!-- Symptom input -->
+          <div class="diag-form-grid">
+            <input class="diag-form-input" id="cropInput" type="text" placeholder="작물명 예: 고추, 몬스테라">
+            <input class="diag-form-input" id="envInput" type="text" placeholder="재배환경 예: 하우스, 실내">
+          </div>
           <div class="sec">
             <div class="sec-label">
               <span class="num-badge" id="symptomToggle" style="cursor:pointer" onclick="toggleSymptom()">+</span>
-              증상 메모
-              <span class="optional">선택</span>
+              증상 설명
+              <span class="optional">사진 없이 입력 가능</span>
             </div>
             <div id="symptomBody" style="display:none">
               <textarea
                 id="symptomInput"
-                placeholder="예) 잎이 노랗게 변해요 / 줄기에 검은 반점 / 벌레가 보여요"
+                placeholder="사진이 없어도 증상, 작물명, 재배환경을 적어주세요. 예: 고추 잎이 노랗게 변하고 아래잎부터 말라갑니다."
                 rows="2"
-                maxlength="200"
+                maxlength="500"
               ></textarea>
-              <div class="char-count"><span id="charCount">0</span>/200</div>
+              <div class="char-count"><span id="charCount">0</span>/500</div>
             </div>
           </div>
 
@@ -872,7 +1009,7 @@ const SYSTEM_PROMPT = `당신은 농업·식물 문제를 정리하는 AI 참고
   ],
   "checkPoints": ["확인 포인트1", "확인 포인트2", "확인 포인트3"],
   "publicDataNeeds": ["농약안전사용지침", "병해충 정보", "농업날씨"],
-  "safetyNotice": "이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.",
+  "safetyNotice": "이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.",
   "urgent": false
 }`;
 
@@ -1197,7 +1334,7 @@ function normalizeDiagnosisResult(result) {
     strength,
     title: result.diagnosis || causeCandidates[0]?.name || '원인 후보 정리',
     urgent: Boolean(result.urgent),
-    safetyNotice: result.safetyNotice || '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
+    safetyNotice: result.safetyNotice || '이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
   };
 }
 
@@ -1425,7 +1562,7 @@ function renderPublicInfoCards(result) {
           </a>
         `).join('')}
       </div>
-      <div class="result-disclaimer">${escHtml(result.safetyNotice || '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.')}</div>
+      <div class="result-disclaimer">${escHtml(result.safetyNotice || '이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.')}</div>
     </div>`;
 }
 
@@ -1446,9 +1583,11 @@ function renderCauseCandidates(items) {
 
 async function startDiagnosis() {
   const symptom = symptomEl.value.trim();
+  const crop = document.getElementById('cropInput')?.value.trim() || '';
+  const env = document.getElementById('envInput')?.value.trim() || '';
 
-  if (!capturedFile && !symptom) {
-    showToast('사진을 찍거나 증상을 입력해주세요');
+  if (!capturedFile && !symptom && !crop && !env) {
+    showToast('사진을 첨부하거나 증상 설명을 입력해주세요');
     return;
   }
 
@@ -1468,7 +1607,12 @@ async function startDiagnosis() {
 
     userContent.push({
       type: 'text',
-      text: `증상: ${symptom || '텍스트 없음, 사진만으로 판단해주세요'}`
+      text: [
+        crop ? `작물명: ${crop}` : '',
+        env ? `재배환경: ${env}` : '',
+        symptom ? `증상: ${symptom}` : '',
+        (!crop && !env && !symptom) ? '텍스트 없음, 사진을 기준으로 원인 후보와 확인 포인트를 정리해주세요.' : ''
+      ].filter(Boolean).join('\n')
     });
 
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -1543,7 +1687,7 @@ function showFallbackResult() {
             </a>
           `).join('')}
         </div>
-        <div class="result-disclaimer">이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+        <div class="result-disclaimer">이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
       </div>
       ${renderCommunityConnect({ crop: '작물·식물', symptoms: [], causeCandidates: [], tags: [] })}
       <div class="result-actions">
@@ -1621,6 +1765,10 @@ function resetDiagnosis() {
   symptomEl.value          = '';
   symptomEl.style.height   = 'auto';
   charCountEl.textContent  = '0';
+  const cropInput = document.getElementById('cropInput');
+  const envInput = document.getElementById('envInput');
+  if (cropInput) cropInput.value = '';
+  if (envInput) envInput.value = '';
 
   document.getElementById('symptomBody').style.display   = 'none';
   document.getElementById('symptomToggle').textContent   = '+';
@@ -1687,7 +1835,7 @@ function shareToCommunity() {
 
 window.addEventListener('DOMContentLoaded', () => {
   sizeGuide();
-  startCamera(facing);
+  setFallback('<div style="font-size:32px;margin-bottom:8px">📷</div><div>사진 촬영 또는 앨범 첨부를 선택하세요.</div>');
 });
 window.addEventListener('resize', sizeGuide);
 </script>
