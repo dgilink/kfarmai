@@ -198,8 +198,14 @@ const DEFAULT_INPUT_CATEGORIES = [
       '시설재배는 관수뿐 아니라 환기, 차광, 배수 상태를 함께 확인하세요.',
       '자동관수는 타이머, 필터, 밸브 상태를 함께 확인하세요.'
     ],
-    regionalNote: '지역 판매점 정보는 농약·비료 판매업체 표준데이터와 지역 농자재 판매점 정보를 기반으로 확장 예정입니다.',
-    officialNote: '제조사 공식 사이트와 협회 공개 목록은 향후 카테고리별로 보완할 계획입니다.',
+    regionInfo: [
+      '전국농약및비료판매업체표준데이터 기반 지역 판매점 연결을 검토합니다.',
+      '지역 농협 영농자재센터 확인 경로를 함께 제공할 수 있습니다.',
+      '시설자재 취급 업체는 품목과 시공 가능 범위의 별도 검수가 필요합니다.'
+    ],
+    officialInfo: ['제조사 공식 사이트', '협회/기관 공개 목록', '향후 큐레이션 예정'],
+    cautions: ['본사 위치와 실제 납품·설치 가능 지역은 다를 수 있습니다.'],
+    relatedActions: ['농업날씨에서 강수, 풍속, 고온 정보를 함께 확인하세요.'],
     dataSources: ['전국농약및비료판매업체표준데이터', '공식 제조사 사이트', '협회/기관 공개 목록'],
     notice: '판매 유도가 아니라 자재 확인을 돕는 참고 정보입니다.'
   },
@@ -217,6 +223,9 @@ const DEFAULT_INPUT_CATEGORIES = [
       { plant: '장미', note: '가지치기 도구, 통풍, 화분 크기를 확인하세요.' },
       { plant: '스파티필름', note: '실내 습도, 물주기 간격, 받침 물 고임을 확인하세요.' }
     ],
+    officialInfo: ['농촌진흥청 실내정원용 식물 OpenAPI 연동 후보', '홈가드닝 식물별 광원, 물관리, 실내환경 정보', '실제 연동은 다음 단계로 분리'],
+    cautions: ['실내 식물은 외부 날씨보다 실내 온도, 일조, 환기 영향을 함께 확인하세요.'],
+    relatedActions: ['AI 참고 진단에서 잎 색, 시듦, 흙 마름 상태를 정리해볼 수 있습니다.'],
     dataSources: ['홈가드닝 관리 참고자료', '공식 제조사 사이트', '관련기관 공개 자료'],
     notice: '판매 유도가 아니라 식물 관리에 필요한 도구를 확인하는 참고 정보입니다.'
   },
@@ -229,6 +238,9 @@ const DEFAULT_INPUT_CATEGORIES = [
     equipment: ['센서', '제어기', '자동관수', '환기제어', '차광제어', '양액기', 'CCTV', '데이터 플랫폼'],
     cropExamples: ['딸기', '토마토', '오이', '파프리카', '상추', '엽채류', '국화'],
     officialInfo: ['스마트팜코리아 기업현황', '스마트팜코리아 솔루션정보', '스마트팜 지원사업', '스마트팜 교육정보'],
+    regionInfo: ['스마트팜 기업의 본사 위치와 실제 설치·AS 가능 지역은 다를 수 있습니다.', '지역 농업기술센터, 지원사업 공고, 교육기관 정보를 함께 확인할 수 있습니다.'],
+    cautions: ['자동제어 결과만으로 작업을 단정하지 말고 작물 상태와 시설 내부 센서값을 함께 확인하세요.'],
+    relatedActions: ['농업날씨에서 외부 기온, 강수, 풍속을 함께 확인하세요.'],
     dataSources: ['스마트팜코리아 공개 정보', '협회/기관 공개 목록', '공식 제조사 사이트'],
     notice: '스마트팜 기업 정보는 본사 위치와 실제 설치·AS 가능 지역이 다를 수 있으므로 공식 정보를 함께 확인해야 합니다.'
   }
@@ -331,16 +343,20 @@ function renderGuideDetail(item) {
       ${renderTagBlock(item.stages ? '도입 단계' : '상황 선택', firstTags)}
       ${renderTagBlock(item.equipment ? '확인 장비' : '확인할 품목', secondTags)}
       ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}
+      ${item.useCases ? renderUseCases(item.useCases) : ''}
       ${item.plantNotes ? renderPlantNotes(item.plantNotes) : ''}
       ${item.cropExamples ? renderTagBlock('작물 예시', item.cropExamples) : ''}
       ${item.officialInfo ? renderListBlock('공식 정보 확인', item.officialInfo) : ''}
+      ${item.regionInfo ? renderListBlock('지역 판매점 확인', item.regionInfo) : ''}
+      ${item.cautions ? renderListBlock('확인 전 주의', item.cautions) : ''}
+      ${item.relatedActions ? renderListBlock('다음 확인 경로', item.relatedActions) : ''}
       ${renderListBlock('데이터 확장 기준', item.dataSources || [])}
       ${renderListBlock('지역별 구획 기준', [
-        item.regionalNote || '지역 판매점은 위치 기반 확인 용도로 제공합니다.',
-        item.officialNote || '제조사 공식 정보는 제품과 솔루션 확인 용도로 제공합니다.'
+        '지역 판매점 정보와 제조사 공식 정보는 성격이 다릅니다.',
+        '지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 제공합니다.'
       ])}
     </div>
-    <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')}</div>`;
+    <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')} 향후 보완 예정인 항목은 공식 정보 확인 경로를 우선 제공합니다.</div>`;
 }
 
 function renderTagBlock(title, items) {
@@ -356,6 +372,15 @@ function renderListBlock(title, items) {
 function renderPlantNotes(items) {
   if(!items || !items.length) return '';
   return `<div class="guide-block"><h3>식물별 참고</h3><ul class="guide-list">${items.map(item=>`<li><strong>${escapeHtml(item.plant)}:</strong> ${escapeHtml(item.note)}</li>`).join('')}</ul></div>`;
+}
+
+function renderUseCases(items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-block"><h3>상황별 확인 흐름</h3><ul class="guide-list">${items.map(item=>{
+    if(typeof item === 'string') return `<li>${escapeHtml(item)}</li>`;
+    const points = Array.isArray(item.points) ? item.points.join(' ') : '';
+    return `<li><strong>${escapeHtml(item.name || '확인')}:</strong> ${escapeHtml(points)}</li>`;
+  }).join('')}</ul></div>`;
 }
 
 async function loadSupportPrograms() {
