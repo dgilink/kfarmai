@@ -403,9 +403,10 @@ function goBack() {
 
 function openLoginModal() { document.getElementById('loginModal').classList.add('open'); }
 function closeLoginModal() { document.getElementById('loginModal').classList.remove('open'); }
+function authCallbackUrl(){const isLocal=['localhost','127.0.0.1'].includes(location.hostname);return isLocal?`${location.origin}/auth-callback.html`:'https://kfarmai.com/auth-callback.html';}
 
 async function loginGoogle() {
-  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:location.href } });
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo:authCallbackUrl() } });
   if (error) showToast('로그인 실패: ' + error.message);
 }
 
