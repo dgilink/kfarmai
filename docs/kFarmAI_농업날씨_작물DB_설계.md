@@ -226,55 +226,73 @@ kFarmAI는 전문 농업인뿐 아니라 도시농업, 홈가드닝, 베란다 �
 - 추천 농약
 - 이 농약을 쓰세요
 
-## 17. 기상청 단기예보 Worker 확장 후보
+## 17. 기상청 단기예보 Worker 연동
 
-현재 Cloudflare Worker는 KAMIS/NCPMS를 중계한다. 기상청 단기예보도 같은 방식으로 확장할 수 있다.
+Cloudflare Worker는 KAMIS/NCPMS와 같은 방식으로 기상청 단기예보 호출을 중계한다. 프론트엔드는 기상청 API 키를 직접 보유하지 않고 Worker의 날씨 엔드포인트만 호출한다.
 
-후보 엔드포인트:
+엔드포인트:
 
 ```text
-GET /api/weather/forecast?region=순천
+GET /api/weather/forecast?region=충남&city=서산&nx={검증된 격자 X}&ny={검증된 격자 Y}
 ```
 
-응답 구조 후보:
+Worker secret:
+
+```text
+KMA_SERVICE_KEY
+```
+
+응답 구조:
 
 ```json
 {
+  "ok": true,
   "source": "KMA",
-  "region": "순천",
-  "items": {
-    "temperature": "",
-    "minTemp": "",
-    "maxTemp": "",
-    "rainProbability": "",
-    "rainAmount": "",
-    "humidity": "",
-    "windSpeed": "",
-    "sky": "",
-    "dailyTempRange": ""
-  },
   "fallback": false,
-  "notice": "농작업 참고자료입니다."
+  "region": "충남",
+  "city": "서산",
+  "displayName": "충남 서산",
+  "baseDate": "20260704",
+  "baseTime": "0800",
+  "items": {
+    "temperature": 28,
+    "minTemp": 24,
+    "maxTemp": 31,
+    "rainProbability": 30,
+    "rainAmount": 0,
+    "humidity": 70,
+    "windSpeed": 2.1,
+    "sky": "구름 많음",
+    "precipitationType": "없음",
+    "dailyTempRange": 7
+  },
+  "notice": "기상청 단기예보 기준 농작업 참고 정보입니다."
 }
 ```
 
-API 실패 시에는 `data/agri_weather.json` 또는 기본 참고 데이터로 fallback한다.
+`nx`, `ny`가 없으면 Worker는 외부 API를 호출하지 않고 다음처럼 fallback 응답을 반환한다.
 
-Fallback 문구:
-
-```text
-현재 날씨 정보를 불러오지 못했습니다. 기본 참고 정보와 공식 기상 정보를 함께 확인해주세요.
+```json
+{
+  "ok": false,
+  "source": "KMA",
+  "fallback": true,
+  "error": "missing_grid",
+  "notice": "시제품 참고 데이터입니다. 실제 작업 여부는 현장 상황과 공식 정보를 함께 확인하세요."
+}
 ```
+
+API 실패 시에는 `data/agri_weather.json` 또는 HTML 내부 기본 참고 데이터로 fallback한다.
 
 ## 18. 향후 구현 단계
 
 1. 현재 정적 JSON 기반 체크포인트 UI 안정화
 2. 작물 프로필 확장
 3. 지역별 위경도 또는 기상청 격자 좌표 매핑 파일 추가
-4. Cloudflare Worker에 `/api/weather/forecast` 엔드포인트 추가
-5. Worker secret으로 기상청 API 키 관리
-6. 프론트는 Worker URL만 호출
-7. API 실패 시 `data/agri_weather.json` fallback 유지
+4. Cloudflare Worker에 `/api/weather/forecast` 엔드포인트 유지
+5. Worker secret `KMA_SERVICE_KEY`로 기상청 API 키 관리
+6. 프론트는 Worker URL만 호출하고 API 키를 노출하지 않는다
+7. 좌표 누락 또는 API 실패 시 `data/agri_weather.json` fallback 유지
 8. 사용자 질문, NCPMS, 재배가이드와 연결 강화
 
 API 키, secret, `.env.local` 값은 문서와 프론트엔드 코드에 절대 기록하지 않는다.

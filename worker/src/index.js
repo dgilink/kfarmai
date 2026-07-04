@@ -3,6 +3,7 @@
 const SERVICE_NAME = 'kfarmai-api';
 const KAMIS_ENDPOINT = 'https://www.kamis.or.kr/service/price/xml.do';
 const NCPMS_ENDPOINT = 'http://ncpms.rda.go.kr/npmsAPI/service';
+const KMA_ENDPOINT = 'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
 const ALLOWED_ORIGINS = new Set([
   'https://kfarmai.com',
   'https://www.kfarmai.com',
@@ -11,8 +12,10 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 const KAMIS_CACHE = 'public, max-age=1800';
 const NCPMS_CACHE = 'public, max-age=86400';
+const WEATHER_CACHE = 'public, max-age=900';
 const SAFE_MARKET_NOTICE = '농산물 시세는 판매·중개 목적이 아니라 시장 흐름 참고자료입니다.';
 const SAFE_NCPMS_NOTICE = '공공정보 확인용 참고자료입니다. 실제 판단은 공식 제공처와 전문가 상담을 함께 확인하세요.';
+const SAFE_WEATHER_NOTICE = '기상청 단기예보 기준 농작업 참고 정보입니다.';
 
 export default {
   async fetch(request, env) {
@@ -39,6 +42,10 @@ export default {
 
       if (url.pathname === '/api/ncpms/diseases') {
         return handleNcpms(url, env, cors);
+      }
+
+      if (url.pathname === '/api/weather/forecast') {
+        return handleWeatherForecast(url, env, cors);
       }
 
       return json({ ok: false, error: 'not_found' }, 404, cors);
@@ -86,6 +93,62 @@ async function handleKamis(url, env, cors) {
     }, 200, cors, KAMIS_CACHE);
   } catch (error) {
     return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
+  }
+}
+
+async function handleWeatherForecast(url, env, cors) {
+  const region = cleanText(url.searchParams.get('region')) || '';
+  const city = cleanText(url.searchParams.get('city')) || '';
+  const nx = cleanGrid(url.searchParams.get('nx'));
+  const ny = cleanGrid(url.searchParams.get('ny'));
+  const displayName = [region, city].filter(Boolean).join(' ') || city || region || '선택 지역';
+
+  if (!nx || !ny) {
+    return json(weatherFallback('missing_grid', region, city, displayName), 200, cors, WEATHER_CACHE);
+  }
+
+  if (!env.KMA_SERVICE_KEY) {
+    return json(weatherFallback('missing_service_key', region, city, displayName), 200, cors, WEATHER_CACHE);
+  }
+
+  const base = kmaBaseDateTime();
+
+  try {
+    const apiUrl = new URL(KMA_ENDPOINT);
+    apiUrl.searchParams.set('pageNo', '1');
+    apiUrl.searchParams.set('numOfRows', '1000');
+    apiUrl.searchParams.set('dataType', 'JSON');
+    apiUrl.searchParams.set('base_date', base.baseDate);
+    apiUrl.searchParams.set('base_time', base.baseTime);
+    apiUrl.searchParams.set('nx', nx);
+    apiUrl.searchParams.set('ny', ny);
+    appendServiceKey(apiUrl, env.KMA_SERVICE_KEY);
+
+    const response = await fetch(apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' },
+      cf: { cacheTtl: 900, cacheEverything: true }
+    });
+    if (!response.ok) throw new Error(`kma_http_${response.status}`);
+
+    const payload = await parseFlexibleResponse(response);
+    const resultCode = String(payload?.response?.header?.resultCode ?? '');
+    if (resultCode && resultCode !== '00') throw new Error(`kma_result_${resultCode}`);
+
+    const items = normalizeKmaItems(payload, base);
+    return json({
+      ok: true,
+      source: 'KMA',
+      fallback: false,
+      region,
+      city,
+      displayName,
+      baseDate: base.baseDate,
+      baseTime: base.baseTime,
+      items,
+      notice: SAFE_WEATHER_NOTICE
+    }, 200, cors, WEATHER_CACHE);
+  } catch (error) {
+    return json(weatherFallback('kma_fetch_failed', region, city, displayName, base), 200, cors, WEATHER_CACHE);
   }
 }
 
@@ -270,6 +333,117 @@ function ncpmsFallback() {
   };
 }
 
+function weatherFallback(error, region, city, displayName, base = kmaBaseDateTime()) {
+  return {
+    ok: false,
+    source: 'KMA',
+    fallback: true,
+    error,
+    region,
+    city,
+    displayName,
+    baseDate: base.baseDate,
+    baseTime: base.baseTime,
+    items: null,
+    notice: '시제품 참고 데이터입니다. 실제 작업 여부는 현장 상황과 공식 정보를 함께 확인하세요.'
+  };
+}
+
+function normalizeKmaItems(payload, base) {
+  const raw = firstArray(
+    payload?.response?.body?.items?.item,
+    payload?.body?.items?.item,
+    payload?.items?.item,
+    payload?.items
+  );
+  if (!raw.length) throw new Error('kma_empty_items');
+
+  const now = kstParts();
+  const targetStamp = `${now.date}${now.hour}${now.minute}`;
+  const sorted = raw
+    .map(item => ({
+      category: String(item.category || ''),
+      value: item.fcstValue,
+      fcstDate: String(item.fcstDate || base.baseDate),
+      fcstTime: String(item.fcstTime || '0000').padStart(4, '0')
+    }))
+    .filter(item => item.category)
+    .sort((a, b) => `${a.fcstDate}${a.fcstTime}`.localeCompare(`${b.fcstDate}${b.fcstTime}`));
+
+  const nearest = {};
+  const daily = {};
+  for (const item of sorted) {
+    const stamp = `${item.fcstDate}${item.fcstTime}`;
+    const isFuture = stamp >= targetStamp;
+    if (isFuture && nearest[item.category] === undefined) nearest[item.category] = item.value;
+    if (item.fcstDate === now.date && daily[item.category] === undefined) daily[item.category] = item.value;
+  }
+  for (const item of sorted) {
+    if (nearest[item.category] === undefined) nearest[item.category] = item.value;
+  }
+
+  const minTemp = toNullableNumber(daily.TMN ?? nearest.TMN);
+  const maxTemp = toNullableNumber(daily.TMX ?? nearest.TMX);
+  return {
+    temperature: toNullableNumber(nearest.TMP),
+    minTemp,
+    maxTemp,
+    rainProbability: toNullableNumber(nearest.POP),
+    rainAmount: normalizeRainAmount(nearest.PCP),
+    humidity: toNullableNumber(nearest.REH),
+    windSpeed: toNullableNumber(nearest.WSD),
+    sky: skyText(nearest.SKY),
+    precipitationType: precipitationText(nearest.PTY),
+    dailyTempRange: Number.isFinite(minTemp) && Number.isFinite(maxTemp)
+      ? Math.round((maxTemp - minTemp) * 10) / 10
+      : null
+  };
+}
+
+function kmaBaseDateTime() {
+  const parts = kstParts(new Date(Date.now() - 60 * 60 * 1000));
+  const baseTimes = ['0200', '0500', '0800', '1100', '1400', '1700', '2000', '2300'];
+  const currentHHMM = `${parts.hour}${parts.minute}`;
+  const baseTime = [...baseTimes].reverse().find(time => time <= currentHHMM);
+  if (baseTime) return { baseDate: parts.date, baseTime };
+
+  const previous = kstParts(new Date(Date.now() - 25 * 60 * 60 * 1000));
+  return { baseDate: previous.date, baseTime: '2300' };
+}
+
+function kstParts(date = new Date()) {
+  const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  return {
+    date: `${kst.getUTCFullYear()}${String(kst.getUTCMonth() + 1).padStart(2, '0')}${String(kst.getUTCDate()).padStart(2, '0')}`,
+    hour: String(kst.getUTCHours()).padStart(2, '0'),
+    minute: String(kst.getUTCMinutes()).padStart(2, '0')
+  };
+}
+
+function skyText(value) {
+  return ({ 1: '맑음', 3: '구름 많음', 4: '흐림' })[Number(value)] || '확인 필요';
+}
+
+function precipitationText(value) {
+  return ({ 0: '없음', 1: '비', 2: '비/눈', 3: '눈', 4: '소나기' })[Number(value)] || '확인 필요';
+}
+
+function normalizeRainAmount(value) {
+  const text = String(value ?? '').trim();
+  if (!text || text === '강수없음') return 0;
+  const number = toNullableNumber(text);
+  return number === null ? text : number;
+}
+
+function appendServiceKey(apiUrl, serviceKey) {
+  const key = String(serviceKey || '').trim();
+  if (/%[0-9A-Fa-f]{2}/.test(key)) {
+    apiUrl.search = `${apiUrl.search}&serviceKey=${key}`;
+    return;
+  }
+  apiUrl.searchParams.set('serviceKey', key);
+}
+
 async function parseFlexibleResponse(response) {
   const text = await response.text();
   try {
@@ -375,6 +549,11 @@ function cleanText(value) {
 function cleanDate(value) {
   const text = String(value || '').trim();
   return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : '';
+}
+
+function cleanGrid(value) {
+  const text = String(value ?? '').trim();
+  return /^\d{1,3}$/.test(text) ? text : '';
 }
 
 function todayKst() {
