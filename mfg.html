@@ -74,6 +74,8 @@
   .support-pill { padding: 4px 7px; border-radius: 999px; background: #f3f4f6; color: #4b5563; font-size: 11px; font-weight: 700; }
   .support-card p { margin: 0; color: #4b5563; font-size: 12px; line-height: 1.55; }
   .mfg-intro { max-width: 1100px; margin: 0 auto; padding: 8px 16px 0; color: #4b5563; font-size: 13px; line-height: 1.6; }
+  .kf-menu-brand { display: flex; align-items: center; min-width: 0; max-width: calc(100% - 44px); }
+  .kf-menu-brand-logo { width: 170px; max-width: 100%; height: auto; object-fit: contain; display: block; }
   @media (max-width: 720px) {
     .hub-wrap { padding: 12px; }
     .hub-hero { border-radius: 12px; padding: 14px; }
@@ -94,16 +96,6 @@
   <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">MANAGEMENT HUB</div>
   <div style="font-size:20px;font-weight:900;">농자재·관리정보 허브</div>
   <div style="font-size:12px;color:#666;line-height:1.55;margin-top:5px;">상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배 정보를 문제해결 관점에서 확인합니다.</div>
-  <div class="kf-tabs" style="padding:12px 0 0;">
-    <button class="kf-tab active" data-tab="all" onclick="switchTab('all',this)">전체</button>
-    <button class="kf-tab" data-tab="santo" onclick="switchTab('santo',this)">상토회사</button>
-    <button class="kf-tab" data-tab="seed" onclick="switchTab('seed',this)">종자회사</button>
-    <button class="kf-tab" data-tab="cpa" onclick="switchTab('cpa',this)">작물보호제</button>
-    <button class="kf-tab" data-tab="fert" onclick="switchTab('fert',this)">비료회사</button>
-    <button class="kf-tab" data-tab="irrigation-facility" onclick="switchTab('irrigation-facility',this)">관수·시설자재</button>
-    <button class="kf-tab" data-tab="home-gardening-tools" onclick="switchTab('home-gardening-tools',this)">화분·도구</button>
-    <button class="kf-tab" data-tab="smartfarm" onclick="switchTab('smartfarm',this)">스마트팜</button>
-  </div>
 </div>
 <main class="hub-wrap" id="mfgHubMain">
   <section class="hub-hero" id="hubIntroSection">
@@ -201,7 +193,7 @@
 </nav>
 <div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
 <div class="kf-menu" id="menu">
-  <div class="kf-menu-header"><a href="index.html" class="kf-logo"><div class="kf-logo-mark">kf</div><span class="kf-logo-text">kfarm<em>ai</em></span></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
+  <div class="kf-menu-header"><a href="index.html" class="kf-menu-brand"><img class="kf-menu-brand-logo" src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
   <a href="index.html" class="kf-menu-item">🏠 홈</a>
   <a href="agri_map.html" class="kf-menu-item">🗺️ 전국농약사</a>
   <a href="santo.html" class="kf-menu-item">🌱 상토회사</a>
@@ -444,7 +436,7 @@ function getFiltered() {
 function switchTab(tab, el) {
   currentTab = tab;
   document.querySelectorAll('.kf-tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
+  if(el) el.classList.add('active');
   renderCards(getFiltered());
 }
 function search() { renderCards(getFiltered()); }
