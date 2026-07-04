@@ -916,6 +916,7 @@
     font-size: 12.5px;
     font-weight: 800;
     line-height: 1.45;
+    white-space: pre-line;
   }
   .auth-status.show { display: block; }
   .auth-status.error { background: #FEF2F2; color: #B91C1C; border-color: #FECACA; }
@@ -1699,7 +1700,7 @@
         <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
         <button class="btn-email secondary" id="emailOtpBtn" type="button" onclick="sendEmailOtp()">이메일 인증번호로 시작하기</button>
         <div class="email-auth" id="otpVerifyBox" style="display:none;margin-top:0">
-          <input id="authOtp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="6자리 인증번호" autocomplete="one-time-code">
+          <input id="authOtp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="이메일 인증번호" autocomplete="one-time-code">
           <button class="btn-email" id="emailOtpVerifyBtn" type="button" onclick="verifyEmailOtp()">확인하고 로그인</button>
         </div>
         <div class="auth-helper">kFarmAI는 Google/Supabase 인증을 통해 안전하게 로그인합니다.</div>
@@ -2977,7 +2978,7 @@ async function sendEmailOtp(){
     const otpBox=document.getElementById('otpVerifyBox');
     if(otpBox)otpBox.style.display='grid';
     document.getElementById('authOtp')?.focus();
-    setAuthMessage('인증번호를 이메일로 보냈습니다. 6자리 인증번호를 입력해주세요.');
+    setAuthMessage('인증번호를 이메일로 보냈습니다.\n메일에 표시된 인증번호를 입력해주세요.');
     showToast('인증번호를 보냈습니다. 메일을 확인해주세요.');
   }catch(error){
     console.error('email otp send failed', error);
@@ -2993,7 +2994,7 @@ async function verifyEmailOtp(){
   const token=document.getElementById('authOtp')?.value.trim();
   clearAuthMessage();
   if(!email){setAuthMessage('이메일을 입력해주세요.', true);return showToast('이메일을 입력해주세요.');}
-  if(!/^\d{6}$/.test(token||'')){setAuthMessage('6자리 인증번호를 입력해주세요.', true);return showToast('6자리 인증번호를 입력해주세요.');}
+  if(!/^\d{6,8}$/.test(token||'')){setAuthMessage('이메일로 받은 인증번호를 입력해주세요.', true);return showToast('인증번호를 확인해주세요.');}
   const btn=document.getElementById('emailOtpVerifyBtn');
   setAuthButtonLoading(btn,true,'확인 중...');
   try{

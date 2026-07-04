@@ -89,7 +89,7 @@ Supabase가 제공하는 Google OAuth callback URL을 정확히 사용합니다.
 ## 8. 테스트 체크리스트
 
 - Google 로그인 클릭 후 최종 콜백이 `https://kfarmai.com/auth-callback.html`로 돌아오는지 확인
-- 이메일 OTP 발송 후 6자리 인증번호 로그인이 되는지 확인
+- 이메일 OTP 발송 후 메일에 표시된 인증번호로 로그인이 되는지 확인
 - 로그인 후 MY 패널이 로그인 상태로 표시되는지 확인
 - 로그아웃 후 세션이 유지되지 않는지 확인
 - Custom Domain 적용 후 인증 과정에서 `auth.kfarmai.com`이 사용되는지 확인
