@@ -110,3 +110,18 @@ Supabase가 제공하는 Google OAuth callback URL을 정확히 사용합니다.
 - 로그인 후 MY 패널이 로그인 상태로 표시되는지 확인
 - 로그아웃 후 세션이 유지되지 않는지 확인
 - Custom Domain 적용 후 인증 과정에서 `auth.kfarmai.com`이 사용되는지 확인
+
+## 9. 이메일 OTP 발송 실패 점검
+
+화면에 "인증번호를 보내지 못했습니다"가 표시되면 코드 문제와 별개로 Supabase Auth 설정을 함께 확인해야 합니다.
+
+확인 항목:
+
+- Authentication > Providers에서 Email provider가 활성화되어 있는지 확인
+- Authentication > URL Configuration의 Site URL이 `https://kfarmai.com`인지 확인
+- Redirect URLs에 `https://kfarmai.com/auth-callback.html`이 포함되어 있는지 확인
+- OTP 또는 Magic Link 템플릿이 비활성화되어 있지 않은지 확인
+- 기본 메일 발송 한도 또는 SMTP 설정 문제로 발송이 차단되지 않았는지 확인
+- 브라우저 콘솔의 `email otp send failed` 로그에서 `message`, `status`, `code`를 확인
+
+코드에서는 API 키나 secret 값을 추가하지 않고, 브라우저의 Supabase anon client로 `signInWithOtp`와 `verifyOtp`만 호출합니다. 발송 정책, SMTP, Custom Domain 설정은 Supabase Dashboard에서 직접 확인해야 합니다.

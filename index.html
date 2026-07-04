@@ -2963,17 +2963,32 @@ async function requestAccountDeletion(){
 }
 function openLogin(){openMyPanel();}
 function closeLogin(){closeMyPanel();}
+let googleLoginResetTimer = null;
 function authCallbackUrl(){
   return 'https://kfarmai.com/auth-callback.html';
 }
+function getSupabaseAuthClient(){
+  if(window._sb)return window._sb;
+  setAuthMessage('인증 준비 중입니다. 잠시 후 다시 시도해주세요.', true);
+  showToast('인증 준비 중입니다. 잠시 후 다시 시도해주세요.');
+  return null;
+}
 async function sendEmailOtp(){
+  const sb=getSupabaseAuthClient();
+  if(!sb)return;
   const email=document.getElementById('authEmail')?.value.trim();
   clearAuthMessage();
   if(!email){setAuthMessage('이메일을 입력해주세요.', true);return showToast('이메일을 입력해주세요.');}
   const btn=document.getElementById('emailOtpBtn')||document.getElementById('magicLinkBtn');
   setAuthButtonLoading(btn,true,'인증번호 보내는 중...');
   try{
-    const {error}=await _sb.auth.signInWithOtp({email,options:{shouldCreateUser:true}});
+    const {error}=await sb.auth.signInWithOtp({
+      email,
+      options:{
+        shouldCreateUser:true,
+        emailRedirectTo:authCallbackUrl()
+      }
+    });
     if(error)throw error;
     const otpBox=document.getElementById('otpVerifyBox');
     if(otpBox)otpBox.style.display='grid';
@@ -2981,8 +2996,14 @@ async function sendEmailOtp(){
     setAuthMessage('인증번호를 이메일로 보냈습니다.\n메일에 표시된 인증번호를 입력해주세요.');
     showToast('인증번호를 보냈습니다. 메일을 확인해주세요.');
   }catch(error){
-    console.error('email otp send failed', error);
-    setAuthMessage('인증번호를 보내지 못했습니다. 이메일 주소를 확인해주세요.', true);
+    console.error('email otp send failed', {
+      message:error?.message,
+      status:error?.status,
+      code:error?.code,
+      name:error?.name,
+      error
+    });
+    setAuthMessage('인증번호를 보내지 못했습니다.\n이메일 주소와 인증 설정을 확인해주세요.', true);
     showToast('인증번호를 보내지 못했습니다.');
   }finally{
     setAuthButtonLoading(btn,false);
@@ -2990,6 +3011,8 @@ async function sendEmailOtp(){
 }
 const sendMagicLink = sendEmailOtp;
 async function verifyEmailOtp(){
+  const sb=getSupabaseAuthClient();
+  if(!sb)return;
   const email=document.getElementById('authEmail')?.value.trim();
   const token=document.getElementById('authOtp')?.value.trim();
   clearAuthMessage();
@@ -2998,7 +3021,7 @@ async function verifyEmailOtp(){
   const btn=document.getElementById('emailOtpVerifyBtn');
   setAuthButtonLoading(btn,true,'확인 중...');
   try{
-    const {data,error}=await _sb.auth.verifyOtp({email,token,type:'email'});
+    const {data,error}=await sb.auth.verifyOtp({email,token,type:'email'});
     if(error)throw error;
     setAuthMessage('로그인되었습니다.');
     showToast('로그인되었습니다.');
@@ -3035,22 +3058,49 @@ function setAuthButtonLoading(btn,loading,label='처리 중...'){
     btn.disabled=false;
   }
 }
-async function loginGoogle(){
+function resetGoogleLoginButton(){
   const btn=document.getElementById('googleBtn');
-  const originalHtml=btn?.innerHTML || '';
+  if(googleLoginResetTimer){
+    clearTimeout(googleLoginResetTimer);
+    googleLoginResetTimer=null;
+  }
+  if(!btn)return;
+  if(btn.dataset.originalHtml){
+    btn.innerHTML=btn.dataset.originalHtml;
+    delete btn.dataset.originalHtml;
+  }
+  btn.disabled=false;
+}
+async function loginGoogle(){
+  const sb=getSupabaseAuthClient();
+  if(!sb)return;
+  const btn=document.getElementById('googleBtn');
   if(btn){
+    btn.dataset.originalHtml=btn.dataset.originalHtml || btn.innerHTML;
     btn.disabled=true;
     btn.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" style="animation:spin 0.8s linear infinite"><circle cx="12" cy="12" r="10" fill="none" stroke="#4285F4" stroke-width="3" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg>`;
+    googleLoginResetTimer=setTimeout(()=>{
+      resetGoogleLoginButton();
+      setAuthMessage('Google 로그인이 시작되지 않았습니다.\n잠시 후 다시 시도해주세요.', true);
+    },12000);
   }
-  const {error}=await _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:authCallbackUrl()}});
-  if(error){
-    alert('로그인 실패: '+error.message);
-    if(btn){
-      btn.disabled=false;
-      btn.innerHTML=originalHtml;
-    }
+  try{
+    const {error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:authCallbackUrl()}});
+    if(error)throw error;
+  }catch(error){
+    console.error('google login failed', {
+      message:error?.message,
+      status:error?.status,
+      code:error?.code,
+      name:error?.name,
+      error
+    });
+    resetGoogleLoginButton();
+    setAuthMessage('Google 로그인을 시작하지 못했습니다.\n잠시 후 다시 시도해주세요.', true);
+    showToast('Google 로그인을 시작하지 못했습니다.');
   }
 }
+window.addEventListener('pageshow', resetGoogleLoginButton);
 async function logout(){if(!_sb)return;await _sb.auth.signOut();setMyState(null);resetUserUI();closeMyPanel();}
 function getTimeAgo(dateStr){const diff=(Date.now()-new Date(dateStr))/1000;if(diff<60)return '방금 전';if(diff<3600)return Math.floor(diff/60)+'분 전';if(diff<86400)return Math.floor(diff/3600)+'시간 전';return Math.floor(diff/86400)+'일 전';}
 function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
