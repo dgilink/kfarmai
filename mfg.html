@@ -58,6 +58,8 @@
   .official-site-card { background: #fff; border: 1px solid #dbeafe; border-radius: 12px; padding: 11px; }
   .official-site-card h4 { margin: 0 0 6px; color: #111827; font-size: 13px; line-height: 1.35; }
   .official-site-card p { margin: 0 0 8px; color: #4b5563; font-size: 12px; line-height: 1.55; }
+  .official-site-search { margin: 12px 0 10px; display: flex; gap: 8px; }
+  .official-site-search input { flex: 1; min-width: 0; min-height: 40px; border: 1px solid #d1d5db; border-radius: 12px; padding: 0 12px; font-size: 13px; }
   .official-site-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
   .official-site-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 4px 7px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 800; }
   .official-site-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 32px; padding: 7px 10px; border-radius: 999px; background: #111827; color: #fff; font-size: 11px; font-weight: 900; text-decoration: none; }
@@ -250,8 +252,9 @@ const DEFAULT_INPUT_CATEGORIES = [
   {
     id: 'irrigation-facility',
     name: '관수·시설자재',
-    title: '관수·시설자재 참고 정보',
+    title: '관수·시설자재',
     description: '관수·시설자재는 재배환경, 면적, 수압, 배수 상태에 따라 확인할 품목이 달라집니다.',
+    officialCompanySearchPlaceholder: '관수, 점적호스, 차광망, 펌프, 하우스필름 검색',
     situations: ['자동관수', '점적관수', '하우스 관수', '배수', '차광', '환기', '방풍'],
     items: ['점적호스', '스프링클러', 'PE관', '밸브', '필터', '타이머', '펌프', '차광망', '하우스 필름', '환기자재'],
     checkpoints: [
@@ -294,8 +297,9 @@ const DEFAULT_INPUT_CATEGORIES = [
   {
     id: 'home-gardening-tools',
     name: '화분·도구',
-    title: '화분·도구 참고 정보',
+    title: '화분·도구',
     description: '화분·도구는 식물 크기, 배수 상태, 실내 환경에 맞춰 확인하는 참고 정보입니다.',
+    officialCompanySearchPlaceholder: '화분, 분갈이, 배수망, 지지대, 전지가위 검색',
     situations: ['분갈이', '배수 문제', '과습', '식물 지지대', '가지치기', '실내 물주기'],
     items: ['화분', '받침', '배수망', '마사토', '분갈이삽', '전지가위', '지지대', '분무기', '물조리개'],
     plantNotes: [
@@ -335,8 +339,9 @@ const DEFAULT_INPUT_CATEGORIES = [
   {
     id: 'smartfarm',
     name: '스마트팜',
-    title: '스마트팜 참고 정보',
+    title: '스마트팜',
     description: '스마트팜은 작물과 시설 규모에 따라 필요한 장비와 단계가 달라집니다.',
+    officialCompanySearchPlaceholder: '센서, 자동관수, 양액기, 환경제어, 스마트팜 검색',
     stages: ['온습도 모니터링', '자동관수', '환기·차광 제어', '양액기', '데이터 기록', '통합제어'],
     equipment: ['센서', '제어기', '자동관수', '환기제어', '차광제어', '양액기', 'CCTV', '데이터 플랫폼'],
     cropExamples: ['딸기', '토마토', '오이', '파프리카', '상추', '엽채류', '국화'],
@@ -440,6 +445,7 @@ function renderInputCategoryGuide() {
   const selected = inputCategoryData.find(item => item.id === selectedId);
   if(selected) {
     box.innerHTML = renderGuideDetail(selected);
+    bindOfficialCompanySearch(selected);
     box.scrollIntoView({ block: 'start', behavior: 'smooth' });
     return;
   }
@@ -461,10 +467,8 @@ function renderGuideDetail(item) {
   const firstTags = item.situations || item.stages || [];
   const secondTags = item.items || item.equipment || [];
   const noteList = item.checkpoints || [];
-  return `<h2>${escapeHtml(item.title || item.name)}</h2>
-    <p>${escapeHtml(item.description)}</p>
-    ${item.decisionRole ? `<div class="guide-notice">이 카테고리는 ${escapeHtml(item.decisionRole)}</div>` : ''}
-    <div class="guide-detail-grid">
+  const orderedCompanyBlocks = item.officialCompanies ? renderCompanyFirstGuideBlocks(item, firstTags, secondTags, noteList) : '';
+  const legacyGuideBlocks = item.officialCompanies ? '' : `
       ${item.problemLinks ? renderTagBlock('이 카테고리는 언제 확인하나요?', item.problemLinks) : ''}
       ${item.productGroups ? renderTagBlock('확인할 제품군', item.productGroups) : ''}
       ${item.checkBeforeUse ? renderListBlock('선택 전 체크포인트', item.checkBeforeUse) : ''}
@@ -473,12 +477,19 @@ function renderGuideDetail(item) {
       ${item.nextActions ? renderTagBlock('다음 확인 경로', item.nextActions) : ''}
       ${renderTagBlock(item.stages ? '도입 단계' : '상황 선택', firstTags)}
       ${renderTagBlock(item.equipment ? '확인 장비' : '확인할 품목', secondTags)}
-      ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}
+      ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}`;
+  return `<h2>${escapeHtml(item.title || item.name)}</h2>
+    <p>${escapeHtml(item.description)}</p>
+    ${item.officialCompanies ? renderOfficialCompanySearch(item) : ''}
+    ${item.officialCompanies ? renderOfficialCompanies(item.officialCompanies, item) : ''}
+    ${item.decisionRole ? `<div class="guide-notice">이 카테고리는 ${escapeHtml(item.decisionRole)}</div>` : ''}
+    <div class="guide-detail-grid">
+      ${orderedCompanyBlocks}
+      ${legacyGuideBlocks}
       ${item.useCases ? renderUseCases(item.useCases) : ''}
       ${item.plantNotes ? renderPlantNotes(item.plantNotes) : ''}
       ${item.cropExamples ? renderTagBlock('작물 예시', item.cropExamples) : ''}
       ${item.officialInfo ? renderListBlock('공식 정보 확인', item.officialInfo) : ''}
-      ${item.officialCompanies ? renderOfficialCompanies(item.officialCompanies) : ''}
       ${item.regionInfo ? renderListBlock('지역 판매점 확인', item.regionInfo) : ''}
       ${item.cautions ? renderListBlock('확인 전 주의', item.cautions) : ''}
       ${item.relatedActions ? renderListBlock('다음 확인 경로', item.relatedActions) : ''}
@@ -491,17 +502,44 @@ function renderGuideDetail(item) {
     <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')} 제조사 공식 정보와 지역 판매점 정보를 단계적으로 보완할 예정입니다.</div>`;
 }
 
+function renderCompanyFirstGuideBlocks(item, firstTags, secondTags, noteList) {
+  const itemLabel = item.equipment ? '확인 장비' : '확인할 품목';
+  return `
+      ${renderTagBlock(item.stages ? '도입 단계' : '이 카테고리는 언제 확인하나요?', firstTags)}
+      ${renderTagBlock(itemLabel, secondTags)}
+      ${item.checkBeforeUse ? renderListBlock('선택 전 체크포인트', item.checkBeforeUse) : ''}
+      ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}
+      ${(item.regionUse || item.manufacturerUse) ? renderListBlock('지역 판매점과 제조사 정보 구분', [item.regionUse, item.manufacturerUse].filter(Boolean)) : ''}
+      ${item.nextActions ? renderTagBlock('다음 확인 경로', item.nextActions) : ''}
+      ${item.publicDataLinks ? renderListBlock('관련 공공정보', item.publicDataLinks) : ''}`;
+}
+
 function renderTagBlock(title, items) {
   if(!items || !items.length) return '';
   return `<div class="guide-block"><h3>${escapeHtml(title)}</h3><div class="guide-tags">${items.map(v=>`<span class="guide-tag">${escapeHtml(v)}</span>`).join('')}</div></div>`;
 }
 
-function renderOfficialCompanies(items) {
+function renderOfficialCompanySearch(item) {
+  const placeholder = item.officialCompanySearchPlaceholder || `${item.name || '공식 사이트'} 검색`;
+  return `<div class="official-site-search">
+    <input id="officialCompanyKeyword" type="search" placeholder="${escapeHtml(placeholder)}" autocomplete="off">
+  </div>`;
+}
+
+function renderOfficialCompanies(items, categoryItem) {
   if(!items || !items.length) return '';
   return `<div class="guide-block">
     <h3>제조사·공식 사이트 확인</h3>
     <p style="margin:0 0 10px;color:#4b5563;font-size:12px;line-height:1.55;">아래 링크는 판매 유도가 아니라 제품 정보와 공식 자료를 확인하기 위한 참고 링크입니다.</p>
-    <div class="official-site-list">${items.map(item => {
+    <div id="officialCompanyList" class="official-site-list">${renderOfficialCompanyCards(items, categoryItem)}</div>
+  </div>`;
+}
+
+function renderOfficialCompanyCards(items, categoryItem) {
+  if(!items || !items.length) {
+    return '<div class="official-site-card"><p>해당 키워드의 공식 사이트 정보는 아직 보완 중입니다. 관련 품목과 공식 정보를 함께 확인하세요.</p></div>';
+  }
+  return items.map(item => {
       const name = item.displayName || item.name || '공식 사이트';
       const category = item.category || '공식 정보';
       const role = item.role || '제조사 공식 정보 확인';
@@ -516,8 +554,36 @@ function renderOfficialCompanies(items) {
         <p>${escapeHtml(note)}</p>
         <a class="official-site-btn" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">공식 사이트 확인</a>
       </article>`;
-    }).join('')}</div>
-  </div>`;
+    }).join('');
+}
+
+function getOfficialCompanySearchText(company, item) {
+  return [
+    company.name,
+    company.displayName,
+    company.role,
+    company.note,
+    company.category,
+    ...(item.situations || []),
+    ...(item.stages || []),
+    ...(item.items || []),
+    ...(item.equipment || []),
+    ...(item.productGroups || [])
+  ].filter(Boolean).join(' ').toLowerCase();
+}
+
+function bindOfficialCompanySearch(item) {
+  const input = document.getElementById('officialCompanyKeyword');
+  const list = document.getElementById('officialCompanyList');
+  if(!input || !list || !item.officialCompanies) return;
+  const render = () => {
+    const keyword = input.value.trim().toLowerCase();
+    const filtered = keyword
+      ? item.officialCompanies.filter(company => getOfficialCompanySearchText(company, item).includes(keyword))
+      : item.officialCompanies;
+    list.innerHTML = renderOfficialCompanyCards(filtered, item);
+  };
+  input.addEventListener('input', render);
 }
 
 function renderListBlock(title, items) {
