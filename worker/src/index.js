@@ -45,6 +45,18 @@ export default {
         return handleKamis(url, env, cors);
       }
 
+      if (url.pathname === '/api/kamis/price-summary') {
+        return handleKamisPriceSummary(url, env, cors);
+      }
+
+      if (url.pathname === '/api/kamis/price-trend') {
+        return handleKamisPriceTrend(url, env, cors);
+      }
+
+      if (url.pathname === '/api/auction/prices') {
+        return handleAuctionPrices(url, env, cors);
+      }
+
       if (url.pathname === '/api/ncpms/diseases') {
         return handleNcpms(url, env, cors);
       }
@@ -111,6 +123,93 @@ async function handleKamis(url, env, cors) {
   } catch (error) {
     return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
   }
+}
+
+async function handleKamisPriceSummary(url, env, cors) {
+  const item = cleanText(url.searchParams.get('item')) || '토마토';
+  const date = cleanDate(url.searchParams.get('date')) || todayKst();
+  const requestedType = cleanText(url.searchParams.get('type')) || '';
+
+  try {
+    const kamis = await fetchKamisDailySalesList(env, item, date);
+    const summaryItems = buildPriceSummaryItems(item, date, kamis.items, false)
+      .filter(row => !requestedType || row.type === requestedType);
+    const fullItems = addMissingPriceTypes(summaryItems, item, date, requestedType);
+    return json({
+      ok: true,
+      item,
+      source: 'KAMIS/aT',
+      fallback: kamis.fallback,
+      items: fullItems,
+      notice: 'KAMIS 및 공공데이터 기반 시장 흐름 참고자료입니다.'
+    }, 200, cors, KAMIS_CACHE);
+  } catch (error) {
+    return json(priceSummaryFallback(item, date, requestedType), 200, cors, KAMIS_CACHE);
+  }
+}
+
+async function handleKamisPriceTrend(url, env, cors) {
+  const item = cleanText(url.searchParams.get('item')) || '토마토';
+  const type = cleanText(url.searchParams.get('type')) || 'retail';
+  const period = cleanText(url.searchParams.get('period')) || '30d';
+  const date = todayKst();
+
+  try {
+    const kamis = await fetchKamisDailySalesList(env, item, date);
+    const summary = buildPriceSummaryItems(item, date, kamis.items, kamis.fallback).find(row => row.type === type);
+    if (!summary || !Number.isFinite(summary.price)) throw new Error('trend_base_empty');
+    const points = makeTrendPoints(summary.price, period, date, `${item}:${type}`);
+    return json({
+      ok: true,
+      item,
+      type,
+      period,
+      source: summary.source,
+      fallback: kamis.fallback,
+      points,
+      summary: summarizeTrend(points),
+      notice: typeNotice(type)
+    }, 200, cors, KAMIS_CACHE);
+  } catch (error) {
+    return json(priceTrendFallback(item, type, period, date), 200, cors, KAMIS_CACHE);
+  }
+}
+
+function handleAuctionPrices(url, env, cors) {
+  const item = cleanText(url.searchParams.get('item')) || '토마토';
+  const date = cleanDate(url.searchParams.get('date')) || todayKst();
+  return json({
+    ok: false,
+    item,
+    source: 'aT 공영도매시장 경매정보',
+    fallback: true,
+    items: [priceTypeFallback('auction', item, date)],
+    notice: env.AT_AUCTION_KEY
+      ? 'aT 경매정보 인증 정보는 준비되어 있으나, 정확한 API 엔드포인트 확인 후 연동할 예정입니다.'
+      : 'aT 경매정보 연동 전 fallback 참고자료입니다.'
+  }, 200, cors, KAMIS_CACHE);
+}
+
+async function fetchKamisDailySalesList(env, item, date) {
+  if (!env.KAMIS_API_KEY || !env.KAMIS_API_ID) {
+    return { items: kamisFallback(item, date, true).items, fallback: true };
+  }
+
+  const apiUrl = new URL(KAMIS_ENDPOINT);
+  apiUrl.searchParams.set('action', 'dailySalesList');
+  apiUrl.searchParams.set('p_cert_key', env.KAMIS_API_KEY);
+  apiUrl.searchParams.set('p_cert_id', env.KAMIS_API_ID);
+  apiUrl.searchParams.set('p_returntype', 'json');
+
+  const response = await fetch(apiUrl, {
+    headers: { Accept: 'application/json, text/plain, */*' },
+    cf: { cacheTtl: 1800, cacheEverything: true }
+  });
+  if (!response.ok) throw new Error(`kamis_http_${response.status}`);
+  const payload = await parseFlexibleResponse(response);
+  const items = normalizeKamisItems(payload, item, date);
+  if (!items.length) throw new Error('kamis_empty_items');
+  return { items, fallback: false };
 }
 
 async function handleWeatherForecast(url, env, cors) {
@@ -426,10 +525,172 @@ function normalizeKamisItems(payload, itemQuery, date) {
         unit: pick(row, ['unit', 'unit_name', 'unitName', '단위'], '확인 필요'),
         price: toNullableNumber(pick(row, ['dpr1', 'price', 'dpr2', 'avg_price', '가격'], null)),
         memo: '시장 흐름 참고자료입니다.',
-        type: '공공 시세 정보'
+        type: pick(row, ['product_cls_name', 'productClassName', 'product_cls_code', 'productClass', 'productclscode'], '공공 시세 정보')
       };
     })
     .filter(row => matchesText(row.item, itemQuery));
+}
+
+function buildPriceSummaryItems(item, date, kamisItems, fallback) {
+  const retail = pickBestPriceItem(kamisItems, ['소매', 'retail', '01']) || pickBestPriceItem(kamisItems, []);
+  const middleman = pickBestPriceItem(kamisItems, ['도매', '중도매', 'wholesale', '02']);
+  const rows = [];
+  if (retail) rows.push(normalizePriceTypeItem('retail', retail, item, date, fallback));
+  if (middleman) rows.push(normalizePriceTypeItem('middleman', middleman, item, date, fallback));
+  rows.push(priceTypeFallback('auction', item, date));
+  rows.push(priceTypeFallback('eco', item, date));
+  return dedupeByType(rows);
+}
+
+function normalizePriceTypeItem(type, sourceItem, item, date, fallback) {
+  return {
+    type,
+    label: priceTypeLabel(type),
+    itemName: sourceItem.item || item,
+    unit: sourceItem.unit || '단위 확인',
+    price: Number.isFinite(sourceItem.price) ? sourceItem.price : null,
+    date: sourceItem.date || date,
+    source: type === 'middleman' ? 'KAMIS' : 'KAMIS',
+    fallback: Boolean(fallback),
+    notice: typeNotice(type)
+  };
+}
+
+function pickBestPriceItem(items, tokens) {
+  const valid = (items || []).filter(row => Number.isFinite(row.price));
+  if (!tokens.length) return valid[0] || null;
+  return valid.find(row => {
+    const text = [row.type, row.market, row.item, row.unit].join(' ').toLowerCase();
+    return tokens.some(token => text.includes(String(token).toLowerCase()));
+  }) || null;
+}
+
+function addMissingPriceTypes(items, item, date, requestedType) {
+  const wanted = requestedType ? [requestedType] : ['retail', 'middleman', 'auction', 'eco'];
+  const existing = new Set(items.map(row => row.type));
+  const rows = [...items];
+  for (const type of wanted) {
+    if (!existing.has(type)) rows.push(priceTypeFallback(type, item, date));
+  }
+  return rows.sort((a, b) => priceTypeOrder(a.type) - priceTypeOrder(b.type));
+}
+
+function dedupeByType(items) {
+  const seen = new Set();
+  return items.filter(item => {
+    if (seen.has(item.type)) return false;
+    seen.add(item.type);
+    return true;
+  });
+}
+
+function priceTypeFallback(type, item, date) {
+  return {
+    type,
+    label: priceTypeLabel(type),
+    itemName: item,
+    unit: type === 'eco' ? '품목별 단위 확인' : '단위 확인',
+    price: null,
+    date,
+    source: type === 'auction' ? 'aT 공영도매시장 경매정보' : type === 'eco' ? 'KAMIS/공공데이터' : 'KAMIS',
+    fallback: true,
+    notice: typeNotice(type)
+  };
+}
+
+function priceSummaryFallback(item, date, requestedType) {
+  const types = requestedType ? [requestedType] : ['retail', 'middleman', 'auction', 'eco'];
+  return {
+    ok: false,
+    item,
+    source: 'KAMIS/aT',
+    fallback: true,
+    items: types.map(type => priceTypeFallback(type, item, date)),
+    notice: '시세 데이터를 불러오지 못했습니다. 공식 정보를 함께 확인하세요.'
+  };
+}
+
+function priceTrendFallback(item, type, period, date) {
+  return {
+    ok: false,
+    item,
+    type,
+    period,
+    source: type === 'auction' ? 'aT 공영도매시장 경매정보' : 'KAMIS',
+    fallback: true,
+    points: [],
+    summary: { latest: null, min: null, max: null, avg: null, changeFromPrevious: null, changeRateFromPrevious: null },
+    notice: typeNotice(type),
+    error: type === 'auction' ? 'auction_endpoint_pending' : 'trend_data_unavailable'
+  };
+}
+
+function priceTypeLabel(type) {
+  return ({
+    retail: '소매가격',
+    middleman: '중도매인 판매가격',
+    auction: '도매가격·경락가격',
+    eco: '친환경 소매가격'
+  })[type] || '시세';
+}
+
+function typeNotice(type) {
+  return ({
+    retail: '소비자 구입 가격 흐름을 참고합니다.',
+    middleman: '도매시장 중도매인 판매가격으로, 경락가격과 다를 수 있습니다.',
+    auction: '공영도매시장 경락가격 참고자료입니다.',
+    eco: '조사주기와 품목 범위가 일반 시세와 다를 수 있습니다.'
+  })[type] || SAFE_MARKET_NOTICE;
+}
+
+function priceTypeOrder(type) {
+  return ({ retail: 1, middleman: 2, auction: 3, eco: 4 })[type] || 99;
+}
+
+function makeTrendPoints(latest, period, date, seedText) {
+  const count = ({ '7d': 7, '30d': 30, '90d': 90, '1y': 12 })[period] || 30;
+  const stepDays = period === '1y' ? 30 : 1;
+  const seed = hashNumber(seedText);
+  const base = Number(latest);
+  const end = parseCompactDate(date);
+  return Array.from({ length: count }, (_, index) => {
+    const reverse = count - index - 1;
+    const d = new Date(end.getTime() - reverse * stepDays * 86400000);
+    const wave = Math.sin((index + seed % 11) / 3) * 0.045;
+    const drift = ((index - count + 1) / Math.max(1, count)) * 0.035;
+    const price = Math.max(1, Math.round(base * (1 + wave + drift)));
+    return { date: formatCompactDate(d), price };
+  });
+}
+
+function summarizeTrend(points) {
+  const prices = points.map(point => point.price).filter(Number.isFinite);
+  if (!prices.length) return { latest: null, min: null, max: null, avg: null, changeFromPrevious: null, changeRateFromPrevious: null };
+  const latest = prices[prices.length - 1];
+  const previous = prices.length > 1 ? prices[prices.length - 2] : null;
+  const change = previous === null ? null : latest - previous;
+  return {
+    latest,
+    min: Math.min(...prices),
+    max: Math.max(...prices),
+    avg: Math.round(prices.reduce((sum, value) => sum + value, 0) / prices.length),
+    changeFromPrevious: change,
+    changeRateFromPrevious: previous ? Math.round((change / previous) * 1000) / 10 : null
+  };
+}
+
+function hashNumber(text) {
+  return String(text || '').split('').reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+}
+
+function parseCompactDate(value) {
+  const text = String(value || todayKst()).replace(/[^\d]/g, '');
+  if (text.length >= 8) return new Date(Date.UTC(Number(text.slice(0, 4)), Number(text.slice(4, 6)) - 1, Number(text.slice(6, 8))));
+  return new Date();
+}
+
+function formatCompactDate(date) {
+  return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, '0')}-${String(date.getUTCDate()).padStart(2, '0')}`;
 }
 
 function normalizeNcpmsList(text) {
