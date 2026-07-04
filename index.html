@@ -965,6 +965,67 @@
     color: #9E9E9E;
   }
   .my-row.logout { color: #DC2626; cursor: pointer; }
+  .account-delete-box {
+    margin-top: 14px;
+    padding: 12px;
+    border: 1px solid #FECACA;
+    border-radius: 14px;
+    background: #FEF2F2;
+  }
+  .account-delete-box p {
+    margin: 7px 0 0;
+    color: #7F1D1D;
+    font-size: 12px;
+    line-height: 1.45;
+    font-weight: 700;
+  }
+  .account-delete-btn {
+    width: 100%;
+    min-height: 42px;
+    border: 1px solid #DC2626;
+    border-radius: 11px;
+    background: #fff;
+    color: #B91C1C;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .account-delete-btn:disabled,
+  .delete-confirm:disabled {
+    opacity: .65;
+    cursor: wait;
+  }
+  .account-delete-modal-copy {
+    margin: 0;
+    color: #4B5563;
+    font-size: 13px;
+    line-height: 1.65;
+    font-weight: 700;
+  }
+  .account-delete-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .delete-cancel,
+  .delete-confirm {
+    min-height: 44px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .delete-cancel {
+    border: 1px solid var(--border);
+    background: #fff;
+    color: #374151;
+  }
+  .delete-confirm {
+    border: 1px solid #B91C1C;
+    background: #B91C1C;
+    color: #fff;
+  }
   .my-version { padding-top: 14px; color: var(--muted); font-size: 12px; text-align: center; font-weight: 700; }
   .feed-loading { text-align: center; padding: 20px 10px; color: var(--muted); font-size: 13px; }
   .spinner {
@@ -1589,9 +1650,33 @@
         <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
         <div class="my-row"><span>공지사항</span><span class="muted">준비중</span></div>
         <div class="my-row"><span>문의하기</span><span class="muted">준비중</span></div>
+        <div class="account-delete-box">
+          <button class="account-delete-btn" type="button" onclick="openAccountDeleteModal()">회원 탈퇴</button>
+          <p>계정과 작성한 데이터 삭제를 요청합니다.</p>
+        </div>
         <div class="my-row logout" onclick="logout()">로그아웃</div>
       </div>
       <div class="my-version">앱 버전: v2.0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT DELETION REQUEST MODAL -->
+<div class="modal-overlay" id="accountDeleteModal" onclick="if(event.target===this)closeAccountDeleteModal()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="accountDeleteTitle">
+    <button class="modal-handle" type="button" onclick="closeAccountDeleteModal()" aria-label="닫기"></button>
+    <div class="modal-title" id="accountDeleteTitle" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      회원 탈퇴 요청
+      <button class="my-close" type="button" onclick="closeAccountDeleteModal()" aria-label="닫기">×</button>
+    </div>
+    <p class="account-delete-modal-copy">
+      탈퇴 요청 후 로그인 세션이 종료됩니다.<br>
+      작성한 질문, 댓글, 업로드 사진 등은 운영 정책에 따라 삭제 또는 익명화될 수 있습니다.<br>
+      계속 진행하시겠습니까?
+    </p>
+    <div class="account-delete-actions">
+      <button class="delete-cancel" type="button" onclick="closeAccountDeleteModal()">취소</button>
+      <button class="delete-confirm" id="accountDeleteConfirmBtn" type="button" onclick="requestAccountDeletion()">탈퇴 요청</button>
     </div>
   </div>
 </div>
@@ -2640,6 +2725,79 @@ async function safeOpenMyPanel(){
 }
 function openMyPanel(){document.getElementById('myPanel')?.classList.add('open');lockBodyScroll();}
 function closeMyPanel(){document.getElementById('myPanel')?.classList.remove('open');unlockBodyScroll();}
+let accountDeleteModalHistory = false;
+function openAccountDeleteModal(){
+  if(!currentUser){
+    showToast('로그인이 필요합니다.');
+    openMyPanel();
+    return;
+  }
+  document.getElementById('accountDeleteModal')?.classList.add('open');
+  lockBodyScroll();
+  if(!accountDeleteModalHistory){
+    history.pushState({accountDeleteModal:true}, '', location.href);
+    accountDeleteModalHistory = true;
+  }
+}
+function closeAccountDeleteModal(syncHistory=true){
+  const modal=document.getElementById('accountDeleteModal');
+  const wasOpen=modal?.classList.contains('open');
+  modal?.classList.remove('open');
+  unlockBodyScroll();
+  if(syncHistory && wasOpen && accountDeleteModalHistory){
+    accountDeleteModalHistory = false;
+    history.back();
+  }
+}
+window.addEventListener('popstate',()=>{
+  if(accountDeleteModalHistory){
+    accountDeleteModalHistory = false;
+    closeAccountDeleteModal(false);
+  }
+});
+async function requestAccountDeletion(){
+  if(!_sb){
+    showToast('탈퇴 요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    return;
+  }
+  const btn=document.getElementById('accountDeleteConfirmBtn');
+  if(btn){
+    btn.dataset.originalText=btn.textContent;
+    btn.textContent='처리 중...';
+    btn.disabled=true;
+  }
+  try{
+    const {data:{session}}=await _sb.auth.getSession();
+    const user=session?.user||currentUser;
+    if(!user?.id){
+      showToast('로그인이 필요합니다.');
+      closeAccountDeleteModal();
+      openMyPanel();
+      return;
+    }
+    const requestedAt=new Date().toISOString();
+    localStorage.setItem('kfarmai_account_delete_requested_at', requestedAt);
+    localStorage.setItem('kfarmai_account_delete_requested_user', user.id);
+    if(user.email)localStorage.setItem('kfarmai_account_delete_requested_email', user.email);
+    console.warn('account deletion request stored locally; server table or edge function is required for final deletion.', {user_id:user.id, requested_at:requestedAt});
+    await _sb.auth.signOut();
+    setMyState(null);
+    resetUserUI();
+    accountDeleteModalHistory = false;
+    closeAccountDeleteModal(false);
+    closeMyPanel();
+    showToast('탈퇴 요청이 접수되었습니다. 로그아웃 후 홈으로 이동합니다.');
+    setTimeout(()=>{ location.href='index.html'; }, 900);
+  }catch(error){
+    console.error('account deletion request failed', error);
+    showToast('탈퇴 요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+  }finally{
+    if(btn){
+      btn.textContent=btn.dataset.originalText||'탈퇴 요청';
+      btn.disabled=false;
+    }
+  }
+}
 function openLogin(){openMyPanel();}
 function closeLogin(){closeMyPanel();}
 async function loginEmail(){
@@ -2748,6 +2906,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     closeModal();
     closeDiagnosisDemoCase();
+    closeAccountDeleteModal();
     closeMyPanel();
   }
 });
