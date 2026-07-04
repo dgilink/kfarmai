@@ -154,25 +154,7 @@ async function handleKamisPriceTrend(url, env, cors) {
   const period = cleanText(url.searchParams.get('period')) || '30d';
   const date = todayKst();
 
-  try {
-    const kamis = await fetchKamisDailySalesList(env, item, date);
-    const summary = buildPriceSummaryItems(item, date, kamis.items, kamis.fallback).find(row => row.type === type);
-    if (!summary || !Number.isFinite(summary.price)) throw new Error('trend_base_empty');
-    const points = makeTrendPoints(summary.price, period, date, `${item}:${type}`);
-    return json({
-      ok: true,
-      item,
-      type,
-      period,
-      source: summary.source,
-      fallback: kamis.fallback,
-      points,
-      summary: summarizeTrend(points),
-      notice: typeNotice(type)
-    }, 200, cors, KAMIS_CACHE);
-  } catch (error) {
-    return json(priceTrendFallback(item, type, period, date), 200, cors, KAMIS_CACHE);
-  }
+  return json(priceTrendFallback(item, type, period, date), 200, cors, KAMIS_CACHE);
 }
 
 function handleAuctionPrices(url, env, cors) {
@@ -620,8 +602,8 @@ function priceTrendFallback(item, type, period, date) {
     fallback: true,
     points: [],
     summary: { latest: null, min: null, max: null, avg: null, changeFromPrevious: null, changeRateFromPrevious: null },
-    notice: typeNotice(type),
-    error: type === 'auction' ? 'auction_endpoint_pending' : 'trend_data_unavailable'
+    notice: `${typeNotice(type)} 기간별 가격 동향 API는 공식 파라미터 확인 후 연결할 예정입니다.`,
+    error: type === 'auction' ? 'auction_endpoint_pending' : 'period_api_pending'
   };
 }
 
