@@ -2964,8 +2964,7 @@ async function requestAccountDeletion(){
 function openLogin(){openMyPanel();}
 function closeLogin(){closeMyPanel();}
 function authCallbackUrl(){
-  const isLocal=['localhost','127.0.0.1'].includes(location.hostname);
-  return isLocal ? `${location.origin}/auth-callback.html` : 'https://kfarmai.com/auth-callback.html';
+  return 'https://kfarmai.com/auth-callback.html';
 }
 async function sendEmailOtp(){
   const email=document.getElementById('authEmail')?.value.trim();

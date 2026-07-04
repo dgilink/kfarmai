@@ -6,6 +6,14 @@ Google 로그인과 이메일 OTP 로그인 과정에서 사용자에게 Supabas
 
 목표는 인증 과정에서도 kFarmAI 브랜드 신뢰도를 유지하는 것입니다.
 
+현재 Google 계정 선택 화면에서 보이는 `xzetqjie...supabase.co` 문구는 kFarmAI 코드의 `redirectTo` 주소가 아니라 Supabase Auth 제공 도메인입니다. Google OAuth는 Supabase Auth를 통해 시작되므로, Custom Domain 설정 전에는 Google 화면에서 Supabase 기본 도메인이 표시될 수 있습니다.
+
+중요 원칙:
+
+- 코드의 `redirectTo`만 바꿔서는 Google 계정 선택 화면의 `supabase.co` 문구를 완전히 숨길 수 없습니다.
+- 이 문구를 숨기려면 Supabase Auth Custom Domain을 `auth.kfarmai.com`으로 설정해야 합니다.
+- Custom Domain 적용 후 Google Cloud Console OAuth 설정도 Supabase가 안내하는 값 기준으로 갱신해야 합니다.
+
 ## 2. 희망 구조
 
 - 서비스 도메인: `https://kfarmai.com`
@@ -19,6 +27,7 @@ Supabase Dashboard에서 아래 항목을 확인해야 합니다.
 - Project Settings 또는 Auth 설정의 Custom Domain / Auth Custom Domain 지원 여부
 - `auth.kfarmai.com` 등록 가능 여부
 - 현재 사용 중인 Supabase 플랜에서 Auth Custom Domain을 지원하는지 여부
+- Custom Domain 적용 후 Supabase가 표시하는 Google OAuth callback URL
 
 이 값은 프로젝트와 플랜에 따라 다를 수 있으므로 코드에서 임의로 처리하지 않습니다.
 
@@ -58,6 +67,12 @@ https://www.kfarmai.com/auth-callback.html
 
 Google Cloud Console의 OAuth 클라이언트 설정에서 아래 항목을 확인합니다.
 
+Authorized domains:
+
+```text
+kfarmai.com
+```
+
 Authorized JavaScript origins:
 
 ```text
@@ -77,11 +92,13 @@ Supabase가 제공하는 Google OAuth callback URL을 정확히 사용합니다.
 - callback URL을 임의로 추측해서 넣지 않습니다.
 - Custom Domain 적용 후 Supabase 화면에서 callback URL이 `auth.kfarmai.com` 기반으로 바뀌는지 확인합니다.
 - 바뀐 경우 Google Cloud Console의 Authorized redirect URIs도 Supabase가 표시한 값으로 갱신합니다.
+- Google 계정 선택 화면의 앱/도메인 표시는 Google OAuth 앱 설정과 Supabase Auth 도메인 설정의 영향을 함께 받습니다.
 
 ## 7. 주의사항
 
 - Supabase 기본 Auth를 쓰는 한 Custom Domain 설정 전에는 `xxxxx.supabase.co`가 인증 과정에서 잠깐 보일 수 있습니다.
 - 완전히 보이지 않게 하려면 Supabase Auth Custom Domain 설정이 필요합니다.
+- 코드 수정만으로 Google 계정 선택 화면의 `supabase.co` 문구를 완전히 제거할 수 없습니다.
 - 플랜 제한이 있을 수 있으므로 Dashboard에서 지원 여부를 먼저 확인해야 합니다.
 - 코드에 service role key, secret, `.env.local` 값을 넣지 않습니다.
 - 설정 전후 Google 로그인, 이메일 OTP 로그인, 로그아웃, 세션 유지 테스트가 필요합니다.
