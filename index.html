@@ -1689,12 +1689,11 @@
       <button class="btn-kakao" type="button" disabled>카카오로 시작하기 (준비중)</button>
       <div class="email-auth" aria-label="이메일 로그인">
         <input id="authEmail" type="email" placeholder="이메일" autocomplete="email">
-        <input id="authPassword" type="password" placeholder="비밀번호 6자 이상" autocomplete="current-password">
         <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
-        <button class="btn-email secondary" id="magicLinkBtn" type="button" onclick="sendMagicLink()">이메일로 로그인 링크 받기</button>
-        <div class="email-auth-actions">
-          <button class="btn-email secondary" id="emailLoginBtn" type="button" onclick="loginEmail()">이메일/비밀번호 로그인</button>
-          <button class="btn-email" id="emailSignupBtn" type="button" onclick="signupEmail()">이메일/비밀번호로 가입</button>
+        <button class="btn-email secondary" id="emailOtpBtn" type="button" onclick="sendEmailOtp()">이메일로 인증번호 받기</button>
+        <div class="email-auth" id="otpVerifyBox" style="display:none;margin-top:0">
+          <input id="authOtp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="6자리 인증번호" autocomplete="one-time-code">
+          <button class="btn-email" id="emailOtpVerifyBtn" type="button" onclick="verifyEmailOtp()">확인하고 로그인</button>
         </div>
       </div>
     </div>
@@ -2954,65 +2953,52 @@ async function requestAccountDeletion(){
 }
 function openLogin(){openMyPanel();}
 function closeLogin(){closeMyPanel();}
-async function loginEmail(){
-  const email=document.getElementById('authEmail')?.value.trim();
-  const password=document.getElementById('authPassword')?.value;
-  clearAuthMessage();
-  if(!email||!password){setAuthMessage('이메일과 비밀번호를 입력해주세요.', true);return showToast('이메일과 비밀번호를 입력해주세요.');}
-  const btn=document.getElementById('emailLoginBtn');
-  setAuthButtonLoading(btn,true,'로그인 중...');
-  try{
-    const {error}=await _sb.auth.signInWithPassword({email,password});
-    if(error)throw error;
-    setAuthMessage('로그인되었습니다.');
-    showToast('로그인되었습니다');
-  }catch(error){
-    console.error('email login failed', error);
-    setAuthMessage('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.', true);
-    showToast('로그인 정보를 다시 확인해주세요.');
-  }finally{
-    setAuthButtonLoading(btn,false);
-  }
-}
-async function signupEmail(){
-  const email=document.getElementById('authEmail')?.value.trim();
-  const password=document.getElementById('authPassword')?.value;
-  clearAuthMessage();
-  if(!email||!password){setAuthMessage('이메일과 비밀번호를 입력해주세요.', true);return showToast('이메일과 비밀번호를 입력해주세요.');}
-  if(password.length<6){setAuthMessage('비밀번호는 6자 이상 입력해주세요.', true);return showToast('비밀번호는 6자 이상 입력해주세요.');}
-  const btn=document.getElementById('emailSignupBtn');
-  setAuthButtonLoading(btn,true,'가입 메일 보내는 중...');
-  try{
-    const {data,error}=await _sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
-    if(error)throw error;
-    const message=data?.user?.identities?.length===0
-      ? '메일을 보냈거나 이미 가입된 이메일일 수 있습니다. 이메일함을 확인해주세요.'
-      : '가입 확인 메일을 보냈습니다. 이메일에서 인증 링크를 확인해주세요.';
-    setAuthMessage(message);
-    showToast('가입 확인 메일을 보냈습니다.');
-  }catch(error){
-    console.error('email signup failed', error);
-    setAuthMessage('가입 처리 중 문제가 발생했습니다. 이메일 형식과 비밀번호를 확인해주세요.', true);
-    showToast('가입을 처리하지 못했습니다. 입력 정보를 확인해주세요.');
-  }finally{
-    setAuthButtonLoading(btn,false);
-  }
-}
-async function sendMagicLink(){
+async function sendEmailOtp(){
   const email=document.getElementById('authEmail')?.value.trim();
   clearAuthMessage();
   if(!email){setAuthMessage('이메일을 입력해주세요.', true);return showToast('이메일을 입력해주세요.');}
-  const btn=document.getElementById('magicLinkBtn');
-  setAuthButtonLoading(btn,true,'로그인 링크 보내는 중...');
+  const btn=document.getElementById('emailOtpBtn')||document.getElementById('magicLinkBtn');
+  setAuthButtonLoading(btn,true,'인증번호 보내는 중...');
   try{
-    const {error}=await _sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
+    const {error}=await _sb.auth.signInWithOtp({email,options:{shouldCreateUser:true}});
     if(error)throw error;
-    setAuthMessage('로그인 링크를 이메일로 보냈습니다. 메일함을 확인해주세요.');
-    showToast('로그인 링크를 보냈습니다. 메일을 확인해주세요.');
+    const otpBox=document.getElementById('otpVerifyBox');
+    if(otpBox)otpBox.style.display='grid';
+    document.getElementById('authOtp')?.focus();
+    setAuthMessage('인증번호를 이메일로 보냈습니다. 6자리 인증번호를 입력해주세요.');
+    showToast('인증번호를 보냈습니다. 메일을 확인해주세요.');
   }catch(error){
-    console.error('magic link failed', error);
-    setAuthMessage('로그인 링크를 보내지 못했습니다. 이메일 주소를 확인해주세요.', true);
-    showToast('로그인 링크를 보내지 못했습니다.');
+    console.error('email otp send failed', error);
+    setAuthMessage('인증번호를 보내지 못했습니다. 이메일 주소를 확인해주세요.', true);
+    showToast('인증번호를 보내지 못했습니다.');
+  }finally{
+    setAuthButtonLoading(btn,false);
+  }
+}
+const sendMagicLink = sendEmailOtp;
+async function verifyEmailOtp(){
+  const email=document.getElementById('authEmail')?.value.trim();
+  const token=document.getElementById('authOtp')?.value.trim();
+  clearAuthMessage();
+  if(!email){setAuthMessage('이메일을 입력해주세요.', true);return showToast('이메일을 입력해주세요.');}
+  if(!/^\d{6}$/.test(token||'')){setAuthMessage('6자리 인증번호를 입력해주세요.', true);return showToast('6자리 인증번호를 입력해주세요.');}
+  const btn=document.getElementById('emailOtpVerifyBtn');
+  setAuthButtonLoading(btn,true,'확인 중...');
+  try{
+    const {data,error}=await _sb.auth.verifyOtp({email,token,type:'email'});
+    if(error)throw error;
+    setAuthMessage('로그인되었습니다.');
+    showToast('로그인되었습니다.');
+    if(data?.session?.user){
+      setMyState(data.session.user);
+      updateUserUI(data.session.user);
+    }
+    document.getElementById('authOtp').value='';
+    closeMyPanel();
+  }catch(error){
+    console.error('email otp verify failed', error);
+    setAuthMessage('인증번호 확인에 실패했습니다. 번호를 다시 확인해주세요.', true);
+    showToast('인증번호를 다시 확인해주세요.');
   }finally{
     setAuthButtonLoading(btn,false);
   }
