@@ -1,32 +1,58 @@
 [
   {
-    "title": "농자재 지원사업 확인",
-    "region": "전국/지자체",
-    "category": "농자재",
-    "target": "농업인",
-    "source": "지자체 공고",
-    "summary": "상토, 시설, 농자재 관련 보조사업 공식 공고 확인 경로입니다.",
-    "url": "subsidy-calendar.html",
-    "status": "수집·정리 중"
-  },
-  {
-    "title": "스마트팜 지원사업 확인",
-    "region": "전국/지자체",
     "category": "스마트팜",
-    "target": "농업인·청년농",
-    "source": "공공기관/지자체 공고",
-    "summary": "시설재배, 환경제어, 스마트팜 관련 지원사업 확인 경로입니다.",
-    "url": "subsidy-calendar.html",
-    "status": "수집·정리 중"
+    "description": "스마트팜 장비, 센서, 자동관수, 환기·차광 제어 관련 지원 정보를 확인합니다.",
+    "relatedPages": ["mfg.html?category=smartfarm", "agri-weather.html", "crop-guide.html"],
+    "publicSources": ["농림축산식품부 농림축산식품분야 보조금 현황", "e나라도움 보조사업현황", "스마트팜코리아", "지자체 농업기술센터 공고"],
+    "notice": "장비 범위와 신청 조건은 사업별 공식 공고 확인이 필요합니다."
   },
   {
-    "title": "관련기관 공고 확인",
-    "region": "지역별",
-    "category": "관련기관",
-    "target": "농업인·홈가드닝 사용자",
-    "source": "공공기관/농업기술센터",
-    "summary": "농업기술센터와 공공기관의 안내 자료를 확인할 수 있는 경로입니다.",
-    "url": "links.html",
-    "status": "향후 보완 예정"
+    "category": "시설원예",
+    "description": "하우스, 관수, 환기, 차광, 보온, 배수 등 시설재배 환경 개선 지원 정보를 확인합니다.",
+    "relatedPages": ["mfg.html?category=irrigation", "agri-weather.html", "crop-calendar.html"],
+    "publicSources": ["농림축산식품부 농림축산식품분야 보조금 현황", "AgriX 농림사업정보시스템", "지자체 농업기술센터 공고"],
+    "notice": "시설 규격, 작물, 자부담 조건은 기관별 조건 확인이 필요합니다."
+  },
+  {
+    "category": "농기계",
+    "description": "농기계 임대, 공동이용 장비, 구입 지원 관련 공고를 확인합니다.",
+    "relatedPages": ["mfg.html", "links.html"],
+    "publicSources": ["e나라도움 보조사업현황", "지자체 농업기술센터 공고", "농기계임대사업소 공고"],
+    "notice": "기종과 교육 이수 조건은 지역 기관 공고를 확인해야 합니다."
+  },
+  {
+    "category": "친환경",
+    "description": "친환경 인증, 토양관리, 유기질비료, 친환경 농자재 관련 지원 정보를 확인합니다.",
+    "relatedPages": ["mfg.html", "public-data.html", "crop-guide.html"],
+    "publicSources": ["농림축산식품부 농림축산식품분야 보조금 현황", "AgriX 농림사업정보시스템", "지자체 농업 관련 공고"],
+    "notice": "인증 기준과 지원 품목은 공식 공고 확인이 필요합니다."
+  },
+  {
+    "category": "유통·가공",
+    "description": "소규모 가공, 포장, 공동출하, 유통 조직화 관련 지원 정보를 확인합니다.",
+    "relatedPages": ["market-prices.html", "links.html"],
+    "publicSources": ["e나라도움 보조사업현황", "농림축산식품부 농림축산식품분야 보조금 현황", "지자체 공고"],
+    "notice": "시장 정보는 참고자료이며, 보조사업 신청은 공식 공고를 기준으로 확인합니다."
+  },
+  {
+    "category": "교육",
+    "description": "청년농, 귀농귀촌, 스마트팜, 작물 재배 교육 정보를 확인합니다.",
+    "relatedPages": ["crop-guide.html", "crop-calendar.html", "mfg.html?category=smartfarm"],
+    "publicSources": ["스마트팜코리아", "농업기술센터 교육 공고", "AgriX 농림사업정보시스템"],
+    "notice": "교육 대상, 일정, 신청 방식은 과정별 공식 안내 확인이 필요합니다."
+  },
+  {
+    "category": "재배기술",
+    "description": "농업기술센터 시범사업, 작물별 재배기술, 병해충 확인 관련 지원 정보를 확인합니다.",
+    "relatedPages": ["crop-guide.html", "crop-calendar.html", "public-data.html"],
+    "publicSources": ["지자체 농업기술센터 공고", "농촌진흥청 공개 자료", "NCPMS 병해충 정보"],
+    "notice": "시범사업은 지역 작목과 현장 조건에 따라 달라질 수 있습니다."
+  },
+  {
+    "category": "농자재",
+    "description": "상토, 비료, 시설자재, 작물보호 관련 지원 공고를 농자재·관리 카테고리와 함께 확인합니다.",
+    "relatedPages": ["mfg.html", "tools-soil.html", "tools-fertilizer.html", "public-data.html"],
+    "publicSources": ["농림축산식품부 농림축산식품분야 보조금 현황", "지자체 농업 관련 공고", "농업기술센터 공고"],
+    "notice": "품목과 지원 조건은 지역별 공식 공고 확인이 필요합니다."
   }
 ]

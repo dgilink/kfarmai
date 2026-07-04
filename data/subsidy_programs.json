@@ -1,32 +1,253 @@
 [
   {
-    "region": "전국/지자체",
-    "category": "상토",
-    "status": "수집·정리 중",
-    "title": "상토·육묘 관련 보조사업 확인",
-    "crop": "작물별 확인",
-    "period": "지자체 공고별 상이",
-    "note": "신청 전 지자체 공고와 담당기관 안내를 확인하세요.",
-    "link": "links.html"
+    "id": "subsidy-smartfarm-facility-type",
+    "title": "스마트팜 시설 보급 확인 유형",
+    "region": ["전국"],
+    "city": "",
+    "target": ["농업인", "청년농", "농업법인", "스마트팜"],
+    "category": ["스마트팜", "시설원예"],
+    "summary": "센서, 자동관수, 환경제어, 데이터 기록 장비와 관련된 스마트팜 지원 정보를 확인하는 유형입니다.",
+    "supportType": "시설·장비 구축비, 교육, 컨설팅 등은 사업별 조건 확인",
+    "period": "공식 공고별 확인",
+    "agency": "농림축산식품부, 지자체, 스마트팜 관련 기관",
+    "sourceType": "공공데이터 기반 정리",
+    "sourceName": "농림축산식품분야 보조금 현황, 스마트팜코리아",
+    "officialUrl": "https://www.smartfarmkorea.net/",
+    "status": "공공데이터 기반 정리",
+    "relatedLinks": [
+      { "label": "스마트팜 관리정보", "url": "mfg.html?category=smartfarm" },
+      { "label": "농업날씨 확인", "url": "agri-weather.html" }
+    ],
+    "notice": "사업명과 신청기간은 매년 달라질 수 있으므로 기관별 조건 확인이 필요합니다."
   },
   {
-    "region": "전국/지자체",
-    "category": "시설원예",
-    "status": "향후 보완 예정",
-    "title": "시설재배 환경관리 지원사업 확인",
-    "crop": "시설재배 작물",
-    "period": "공공기관·지자체 공고별 상이",
-    "note": "온도, 습도, 관수, 환기 등 시설재배 관리 항목 관련 공고 확인 경로입니다.",
-    "link": "subsidy-calendar.html"
+    "id": "subsidy-greenhouse-modernization-type",
+    "title": "시설원예 현대화 확인 유형",
+    "region": ["전국", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인", "시설재배"],
+    "category": ["시설원예", "농자재"],
+    "summary": "하우스, 관수, 환기, 차광, 보온, 배수 등 시설재배 환경 개선 관련 공고를 확인하는 유형입니다.",
+    "supportType": "시설 개선, 자재, 에너지 절감 장비 등은 공고별 확인",
+    "period": "지자체·농업기술센터 공고별 확인",
+    "agency": "지자체, 농업기술센터",
+    "sourceType": "공식 공고 확인 필요",
+    "sourceName": "지자체 농업기술센터 공고",
+    "officialUrl": null,
+    "status": "공식 공고 확인 필요",
+    "relatedLinks": [
+      { "label": "관수·시설자재", "url": "mfg.html?category=irrigation" },
+      { "label": "재배가이드", "url": "crop-guide.html" }
+    ],
+    "notice": "시설 규격, 작물, 설치 위치, 자부담 조건을 공식 공고에서 확인해야 합니다."
   },
   {
-    "region": "지역별",
-    "category": "청년농",
-    "status": "수집·정리 중",
-    "title": "청년농·스마트팜 지원사업 확인",
-    "crop": "해당 공고 확인",
-    "period": "공식 공고 확인 필요",
-    "note": "공식 공고 확인을 돕는 참고자료이며, 세부 자격과 신청 기간은 제공기관에서 확인해야 합니다.",
-    "link": "links.html"
+    "id": "subsidy-agri-machinery-type",
+    "title": "농기계 임대·구입 지원 확인 유형",
+    "region": ["전국", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인"],
+    "category": ["농기계"],
+    "summary": "농기계 임대사업소, 구입 지원, 공동이용 장비 관련 공고를 확인하는 유형입니다.",
+    "supportType": "임대, 구입비 일부, 공동이용 장비 등은 기관별 확인",
+    "period": "지자체 공고별 확인",
+    "agency": "지자체, 농업기술센터, 농기계임대사업소",
+    "sourceType": "공식 공고 확인 필요",
+    "sourceName": "지자체 농업기술센터 공고",
+    "officialUrl": null,
+    "status": "공식 공고 확인 필요",
+    "relatedLinks": [
+      { "label": "농자재·관리 카테고리", "url": "mfg.html" }
+    ],
+    "notice": "기종, 임대 조건, 신청 자격, 교육 이수 여부는 기관별 조건 확인이 필요합니다."
+  },
+  {
+    "id": "subsidy-young-farmer-startup-type",
+    "title": "청년농 창업 지원 확인 유형",
+    "region": ["전국"],
+    "city": "",
+    "target": ["청년농", "농업인"],
+    "category": ["교육", "재배기술", "스마트팜"],
+    "summary": "청년농 창업, 영농정착, 교육·컨설팅, 스마트팜 실습 관련 정보를 확인하는 유형입니다.",
+    "supportType": "정착 지원, 교육, 컨설팅, 창업 준비 지원 등은 사업별 확인",
+    "period": "공식 공고별 확인",
+    "agency": "농림축산식품부, 지자체, 농림수산식품교육문화정보원",
+    "sourceType": "공공데이터 기반 정리",
+    "sourceName": "e나라도움, AgriX, 지자체 공고",
+    "officialUrl": "https://www.bojo.go.kr/",
+    "status": "공공데이터 기반 정리",
+    "relatedLinks": [
+      { "label": "재배가이드", "url": "crop-guide.html" },
+      { "label": "스마트팜 관리정보", "url": "mfg.html?category=smartfarm" }
+    ],
+    "notice": "연령, 영농경력, 거주지, 교육 이수 조건은 공식 공고 확인이 필요합니다."
+  },
+  {
+    "id": "subsidy-return-farm-settlement-type",
+    "title": "귀농귀촌 정착 지원 확인 유형",
+    "region": ["전국", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["귀농귀촌", "농업인"],
+    "category": ["교육", "재배기술"],
+    "summary": "귀농귀촌 교육, 정착 컨설팅, 지역 적응 프로그램, 창업 준비 관련 공고를 확인하는 유형입니다.",
+    "supportType": "교육, 상담, 정착 프로그램, 창업 준비 지원 등은 지역별 확인",
+    "period": "지자체·관련 기관 공고별 확인",
+    "agency": "지자체, 귀농귀촌지원센터, 농업기술센터",
+    "sourceType": "공식 공고 확인 필요",
+    "sourceName": "지자체 및 귀농귀촌 관련 기관 공고",
+    "officialUrl": null,
+    "status": "공식 공고 확인 필요",
+    "relatedLinks": [
+      { "label": "재배가이드", "url": "crop-guide.html" },
+      { "label": "관련기관", "url": "links.html" }
+    ],
+    "notice": "거주 이전, 교육 이수, 사업계획 등 지역별 조건 확인이 필요합니다."
+  },
+  {
+    "id": "subsidy-eco-friendly-agriculture-type",
+    "title": "친환경농업 지원 확인 유형",
+    "region": ["전국", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인"],
+    "category": ["친환경", "농자재"],
+    "summary": "친환경 인증, 토양관리, 유기질비료, 친환경 농자재 관련 지원 정보를 확인하는 유형입니다.",
+    "supportType": "인증, 토양개량, 유기질 자재, 교육 등은 사업별 확인",
+    "period": "공식 공고별 확인",
+    "agency": "농림축산식품부, 지자체, 농업기술센터",
+    "sourceType": "공공데이터 기반 정리",
+    "sourceName": "농림축산식품분야 보조금 현황",
+    "officialUrl": "https://www.mafra.go.kr/home/5023/subview.do",
+    "status": "공공데이터 기반 정리",
+    "relatedLinks": [
+      { "label": "농자재·관리 카테고리", "url": "mfg.html" },
+      { "label": "공공정보 확인", "url": "public-data.html" }
+    ],
+    "notice": "인증 기준과 지원 대상은 세부사업 및 지역 공고에서 확인해야 합니다."
+  },
+  {
+    "id": "subsidy-distribution-processing-type",
+    "title": "농산물 유통·가공 지원 확인 유형",
+    "region": ["전국", "서울", "경기", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인"],
+    "category": ["유통·가공"],
+    "summary": "소규모 가공, 포장, 공동출하, 유통 조직화 관련 공고를 확인하는 유형입니다.",
+    "supportType": "가공 장비, 포장, 교육, 공동출하 기반 등은 공고별 확인",
+    "period": "공식 공고별 확인",
+    "agency": "지자체, 농업기술센터, 유관 공공기관",
+    "sourceType": "공공데이터 기반 정리",
+    "sourceName": "e나라도움 보조사업 현황, 지자체 공고",
+    "officialUrl": "https://eduopn.gosims.go.kr/opn/ih/ih001/getIH001002QView.do",
+    "status": "공공데이터 기반 정리",
+    "relatedLinks": [
+      { "label": "농산물 시세 참고", "url": "market-prices.html" },
+      { "label": "관련기관", "url": "links.html" }
+    ],
+    "notice": "판매·중개 목적 정보가 아니라 공식 공고 확인을 돕는 참고 정보입니다."
+  },
+  {
+    "id": "subsidy-agri-tech-center-demo-type",
+    "title": "농업기술센터 시범사업 확인 유형",
+    "region": ["경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인", "시설재배", "스마트팜"],
+    "category": ["재배기술", "교육", "스마트팜", "시설원예"],
+    "summary": "지역 농업기술센터의 신기술 보급, 실증, 교육형 시범사업 공고를 확인하는 유형입니다.",
+    "supportType": "시범 포장, 기자재, 교육, 컨설팅 등은 지역별 확인",
+    "period": "농업기술센터 공고별 확인",
+    "agency": "시군 농업기술센터",
+    "sourceType": "공식 공고 확인 필요",
+    "sourceName": "지자체 농업기술센터 공고",
+    "officialUrl": null,
+    "status": "공식 공고 확인 필요",
+    "relatedLinks": [
+      { "label": "재배가이드", "url": "crop-guide.html" },
+      { "label": "농업날씨 확인", "url": "agri-weather.html" }
+    ],
+    "notice": "지역 작목, 현장 조건, 참여 의무, 사후관리 조건을 공식 공고에서 확인해야 합니다."
+  },
+  {
+    "id": "subsidy-pest-control-type",
+    "title": "병해충 방제 지원 확인 유형",
+    "region": ["전국", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인"],
+    "category": ["농자재", "재배기술"],
+    "summary": "공동방제, 병해충 예찰, 작물보호 관련 지원 공고를 확인하는 유형입니다.",
+    "supportType": "예찰, 공동방제, 교육, 안전사용기준 확인 등은 공고별 확인",
+    "period": "병해충 발생 시기 및 기관 공고별 확인",
+    "agency": "지자체, 농업기술센터, 공공 병해충 정보 제공기관",
+    "sourceType": "공식 공고 확인 필요",
+    "sourceName": "지자체 공고, NCPMS 등 공식 병해충 정보",
+    "officialUrl": null,
+    "status": "공식 공고 확인 필요",
+    "relatedLinks": [
+      { "label": "공공정보 확인", "url": "public-data.html" },
+      { "label": "농업날씨 확인", "url": "agri-weather.html" }
+    ],
+    "notice": "특정 농약 사용 안내가 아니며, 방제 전 등록 작물과 안전사용기준 확인이 필요합니다."
+  },
+  {
+    "id": "subsidy-cultivation-training-type",
+    "title": "재배기술 교육 확인 유형",
+    "region": ["전국", "서울", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "청년농", "귀농귀촌", "홈가드닝", "시설재배", "스마트팜"],
+    "category": ["교육", "재배기술", "스마트팜"],
+    "summary": "작물 재배, 시설관리, 스마트팜, 병해충 확인, 홈가드닝 교육 정보를 확인하는 유형입니다.",
+    "supportType": "집합교육, 온라인 교육, 현장 실습 등은 기관별 확인",
+    "period": "교육 과정별 확인",
+    "agency": "농업기술센터, 농촌진흥청, 스마트팜코리아, 교육기관",
+    "sourceType": "공공데이터 기반 정리",
+    "sourceName": "스마트팜코리아, 농업기술센터 교육 공고",
+    "officialUrl": "https://www.smartfarmkorea.net/",
+    "status": "공공데이터 기반 정리",
+    "relatedLinks": [
+      { "label": "재배가이드", "url": "crop-guide.html" },
+      { "label": "재배달력", "url": "crop-calendar.html" }
+    ],
+    "notice": "교육 대상과 신청 방법은 과정별 공식 안내에서 확인해야 합니다."
+  },
+  {
+    "id": "subsidy-agri-material-type",
+    "title": "농자재 구입 지원 확인 유형",
+    "region": ["전국", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인", "홈가드닝"],
+    "category": ["농자재", "친환경"],
+    "summary": "상토, 유기질비료, 시설자재 등 지역별 농자재 관련 지원 공고를 확인하는 유형입니다.",
+    "supportType": "품목, 지원 비율, 자부담 여부는 공고별 확인",
+    "period": "지자체 공고별 확인",
+    "agency": "지자체, 농업기술센터, 지역 농업기관",
+    "sourceType": "공식 공고 확인 필요",
+    "sourceName": "지자체 농업 관련 공고",
+    "officialUrl": null,
+    "status": "공식 공고 확인 필요",
+    "relatedLinks": [
+      { "label": "농자재·관리 카테고리", "url": "mfg.html" },
+      { "label": "상토 계산기", "url": "tools-soil.html" }
+    ],
+    "notice": "판매 유도 정보가 아니라 공식 공고 확인 전 참고 정보입니다."
+  },
+  {
+    "id": "subsidy-greenhouse-energy-saving-type",
+    "title": "시설재배 에너지 절감 확인 유형",
+    "region": ["전국", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주"],
+    "city": "",
+    "target": ["농업인", "농업법인", "시설재배", "스마트팜"],
+    "category": ["시설원예", "스마트팜", "농자재"],
+    "summary": "보온, 냉난방, 차광, 환기, 에너지 관리 장비 관련 공고를 확인하는 유형입니다.",
+    "supportType": "에너지 절감 설비, 시설 보완, 제어 장비 등은 사업별 확인",
+    "period": "공식 공고별 확인",
+    "agency": "농림축산식품부, 지자체, 농업기술센터",
+    "sourceType": "공공데이터 기반 정리",
+    "sourceName": "농림축산식품분야 보조금 현황, 지자체 공고",
+    "officialUrl": "https://www.mafra.go.kr/home/5023/subview.do",
+    "status": "확장 예정",
+    "relatedLinks": [
+      { "label": "관수·시설자재", "url": "mfg.html?category=irrigation" },
+      { "label": "농업날씨 확인", "url": "agri-weather.html" }
+    ],
+    "notice": "시설 규모, 에너지 사용 현황, 자부담 조건은 공식 공고에서 확인해야 합니다."
   }
 ]
