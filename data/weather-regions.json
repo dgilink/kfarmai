@@ -1,1495 +1,1731 @@
 {
-    "areas":  [
-                  {
-                      "name":  "서울",
-                      "regions":  [
-                                      {
-                                          "name":  "서울",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "종로구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "중구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "용산구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "성동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광진구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "동대문구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "중랑구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "성북구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강북구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "도봉구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "노원구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "은평구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "서대문구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "마포구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "양천구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "구로구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "금천구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영등포구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "동작구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "관악구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "서초구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강남구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "송파구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "인천",
-                      "regions":  [
-                                      {
-                                          "name":  "인천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "중구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "미추홀구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "연수구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "남동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부평구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "계양구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강화군",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "옹진군",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "경기",
-                      "regions":  [
-                                      {
-                                          "name":  "수원",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "성남",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "의정부",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "안양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광명",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "평택",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "동두천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "안산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "고양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "과천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "구리",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "남양주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "오산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "시흥",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "군포",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "의왕",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "하남",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "용인",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "파주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "이천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "안성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "김포",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "화성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "양주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "포천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "여주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "연천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "가평",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "양평",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "강원",
-                      "regions":  [
-                                      {
-                                          "name":  "춘천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "원주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강릉",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "동해",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "태백",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "속초",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "삼척",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "홍천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "횡성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영월",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "평창",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "정선",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "철원",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "화천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "양구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "인제",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "고성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "양양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "대전·세종",
-                      "regions":  [
-                                      {
-                                          "name":  "대전",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대전 동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대전 중구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대전 서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대전 유성구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대전 대덕구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "세종",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "충북",
-                      "regions":  [
-                                      {
-                                          "name":  "청주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "충주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "제천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "보은",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "옥천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영동",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "증평",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "진천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "괴산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "음성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "단양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "충남",
-                      "regions":  [
-                                      {
-                                          "name":  "천안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "공주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "보령",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "아산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "서산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "논산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "계룡",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "당진",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "금산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부여",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "서천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "청양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "홍성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "예산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "태안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "광주",
-                      "regions":  [
-                                      {
-                                          "name":  "광주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광주 동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광주 서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광주 남구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광주 북구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광주 광산구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "전북",
-                      "regions":  [
-                                      {
-                                          "name":  "전주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "군산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "익산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "정읍",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "남원",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "김제",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "완주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "진안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "무주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "장수",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "임실",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "순창",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "고창",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "전남",
-                      "regions":  [
-                                      {
-                                          "name":  "목포",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "여수",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "순천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "나주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "광양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "담양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "곡성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "구례",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "고흥",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "보성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "화순",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "장흥",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "강진",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "해남",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영암",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "무안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "함평",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영광",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "장성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "완도",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "진도",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "신안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "대구",
-                      "regions":  [
-                                      {
-                                          "name":  "대구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 중구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 남구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 북구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 수성구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "대구 달서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "달성군",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "군위군",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "경북",
-                      "regions":  [
-                                      {
-                                          "name":  "포항",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "경주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "김천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "안동",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "구미",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "상주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "문경",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "경산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "의성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "청송",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "영덕",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "청도",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "고령",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "성주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "칠곡",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "예천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "봉화",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울진",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울릉",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "부산·울산",
-                      "regions":  [
-                                      {
-                                          "name":  "부산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 중구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 영도구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 부산진구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 동래구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 남구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 북구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 해운대구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 사하구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 금정구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 강서구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 연제구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 수영구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "부산 사상구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "기장군",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울산 중구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울산 남구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울산 동구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울산 북구",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "울주군",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "경남",
-                      "regions":  [
-                                      {
-                                          "name":  "창원",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "진주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "통영",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "사천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "김해",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "밀양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "거제",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "양산",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "의령",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "함안",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "창녕",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "고성",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "남해",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "하동",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "산청",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "함양",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "거창",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "합천",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  },
-                  {
-                      "name":  "제주",
-                      "regions":  [
-                                      {
-                                          "name":  "제주",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      },
-                                      {
-                                          "name":  "서귀포",
-                                          "nx":  null,
-                                          "ny":  null,
-                                          "status":  "좌표 확인 필요"
-                                      }
-                                  ]
-                  }
-              ]
+  "areas": [
+    {
+      "name": "서울",
+      "regions": [
+        {
+          "name": "서울",
+          "nx": 60,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "종로구",
+          "nx": 60,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "중구",
+          "nx": 60,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "용산구",
+          "nx": 60,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "성동구",
+          "nx": 61,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광진구",
+          "nx": 62,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "동대문구",
+          "nx": 61,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "중랑구",
+          "nx": 62,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "성북구",
+          "nx": 60,
+          "ny": 128,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강북구",
+          "nx": 60,
+          "ny": 128,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "도봉구",
+          "nx": 61,
+          "ny": 129,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "노원구",
+          "nx": 61,
+          "ny": 129,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "은평구",
+          "nx": 59,
+          "ny": 128,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "서대문구",
+          "nx": 59,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "마포구",
+          "nx": 59,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "양천구",
+          "nx": 58,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강서구",
+          "nx": 57,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "구로구",
+          "nx": 58,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "금천구",
+          "nx": 59,
+          "ny": 124,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영등포구",
+          "nx": 59,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "동작구",
+          "nx": 59,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "관악구",
+          "nx": 59,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "서초구",
+          "nx": 61,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강남구",
+          "nx": 61,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "송파구",
+          "nx": 62,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강동구",
+          "nx": 63,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "인천",
+      "regions": [
+        {
+          "name": "인천",
+          "nx": 49,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "중구",
+          "nx": 51,
+          "ny": 124,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "동구",
+          "nx": 54,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "미추홀구",
+          "nx": 54,
+          "ny": 124,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "연수구",
+          "nx": 54,
+          "ny": 123,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "남동구",
+          "nx": 56,
+          "ny": 124,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부평구",
+          "nx": 55,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "계양구",
+          "nx": 56,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "서구",
+          "nx": 54,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강화군",
+          "nx": 50,
+          "ny": 130,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "옹진군",
+          "nx": 37,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "경기",
+      "regions": [
+        {
+          "name": "수원",
+          "nx": 61,
+          "ny": 121,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "성남",
+          "nx": 62,
+          "ny": 123,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "의정부",
+          "nx": 61,
+          "ny": 130,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "안양",
+          "nx": 59,
+          "ny": 123,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "부천",
+          "nx": 57,
+          "ny": 125,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광명",
+          "nx": 58,
+          "ny": 124,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "평택",
+          "nx": 60,
+          "ny": 115,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "동두천",
+          "nx": 61,
+          "ny": 134,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "안산",
+          "nx": 57,
+          "ny": 121,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "고양",
+          "nx": 57,
+          "ny": 129,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "과천",
+          "nx": 60,
+          "ny": 124,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "구리",
+          "nx": 62,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "남양주",
+          "nx": 64,
+          "ny": 129,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "오산",
+          "nx": 61,
+          "ny": 118,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "시흥",
+          "nx": 57,
+          "ny": 123,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "군포",
+          "nx": 59,
+          "ny": 122,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "의왕",
+          "nx": 60,
+          "ny": 122,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "하남",
+          "nx": 64,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "용인",
+          "nx": 63,
+          "ny": 120,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "파주",
+          "nx": 57,
+          "ny": 133,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "이천",
+          "nx": 69,
+          "ny": 119,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "안성",
+          "nx": 66,
+          "ny": 115,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "김포",
+          "nx": 54,
+          "ny": 129,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "화성",
+          "nx": 58,
+          "ny": 118,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광주",
+          "nx": 65,
+          "ny": 123,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "양주",
+          "nx": 60,
+          "ny": 132,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "포천",
+          "nx": 64,
+          "ny": 136,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "여주",
+          "nx": 71,
+          "ny": 121,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "연천",
+          "nx": 60,
+          "ny": 138,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "가평",
+          "nx": 68,
+          "ny": 132,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "양평",
+          "nx": 70,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "강원",
+      "regions": [
+        {
+          "name": "춘천",
+          "nx": 73,
+          "ny": 134,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "원주",
+          "nx": 76,
+          "ny": 121,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강릉",
+          "nx": 92,
+          "ny": 131,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "동해",
+          "nx": 96,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "태백",
+          "nx": 95,
+          "ny": 119,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "속초",
+          "nx": 86,
+          "ny": 140,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "삼척",
+          "nx": 97,
+          "ny": 121,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "홍천",
+          "nx": 79,
+          "ny": 131,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "횡성",
+          "nx": 79,
+          "ny": 126,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영월",
+          "nx": 86,
+          "ny": 119,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "평창",
+          "nx": 86,
+          "ny": 127,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "정선",
+          "nx": 90,
+          "ny": 123,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "철원",
+          "nx": 67,
+          "ny": 141,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "화천",
+          "nx": 72,
+          "ny": 139,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "양구",
+          "nx": 77,
+          "ny": 140,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017 name fallback"
+        },
+        {
+          "name": "인제",
+          "nx": 82,
+          "ny": 138,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "고성",
+          "nx": 84,
+          "ny": 144,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "양양",
+          "nx": 87,
+          "ny": 137,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "대전·세종",
+      "regions": [
+        {
+          "name": "대전",
+          "nx": 67,
+          "ny": 100,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "대전 동구",
+          "nx": 69,
+          "ny": 100,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대전 중구",
+          "nx": 68,
+          "ny": 99,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대전 서구",
+          "nx": 67,
+          "ny": 99,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대전 유성구",
+          "nx": 66,
+          "ny": 101,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대전 대덕구",
+          "nx": 68,
+          "ny": 102,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "세종",
+          "nx": 65,
+          "ny": 105,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        }
+      ]
+    },
+    {
+      "name": "충북",
+      "regions": [
+        {
+          "name": "청주",
+          "nx": 69,
+          "ny": 106,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "충주",
+          "nx": 76,
+          "ny": 115,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "제천",
+          "nx": 80,
+          "ny": 116,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "보은",
+          "nx": 73,
+          "ny": 104,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "옥천",
+          "nx": 72,
+          "ny": 100,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영동",
+          "nx": 75,
+          "ny": 96,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "증평",
+          "nx": 71,
+          "ny": 110,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "진천",
+          "nx": 68,
+          "ny": 112,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "괴산",
+          "nx": 75,
+          "ny": 110,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "음성",
+          "nx": 71,
+          "ny": 114,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "단양",
+          "nx": 84,
+          "ny": 115,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "충남",
+      "regions": [
+        {
+          "name": "천안",
+          "nx": 64,
+          "ny": 111,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "공주",
+          "nx": 62,
+          "ny": 103,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "보령",
+          "nx": 53,
+          "ny": 100,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "아산",
+          "nx": 60,
+          "ny": 110,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "서산",
+          "nx": 51,
+          "ny": 110,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "논산",
+          "nx": 63,
+          "ny": 97,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "계룡",
+          "nx": 65,
+          "ny": 99,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "당진",
+          "nx": 54,
+          "ny": 112,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "금산",
+          "nx": 69,
+          "ny": 95,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부여",
+          "nx": 58,
+          "ny": 98,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "서천",
+          "nx": 55,
+          "ny": 95,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "청양",
+          "nx": 58,
+          "ny": 102,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "홍성",
+          "nx": 54,
+          "ny": 105,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "예산",
+          "nx": 57,
+          "ny": 107,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "태안",
+          "nx": 48,
+          "ny": 108,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "광주",
+      "regions": [
+        {
+          "name": "광주",
+          "nx": 58,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "광주 동구",
+          "nx": 60,
+          "ny": 73,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광주 서구",
+          "nx": 58,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광주 남구",
+          "nx": 58,
+          "ny": 73,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광주 북구",
+          "nx": 60,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광주 광산구",
+          "nx": 56,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "전북",
+      "regions": [
+        {
+          "name": "전주",
+          "nx": 63,
+          "ny": 89,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "군산",
+          "nx": 56,
+          "ny": 92,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "익산",
+          "nx": 60,
+          "ny": 93,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "정읍",
+          "nx": 59,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "남원",
+          "nx": 69,
+          "ny": 80,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "김제",
+          "nx": 59,
+          "ny": 88,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "완주",
+          "nx": 64,
+          "ny": 91,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "진안",
+          "nx": 68,
+          "ny": 89,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "무주",
+          "nx": 73,
+          "ny": 92,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "장수",
+          "nx": 70,
+          "ny": 85,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "임실",
+          "nx": 65,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "순창",
+          "nx": 62,
+          "ny": 80,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "고창",
+          "nx": 54,
+          "ny": 81,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부안",
+          "nx": 54,
+          "ny": 86,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "전남",
+      "regions": [
+        {
+          "name": "목포",
+          "nx": 50,
+          "ny": 67,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "여수",
+          "nx": 73,
+          "ny": 64,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "순천",
+          "nx": 68,
+          "ny": 71,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "나주",
+          "nx": 56,
+          "ny": 71,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "광양",
+          "nx": 73,
+          "ny": 72,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "담양",
+          "nx": 61,
+          "ny": 77,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "곡성",
+          "nx": 66,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "구례",
+          "nx": 70,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "고흥",
+          "nx": 67,
+          "ny": 62,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "보성",
+          "nx": 64,
+          "ny": 67,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "화순",
+          "nx": 61,
+          "ny": 71,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "장흥",
+          "nx": 60,
+          "ny": 64,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "강진",
+          "nx": 57,
+          "ny": 63,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "해남",
+          "nx": 52,
+          "ny": 61,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영암",
+          "nx": 54,
+          "ny": 66,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "무안",
+          "nx": 51,
+          "ny": 70,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "함평",
+          "nx": 53,
+          "ny": 73,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영광",
+          "nx": 51,
+          "ny": 77,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "장성",
+          "nx": 57,
+          "ny": 78,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "완도",
+          "nx": 57,
+          "ny": 55,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "진도",
+          "nx": 47,
+          "ny": 59,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "신안",
+          "nx": 44,
+          "ny": 67,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "대구",
+      "regions": [
+        {
+          "name": "대구",
+          "nx": 88,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "대구 중구",
+          "nx": 89,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대구 동구",
+          "nx": 90,
+          "ny": 92,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대구 서구",
+          "nx": 88,
+          "ny": 91,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대구 남구",
+          "nx": 89,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대구 북구",
+          "nx": 88,
+          "ny": 92,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대구 수성구",
+          "nx": 90,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "대구 달서구",
+          "nx": 88,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "달성군",
+          "nx": 87,
+          "ny": 88,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "군위군",
+          "nx": 90,
+          "ny": 97,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017 name fallback"
+        }
+      ]
+    },
+    {
+      "name": "경북",
+      "regions": [
+        {
+          "name": "포항",
+          "nx": 102,
+          "ny": 95,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "경주",
+          "nx": 100,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "김천",
+          "nx": 80,
+          "ny": 94,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "안동",
+          "nx": 92,
+          "ny": 106,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "구미",
+          "nx": 84,
+          "ny": 98,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영주",
+          "nx": 88,
+          "ny": 112,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영천",
+          "nx": 95,
+          "ny": 94,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "상주",
+          "nx": 79,
+          "ny": 102,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "문경",
+          "nx": 80,
+          "ny": 108,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "경산",
+          "nx": 93,
+          "ny": 90,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "의성",
+          "nx": 89,
+          "ny": 101,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "청송",
+          "nx": 97,
+          "ny": 101,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영양",
+          "nx": 98,
+          "ny": 109,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "영덕",
+          "nx": 101,
+          "ny": 104,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "청도",
+          "nx": 92,
+          "ny": 86,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "고령",
+          "nx": 84,
+          "ny": 87,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "성주",
+          "nx": 82,
+          "ny": 91,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "칠곡",
+          "nx": 86,
+          "ny": 94,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "예천",
+          "nx": 85,
+          "ny": 107,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "봉화",
+          "nx": 94,
+          "ny": 114,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울진",
+          "nx": 101,
+          "ny": 113,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울릉",
+          "nx": 127,
+          "ny": 128,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "부산·울산",
+      "regions": [
+        {
+          "name": "부산",
+          "nx": 98,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "부산 중구",
+          "nx": 97,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 서구",
+          "nx": 97,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 동구",
+          "nx": 97,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 영도구",
+          "nx": 98,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 부산진구",
+          "nx": 97,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 동래구",
+          "nx": 98,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 남구",
+          "nx": 98,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 북구",
+          "nx": 97,
+          "ny": 77,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 해운대구",
+          "nx": 99,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 사하구",
+          "nx": 96,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 금정구",
+          "nx": 98,
+          "ny": 77,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 강서구",
+          "nx": 95,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 연제구",
+          "nx": 98,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 수영구",
+          "nx": 98,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "부산 사상구",
+          "nx": 96,
+          "ny": 75,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "기장군",
+          "nx": 100,
+          "ny": 78,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울산",
+          "nx": 100,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sido center 2017"
+        },
+        {
+          "name": "울산 중구",
+          "nx": 102,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울산 남구",
+          "nx": 102,
+          "ny": 83,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울산 동구",
+          "nx": 104,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울산 북구",
+          "nx": 103,
+          "ny": 85,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "울주군",
+          "nx": 100,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "경남",
+      "regions": [
+        {
+          "name": "창원",
+          "nx": 90,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District city district center average 2017"
+        },
+        {
+          "name": "진주",
+          "nx": 81,
+          "ny": 76,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "통영",
+          "nx": 86,
+          "ny": 68,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "사천",
+          "nx": 79,
+          "ny": 72,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "김해",
+          "nx": 94,
+          "ny": 78,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "밀양",
+          "nx": 93,
+          "ny": 83,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "거제",
+          "nx": 90,
+          "ny": 69,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "양산",
+          "nx": 97,
+          "ny": 81,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "의령",
+          "nx": 83,
+          "ny": 80,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "함안",
+          "nx": 86,
+          "ny": 78,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "창녕",
+          "nx": 87,
+          "ny": 83,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "고성",
+          "nx": 84,
+          "ny": 72,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "남해",
+          "nx": 78,
+          "ny": 67,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "하동",
+          "nx": 75,
+          "ny": 74,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "산청",
+          "nx": 77,
+          "ny": 79,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "함양",
+          "nx": 74,
+          "ny": 83,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "거창",
+          "nx": 77,
+          "ny": 87,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "합천",
+          "nx": 81,
+          "ny": 84,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    },
+    {
+      "name": "제주",
+      "regions": [
+        {
+          "name": "제주",
+          "nx": 53,
+          "ny": 37,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        },
+        {
+          "name": "서귀포",
+          "nx": 54,
+          "ny": 34,
+          "status": "기상청 단기예보 격자좌표 적용",
+          "gridSource": "Korea_District sigungu center 2017"
+        }
+      ]
+    }
+  ]
 }

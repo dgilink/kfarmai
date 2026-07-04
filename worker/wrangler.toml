@@ -6,3 +6,5 @@ compatibility_date = "2026-07-02"
 # wrangler secret put KAMIS_API_KEY
 # wrangler secret put KAMIS_API_ID
 # wrangler secret put NCPMS_API_KEY
+# wrangler secret put NONGSARO_API_KEY
+# wrangler secret put PSIS_API_KEY
