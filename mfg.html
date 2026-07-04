@@ -544,6 +544,7 @@ function renderGuideDetail(item) {
       ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}`;
   return `<h2>${escapeHtml(item.title || item.name)}</h2>
     <p>${escapeHtml(item.description)}</p>
+    ${renderMafraDataEntry(item)}
     ${item.officialCompanies && !useCompanyGridFirst ? renderOfficialCompanySearch(item) : ''}
     ${item.officialCompanies && !useCompanyGridFirst ? renderOfficialCompanies(item.officialCompanies, item) : ''}
     ${item.decisionRole ? `<div class="guide-notice">이 카테고리는 ${escapeHtml(item.decisionRole)}</div>` : ''}
@@ -564,6 +565,33 @@ function renderGuideDetail(item) {
       ])}
     </div>
     <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')} 제조사 공식 정보와 지역 판매점 정보를 단계적으로 보완할 예정입니다.</div>`;
+}
+
+function renderMafraDataEntry(item) {
+  if(item.id === 'smartfarm') {
+    return `<div id="facility-vegetables" class="guide-block" style="margin-top:12px;border-color:#bfdbfe;background:#eff6ff;">
+      <h3>시설채소 생산실적 참고자료</h3>
+      <p style="margin:0 0 10px;color:#1f2937;font-size:12px;line-height:1.65;">토마토, 오이, 파프리카, 애호박 등 시설채소의 지역별 재배면적·생산량·단수 통계를 확인하는 참고자료입니다. 실제 수익성이나 출하 판단을 의미하지 않습니다.</p>
+      <div class="hub-links">
+        <a class="hub-link" href="/api/mafra/facility-vegetables?item=무&year=2013" target="_blank" rel="noopener noreferrer">시설채소 생산실적 API 확인</a>
+        <a class="hub-link" href="crop-guide.html">재배가이드 확인</a>
+      </div>
+    </div>`;
+  }
+  if(item.id === 'irrigation-facility') {
+    return `<div id="facility-vegetables" class="guide-block" style="margin-top:12px;border-color:#bfdbfe;background:#eff6ff;">
+      <h3>시설채소 생산실적 연결 예정</h3>
+      <p style="margin:0;color:#1f2937;font-size:12px;line-height:1.65;">시설채소 생산실적은 관수·시설 수요를 단정하는 자료가 아니라, 재배 구조와 지역별 생산 흐름을 이해하기 위한 통계 참고자료입니다.</p>
+    </div>`;
+  }
+  if(item.id === 'home-gardening-tools') {
+    return `<div id="flower-prices" class="guide-block" style="margin-top:12px;border-color:#fbcfe8;background:#fdf2f8;">
+      <h3>화훼류 시세현황 참고자료</h3>
+      <p style="margin:0 0 10px;color:#1f2937;font-size:12px;line-height:1.65;">장미, 국화, 수국 등 화훼 품목의 시장 흐름을 확인하는 참고자료입니다. 기준일·품목별 데이터가 없을 수 있으므로 공식 정보를 함께 확인하세요.</p>
+      <div class="hub-links"><a class="hub-link" href="market-prices.html?type=flower&item=장미">화훼류 시세 화면으로 이동</a></div>
+    </div>`;
+  }
+  return '';
 }
 
 function renderCompanyFirstGuideBlocks(item, firstTags, secondTags, noteList) {

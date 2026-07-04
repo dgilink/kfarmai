@@ -8,6 +8,7 @@ const NONGSARO_ENDPOINT = 'https://api.nongsaro.go.kr/service';
 const PSIS_ENDPOINT = 'http://psis.rda.go.kr/openApi/service.do';
 const MAFRA_OPENAPI_ENDPOINT = 'http://211.237.50.150:7080/openapi';
 const MAFRA_FACILITY_VEGETABLE_API = 'Grid_20141222000000000136_1';
+const MAFRA_FLOWER_PRICE_API = 'Grid_20141225000000000158_1';
 const ALLOWED_ORIGINS = new Set([
   'https://kfarmai.com',
   'https://www.kfarmai.com',
@@ -139,18 +140,21 @@ async function handleKamis(url, env, cors) {
 }
 
 async function handleMafraFacilityVegetables(url, env, cors) {
-  const item = cleanText(url.searchParams.get('item')) || '';
-  const region = cleanText(url.searchParams.get('region')) || '';
-  const year = cleanYear(url.searchParams.get('year')) || '2023';
+  const item = cleanText(firstParam(url, 'item', 'PRDLST')) || '';
+  const region = cleanText(firstParam(url, 'region', 'AREA_SE')) || '';
+  const vegetableKind = cleanText(firstParam(url, 'vegetableKind', 'VGETBL_KND')) || '';
+  const year = cleanYear(firstParam(url, 'year', 'EXAMIN_YEAR')) || '2013';
 
   if (!env.MAFRA_SERVICE_KEY) {
     return json(mafraFacilityFallback('missing_service_key'), 200, cors, MAFRA_CACHE);
   }
 
   try {
-    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${env.MAFRA_SERVICE_KEY}/json/${MAFRA_FACILITY_VEGETABLE_API}/1/1000`);
+    const endIndex = mafraEndIndex(env.MAFRA_SERVICE_KEY);
+    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${env.MAFRA_SERVICE_KEY}/json/${MAFRA_FACILITY_VEGETABLE_API}/1/${endIndex}`);
     apiUrl.searchParams.set('EXAMIN_YEAR', year);
     if (region) apiUrl.searchParams.set('AREA_SE', region);
+    if (vegetableKind) apiUrl.searchParams.set('VGETBL_KND', vegetableKind);
     if (item) apiUrl.searchParams.set('PRDLST', item);
 
     const response = await fetch(apiUrl, {
@@ -176,8 +180,47 @@ async function handleMafraFacilityVegetables(url, env, cors) {
   }
 }
 
-function handleMafraFlowerPrices(url, env, cors) {
-  return json(mafraFlowerFallback(env.MAFRA_SERVICE_KEY ? 'endpoint_pending' : 'missing_service_key'), 200, cors, MAFRA_CACHE);
+async function handleMafraFlowerPrices(url, env, cors) {
+  const item = cleanText(firstParam(url, 'item', 'PRDLST_NM')) || '';
+  const categoryCode = cleanText(firstParam(url, 'categoryCode', 'CATEGORY_CD', 'CATGORY_CD')) || '';
+  const speciesCode = cleanText(firstParam(url, 'speciesCode', 'SPCIES_CD')) || '';
+  const speciesName = cleanText(firstParam(url, 'speciesName', 'SPCIES_NM')) || '';
+  const date = cleanFlowerAuctionDate(firstParam(url, 'date', 'AUC_DE')) || compactMafraDate(todayKst());
+
+  if (!env.MAFRA_SERVICE_KEY) {
+    return json(mafraFlowerFallback('missing_service_key'), 200, cors, MAFRA_CACHE);
+  }
+
+  try {
+    const endIndex = mafraEndIndex(env.MAFRA_SERVICE_KEY);
+    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${env.MAFRA_SERVICE_KEY}/json/${MAFRA_FLOWER_PRICE_API}/1/${endIndex}`);
+    apiUrl.searchParams.set('AUC_DE', date);
+    if (item) apiUrl.searchParams.set('PRDLST_NM', item);
+    if (categoryCode) apiUrl.searchParams.set('CATGORY_CD', categoryCode);
+    if (speciesCode) apiUrl.searchParams.set('SPCIES_CD', speciesCode);
+    if (speciesName) apiUrl.searchParams.set('SPCIES_NM', speciesName);
+
+    const response = await fetch(apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' },
+      cf: { cacheTtl: 21600, cacheEverything: true }
+    });
+    if (!response.ok) throw new Error(`mafra_flower_http_${response.status}`);
+
+    const payload = await parseFlexibleResponse(response);
+    const items = normalizeMafraFlowerItems(payload, { item, date });
+    if (!items.length) throw new Error('mafra_flower_empty_items');
+
+    return json({
+      ok: true,
+      source: 'MAFRA',
+      dataset: '화훼류 시세현황',
+      fallback: false,
+      items,
+      notice: SAFE_MAFRA_FLOWER_NOTICE
+    }, 200, cors, MAFRA_CACHE);
+  } catch (error) {
+    return json(mafraFlowerFallback('mafra_flower_fetch_failed'), 200, cors, MAFRA_CACHE);
+  }
 }
 
 async function handleKamisPriceSummary(url, env, cors) {
@@ -887,6 +930,33 @@ function normalizeMafraFacilityItems(payload, filters) {
   })).filter(row => row.item || row.region || row.year);
 }
 
+function normalizeMafraFlowerItems(payload, filters) {
+  const raw = firstArray(
+    payload?.[MAFRA_FLOWER_PRICE_API]?.row,
+    payload?.Grid_20141225000000000158_1?.row,
+    payload?.row,
+    payload?.items
+  );
+  return raw.map(row => {
+    const item = pick(row, ['PRDLST_NM', 'item', 'item_name'], filters.item || '');
+    const species = pick(row, ['SPCIES_NM', 'species', 'grade'], '');
+    const category = pick(row, ['CATGORY_NM', 'market', 'market_name'], filters.market || '');
+    const aucDate = pick(row, ['AUC_DE', 'date', 'regday'], filters.date || '');
+    return {
+      item,
+      date: formatMafraDate(aucDate),
+      market: category || '화훼류',
+      unit: '평균단가',
+      price: pick(row, ['AVRG_AMT', 'price'], ''),
+      grade: species,
+      volume: pick(row, ['DELNG_QY'], ''),
+      topPrice: pick(row, ['TOP_AMT'], ''),
+      lowPrice: pick(row, ['LWET_AMT'], ''),
+      source: '농림축산식품 공공데이터 포털'
+    };
+  }).filter(row => row.item || row.date || row.price);
+}
+
 async function safePublicSection(source, loader, key = true) {
   if (!key) return { source, fallback: true, items: [] };
   try {
@@ -1173,6 +1243,18 @@ function pick(row, names, fallback) {
   return fallback;
 }
 
+function mafraEndIndex(serviceKey) {
+  return String(serviceKey || '').trim() === 'sample' ? 5 : 1000;
+}
+
+function firstParam(url, ...names) {
+  for (const name of names) {
+    const value = url.searchParams.get(name);
+    if (value !== null && value !== '') return value;
+  }
+  return '';
+}
+
 function xmlTag(xml, tag) {
   const match = String(xml).match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'i'));
   return match ? match[1].replace(/<!\[CDATA\[|\]\]>/g, '').trim() : '';
@@ -1241,6 +1323,23 @@ function cleanText(value) {
 function cleanDate(value) {
   const text = String(value || '').trim();
   return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : '';
+}
+
+function cleanFlowerAuctionDate(value) {
+  const text = String(value || '').trim();
+  if (/^\d{8}$/.test(text)) return text;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) return text.replace(/-/g, '');
+  return '';
+}
+
+function compactMafraDate(value) {
+  return String(value || '').replace(/-/g, '');
+}
+
+function formatMafraDate(value) {
+  const text = String(value || '').trim();
+  if (/^\d{8}$/.test(text)) return `${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}`;
+  return text;
 }
 
 function cleanYear(value) {
