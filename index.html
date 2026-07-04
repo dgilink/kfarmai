@@ -263,6 +263,8 @@
   }
   .section-head:first-child { margin-top: 14px; }
   .section-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; }
+  .section-title.accent { color: var(--green-dark); }
+  .section-copy { font-size: 11.5px; color: var(--sub); line-height: 1.45; margin-top: 3px; }
   .section-more { font-size: 12px; color: var(--sub); cursor: pointer; }
   .section-more::after { content: ' ›'; }
   .channel-count::after { content: none; }
@@ -362,14 +364,18 @@
   .q-meta.wrap { flex-wrap: wrap; row-gap: 5px; }
   .home-insights {
     display: grid;
-    gap: 14px;
-    margin: 14px 0 16px;
+    gap: 12px;
+    margin: 16px 0 14px;
   }
   .insight-block {
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 12px;
+  }
+  .insight-block.same-symptom {
+    border-color: #C8E6C9;
+    background: #FBFEFC;
   }
   .insight-head {
     display: flex;
@@ -1199,8 +1205,6 @@
           </div>
         </div>
 
-        <div class="home-insights" id="homeInsightSections" aria-label="농업·식물 문제해결 탐색"></div>
-
         <div class="section-head">
           <div class="section-title" data-i18n="exploreChannels">채널 둘러보기</div>
           <div class="section-more channel-count">8개 채널</div>
@@ -1240,10 +1244,15 @@
           </div>
         </div>
 
+        <div class="home-insights" id="homeInsightSections" aria-label="농업·식물 문제해결 탐색"></div>
+
         <div class="section-head">
-          <div style="display:flex;align-items:center">
-            <div class="section-title" data-i18n="recentQuestions">방금 올라온 질문</div>
-            <span class="live-dot">실시간</span>
+          <div>
+            <div style="display:flex;align-items:center">
+              <div class="section-title accent" data-i18n="recentQuestions">방금 올라온 질문</div>
+              <span class="live-dot">새 질문</span>
+            </div>
+            <div class="section-copy">커뮤니티에 새로 올라온 질문입니다.</div>
           </div>
           <div class="section-more">더보기</div>
         </div>
@@ -2154,21 +2163,15 @@ function renderHomeQuestionSections(){
     },
     {
       enabled:FEATURE_SAME_SYMPTOM_REACTION,
-      title:'나도 같은 증상이 많아요',
+      title:'나도 같은 증상',
       desc:'비슷한 증상 반응이 많은 질문입니다.',
       note:'비슷한 증상 반응',
+      className:'same-symptom',
       items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.same_symptom_count-a.same_symptom_count).slice(0,2)
-    },
-    {
-      enabled:true,
-      title:'이번 주 많이 확인할 문제',
-      desc:'계절·날씨 흐름에 따라 확인하면 좋은 문제입니다.',
-      note:'관련 질문 흐름',
-      items:HOME_SEARCH_HIGHLIGHTS.filter(item=>item.seasonal).slice(0,2)
     }
   ].filter(section=>section.enabled&&section.items.length);
   wrap.innerHTML=sections.map(section=>`
-    <section class="insight-block">
+    <section class="insight-block ${escHtml(section.className||'')}">
       <div class="insight-head">
         <div>
           <div class="insight-title">${escHtml(section.title)}</div>
