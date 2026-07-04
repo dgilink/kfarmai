@@ -122,6 +122,7 @@ Supabase가 제공하는 Google OAuth callback URL을 정확히 사용합니다.
 - Redirect URLs에 `https://kfarmai.com/auth-callback.html`이 포함되어 있는지 확인
 - OTP 또는 Magic Link 템플릿이 비활성화되어 있지 않은지 확인
 - 기본 메일 발송 한도 또는 SMTP 설정 문제로 발송이 차단되지 않았는지 확인
+- `over_email_send_rate_limit` 또는 `email rate limit exceeded`가 나오면 Supabase 기본 메일 발송 한도에 걸린 상태이므로 잠시 후 재시도하거나 Custom SMTP 설정을 검토
 - 브라우저 콘솔의 `email otp send failed` 로그에서 `message`, `status`, `code`를 확인
 
 코드에서는 API 키나 secret 값을 추가하지 않고, 브라우저의 Supabase anon client로 `signInWithOtp`와 `verifyOtp`만 호출합니다. 발송 정책, SMTP, Custom Domain 설정은 Supabase Dashboard에서 직접 확인해야 합니다.

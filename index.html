@@ -2975,9 +2975,11 @@ function getSupabaseAuthClient(){
 }
 function summarizeAuthError(error){
   const msg=String(error?.message||'').trim();
+  const code=String(error?.code||error?.error_code||'').trim();
+  if(/over_email_send_rate_limit|rate|limit/i.test(`${code} ${msg}`))return '이메일 발송 한도에 걸렸습니다. 잠시 후 다시 시도하거나 SMTP 설정을 확인해주세요.';
   if(!msg)return 'Supabase 인증 설정을 확인해주세요.';
   if(/redirect|url|URI/i.test(msg))return '인증 콜백 주소 설정을 확인해주세요.';
-  if(/rate|limit|security/i.test(msg))return '요청이 잠시 제한되었습니다. 잠시 후 다시 시도해주세요.';
+  if(/security/i.test(msg))return '요청이 잠시 제한되었습니다. 잠시 후 다시 시도해주세요.';
   if(/email|mail|smtp/i.test(msg))return '이메일 인증 또는 SMTP 설정을 확인해주세요.';
   if(/signup|disabled/i.test(msg))return '이메일 가입 허용 설정을 확인해주세요.';
   return msg;
