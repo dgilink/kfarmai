@@ -6,6 +6,8 @@ const NCPMS_ENDPOINT = 'http://ncpms.rda.go.kr/npmsAPI/service';
 const KMA_ENDPOINT = 'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst';
 const NONGSARO_ENDPOINT = 'https://api.nongsaro.go.kr/service';
 const PSIS_ENDPOINT = 'http://psis.rda.go.kr/openApi/service.do';
+const MAFRA_OPENAPI_ENDPOINT = 'http://211.237.50.150:7080/openapi';
+const MAFRA_FACILITY_VEGETABLE_API = 'Grid_20141222000000000136_1';
 const ALLOWED_ORIGINS = new Set([
   'https://kfarmai.com',
   'https://www.kfarmai.com',
@@ -17,10 +19,13 @@ const NCPMS_CACHE = 'public, max-age=86400';
 const WEATHER_CACHE = 'public, max-age=900';
 const NONGSARO_CACHE = 'public, max-age=21600';
 const PSIS_CACHE = 'public, max-age=21600';
+const MAFRA_CACHE = 'public, max-age=21600';
 const SAFE_MARKET_NOTICE = '농산물 시세는 판매·중개 목적이 아니라 시장 흐름 참고자료입니다.';
 const SAFE_NCPMS_NOTICE = '공공정보 확인용 참고자료입니다. 실제 판단은 공식 제공처와 전문가 상담을 함께 확인하세요.';
 const SAFE_WEATHER_NOTICE = '기상청 단기예보 기준 농작업 참고 정보입니다.';
 const SAFE_PUBLIC_INFO_NOTICE = '공식 공공정보 확인용 참고자료입니다. 실제 관리는 현장 상황과 공식 제공처를 함께 확인하세요.';
+const SAFE_MAFRA_FACILITY_NOTICE = '시설채소 생산실적은 지역·품목별 생산 규모를 확인하는 통계 참고자료입니다.';
+const SAFE_MAFRA_FLOWER_NOTICE = '화훼류 시세는 시장 흐름 참고자료이며 실제 거래가격은 품질, 규격, 시장, 유통경로에 따라 달라질 수 있습니다.';
 
 export default {
   async fetch(request, env) {
@@ -77,6 +82,14 @@ export default {
         return handleWeatherForecast(url, env, cors);
       }
 
+      if (url.pathname === '/api/mafra/facility-vegetables') {
+        return handleMafraFacilityVegetables(url, env, cors);
+      }
+
+      if (url.pathname === '/api/mafra/flower-prices') {
+        return handleMafraFlowerPrices(url, env, cors);
+      }
+
       return json({ ok: false, error: 'not_found' }, 404, cors);
     } catch (error) {
       return json({
@@ -123,6 +136,48 @@ async function handleKamis(url, env, cors) {
   } catch (error) {
     return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
   }
+}
+
+async function handleMafraFacilityVegetables(url, env, cors) {
+  const item = cleanText(url.searchParams.get('item')) || '';
+  const region = cleanText(url.searchParams.get('region')) || '';
+  const year = cleanYear(url.searchParams.get('year')) || '2023';
+
+  if (!env.MAFRA_SERVICE_KEY) {
+    return json(mafraFacilityFallback('missing_service_key'), 200, cors, MAFRA_CACHE);
+  }
+
+  try {
+    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${env.MAFRA_SERVICE_KEY}/json/${MAFRA_FACILITY_VEGETABLE_API}/1/1000`);
+    apiUrl.searchParams.set('EXAMIN_YEAR', year);
+    if (region) apiUrl.searchParams.set('AREA_SE', region);
+    if (item) apiUrl.searchParams.set('PRDLST', item);
+
+    const response = await fetch(apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' },
+      cf: { cacheTtl: 21600, cacheEverything: true }
+    });
+    if (!response.ok) throw new Error(`mafra_facility_http_${response.status}`);
+
+    const payload = await parseFlexibleResponse(response);
+    const items = normalizeMafraFacilityItems(payload, { item, region, year });
+    if (!items.length) throw new Error('mafra_facility_empty_items');
+
+    return json({
+      ok: true,
+      source: 'MAFRA',
+      dataset: '시설채소 생산실적',
+      fallback: false,
+      items,
+      notice: SAFE_MAFRA_FACILITY_NOTICE
+    }, 200, cors, MAFRA_CACHE);
+  } catch (error) {
+    return json(mafraFacilityFallback('mafra_facility_fetch_failed'), 200, cors, MAFRA_CACHE);
+  }
+}
+
+function handleMafraFlowerPrices(url, env, cors) {
+  return json(mafraFlowerFallback(env.MAFRA_SERVICE_KEY ? 'endpoint_pending' : 'missing_service_key'), 200, cors, MAFRA_CACHE);
 }
 
 async function handleKamisPriceSummary(url, env, cors) {
@@ -789,6 +844,49 @@ function psisFallback(error, crop, keyword) {
   };
 }
 
+function mafraFacilityFallback(error) {
+  return {
+    ok: false,
+    source: 'MAFRA',
+    dataset: '시설채소 생산실적',
+    fallback: true,
+    error,
+    message: '시설채소 생산실적 API 상세 정보 확인 또는 연동이 필요합니다.',
+    notice: '실제 수익성이나 출하가격을 의미하지 않는 통계 참고자료입니다.'
+  };
+}
+
+function mafraFlowerFallback(error) {
+  return {
+    ok: false,
+    source: 'MAFRA',
+    dataset: '화훼류 시세현황',
+    fallback: true,
+    error,
+    message: '화훼류 시세현황 API 상세 정보 확인 또는 연동이 필요합니다.',
+    notice: '화훼류 시세는 시장 흐름 참고자료입니다.'
+  };
+}
+
+function normalizeMafraFacilityItems(payload, filters) {
+  const raw = firstArray(
+    payload?.[MAFRA_FACILITY_VEGETABLE_API]?.row,
+    payload?.Grid_20141222000000000136_1?.row,
+    payload?.row,
+    payload?.items
+  );
+  return raw.map(row => ({
+    item: pick(row, ['PRDLST', 'item'], filters.item || ''),
+    region: pick(row, ['AREA_SE', 'region'], filters.region || ''),
+    year: pick(row, ['EXAMIN_YEAR', 'year'], filters.year || ''),
+    area: pick(row, ['FCLTY_CTVT_AR'], ''),
+    production: pick(row, ['FCLTY_PRDCTN_QY'], ''),
+    yield: pick(row, ['FCLTY_UNIT_AR_PRDCTN_QY'], ''),
+    unit: '면적 ha, 생산량 톤, 단수 kg',
+    source: '농림축산식품 공공데이터 포털'
+  })).filter(row => row.item || row.region || row.year);
+}
+
 async function safePublicSection(source, loader, key = true) {
   if (!key) return { source, fallback: true, items: [] };
   try {
@@ -1143,6 +1241,11 @@ function cleanText(value) {
 function cleanDate(value) {
   const text = String(value || '').trim();
   return /^\d{4}-\d{2}-\d{2}$/.test(text) ? text : '';
+}
+
+function cleanYear(value) {
+  const text = String(value || '').trim();
+  return /^\d{4}$/.test(text) ? text : '';
 }
 
 function cleanGrid(value) {
