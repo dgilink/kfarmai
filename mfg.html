@@ -31,6 +31,15 @@
   .hub-card p { margin: 0; font-size: 12px; line-height: 1.55; color: #4b5563; }
   .hub-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
   .hub-link { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 9px; border-radius: 999px; background: #ecfdf5; color: #166534; font-size: 11px; font-weight: 800; text-decoration: none; }
+  .flow-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .flow-step { position: relative; background: #fff; border: 1px solid #d1fae5; border-radius: 12px; padding: 13px; }
+  .flow-step-number { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: #15803d; color: #fff; font-size: 12px; font-weight: 900; margin-bottom: 8px; }
+  .flow-step h3 { margin: 0 0 6px; font-size: 14px; color: #111827; }
+  .flow-step p { margin: 0; font-size: 12px; line-height: 1.55; color: #4b5563; }
+  .decision-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .decision-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+  .decision-card h3 { margin: 0 0 7px; font-size: 14px; color: #111827; }
+  .decision-card p { margin: 8px 0 0; color: #166534; font-size: 11px; line-height: 1.55; font-weight: 800; }
   .guide-panel { background: #fff; border: 1px solid #dbeafe; border-radius: 14px; padding: 15px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04); }
   .guide-panel h2 { margin: 0 0 7px; color: #111827; font-size: 20px; line-height: 1.25; }
   .guide-panel p { margin: 0; color: #4b5563; font-size: 13px; line-height: 1.65; }
@@ -56,7 +65,7 @@
     .hub-wrap { padding: 12px; }
     .hub-hero { border-radius: 12px; padding: 14px; }
     .hub-hero h1 { font-size: 21px; }
-    .hub-grid, .support-grid, .guide-summary-grid, .guide-detail-grid { grid-template-columns: 1fr; }
+    .hub-grid, .support-grid, .guide-summary-grid, .guide-detail-grid, .flow-grid, .decision-grid { grid-template-columns: 1fr; }
     .hub-card { min-height: auto; }
   }
 </style>
@@ -83,9 +92,18 @@
 <main class="hub-wrap">
   <section class="hub-hero">
     <h1>농자재·관리정보 허브</h1>
-    <p>농자재 판매 유도가 아니라, 작물 관리와 공공정보 확인을 돕는 참고 정보입니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
+    <p>kFarmAI는 농자재 판매가 아니라, 작물 문제 해결에 필요한 자재 종류와 공식 정보를 확인하는 참고 흐름을 제공합니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
     <div class="api-status">일부 공공데이터는 실제 API로 연동했으며, 나머지는 공식 데이터 기반으로 단계적 확장 중입니다. 지역 판매점 정보는 위치 기반 확인용이고, 제조사 공식 정보는 제품 정보 확인용입니다.</div>
-    <div class="hub-note">농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+    <div class="hub-note">단순 가격 중심이 아니라 사용 목적, 재배환경, 공식 기준, 지역 판매점 정보를 함께 확인하는 구조로 확장 중입니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+  </section>
+
+  <section>
+    <div class="hub-section-title">농자재 의사결정 흐름</div>
+    <div id="materialFlow" class="flow-grid">
+      <article class="flow-step"><span class="flow-step-number">1</span><h3>문제 확인</h3><p>식물·작물의 이상 증상과 재배환경을 먼저 확인합니다.</p></article>
+    </div>
+    <div id="materialDecisionMap" class="decision-grid"></div>
+    <div class="guide-notice">제품 가격, 재고, 판매 가능 여부는 지역 판매점과 제조사 공식 정보를 함께 확인해야 합니다.</div>
   </section>
 
   <section>
@@ -185,6 +203,41 @@
 <script>
 let currentTab = 'all';
 let inputCategoryData = [];
+let materialFlowData = [];
+let materialDecisionData = [];
+
+const CATEGORY_ALIASES = {
+  cpa: 'crop-protection',
+  cropProtection: 'crop-protection',
+  crop_protection: 'crop-protection',
+  fert: 'fertilizer',
+  fertilizer: 'fertilizer',
+  soil: 'santo',
+  potting: 'santo'
+};
+
+const DEFAULT_MATERIAL_FLOW = [
+  { step: 1, name: '문제 확인', description: '식물·작물의 이상 증상, 재배환경, 최근 날씨 조건을 먼저 확인합니다.', next: ['AI 참고 진단', '농업날씨', '커뮤니티 질문'] },
+  { step: 2, name: '원인 후보 정리', description: 'AI 참고 진단으로 원인 후보와 확인 포인트를 정리합니다.', next: ['공공정보 확인', 'NCPMS 병해충 정보', '재배가이드'] },
+  { step: 3, name: '필요 자재 종류 확인', description: '특정 제품이 아니라 상토, 비료, 관수, 작물보호, 도구 등 필요한 자재 종류를 확인합니다.', next: ['농자재·관리 카테고리'] },
+  { step: 4, name: '공식 정보 확인', description: '안전사용기준, 병해충 정보, 재배기술 등 공식 정보를 함께 확인합니다.', next: ['공공정보 확인', '공식 링크'] },
+  { step: 5, name: '지역 판매점·제조사 확인', description: '지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 구분합니다.', next: ['지역 판매점 확인', '제조사 공식 정보'] }
+];
+
+const DEFAULT_DECISION_MAP = [
+  {
+    problem: '잎 말림',
+    relatedCategories: ['관수·시설자재', '비료', '작물보호', '농업날씨'],
+    checkpoints: ['고온·건조 여부를 확인하세요.', '토양 수분과 관수 상태를 확인하세요.', '이상 증상이 지속되면 NCPMS 병해충 정보를 함께 확인하세요.'],
+    safeNotice: '특정 제품 안내가 아니라 확인해야 할 자재 종류를 안내합니다.'
+  },
+  {
+    problem: '과습',
+    relatedCategories: ['상토', '화분·도구', '관수·시설자재'],
+    checkpoints: ['배수 상태와 흙 마름 속도를 확인하세요.', '화분 받침 물 고임 여부를 확인하세요.', '시설재배는 환기와 배수 상태를 함께 확인하세요.'],
+    safeNotice: '실제 관리는 현장 상태와 공식 정보를 함께 확인하세요.'
+  }
+];
 
 const DEFAULT_INPUT_CATEGORIES = [
   {
@@ -314,7 +367,8 @@ async function loadInputCategories() {
 function renderInputCategoryGuide() {
   const box = document.getElementById('inputCategoryGuide');
   if(!box) return;
-  const selectedId = new URLSearchParams(window.location.search).get('category');
+  const rawSelectedId = new URLSearchParams(window.location.search).get('category');
+  const selectedId = CATEGORY_ALIASES[rawSelectedId] || rawSelectedId;
   const selected = inputCategoryData.find(item => item.id === selectedId);
   if(selected) {
     box.innerHTML = renderGuideDetail(selected);
@@ -341,7 +395,14 @@ function renderGuideDetail(item) {
   const noteList = item.checkpoints || [];
   return `<h2>${escapeHtml(item.title || item.name)}</h2>
     <p>${escapeHtml(item.description)}</p>
+    ${item.decisionRole ? `<div class="guide-notice">이 카테고리는 ${escapeHtml(item.decisionRole)}</div>` : ''}
     <div class="guide-detail-grid">
+      ${item.problemLinks ? renderTagBlock('이 카테고리는 언제 확인하나요?', item.problemLinks) : ''}
+      ${item.productGroups ? renderTagBlock('확인할 제품군', item.productGroups) : ''}
+      ${item.checkBeforeUse ? renderListBlock('선택 전 체크포인트', item.checkBeforeUse) : ''}
+      ${item.publicDataLinks ? renderListBlock('관련 공공정보', item.publicDataLinks) : ''}
+      ${(item.regionUse || item.manufacturerUse) ? renderListBlock('지역 판매점과 제조사 정보 구분', [item.regionUse, item.manufacturerUse].filter(Boolean)) : ''}
+      ${item.nextActions ? renderTagBlock('다음 확인 경로', item.nextActions) : ''}
       ${renderTagBlock(item.stages ? '도입 단계' : '상황 선택', firstTags)}
       ${renderTagBlock(item.equipment ? '확인 장비' : '확인할 품목', secondTags)}
       ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}
@@ -358,7 +419,7 @@ function renderGuideDetail(item) {
         '지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 제공합니다.'
       ])}
     </div>
-    <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')} 향후 보완 예정인 항목은 공식 정보 확인 경로를 우선 제공합니다.</div>`;
+    <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')} 제조사 공식 정보와 지역 판매점 정보를 단계적으로 보완할 예정입니다.</div>`;
 }
 
 function renderTagBlock(title, items) {
@@ -383,6 +444,58 @@ function renderUseCases(items) {
     const points = Array.isArray(item.points) ? item.points.join(' ') : '';
     return `<li><strong>${escapeHtml(item.name || '확인')}:</strong> ${escapeHtml(points)}</li>`;
   }).join('')}</ul></div>`;
+}
+
+async function loadMaterialDecisionFlow() {
+  try {
+    const res = await fetch('data/kfarmai-agri-material-flow.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('material_flow_unavailable');
+    const data = await res.json();
+    materialFlowData = Array.isArray(data) ? data : [];
+    if(!materialFlowData.length) throw new Error('material_flow_empty');
+  } catch(err) {
+    materialFlowData = DEFAULT_MATERIAL_FLOW;
+  }
+  renderMaterialFlow();
+
+  try {
+    const res = await fetch('data/agri-material-decision-map.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('decision_map_unavailable');
+    const data = await res.json();
+    materialDecisionData = Array.isArray(data) ? data : [];
+    if(!materialDecisionData.length) throw new Error('decision_map_empty');
+  } catch(err) {
+    materialDecisionData = DEFAULT_DECISION_MAP;
+  }
+  renderMaterialDecisionMap();
+}
+
+function renderMaterialFlow() {
+  const box = document.getElementById('materialFlow');
+  if(!box) return;
+  box.innerHTML = materialFlowData.map(item => `<article class="flow-step">
+    <span class="flow-step-number">${escapeHtml(item.step || '')}</span>
+    <h3>${escapeHtml(item.name || '확인 단계')}</h3>
+    <p>${escapeHtml(item.description || '')}</p>
+    ${item.next && item.next.length ? `<div class="guide-tags" style="margin-top:10px;">${item.next.map(v=>`<span class="guide-tag">${escapeHtml(v)}</span>`).join('')}</div>` : ''}
+  </article>`).join('');
+}
+
+function renderMaterialDecisionMap() {
+  const box = document.getElementById('materialDecisionMap');
+  if(!box) return;
+  const items = materialDecisionData.slice(0, 4);
+  box.innerHTML = items.map(item => `<article class="decision-card">
+    <h3>${escapeHtml(item.problem || '확인 문제')}</h3>
+    ${renderTagInline(item.relatedCategories || [])}
+    <ul class="guide-list" style="margin-top:8px;">${(item.checkpoints || []).slice(0, 3).map(v=>`<li>${escapeHtml(v)}</li>`).join('')}</ul>
+    <p>${escapeHtml(item.safeNotice || '공식 정보와 현장 상황을 함께 확인하세요.')}</p>
+  </article>`).join('');
+}
+
+function renderTagInline(items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-tags">${items.map(v=>`<span class="guide-tag">${escapeHtml(v)}</span>`).join('')}</div>`;
 }
 
 async function loadSupportPrograms() {
@@ -413,6 +526,7 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 
+loadMaterialDecisionFlow();
 loadInputCategories();
 loadSupportPrograms();
 </script>
