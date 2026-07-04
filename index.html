@@ -906,6 +906,19 @@
     color: #fff; font-size: 13px; font-weight: 900; cursor: pointer;
   }
   .btn-email.secondary { background: #111; }
+  .auth-status {
+    display: none;
+    padding: 10px 11px;
+    border-radius: 11px;
+    background: #EFFAF2;
+    color: var(--green-dark);
+    border: 1px solid rgba(29,158,117,.22);
+    font-size: 12.5px;
+    font-weight: 800;
+    line-height: 1.45;
+  }
+  .auth-status.show { display: block; }
+  .auth-status.error { background: #FEF2F2; color: #B91C1C; border-color: #FECACA; }
   .my-profile { display: flex; align-items: center; gap: 12px; padding: 8px 0 18px; }
   .my-avatar {
     width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
@@ -1549,6 +1562,7 @@
       <div class="email-auth" aria-label="이메일 로그인">
         <input id="authEmail" type="email" placeholder="이메일" autocomplete="email">
         <input id="authPassword" type="password" placeholder="비밀번호 6자 이상" autocomplete="current-password">
+        <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
         <button class="btn-email secondary" id="magicLinkBtn" type="button" onclick="sendMagicLink()">이메일로 로그인 링크 받기</button>
         <div class="email-auth-actions">
           <button class="btn-email secondary" id="emailLoginBtn" type="button" onclick="loginEmail()">이메일/비밀번호 로그인</button>
@@ -1947,13 +1961,13 @@ async function loadMyPosts(userId){
   if(!list||!window._sb||!userId)return;
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id, title, category, created_at')
+      .select('id, title, content, created_at')
       .eq('user_id',userId)
       .order('created_at',{ascending:false})
       .limit(10);
     if(error)throw error;
     list.innerHTML=(data||[]).map(post=>`<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'">
-      <span class="my-list-badge">${escHtml(post.category||'기타')}</span>
+      <span class="my-list-badge">${escHtml(extractCategoryFromContent(post.content)||'질문')}</span>
       <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
       <div class="my-list-date">${formatMyDate(post.created_at)}</div>
     </div>`).join('');
@@ -2011,6 +2025,10 @@ function formatMyDate(value){
   if(Number.isNaN(d.getTime()))return '';
   return d.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
 }
+function extractCategoryFromContent(content){
+  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/);
+  return match ? match[1].trim() : '';
+}
 function getInitial(user){return (user.user_metadata?.full_name||user.user_metadata?.name||user.email||'U').trim()[0].toUpperCase();}
 async function loadFeed(channelId=null){
   const feed=document.getElementById('recentFeed');
@@ -2022,7 +2040,7 @@ async function loadFeed(channelId=null){
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
   try{
     if(!window._sb)throw new Error('Supabase client is not ready');
-    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,category,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
+    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
     if(channelId)query=query.eq('channel_id',channelId);
     const {data,error}=await query;
     if(error)throw error;
@@ -2376,10 +2394,10 @@ async function searchPosts(kw,limit){
   if(!window._sb)return [];
   try{
     const like=`%${kw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,category,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
+    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
     let list=data||[];
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,category,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
       list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return list;
@@ -2605,7 +2623,10 @@ function handlePostImages(input){const incoming=Array.from(input.files||[]).filt
 function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');if(!wrap)return;wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
 async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await _sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=_sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
-async function submitPost(){const channelId=document.getElementById('channelSelect').value;const category=document.getElementById('postCategory').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!category||!title){showToast('채널, 카테고리, 제목을 입력해주세요.');return;}const btn=document.getElementById('postSubmitBtn');if(btn)btn.disabled=true;try{const {data:{session}}=await _sb.auth.getSession();const userId=session?.user?.id||getLocalUserId();localStorage.setItem('kfarmai_user_id',userId);const imageUrls=await uploadPostImages(userId);const {error}=await _sb.from('posts').insert({channel_id:channelId,title,content,category,user_id:userId,image_urls:imageUrls});if(error)throw error;showToast('질문이 등록되었습니다');closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postCategory').value='';selectedPostImages=[];renderPostImagePreview();loadFeed();}catch(err){showToast('등록 실패: '+(err.message||err));}finally{if(btn)btn.disabled=false;}}
+function cleanPayload(obj){return Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!==''));}
+function contentWithCategory(content,category){const clean=String(content||'').trim();return category?`[카테고리: ${category}]\n\n${clean}`:clean;}
+function friendlyPostError(err){console.error('post submit failed',err);return '질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';}
+async function submitPost(){const channelId=document.getElementById('channelSelect').value;const category=document.getElementById('postCategory').value;const title=document.getElementById('postTitle').value.trim();const content=document.getElementById('postContent').value.trim();if(!channelId||!category||!title){showToast('채널, 카테고리, 제목을 입력해주세요.');return;}const btn=document.getElementById('postSubmitBtn');if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}try{const {data:{session}}=await _sb.auth.getSession();const userId=session?.user?.id;if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openMyPanel();return;}localStorage.setItem('kfarmai_user_id',userId);const imageUrls=await uploadPostImages(userId);const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,category),user_id:userId,image_urls:imageUrls.length?imageUrls:undefined});const {error}=await _sb.from('posts').insert(payload);if(error)throw error;showToast('질문이 등록되었습니다.');closeModal();document.getElementById('postTitle').value='';document.getElementById('postContent').value='';document.getElementById('postCategory').value='';selectedPostImages=[];renderPostImagePreview();loadFeed();}catch(err){showToast(friendlyPostError(err));}finally{if(btn){btn.textContent=btn.dataset.originalText||'질문 등록하기';btn.disabled=false;}}}
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
 function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;modal.classList.add('open');lockBodyScroll();}
@@ -2624,14 +2645,18 @@ function closeLogin(){closeMyPanel();}
 async function loginEmail(){
   const email=document.getElementById('authEmail')?.value.trim();
   const password=document.getElementById('authPassword')?.value;
-  if(!email||!password)return showToast('이메일과 비밀번호를 입력해주세요.');
+  clearAuthMessage();
+  if(!email||!password){setAuthMessage('이메일과 비밀번호를 입력해주세요.', true);return showToast('이메일과 비밀번호를 입력해주세요.');}
   const btn=document.getElementById('emailLoginBtn');
-  setAuthButtonLoading(btn,true);
+  setAuthButtonLoading(btn,true,'로그인 중...');
   try{
     const {error}=await _sb.auth.signInWithPassword({email,password});
     if(error)throw error;
+    setAuthMessage('로그인되었습니다.');
     showToast('로그인되었습니다');
   }catch(error){
+    console.error('email login failed', error);
+    setAuthMessage('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.', true);
     showToast('로그인 정보를 다시 확인해주세요.');
   }finally{
     setAuthButtonLoading(btn,false);
@@ -2640,15 +2665,22 @@ async function loginEmail(){
 async function signupEmail(){
   const email=document.getElementById('authEmail')?.value.trim();
   const password=document.getElementById('authPassword')?.value;
-  if(!email||!password)return showToast('이메일과 비밀번호를 입력해주세요.');
-  if(password.length<6)return showToast('비밀번호는 6자 이상 입력해주세요.');
+  clearAuthMessage();
+  if(!email||!password){setAuthMessage('이메일과 비밀번호를 입력해주세요.', true);return showToast('이메일과 비밀번호를 입력해주세요.');}
+  if(password.length<6){setAuthMessage('비밀번호는 6자 이상 입력해주세요.', true);return showToast('비밀번호는 6자 이상 입력해주세요.');}
   const btn=document.getElementById('emailSignupBtn');
-  setAuthButtonLoading(btn,true);
+  setAuthButtonLoading(btn,true,'가입 메일 보내는 중...');
   try{
-    const {error}=await _sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
+    const {data,error}=await _sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
     if(error)throw error;
-    showToast('확인 메일을 보냈습니다. 메일의 확인 버튼을 눌러 가입을 완료하세요.');
+    const message=data?.user?.identities?.length===0
+      ? '메일을 보냈거나 이미 가입된 이메일일 수 있습니다. 이메일함을 확인해주세요.'
+      : '가입 확인 메일을 보냈습니다. 이메일에서 인증 링크를 확인해주세요.';
+    setAuthMessage(message);
+    showToast('가입 확인 메일을 보냈습니다.');
   }catch(error){
+    console.error('email signup failed', error);
+    setAuthMessage('가입 처리 중 문제가 발생했습니다. 이메일 형식과 비밀번호를 확인해주세요.', true);
     showToast('가입을 처리하지 못했습니다. 입력 정보를 확인해주세요.');
   }finally{
     setAuthButtonLoading(btn,false);
@@ -2656,24 +2688,36 @@ async function signupEmail(){
 }
 async function sendMagicLink(){
   const email=document.getElementById('authEmail')?.value.trim();
-  if(!email)return showToast('이메일을 입력해주세요.');
+  clearAuthMessage();
+  if(!email){setAuthMessage('이메일을 입력해주세요.', true);return showToast('이메일을 입력해주세요.');}
   const btn=document.getElementById('magicLinkBtn');
-  setAuthButtonLoading(btn,true);
+  setAuthButtonLoading(btn,true,'로그인 링크 보내는 중...');
   try{
     const {error}=await _sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+'/auth-callback.html'}});
     if(error)throw error;
+    setAuthMessage('로그인 링크를 이메일로 보냈습니다. 메일함을 확인해주세요.');
     showToast('로그인 링크를 보냈습니다. 메일을 확인해주세요.');
   }catch(error){
+    console.error('magic link failed', error);
+    setAuthMessage('로그인 링크를 보내지 못했습니다. 이메일 주소를 확인해주세요.', true);
     showToast('로그인 링크를 보내지 못했습니다.');
   }finally{
     setAuthButtonLoading(btn,false);
   }
 }
-function setAuthButtonLoading(btn,loading){
+function setAuthMessage(message,isError=false){
+  const box=document.getElementById('authStatus');
+  if(!box)return;
+  box.textContent=message||'';
+  box.classList.toggle('show',Boolean(message));
+  box.classList.toggle('error',Boolean(isError));
+}
+function clearAuthMessage(){setAuthMessage('');}
+function setAuthButtonLoading(btn,loading,label='처리 중...'){
   if(!btn)return;
   if(loading){
     btn.dataset.originalText=btn.textContent;
-    btn.textContent='처리 중...';
+    btn.textContent=label;
     btn.disabled=true;
   }else{
     btn.textContent=btn.dataset.originalText||btn.textContent;

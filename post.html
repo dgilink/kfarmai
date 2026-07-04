@@ -269,19 +269,20 @@ function renderPost(post) {
   const slug = post.channels?.slug || '';
   const channelNameValue = post.channels?.name || channelName(slug);
   const isOwner = ownerId() === post.user_id;
+  const categoryLabel = post.category || extractCategoryFromContent(post.content);
   document.getElementById('channelTitle').textContent = channelNameValue;
   document.title = `${post.title || '게시글'} - kFarmAI`;
   const images = normalizeImages(post.image_urls);
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
   const ownerActions = isOwner ? `<div class="post-owner-actions"><button type="button" onclick="openEditPostModal()">수정</button><button class="delete" type="button" onclick="deletePost()">삭제</button></div>` : '';
-  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${post.category ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(post.category)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${post.user_id ? '회원' : '익명'} 작성자</span><span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span><span>${timeAgo(post.created_at)}</span></div><div class="post-body">${esc(post.content || '')}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 분석</div><div class="ai-card-text">사진과 증상을 올리면 AI가 분석해드려요</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 진단 시작하기</button></div><div class="actions"><span class="stat">조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
+  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${post.user_id ? '회원' : '익명'} 작성자</span><span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span><span>${timeAgo(post.created_at)}</span></div><div class="post-body">${esc(post.content || '')}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 분석</div><div class="ai-card-text">사진과 증상을 올리면 AI가 분석해드려요</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 진단 시작하기</button></div><div class="actions"><span class="stat">조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
 function closeImageModal(){document.getElementById('imageModal').classList.remove('show');document.getElementById('imageModalImg').removeAttribute('src');}
-function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.category||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=currentPost.content||'';document.getElementById('editPostModal').classList.add('open');}
+function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.category||extractCategoryFromContent(currentPost.content)||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=stripCategoryPrefix(currentPost.content||'');document.getElementById('editPostModal').classList.add('open');}
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
-async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const {error}=await sb.from('posts').update({title,content,category:category||null}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){showToast(err.message||'수정에 실패했습니다.');}finally{btn.disabled=false;}}
+async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const {error}=await sb.from('posts').update({title,content:contentWithCategory(content,category)}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast('수정에 실패했습니다. 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
 async function deletePost(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',ownerId());if(error)throw error;location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
 
 
@@ -419,6 +420,17 @@ function normalizeImages(value) {
     }
   }
   return [];
+}
+function extractCategoryFromContent(content){
+  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/);
+  return match ? match[1].trim() : '';
+}
+function stripCategoryPrefix(content){
+  return String(content||'').replace(/^\[카테고리:\s*[^\]]+\]\s*\n*/,'').trim();
+}
+function contentWithCategory(content,category){
+  const clean=String(content||'').trim();
+  return category?`[카테고리: ${category}]\n\n${clean}`:clean;
 }
 function esc(value) {
   return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
