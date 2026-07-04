@@ -1358,9 +1358,9 @@
         <div class="stat-row info-cats">
           <a class="stat-card" href="seed.html"><div class="stat-ic"><svg><use href="#st-seed"/></svg></div><div class="stat-name">종자</div></a>
           <a class="stat-card" href="cpa.html"><div class="stat-ic"><svg><use href="#st-chem"/></svg></div><div class="stat-name">작물보호</div></a>
-          <a class="stat-card" href="mfg.html"><div class="stat-ic"><svg><use href="#ql-weather"/></svg></div><div class="stat-name">관수·시설자재</div></a>
-          <a class="stat-card" href="mfg.html"><div class="stat-ic"><svg><use href="#ic-pot"/></svg></div><div class="stat-name">화분·도구</div></a>
-          <a class="stat-card" href="mfg.html"><div class="stat-ic"><svg><use href="#ql-link"/></svg></div><div class="stat-name">스마트팜</div></a>
+          <a class="stat-card" href="mfg.html?category=irrigation-facility"><div class="stat-ic"><svg><use href="#ql-weather"/></svg></div><div class="stat-name">관수·시설자재</div></a>
+          <a class="stat-card" href="mfg.html?category=home-gardening-tools"><div class="stat-ic"><svg><use href="#ic-pot"/></svg></div><div class="stat-name">화분·도구</div></a>
+          <a class="stat-card" href="mfg.html?category=smartfarm"><div class="stat-ic"><svg><use href="#ql-link"/></svg></div><div class="stat-name">스마트팜</div></a>
           <a class="stat-card" href="santo.html"><div class="stat-ic"><svg><use href="#st-soil"/></svg></div><div class="stat-name">상토</div></a>
           <a class="stat-card" href="fert.html"><div class="stat-ic"><svg><use href="#st-fert"/></svg></div><div class="stat-name">비료</div></a>
         </div>
@@ -2129,7 +2129,10 @@ const AGRI_LINKS=[
   {type:'material',label:'상토',initial:'ㅅㅌ',url:'santo.html',text:'상토 정보 보기'},
   {type:'material',label:'종자',initial:'ㅈㅈ',url:'seed.html',text:'종자 정보 보기'},
   {type:'material',label:'작물보호제',initial:'ㅈㅁㅂㅎㅈ',url:'cpa.html',text:'작물보호제 정보 보기'},
-  {type:'material',label:'비료',initial:'ㅂㄹ',url:'fert.html',text:'비료 정보 보기'}
+  {type:'material',label:'비료',initial:'ㅂㄹ',url:'fert.html',text:'비료 정보 보기'},
+  {type:'material',label:'관수·시설자재',initial:'ㄱㅅㅅㅅㅈㅈ',url:'mfg.html?category=irrigation-facility',text:'관수·시설자재 참고 정보 보기'},
+  {type:'material',label:'화분·도구',initial:'ㅎㅂㄷㄱ',url:'mfg.html?category=home-gardening-tools',text:'화분·도구 참고 정보 보기'},
+  {type:'material',label:'스마트팜',initial:'ㅅㅁㅌㅍ',url:'mfg.html?category=smartfarm',text:'스마트팜 참고 정보 보기'}
 ];
 const SEARCH_ALIASES=[
   {label:'식물 병원',initial:'ㅅㅂ'},

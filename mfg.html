@@ -30,6 +30,20 @@
   .hub-card p { margin: 0; font-size: 12px; line-height: 1.55; color: #4b5563; }
   .hub-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
   .hub-link { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 9px; border-radius: 999px; background: #ecfdf5; color: #166534; font-size: 11px; font-weight: 800; text-decoration: none; }
+  .guide-panel { background: #fff; border: 1px solid #dbeafe; border-radius: 14px; padding: 15px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04); }
+  .guide-panel h2 { margin: 0 0 7px; color: #111827; font-size: 20px; line-height: 1.25; }
+  .guide-panel p { margin: 0; color: #4b5563; font-size: 13px; line-height: 1.65; }
+  .guide-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .guide-summary { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
+  .guide-summary h3 { margin: 0 0 7px; font-size: 15px; color: #111827; }
+  .guide-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 13px; }
+  .guide-block { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; }
+  .guide-block h3 { margin: 0 0 8px; font-size: 14px; color: #111827; }
+  .guide-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .guide-tag { display: inline-flex; align-items: center; min-height: 26px; padding: 5px 8px; border-radius: 999px; background: #eef2ff; color: #3730a3; font-size: 11px; font-weight: 800; }
+  .guide-list { margin: 0; padding-left: 18px; color: #374151; font-size: 12px; line-height: 1.7; }
+  .guide-list li + li { margin-top: 4px; }
+  .guide-notice { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #f0fdf4; color: #166534; font-size: 12px; line-height: 1.6; font-weight: 700; }
   .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .support-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
   .support-card h3 { margin: 0 0 6px; font-size: 14px; color: #111827; }
@@ -41,7 +55,7 @@
     .hub-wrap { padding: 12px; }
     .hub-hero { border-radius: 12px; padding: 14px; }
     .hub-hero h1 { font-size: 21px; }
-    .hub-grid, .support-grid { grid-template-columns: 1fr; }
+    .hub-grid, .support-grid, .guide-summary-grid, .guide-detail-grid { grid-template-columns: 1fr; }
     .hub-card { min-height: auto; }
   }
 </style>
@@ -68,7 +82,7 @@
 <main class="hub-wrap">
   <section class="hub-hero">
     <h1>농자재·관리정보 허브</h1>
-    <p>농자재 구매가 아니라, 작물 관리와 공공정보 확인을 돕는 참고 정보입니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
+    <p>농자재 판매 유도가 아니라, 작물 관리와 공공정보 확인을 돕는 참고 정보입니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
     <div class="hub-note">농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
   </section>
 
@@ -93,15 +107,15 @@
       </article>
       <article class="hub-card">
         <div><h2>관수·시설환경</h2><p>물관리, 과습·건조, 차광, 환기, 하우스 관리 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="agri-weather.html">농업날씨 확인</a><a class="hub-link" href="q/overwatering-signs.html">관련 질문 보기</a></div>
+        <div class="hub-links"><a class="hub-link" href="mfg.html?category=irrigation-facility">관수·시설자재 참고</a><a class="hub-link" href="agri-weather.html">농업날씨 확인</a></div>
       </article>
       <article class="hub-card">
         <div><h2>홈가드닝</h2><p>화분, 분갈이, 식물등, 실내식물 관리 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="diagnosis.html">AI 참고 진단</a><a class="hub-link" href="q/monstera-yellow-leaves.html">관련 질문 보기</a></div>
+        <div class="hub-links"><a class="hub-link" href="mfg.html?category=home-gardening-tools">화분·도구 참고</a><a class="hub-link" href="diagnosis.html">AI 참고 진단</a></div>
       </article>
       <article class="hub-card">
         <div><h2>스마트팜·시설재배</h2><p>온도, 습도, EC, pH, 관수, 환기 등 시설재배 관리 항목을 참고 정보로 확장할 수 있습니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="agri-weather.html">농업날씨 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
+        <div class="hub-links"><a class="hub-link" href="mfg.html?category=smartfarm">스마트팜 참고</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
       </article>
       <article class="hub-card">
         <div><h2>보조사업</h2><p>지자체와 공공기관의 보조사업 공식 공고 확인 경로를 정리합니다.</p></div>
@@ -111,6 +125,14 @@
         <div><h2>관련기관</h2><p>농업기술센터, 농촌진흥청, 공공데이터 제공처 등 공식 확인 경로를 연결합니다.</p></div>
         <div class="hub-links"><a class="hub-link" href="links.html">관련기관 확인</a><a class="hub-link" href="public-data.html">공공정보 확인</a></div>
       </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="hub-section-title">카테고리별 참고 정보</div>
+    <div id="inputCategoryGuide" class="guide-panel">
+      <h2>농자재·관리 카테고리 정보를 불러오는 중입니다.</h2>
+      <p>관수·시설자재, 화분·도구, 스마트팜 참고 정보를 확인할 수 있습니다.</p>
     </div>
   </section>
 
@@ -160,6 +182,57 @@
 <script src="static/fert_data.js"></script>
 <script>
 let currentTab = 'all';
+let inputCategoryData = [];
+
+const DEFAULT_INPUT_CATEGORIES = [
+  {
+    id: 'irrigation-facility',
+    name: '관수·시설자재',
+    title: '관수·시설자재 참고 정보',
+    description: '관수·시설자재는 재배환경, 면적, 수압, 배수 상태에 따라 확인할 품목이 달라집니다.',
+    situations: ['자동관수', '점적관수', '하우스 관수', '배수', '차광', '환기', '방풍'],
+    items: ['점적호스', '스프링클러', 'PE관', '밸브', '필터', '타이머', '펌프', '차광망', '하우스 필름', '환기자재'],
+    checkpoints: [
+      '텃밭은 면적과 물 공급 위치를 먼저 확인하세요.',
+      '노지는 수압, 배수, 관수 간격을 함께 확인하세요.',
+      '시설재배는 관수뿐 아니라 환기, 차광, 배수 상태를 함께 확인하세요.',
+      '자동관수는 타이머, 필터, 밸브 상태를 함께 확인하세요.'
+    ],
+    regionalNote: '지역 판매점 정보는 농약·비료 판매업체 표준데이터와 지역 농자재 판매점 정보를 기반으로 확장 예정입니다.',
+    officialNote: '제조사 공식 사이트와 협회 공개 목록은 향후 카테고리별로 보완할 계획입니다.',
+    dataSources: ['전국농약및비료판매업체표준데이터', '공식 제조사 사이트', '협회/기관 공개 목록'],
+    notice: '판매 유도가 아니라 자재 확인을 돕는 참고 정보입니다.'
+  },
+  {
+    id: 'home-gardening-tools',
+    name: '화분·도구',
+    title: '화분·도구 참고 정보',
+    description: '화분·도구는 식물 크기, 배수 상태, 실내 환경에 맞춰 확인하는 참고 정보입니다.',
+    situations: ['분갈이', '배수 문제', '과습', '식물 지지대', '가지치기', '실내 물주기'],
+    items: ['화분', '받침', '배수망', '마사토', '분갈이삽', '전지가위', '지지대', '분무기', '물조리개'],
+    plantNotes: [
+      { plant: '몬스테라', note: '큰 화분, 지지대, 배수 상태를 확인하세요.' },
+      { plant: '다육식물', note: '배수가 잘되는 화분과 과습 여부를 확인하세요.' },
+      { plant: '허브류', note: '일조, 배수, 작은 화분의 흙 마름 상태를 확인하세요.' },
+      { plant: '장미', note: '가지치기 도구, 통풍, 화분 크기를 확인하세요.' },
+      { plant: '스파티필름', note: '실내 습도, 물주기 간격, 받침 물 고임을 확인하세요.' }
+    ],
+    dataSources: ['홈가드닝 관리 참고자료', '공식 제조사 사이트', '관련기관 공개 자료'],
+    notice: '판매 유도가 아니라 식물 관리에 필요한 도구를 확인하는 참고 정보입니다.'
+  },
+  {
+    id: 'smartfarm',
+    name: '스마트팜',
+    title: '스마트팜 참고 정보',
+    description: '스마트팜은 작물과 시설 규모에 따라 필요한 장비와 단계가 달라집니다.',
+    stages: ['온습도 모니터링', '자동관수', '환기·차광 제어', '양액기', '데이터 기록', '통합제어'],
+    equipment: ['센서', '제어기', '자동관수', '환기제어', '차광제어', '양액기', 'CCTV', '데이터 플랫폼'],
+    cropExamples: ['딸기', '토마토', '오이', '파프리카', '상추', '엽채류', '국화'],
+    officialInfo: ['스마트팜코리아 기업현황', '스마트팜코리아 솔루션정보', '스마트팜 지원사업', '스마트팜 교육정보'],
+    dataSources: ['스마트팜코리아 공개 정보', '협회/기관 공개 목록', '공식 제조사 사이트'],
+    notice: '스마트팜 기업 정보는 본사 위치와 실제 설치·AS 가능 지역이 다를 수 있으므로 공식 정보를 함께 확인해야 합니다.'
+  }
+];
 
 function buildAll() {
   const all = [];
@@ -211,6 +284,80 @@ function closeMenu() { document.getElementById('overlay').classList.remove('open
 
 renderCards(buildAll());
 
+async function loadInputCategories() {
+  try {
+    const res = await fetch('data/agri-input-categories.json', { cache: 'no-store' });
+    if(!res.ok) throw new Error('category_data_unavailable');
+    const data = await res.json();
+    inputCategoryData = Array.isArray(data) ? data : data.categories;
+    if(!Array.isArray(inputCategoryData) || !inputCategoryData.length) throw new Error('category_data_empty');
+  } catch (err) {
+    inputCategoryData = DEFAULT_INPUT_CATEGORIES;
+  }
+  renderInputCategoryGuide();
+}
+
+function renderInputCategoryGuide() {
+  const box = document.getElementById('inputCategoryGuide');
+  if(!box) return;
+  const selectedId = new URLSearchParams(window.location.search).get('category');
+  const selected = inputCategoryData.find(item => item.id === selectedId);
+  if(selected) {
+    box.innerHTML = renderGuideDetail(selected);
+    box.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    return;
+  }
+  box.innerHTML = `<h2>농자재·관리 카테고리 참고 정보</h2>
+    <p>지역 판매점 정보와 제조사 공식 정보는 성격이 다릅니다. 지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 제공합니다.</p>
+    <div class="guide-summary-grid">${inputCategoryData.map(renderGuideSummary).join('')}</div>
+    <div class="guide-notice">세부 회사 DB가 없는 카테고리는 시제품 일부 반영 상태이며, 공식 정보 확인 경로를 우선 보완할 예정입니다.</div>`;
+}
+
+function renderGuideSummary(item) {
+  return `<article class="guide-summary">
+    <h3>${escapeHtml(item.name)}</h3>
+    <p>${escapeHtml(item.description)}</p>
+    <div class="hub-links"><a class="hub-link" href="mfg.html?category=${encodeURIComponent(item.id)}">${escapeHtml(item.name)} 보기</a></div>
+  </article>`;
+}
+
+function renderGuideDetail(item) {
+  const firstTags = item.situations || item.stages || [];
+  const secondTags = item.items || item.equipment || [];
+  const noteList = item.checkpoints || [];
+  return `<h2>${escapeHtml(item.title || item.name)}</h2>
+    <p>${escapeHtml(item.description)}</p>
+    <div class="guide-detail-grid">
+      ${renderTagBlock(item.stages ? '도입 단계' : '상황 선택', firstTags)}
+      ${renderTagBlock(item.equipment ? '확인 장비' : '확인할 품목', secondTags)}
+      ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}
+      ${item.plantNotes ? renderPlantNotes(item.plantNotes) : ''}
+      ${item.cropExamples ? renderTagBlock('작물 예시', item.cropExamples) : ''}
+      ${item.officialInfo ? renderListBlock('공식 정보 확인', item.officialInfo) : ''}
+      ${renderListBlock('데이터 확장 기준', item.dataSources || [])}
+      ${renderListBlock('지역별 구획 기준', [
+        item.regionalNote || '지역 판매점은 위치 기반 확인 용도로 제공합니다.',
+        item.officialNote || '제조사 공식 정보는 제품과 솔루션 확인 용도로 제공합니다.'
+      ])}
+    </div>
+    <div class="guide-notice">${escapeHtml(item.notice || '공식 정보와 현장 상황을 함께 확인해야 합니다.')}</div>`;
+}
+
+function renderTagBlock(title, items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-block"><h3>${escapeHtml(title)}</h3><div class="guide-tags">${items.map(v=>`<span class="guide-tag">${escapeHtml(v)}</span>`).join('')}</div></div>`;
+}
+
+function renderListBlock(title, items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-block"><h3>${escapeHtml(title)}</h3><ul class="guide-list">${items.map(v=>`<li>${escapeHtml(v)}</li>`).join('')}</ul></div>`;
+}
+
+function renderPlantNotes(items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-block"><h3>식물별 참고</h3><ul class="guide-list">${items.map(item=>`<li><strong>${escapeHtml(item.plant)}:</strong> ${escapeHtml(item.note)}</li>`).join('')}</ul></div>`;
+}
+
 async function loadSupportPrograms() {
   const box = document.getElementById('supportPrograms');
   if(!box) return;
@@ -239,6 +386,7 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 
+loadInputCategories();
 loadSupportPrograms();
 </script>
 </body>
