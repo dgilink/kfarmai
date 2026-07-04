@@ -222,6 +222,7 @@ const CHANNEL_CONFIG = {
 const CHANNEL_BADGE_COLORS = {'plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const params = new URLSearchParams(location.search);
 const postId = params.get('id') || '';
+const openEditOnLoad = params.get('edit') === '1';
 let sb;
 let currentUser = null;
 let currentPost = null;
@@ -244,6 +245,7 @@ async function init() {
     return;
   }
   await loadPost();
+  if (openEditOnLoad && currentPost && ownerId() === currentPost.user_id) openEditPostModal();
   await Promise.all([loadComments(), loadRelatedPosts()]);
 }
 

@@ -920,6 +920,8 @@
   .auth-status.show { display: block; }
   .auth-status.error { background: #FEF2F2; color: #B91C1C; border-color: #FECACA; }
   .my-profile { display: flex; align-items: center; gap: 12px; padding: 8px 0 18px; }
+  .my-profile.clickable { cursor: pointer; border-radius: 14px; }
+  .my-profile.clickable:active { background: #F9FAFB; }
   .my-avatar {
     width: 56px; height: 56px; border-radius: 50%; overflow: hidden;
     background: var(--green-soft); color: var(--green);
@@ -964,6 +966,61 @@
     font-size: 11px;
     color: #9E9E9E;
   }
+  .my-subview { display: none; }
+  .my-subview.open { display: block; }
+  .my-subhead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .my-back {
+    min-width: 48px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .my-subtitle { font-size: 16px; font-weight: 900; color: var(--text); }
+  .account-info-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px;
+    background: #F9FAFB;
+  }
+  .account-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #ECEFF3;
+    font-size: 13px;
+  }
+  .account-info-row:last-child { border-bottom: 0; }
+  .account-info-row span:first-child { color: var(--sub); font-weight: 800; flex-shrink: 0; }
+  .account-info-row span:last-child { color: var(--text); font-weight: 800; text-align: right; word-break: break-all; }
+  .my-list-empty { padding: 18px 0; color: var(--muted); font-size: 13px; font-weight: 700; text-align: center; }
+  .my-list-item-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .my-list-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .my-list-action {
+    min-height: 28px;
+    padding: 0 9px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    color: #4B5563;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .my-list-action.danger { color: #B91C1C; border-color: #FECACA; background: #FEF2F2; }
   .my-row.logout { color: #DC2626; cursor: pointer; }
   .account-delete-box {
     margin-top: 14px;
@@ -1001,6 +1058,16 @@
     font-size: 13px;
     line-height: 1.65;
     font-weight: 700;
+  }
+  #accountDeleteModal {
+    z-index: 90;
+    align-items: center;
+    padding: 16px;
+  }
+  #accountDeleteModal .modal {
+    border-radius: 20px;
+    padding: 20px 16px;
+    box-shadow: 0 18px 48px rgba(0,0,0,.24);
   }
   .account-delete-actions {
     display: grid;
@@ -1633,7 +1700,7 @@
     </div>
 
     <div id="myLoggedIn" style="display:none">
-      <div class="my-profile">
+      <div class="my-profile clickable" onclick="openMySubview('myAccountView')" role="button" tabindex="0">
         <div class="my-avatar" id="myAvatar">U</div>
         <div>
           <div class="my-name" id="myName">사용자</div>
@@ -1641,20 +1708,43 @@
           <span class="role-badge">일반회원</span>
         </div>
       </div>
-      <div class="my-menu">
-        <div class="my-row clickable" onclick="toggleMyList('myPostList')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
-        <div class="my-list" id="myPostList"></div>
-        <div class="my-row clickable" onclick="toggleMyList('myDiagList')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
-        <div class="my-list" id="myDiagList"></div>
+      <div class="my-menu" id="myMainMenu">
+        <div class="my-row clickable" onclick="openMySubview('myPostsView')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
+        <div class="my-row clickable" onclick="openMySubview('myDiagnosesView')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
         <div class="my-row"><span>저장한 정보</span><span class="muted">준비중</span></div>
         <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
         <div class="my-row"><span>공지사항</span><span class="muted">준비중</span></div>
         <div class="my-row"><span>문의하기</span><span class="muted">준비중</span></div>
+        <div class="my-row logout" onclick="logout()">로그아웃</div>
+      </div>
+      <div class="my-subview" id="myAccountView">
+        <div class="my-subhead">
+          <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
+          <div class="my-subtitle">계정 정보</div>
+        </div>
+        <div class="account-info-card">
+          <div class="account-info-row"><span>아이디</span><span id="myAccountName">사용자</span></div>
+          <div class="account-info-row"><span>등록 이메일</span><span id="myAccountEmail">user@example.com</span></div>
+          <div class="account-info-row"><span>가입일</span><span id="myJoinedAt">확인 중</span></div>
+        </div>
         <div class="account-delete-box">
           <button class="account-delete-btn" type="button" onclick="openAccountDeleteModal()">회원 탈퇴</button>
           <p>계정과 작성한 데이터 삭제를 요청합니다.</p>
         </div>
-        <div class="my-row logout" onclick="logout()">로그아웃</div>
+      </div>
+      <div class="my-subview" id="myPostsView">
+        <div class="my-subhead">
+          <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
+          <div class="my-subtitle">내가 쓴 글</div>
+        </div>
+        <div class="my-list open" id="myPostList"></div>
+      </div>
+      <div class="my-subview" id="myDiagnosesView">
+        <div class="my-subhead">
+          <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
+          <div class="my-subtitle">내 진단 기록</div>
+        </div>
+        <div class="my-list open" id="myDiagList"></div>
       </div>
       <div class="my-version">앱 버전: v2.0</div>
     </div>
@@ -1992,6 +2082,7 @@ function setMyState(user){
   if(loggedOut)loggedOut.style.display = user ? 'none' : 'block';
   if(loggedIn)loggedIn.style.display = user ? 'block' : 'none';
   if(!user){
+    closeMySubview();
     ['myPostList','myDiagList'].forEach(id=>{
       const el=document.getElementById(id);
       if(el){el.classList.remove('open');el.innerHTML='';}
@@ -2017,6 +2108,12 @@ function renderMyProfile(user){
   const avatarEl=document.getElementById('myAvatar');
   document.getElementById('myName').textContent=name;
   document.getElementById('myEmail').textContent=email;
+  const accountName=document.getElementById('myAccountName');
+  const accountEmail=document.getElementById('myAccountEmail');
+  const joinedAt=document.getElementById('myJoinedAt');
+  if(accountName)accountName.textContent=name;
+  if(accountEmail)accountEmail.textContent=email||'이메일 정보 없음';
+  if(joinedAt)joinedAt.textContent=formatMyDate(user.created_at)||'확인 중';
   if(avatarEl)avatarEl.innerHTML=avatar ? `<img src="${escAttr(avatar)}" alt="profile">` : escHtml(getInitial(user));
 }
 async function loadMyCounts(userId){
@@ -2036,10 +2133,19 @@ async function loadMyCounts(userId){
   loadMyPosts(userId);
   loadMyDiagnoses(userId);
 }
-function toggleMyList(id){
-  const list=document.getElementById(id);
-  if(!list||!currentUser)return;
-  list.classList.toggle('open');
+function openMySubview(id){
+  if(!currentUser)return;
+  const main=document.getElementById('myMainMenu');
+  if(main)main.style.display='none';
+  document.querySelectorAll('.my-subview').forEach(view=>view.classList.remove('open'));
+  document.getElementById(id)?.classList.add('open');
+  if(id==='myPostsView')loadMyPosts(currentUser.id);
+  if(id==='myDiagnosesView')loadMyDiagnoses(currentUser.id);
+}
+function closeMySubview(){
+  const main=document.getElementById('myMainMenu');
+  if(main)main.style.display='';
+  document.querySelectorAll('.my-subview').forEach(view=>view.classList.remove('open'));
 }
 async function loadMyPosts(userId){
   const list=document.getElementById('myPostList');
@@ -2051,13 +2157,40 @@ async function loadMyPosts(userId){
       .order('created_at',{ascending:false})
       .limit(10);
     if(error)throw error;
+    if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>`<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'">
-      <span class="my-list-badge">${escHtml(extractCategoryFromContent(post.content)||'질문')}</span>
+      <div class="my-list-item-top">
+        <span class="my-list-badge">${escHtml(extractCategoryFromContent(post.content)||'질문')}</span>
+        <div class="my-list-actions">
+          <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">수정</button>
+          <button class="my-list-action danger" type="button" onclick="deleteMyPost(event,'${escAttr(post.id)}')">삭제</button>
+        </div>
+      </div>
       <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
       <div class="my-list-date">${formatMyDate(post.created_at)}</div>
     </div>`).join('');
   }catch(e){
-    list.innerHTML='';
+    list.innerHTML='<div class="my-list-empty">작성한 글을 불러오지 못했습니다.</div>';
+  }
+}
+async function editMyPost(event,id){
+  event?.stopPropagation();
+  if(!id)return;
+  location.href=`post.html?id=${encodeURIComponent(id)}&edit=1`;
+}
+async function deleteMyPost(event,id){
+  event?.stopPropagation();
+  if(!window._sb||!currentUser||!id)return;
+  if(!confirm('이 글을 삭제하시겠습니까?'))return;
+  try{
+    const {error}=await _sb.from('posts').delete().eq('id',id).eq('user_id',currentUser.id);
+    if(error)throw error;
+    showToast('글이 삭제되었습니다.');
+    loadMyCounts(currentUser.id);
+    openMySubview('myPostsView');
+  }catch(error){
+    console.error('delete post failed', error);
+    showToast('글 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
 }
 async function loadMyDiagnoses(userId){
@@ -2070,17 +2203,38 @@ async function loadMyDiagnoses(userId){
       .order('created_at',{ascending:false})
       .limit(10);
     if(error)throw error;
+    if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 진단 기록이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(item=>{
       const symptom=item.symptom||'증상 입력 없음';
       const title=symptom.length>20?`${symptom.slice(0,20)}...`:symptom;
       return `<div class="my-list-item">
-        <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+        <div class="my-list-item-top">
+          <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+          <div class="my-list-actions">
+            <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
+          </div>
+        </div>
         <div class="my-list-title">${escHtml(title)}</div>
         <div class="my-list-date">${formatMyDate(item.created_at)}</div>
       </div>`;
     }).join('');
   }catch(e){
-    list.innerHTML='';
+    list.innerHTML='<div class="my-list-empty">진단 기록을 불러오지 못했습니다.</div>';
+  }
+}
+async function deleteMyDiagnosis(event,id){
+  event?.stopPropagation();
+  if(!window._sb||!currentUser||!id)return;
+  if(!confirm('이 진단 기록을 삭제하시겠습니까?'))return;
+  try{
+    const {error}=await _sb.from('diagnoses').delete().eq('id',id).eq('user_id',currentUser.id);
+    if(error)throw error;
+    showToast('진단 기록이 삭제되었습니다.');
+    loadMyCounts(currentUser.id);
+    openMySubview('myDiagnosesView');
+  }catch(error){
+    console.error('delete diagnosis failed', error);
+    showToast('진단 기록 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
 }
 async function saveDiagnosisHistory(symptomText, resultData){
@@ -2724,7 +2878,7 @@ async function safeOpenMyPanel(){
   openMyPanel();
 }
 function openMyPanel(){document.getElementById('myPanel')?.classList.add('open');lockBodyScroll();}
-function closeMyPanel(){document.getElementById('myPanel')?.classList.remove('open');unlockBodyScroll();}
+function closeMyPanel(){document.getElementById('myPanel')?.classList.remove('open');closeMySubview();unlockBodyScroll();}
 let accountDeleteModalHistory = false;
 function openAccountDeleteModal(){
   if(!currentUser){
