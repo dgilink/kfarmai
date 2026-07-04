@@ -364,7 +364,7 @@
   .q-meta.wrap { flex-wrap: wrap; row-gap: 5px; }
   .home-insights {
     display: grid;
-    gap: 12px;
+    gap: 14px;
     margin: 16px 0 14px;
   }
   .insight-block {
@@ -372,10 +372,50 @@
     border: 1px solid var(--border);
     border-radius: 14px;
     padding: 12px;
+    box-shadow: 0 8px 18px rgba(17,24,39,.04);
+    overflow: hidden;
+    position: relative;
+  }
+  .insight-block::before,
+  .recent-question-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    border-radius: 14px 0 0 14px;
+  }
+  .insight-block.popular-questions {
+    border-color: #FED7AA;
+    background: linear-gradient(180deg,#FFF7ED 0%,#fff 64%);
   }
   .insight-block.same-symptom {
     border-color: #C8E6C9;
-    background: #FBFEFC;
+    background: linear-gradient(180deg,#F0FDF4 0%,#fff 64%);
+  }
+  .insight-block.popular-questions::before { background: #F97316; }
+  .insight-block.same-symptom::before { background: var(--green); }
+  .section-head.question-section-head {
+    margin: 16px 0 0;
+    border: 1px solid #BFDBFE;
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    background: linear-gradient(180deg,#EFF6FF 0%,#F8FBFF 100%);
+    padding: 12px 12px 10px;
+  }
+  .recent-question-panel {
+    position: relative;
+    background: #F8FBFF;
+    border: 1px solid #BFDBFE;
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    padding: 0 10px 10px;
+    margin-bottom: 8px;
+    box-shadow: 0 8px 18px rgba(37,99,235,.05);
+  }
+  .recent-question-panel::before { background: #2563EB; }
+  .recent-question-panel .q-card {
+    margin-bottom: 8px;
+    box-shadow: none;
   }
   .insight-head {
     display: flex;
@@ -384,7 +424,34 @@
     gap: 10px;
     margin-bottom: 10px;
   }
-  .insight-title { font-size: 14.5px; font-weight: 900; color: #111; }
+  .insight-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14.5px;
+    font-weight: 900;
+    color: #111;
+  }
+  .insight-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 24px;
+    font-size: 13px;
+    line-height: 1;
+  }
+  .popular-questions .insight-icon { background: #FFEDD5; color: #C2410C; }
+  .same-symptom .insight-icon { background: #DCFCE7; color: #15803D; }
+  .recent-question-head .insight-icon { background: #DBEAFE; color: #1D4ED8; }
+  .recent-question-head .section-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #1D4ED8;
+  }
   .insight-desc { font-size: 11.5px; color: var(--sub); line-height: 1.45; margin-top: 3px; }
   .insight-note {
     flex-shrink: 0;
@@ -395,6 +462,16 @@
     border-radius: 999px;
     padding: 4px 7px;
   }
+  .popular-questions .insight-note { color: #C2410C; background: #FFEDD5; }
+  .same-symptom .insight-note { color: #15803D; background: #DCFCE7; }
+  .recent-question-head .live-dot {
+    color: #1D4ED8;
+    background: #DBEAFE;
+    border-radius: 999px;
+    padding: 4px 8px;
+    margin-left: 8px;
+  }
+  .recent-question-head .live-dot::before { background: #2563EB; box-shadow: none; animation: none; }
   .insight-list { display: grid; gap: 8px; }
   .insight-card {
     display: block;
@@ -405,6 +482,8 @@
     background: #FAFBFC;
     padding: 11px;
   }
+  .popular-questions .insight-card { border-color: #FED7AA; background: #FFFBF7; }
+  .same-symptom .insight-card { border-color: #D7F0DA; background: #FBFEFC; }
   .insight-card-top {
     display: flex;
     align-items: center;
@@ -1246,18 +1325,18 @@
 
         <div class="home-insights" id="homeInsightSections" aria-label="농업·식물 문제해결 탐색"></div>
 
-        <div class="section-head">
+        <div class="section-head question-section-head recent-question-head">
           <div>
             <div style="display:flex;align-items:center">
-              <div class="section-title accent" data-i18n="recentQuestions">방금 올라온 질문</div>
-              <span class="live-dot">새 질문</span>
+              <div class="section-title accent" data-i18n="recentQuestions"><span class="insight-icon" aria-hidden="true">✨</span>방금 올라온 질문</div>
+              <span class="live-dot">최신</span>
             </div>
-            <div class="section-copy">커뮤니티에 새로 올라온 질문입니다.</div>
+            <div class="section-copy">최근 등록된 질문을 바로 확인하세요.</div>
           </div>
           <div class="section-more">더보기</div>
         </div>
 
-        <div id="recentFeed">
+        <div id="recentFeed" class="recent-question-panel">
           <div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>
         </div>
       </section>
@@ -2157,15 +2236,18 @@ function renderHomeQuestionSections(){
     {
       enabled:FEATURE_TRENDING_QUESTIONS,
       title:'지금 많이 보는 질문',
-      desc:'최근 많이 확인한 식물·작물 문제입니다.',
-      note:'사용자 관심 참고 신호',
+      icon:'⚡',
+      desc:'최근 조회가 많은 질문을 모았습니다.',
+      note:'인기',
+      className:'popular-questions',
       items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.view_count-a.view_count).slice(0,2)
     },
     {
       enabled:FEATURE_SAME_SYMPTOM_REACTION,
       title:'나도 같은 증상',
-      desc:'비슷한 증상 반응이 많은 질문입니다.',
-      note:'비슷한 증상 반응',
+      icon:'◎',
+      desc:'비슷한 고민이 많이 모인 질문입니다.',
+      note:'공감',
       className:'same-symptom',
       items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.same_symptom_count-a.same_symptom_count).slice(0,2)
     }
@@ -2174,7 +2256,7 @@ function renderHomeQuestionSections(){
     <section class="insight-block ${escHtml(section.className||'')}">
       <div class="insight-head">
         <div>
-          <div class="insight-title">${escHtml(section.title)}</div>
+          <div class="insight-title"><span class="insight-icon" aria-hidden="true">${escHtml(section.icon||'')}</span>${escHtml(section.title)}</div>
           <div class="insight-desc">${escHtml(section.desc)}</div>
         </div>
         <span class="insight-note">${escHtml(section.note)}</span>
