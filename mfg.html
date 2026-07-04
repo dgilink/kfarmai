@@ -41,6 +41,9 @@
   .decision-card h3 { margin: 0 0 7px; font-size: 14px; color: #111827; }
   .decision-card p { margin: 8px 0 0; color: #166534; font-size: 11px; line-height: 1.55; font-weight: 800; }
   .guide-panel { background: #fff; border: 1px solid #dbeafe; border-radius: 14px; padding: 15px; box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04); }
+  .category-detail-mode #inputCategorySection { margin-bottom: 16px; }
+  .category-detail-mode #hubIntroSection { margin-top: 6px; }
+  .category-detail-mode #managementCategorySection { margin-top: 4px; }
   .guide-panel h2 { margin: 0 0 7px; color: #111827; font-size: 20px; line-height: 1.25; }
   .guide-panel p { margin: 0; color: #4b5563; font-size: 13px; line-height: 1.65; }
   .guide-summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -63,6 +66,7 @@
   .official-site-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
   .official-site-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 4px 7px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 800; }
   .official-site-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 32px; padding: 7px 10px; border-radius: 999px; background: #111827; color: #fff; font-size: 11px; font-weight: 900; text-decoration: none; }
+  .kf-tag-teal { background: #e0f7f4; color: #0d9488; }
   .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .support-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
   .support-card h3 { margin: 0 0 6px; font-size: 14px; color: #111827; }
@@ -91,22 +95,25 @@
   <div style="font-size:20px;font-weight:900;">농자재·관리정보 허브</div>
   <div style="font-size:12px;color:#666;line-height:1.55;margin-top:5px;">상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배 정보를 문제해결 관점에서 확인합니다.</div>
   <div class="kf-tabs" style="padding:12px 0 0;">
-    <button class="kf-tab active" onclick="switchTab('all',this)">전체</button>
-    <button class="kf-tab" onclick="switchTab('santo',this)">상토회사</button>
-    <button class="kf-tab" onclick="switchTab('seed',this)">종자회사</button>
-    <button class="kf-tab" onclick="switchTab('cpa',this)">작물보호제</button>
-    <button class="kf-tab" onclick="switchTab('fert',this)">비료회사</button>
+    <button class="kf-tab active" data-tab="all" onclick="switchTab('all',this)">전체</button>
+    <button class="kf-tab" data-tab="santo" onclick="switchTab('santo',this)">상토회사</button>
+    <button class="kf-tab" data-tab="seed" onclick="switchTab('seed',this)">종자회사</button>
+    <button class="kf-tab" data-tab="cpa" onclick="switchTab('cpa',this)">작물보호제</button>
+    <button class="kf-tab" data-tab="fert" onclick="switchTab('fert',this)">비료회사</button>
+    <button class="kf-tab" data-tab="irrigation-facility" onclick="switchTab('irrigation-facility',this)">관수·시설자재</button>
+    <button class="kf-tab" data-tab="home-gardening-tools" onclick="switchTab('home-gardening-tools',this)">화분·도구</button>
+    <button class="kf-tab" data-tab="smartfarm" onclick="switchTab('smartfarm',this)">스마트팜</button>
   </div>
 </div>
-<main class="hub-wrap">
-  <section class="hub-hero">
+<main class="hub-wrap" id="mfgHubMain">
+  <section class="hub-hero" id="hubIntroSection">
     <h1>농자재·관리정보 허브</h1>
     <p>kFarmAI는 농자재 판매가 아니라, 작물 문제 해결에 필요한 자재 종류와 공식 정보를 확인하는 참고 흐름을 제공합니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
     <div class="api-status">일부 공공데이터는 실제 API로 연동했으며, 나머지는 공식 데이터 기반으로 단계적 확장 중입니다. 지역 판매점 정보는 위치 기반 확인용이고, 제조사 공식 정보는 제품 정보 확인용입니다.</div>
     <div class="hub-note">단순 가격 중심이 아니라 사용 목적, 재배환경, 공식 기준, 지역 판매점 정보를 함께 확인하는 구조로 확장 중입니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
   </section>
 
-  <section>
+  <section id="materialFlowSection">
     <div class="hub-section-title">농자재 의사결정 흐름</div>
     <div id="materialFlow" class="flow-grid">
       <article class="flow-step"><span class="flow-step-number">1</span><h3>문제 확인</h3><p>식물·작물의 이상 증상과 재배환경을 먼저 확인합니다.</p></article>
@@ -115,7 +122,7 @@
     <div class="guide-notice">제품 가격, 재고, 판매 가능 여부는 지역 판매점과 제조사 공식 정보를 함께 확인해야 합니다.</div>
   </section>
 
-  <section>
+  <section id="managementCategorySection">
     <div class="hub-section-title">관리정보 카테고리</div>
     <div class="hub-grid">
       <article class="hub-card">
@@ -157,7 +164,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="inputCategorySection">
     <div class="hub-section-title">카테고리별 참고 정보</div>
     <div id="inputCategoryGuide" class="guide-panel">
       <h2>농자재·관리 카테고리 정보를 불러오는 중입니다.</h2>
@@ -165,7 +172,7 @@
     </div>
   </section>
 
-  <section>
+  <section id="supportProgramSection">
     <div class="hub-section-title">보조사업 확인 경로</div>
     <p style="margin:0 0 10px;color:#4b5563;font-size:13px;line-height:1.6;">보조사업 정보는 공식 공고 확인을 돕는 참고자료입니다. 신청 전 지자체 공고와 담당기관 확인이 필요합니다.</p>
     <div id="supportPrograms" class="support-grid">
@@ -173,17 +180,17 @@
     </div>
   </section>
 </main>
-<div class="mfg-intro">
+<div class="mfg-intro" id="mfgIntroNote">
   주요 농자재 제조사 정보는 시제품에 일부 반영했으며, 향후 상토·종자·비료·작물보호·시설자재 등 카테고리별로 보완할 계획입니다.
 </div>
-<div class="kf-search-bar">
+<div class="kf-search-bar" id="companySearchSection">
   <input type="text" id="keyword" placeholder="회사명·제품·지역 검색" onkeypress="if(event.keyCode==13) search()" style="flex:1;min-width:150px;">
   <button class="kf-btn kf-btn-primary" onclick="search()">검색</button>
   <button class="kf-btn kf-btn-gray" onclick="resetSearch()">초기화</button>
   <span id="count" style="font-size:13px;color:#666;"></span>
 </div>
 <div class="kf-company-grid" id="grid"></div>
-<div style="text-align:center;padding:12px;font-size:11px;color:#aaa;">초기 참고자료 출처: 한국상토협회·한국종자협회·한국작물보호협회·한국비료협회 | © 2026 kfarmai.com</div>
+<div id="companySourceNote" style="text-align:center;padding:12px;font-size:11px;color:#aaa;">초기 참고자료 출처: 한국상토협회·한국종자협회·한국작물보호협회·한국비료협회 | © 2026 kfarmai.com</div>
 
 <nav class="kf-bottom-nav">
   <a href="index.html" class="kf-nav-item"><span class="kf-nav-icon">🏠</span><span>홈</span></a>
@@ -223,6 +230,11 @@ const CATEGORY_ALIASES = {
   fertilizer: 'fertilizer',
   soil: 'santo',
   potting: 'santo'
+};
+const OFFICIAL_COMPANY_TAB_COLORS = {
+  'irrigation-facility': 'kf-tag-teal',
+  'home-gardening-tools': 'kf-tag-green',
+  smartfarm: 'kf-tag-blue'
 };
 
 const DEFAULT_MATERIAL_FLOW = [
@@ -380,7 +392,24 @@ function buildAll() {
   if(typeof seedData!=='undefined') seedData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:d.tel,homepage:d.homepage,products:d.products,cat:'종자회사',tagClass:'kf-tag-blue'}));
   if(typeof cpaData!=='undefined') cpaData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:d.tel,homepage:d.homepage,products:'',cat:'작물보호제회사('+d.grade+')',tagClass:'kf-tag-red'}));
   if(typeof fertData!=='undefined') fertData.forEach(d=>all.push({company:d.company,addr:d.addr,tel:d.tel,homepage:d.homepage,products:d.products,cat:'비료회사',tagClass:'kf-tag-orange'}));
+  getOfficialCompanyGridItems().forEach(item=>all.push(item));
   return all;
+}
+
+function getOfficialCompanyGridItems() {
+  const categories = inputCategoryData.length ? inputCategoryData : DEFAULT_INPUT_CATEGORIES;
+  return categories
+    .filter(category => OFFICIAL_COMPANY_TAB_COLORS[category.id] && Array.isArray(category.officialCompanies))
+    .flatMap(category => category.officialCompanies.map(company => ({
+      company: company.displayName || company.name || '공식 사이트',
+      addr: '제조사 공식 정보 확인용',
+      tel: '',
+      homepage: company.url || company.officialUrl || '',
+      products: [company.role, company.note].filter(Boolean).join(', '),
+      cat: category.name || company.category || '공식 정보',
+      tagClass: OFFICIAL_COMPANY_TAB_COLORS[category.id],
+      inputCategoryId: category.id
+    })));
 }
 
 function renderCards(list) {
@@ -389,7 +418,7 @@ function renderCards(list) {
   list.forEach(item => {
     const tags = item.products ? item.products.split(',').slice(0,5).map(p=>`<span class="kf-tag ${item.tagClass}">${p.trim()}</span>`).join('') : '';
     const hp = item.homepage ? `<a href="${item.homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>` : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
-    const catColor = item.tagClass==='kf-tag-green'?'#1e6b2e':item.tagClass==='kf-tag-blue'?'#4a90d9':item.tagClass==='kf-tag-red'?'#c0392b':'#e65100';
+    const catColor = item.tagClass==='kf-tag-green'?'#1e6b2e':item.tagClass==='kf-tag-blue'?'#4a90d9':item.tagClass==='kf-tag-red'?'#c0392b':item.tagClass==='kf-tag-teal'?'#0d9488':'#e65100';
     grid.innerHTML += `<div class="kf-company-card" style="border-top-color:${catColor}">
       <div style="margin-bottom:6px;"><span class="kf-tag ${item.tagClass}">${item.cat}</span></div>
       <div class="kf-company-header"><div class="kf-company-name">${item.company}</div>${hp}</div>
@@ -407,7 +436,8 @@ function getFiltered() {
   else if(currentTab==='seed') list = list.filter(d=>d.cat==='종자회사');
   else if(currentTab==='cpa') list = list.filter(d=>d.cat.includes('작물보호제'));
   else if(currentTab==='fert') list = list.filter(d=>d.cat==='비료회사');
-  if(kw) list = list.filter(d=>d.company.includes(kw)||d.products.includes(kw)||d.addr.includes(kw));
+  else if(OFFICIAL_COMPANY_TAB_COLORS[currentTab]) list = list.filter(d=>d.inputCategoryId===currentTab);
+  if(kw) list = list.filter(d=>String(d.company||'').includes(kw)||String(d.products||'').includes(kw)||String(d.addr||'').includes(kw));
   return list;
 }
 
@@ -434,7 +464,19 @@ async function loadInputCategories() {
   } catch (err) {
     inputCategoryData = DEFAULT_INPUT_CATEGORIES;
   }
+  syncCompanyTabFromCategoryUrl();
+  renderCards(getFiltered());
   renderInputCategoryGuide();
+}
+
+function syncCompanyTabFromCategoryUrl() {
+  const rawSelectedId = new URLSearchParams(window.location.search).get('category');
+  const selectedId = CATEGORY_ALIASES[rawSelectedId] || rawSelectedId;
+  if(!OFFICIAL_COMPANY_TAB_COLORS[selectedId]) return;
+  currentTab = selectedId;
+  document.querySelectorAll('.kf-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.tab === selectedId);
+  });
 }
 
 function renderInputCategoryGuide() {
@@ -443,16 +485,37 @@ function renderInputCategoryGuide() {
   const rawSelectedId = new URLSearchParams(window.location.search).get('category');
   const selectedId = CATEGORY_ALIASES[rawSelectedId] || rawSelectedId;
   const selected = inputCategoryData.find(item => item.id === selectedId);
+  arrangeMfgCategoryLayout(Boolean(selected));
   if(selected) {
     box.innerHTML = renderGuideDetail(selected);
     bindOfficialCompanySearch(selected);
-    box.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    document.getElementById('companySearchSection')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
     return;
   }
   box.innerHTML = `<h2>농자재·관리 카테고리 참고 정보</h2>
     <p>지역 판매점 정보와 제조사 공식 정보는 성격이 다릅니다. 지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 제공합니다.</p>
     <div class="guide-summary-grid">${inputCategoryData.map(renderGuideSummary).join('')}</div>
     <div class="guide-notice">세부 회사 DB가 없는 카테고리는 시제품 일부 반영 상태이며, 공식 정보 확인 경로를 우선 보완할 예정입니다.</div>`;
+}
+
+function arrangeMfgCategoryLayout(hasSelectedCategory) {
+  const main = document.getElementById('mfgHubMain');
+  const guideSection = document.getElementById('inputCategorySection');
+  const introSection = document.getElementById('hubIntroSection');
+  const supportSection = document.getElementById('supportProgramSection');
+  const companySearch = document.getElementById('companySearchSection');
+  const companyGrid = document.getElementById('grid');
+  const companySource = document.getElementById('companySourceNote');
+  if(!main || !guideSection || !introSection) return;
+  main.classList.toggle('category-detail-mode', hasSelectedCategory);
+  if(hasSelectedCategory) {
+    if(companySearch) main.insertBefore(companySearch, introSection);
+    if(companyGrid) main.insertBefore(companyGrid, introSection);
+    if(companySource) main.insertBefore(companySource, introSection);
+    main.insertBefore(guideSection, introSection);
+    return;
+  }
+  if(supportSection) main.insertBefore(guideSection, supportSection);
 }
 
 function renderGuideSummary(item) {
@@ -467,6 +530,7 @@ function renderGuideDetail(item) {
   const firstTags = item.situations || item.stages || [];
   const secondTags = item.items || item.equipment || [];
   const noteList = item.checkpoints || [];
+  const useCompanyGridFirst = Boolean(OFFICIAL_COMPANY_TAB_COLORS[item.id]);
   const orderedCompanyBlocks = item.officialCompanies ? renderCompanyFirstGuideBlocks(item, firstTags, secondTags, noteList) : '';
   const legacyGuideBlocks = item.officialCompanies ? '' : `
       ${item.problemLinks ? renderTagBlock('이 카테고리는 언제 확인하나요?', item.problemLinks) : ''}
@@ -480,8 +544,8 @@ function renderGuideDetail(item) {
       ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}`;
   return `<h2>${escapeHtml(item.title || item.name)}</h2>
     <p>${escapeHtml(item.description)}</p>
-    ${item.officialCompanies ? renderOfficialCompanySearch(item) : ''}
-    ${item.officialCompanies ? renderOfficialCompanies(item.officialCompanies, item) : ''}
+    ${item.officialCompanies && !useCompanyGridFirst ? renderOfficialCompanySearch(item) : ''}
+    ${item.officialCompanies && !useCompanyGridFirst ? renderOfficialCompanies(item.officialCompanies, item) : ''}
     ${item.decisionRole ? `<div class="guide-notice">이 카테고리는 ${escapeHtml(item.decisionRole)}</div>` : ''}
     <div class="guide-detail-grid">
       ${orderedCompanyBlocks}
@@ -532,6 +596,7 @@ function renderOfficialCompanies(items, categoryItem) {
     <h3>제조사·공식 사이트 확인</h3>
     <p style="margin:0 0 10px;color:#4b5563;font-size:12px;line-height:1.55;">아래 링크는 판매 유도가 아니라 제품 정보와 공식 자료를 확인하기 위한 참고 링크입니다.</p>
     <div id="officialCompanyList" class="official-site-list">${renderOfficialCompanyCards(items, categoryItem)}</div>
+    <p style="margin:10px 0 0;color:#64748b;font-size:11.5px;line-height:1.55;font-weight:800;">관련 회원사와 공식 사이트 목록은 공공자료, 협회 목록, 공식 사이트 확인 후 추가 등록 예정입니다.</p>
   </div>`;
 }
 
