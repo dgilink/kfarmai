@@ -95,6 +95,32 @@
       "시설자재 취급 업체는 품목과 시공 가능 범위의 별도 검수가 필요합니다."
     ],
     "officialInfo": ["제조사 공식 사이트", "협회/기관 공개 목록", "시설자재 품목별 공개 자료", "향후 큐레이션 예정"],
+    "officialCompanies": [
+      {
+        "name": "풍성주공",
+        "displayName": "풍성주공",
+        "previousName": "",
+        "url": "https://psjg.co.kr",
+        "officialUrl": "https://psjg.co.kr",
+        "originalDraftUrl": "psjg.co.kr",
+        "type": "공식 사이트",
+        "category": "관수·시설자재",
+        "role": "관수·시설자재 공식 정보 확인",
+        "note": "스프링클러, 점적테이프, 고압호스, 여과기 등 농가 시설 자재 공식 정보 확인용"
+      },
+      {
+        "name": "㈜경농(아쿠아스마트)",
+        "displayName": "㈜경농(아쿠아스마트)",
+        "previousName": "",
+        "url": "https://knco.co.kr",
+        "officialUrl": "https://knco.co.kr",
+        "originalDraftUrl": "kmavia.com",
+        "type": "공식 사이트",
+        "category": "관수·시설자재",
+        "role": "정밀 관수·시설재배 자재 공식 정보 확인",
+        "note": "하우스 정밀관수, 경동형 하우스 관리, 관수 자재 공식 정보 확인용"
+      }
+    ],
     "regionUse": "지역 판매점은 주변 취급처와 위치 기반 확인에 사용합니다.",
     "manufacturerUse": "제조사 공식 정보는 규격, 설치 조건, 유지관리 기준 확인에 사용합니다.",
     "nextActions": ["농업날씨 확인", "재배가이드 보기", "재배달력 보기", "지역 판매점 확인", "제조사 공식 정보 확인", "커뮤니티 질문 보기"],
@@ -150,6 +176,32 @@
       "공식 제조사 사이트와 관련기관 공개 자료",
       "실제 연동은 다음 단계로 분리"
     ],
+    "officialCompanies": [
+      {
+        "name": "데코코리아(구 데코플라자)",
+        "displayName": "데코코리아(구 데코플라자)",
+        "previousName": "데코플라자",
+        "url": "https://decocorea.com",
+        "officialUrl": "https://decocorea.com",
+        "originalDraftUrl": "decoplaza.co.kr",
+        "type": "공식 사이트",
+        "category": "화분·도구",
+        "role": "화분·가드닝 용품 공식 정보 확인",
+        "note": "대형 화훼단지 및 식집사 대상 화분·가드닝 용품 공식 사이트 확인용"
+      },
+      {
+        "name": "심폴",
+        "displayName": "심폴",
+        "previousName": "",
+        "url": "https://simpol.co.kr",
+        "officialUrl": "https://simpol.co.kr",
+        "originalDraftUrl": "ja-in.co.kr",
+        "type": "공식 사이트",
+        "category": "화분·도구",
+        "role": "홈가드닝·원예용품 공식 정보 확인",
+        "note": "종합 원예·식물·화분·도구 관련 공식 사이트 확인용"
+      }
+    ],
     "regionUse": "지역 판매점은 화분 규격, 도구 실물 확인, 주변 취급처 확인에 사용합니다.",
     "manufacturerUse": "제조사 공식 정보는 도구 규격, 재질, 사용 조건 확인에 사용합니다.",
     "nextActions": ["관련 홈가드닝 식물 정보", "재배가이드 보기", "관리 체크포인트", "공식 정보 확인", "커뮤니티 질문 보기"],
@@ -195,6 +247,32 @@
       "시설 규모와 작물에 따라 필요한 장비 범위가 달라 별도 확인이 필요합니다."
     ],
     "officialInfo": ["스마트팜코리아 기업현황", "스마트팜코리아 솔루션정보", "스마트팜 지원사업", "스마트팜 교육정보"],
+    "officialCompanies": [
+      {
+        "name": "㈜우성하이텍",
+        "displayName": "㈜우성하이텍",
+        "previousName": "",
+        "url": "https://wsh.co.kr",
+        "officialUrl": "https://wsh.co.kr",
+        "originalDraftUrl": "wshightech.com",
+        "type": "공식 사이트",
+        "category": "스마트팜",
+        "role": "스마트팜 기자재 공식 정보 확인",
+        "note": "하우스 자동개폐기, 양액 공급기, 환경 제어 시스템 등 스마트팜 기자재 공식 정보 확인용"
+      },
+      {
+        "name": "신한에이텍㈜",
+        "displayName": "신한에이텍㈜",
+        "previousName": "",
+        "url": "https://sh1000.co.kr",
+        "officialUrl": "https://sh1000.co.kr",
+        "originalDraftUrl": "shinhanatec.com",
+        "type": "공식 사이트",
+        "category": "스마트팜",
+        "role": "스마트팜 환경제어·양액제어 공식 정보 확인",
+        "note": "복합 환경 제어 컴퓨터, 스마트팜 센서, 양액 제어 장비 공식 정보 확인용"
+      }
+    ],
     "regionUse": "지역 정보는 설치 가능 지역, 교육기관, 지원사업 확인에 사용합니다.",
     "manufacturerUse": "제조사 공식 정보는 솔루션 범위, 장비 구성, 유지관리 조건 확인에 사용합니다.",
     "nextActions": ["농업날씨 확인", "재배가이드 보기", "스마트팜코리아 기업현황", "스마트팜 솔루션정보", "지원사업 확인"],

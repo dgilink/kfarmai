@@ -54,6 +54,13 @@
   .guide-list { margin: 0; padding-left: 18px; color: #374151; font-size: 12px; line-height: 1.7; }
   .guide-list li + li { margin-top: 4px; }
   .guide-notice { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #f0fdf4; color: #166534; font-size: 12px; line-height: 1.6; font-weight: 700; }
+  .official-site-list { display: grid; grid-template-columns: 1fr; gap: 9px; }
+  .official-site-card { background: #fff; border: 1px solid #dbeafe; border-radius: 12px; padding: 11px; }
+  .official-site-card h4 { margin: 0 0 6px; color: #111827; font-size: 13px; line-height: 1.35; }
+  .official-site-card p { margin: 0 0 8px; color: #4b5563; font-size: 12px; line-height: 1.55; }
+  .official-site-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+  .official-site-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 4px 7px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 800; }
+  .official-site-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 32px; padding: 7px 10px; border-radius: 999px; background: #111827; color: #fff; font-size: 11px; font-weight: 900; text-decoration: none; }
   .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .support-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
   .support-card h3 { margin: 0 0 6px; font-size: 14px; color: #111827; }
@@ -259,6 +266,26 @@ const DEFAULT_INPUT_CATEGORIES = [
       '시설자재 취급 업체는 품목과 시공 가능 범위의 별도 검수가 필요합니다.'
     ],
     officialInfo: ['제조사 공식 사이트', '협회/기관 공개 목록', '향후 큐레이션 예정'],
+    officialCompanies: [
+      {
+        name: '풍성주공',
+        displayName: '풍성주공',
+        url: 'https://psjg.co.kr',
+        type: '공식 사이트',
+        category: '관수·시설자재',
+        role: '관수·시설자재 공식 정보 확인',
+        note: '스프링클러, 점적테이프, 고압호스, 여과기 등 농가 시설 자재 공식 정보 확인용'
+      },
+      {
+        name: '㈜경농(아쿠아스마트)',
+        displayName: '㈜경농(아쿠아스마트)',
+        url: 'https://knco.co.kr',
+        type: '공식 사이트',
+        category: '관수·시설자재',
+        role: '정밀 관수·시설재배 자재 공식 정보 확인',
+        note: '하우스 정밀관수, 경동형 하우스 관리, 관수 자재 공식 정보 확인용'
+      }
+    ],
     cautions: ['본사 위치와 실제 납품·설치 가능 지역은 다를 수 있습니다.'],
     relatedActions: ['농업날씨에서 강수, 풍속, 고온 정보를 함께 확인하세요.'],
     dataSources: ['전국농약및비료판매업체표준데이터', '공식 제조사 사이트', '협회/기관 공개 목록'],
@@ -279,6 +306,27 @@ const DEFAULT_INPUT_CATEGORIES = [
       { plant: '스파티필름', note: '실내 습도, 물주기 간격, 받침 물 고임을 확인하세요.' }
     ],
     officialInfo: ['농촌진흥청 실내정원용 식물 OpenAPI 연동 후보', '홈가드닝 식물별 광원, 물관리, 실내환경 정보', '실제 연동은 다음 단계로 분리'],
+    officialCompanies: [
+      {
+        name: '데코코리아(구 데코플라자)',
+        displayName: '데코코리아(구 데코플라자)',
+        previousName: '데코플라자',
+        url: 'https://decocorea.com',
+        type: '공식 사이트',
+        category: '화분·도구',
+        role: '화분·가드닝 용품 공식 정보 확인',
+        note: '대형 화훼단지 및 식집사 대상 화분·가드닝 용품 공식 사이트 확인용'
+      },
+      {
+        name: '심폴',
+        displayName: '심폴',
+        url: 'https://simpol.co.kr',
+        type: '공식 사이트',
+        category: '화분·도구',
+        role: '홈가드닝·원예용품 공식 정보 확인',
+        note: '종합 원예·식물·화분·도구 관련 공식 사이트 확인용'
+      }
+    ],
     cautions: ['실내 식물은 외부 날씨보다 실내 온도, 일조, 환기 영향을 함께 확인하세요.'],
     relatedActions: ['AI 참고 진단에서 잎 색, 시듦, 흙 마름 상태를 정리해볼 수 있습니다.'],
     dataSources: ['홈가드닝 관리 참고자료', '공식 제조사 사이트', '관련기관 공개 자료'],
@@ -293,6 +341,26 @@ const DEFAULT_INPUT_CATEGORIES = [
     equipment: ['센서', '제어기', '자동관수', '환기제어', '차광제어', '양액기', 'CCTV', '데이터 플랫폼'],
     cropExamples: ['딸기', '토마토', '오이', '파프리카', '상추', '엽채류', '국화'],
     officialInfo: ['스마트팜코리아 기업현황', '스마트팜코리아 솔루션정보', '스마트팜 지원사업', '스마트팜 교육정보'],
+    officialCompanies: [
+      {
+        name: '㈜우성하이텍',
+        displayName: '㈜우성하이텍',
+        url: 'https://wsh.co.kr',
+        type: '공식 사이트',
+        category: '스마트팜',
+        role: '스마트팜 기자재 공식 정보 확인',
+        note: '하우스 자동개폐기, 양액 공급기, 환경 제어 시스템 등 스마트팜 기자재 공식 정보 확인용'
+      },
+      {
+        name: '신한에이텍㈜',
+        displayName: '신한에이텍㈜',
+        url: 'https://sh1000.co.kr',
+        type: '공식 사이트',
+        category: '스마트팜',
+        role: '스마트팜 환경제어·양액제어 공식 정보 확인',
+        note: '복합 환경 제어 컴퓨터, 스마트팜 센서, 양액 제어 장비 공식 정보 확인용'
+      }
+    ],
     regionInfo: ['스마트팜 기업의 본사 위치와 실제 설치·AS 가능 지역은 다를 수 있습니다.', '지역 농업기술센터, 지원사업 공고, 교육기관 정보를 함께 확인할 수 있습니다.'],
     cautions: ['자동제어 결과만으로 작업을 단정하지 말고 작물 상태와 시설 내부 센서값을 함께 확인하세요.'],
     relatedActions: ['농업날씨에서 외부 기온, 강수, 풍속을 함께 확인하세요.'],
@@ -410,6 +478,7 @@ function renderGuideDetail(item) {
       ${item.plantNotes ? renderPlantNotes(item.plantNotes) : ''}
       ${item.cropExamples ? renderTagBlock('작물 예시', item.cropExamples) : ''}
       ${item.officialInfo ? renderListBlock('공식 정보 확인', item.officialInfo) : ''}
+      ${item.officialCompanies ? renderOfficialCompanies(item.officialCompanies) : ''}
       ${item.regionInfo ? renderListBlock('지역 판매점 확인', item.regionInfo) : ''}
       ${item.cautions ? renderListBlock('확인 전 주의', item.cautions) : ''}
       ${item.relatedActions ? renderListBlock('다음 확인 경로', item.relatedActions) : ''}
@@ -425,6 +494,30 @@ function renderGuideDetail(item) {
 function renderTagBlock(title, items) {
   if(!items || !items.length) return '';
   return `<div class="guide-block"><h3>${escapeHtml(title)}</h3><div class="guide-tags">${items.map(v=>`<span class="guide-tag">${escapeHtml(v)}</span>`).join('')}</div></div>`;
+}
+
+function renderOfficialCompanies(items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-block">
+    <h3>제조사·공식 사이트 확인</h3>
+    <p style="margin:0 0 10px;color:#4b5563;font-size:12px;line-height:1.55;">아래 링크는 판매 유도가 아니라 제품 정보와 공식 자료를 확인하기 위한 참고 링크입니다.</p>
+    <div class="official-site-list">${items.map(item => {
+      const name = item.displayName || item.name || '공식 사이트';
+      const category = item.category || '공식 정보';
+      const role = item.role || '제조사 공식 정보 확인';
+      const note = item.note || '공식 사이트 확인용 링크입니다.';
+      return `<article class="official-site-card">
+        <h4>${escapeHtml(name)}</h4>
+        <div class="official-site-meta">
+          <span class="official-site-pill">${escapeHtml(category)}</span>
+          <span class="official-site-pill">${escapeHtml(item.type || '공식 사이트')}</span>
+        </div>
+        <p><strong>주요 확인 내용:</strong> ${escapeHtml(role)}</p>
+        <p>${escapeHtml(note)}</p>
+        <a class="official-site-btn" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">공식 사이트 확인</a>
+      </article>`;
+    }).join('')}</div>
+  </div>`;
 }
 
 function renderListBlock(title, items) {
