@@ -150,8 +150,9 @@ async function handleMafraFacilityVegetables(url, env, cors) {
   }
 
   try {
+    const serviceKey = mafraPathKey(env.MAFRA_SERVICE_KEY);
     const endIndex = mafraEndIndex(env.MAFRA_SERVICE_KEY);
-    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${env.MAFRA_SERVICE_KEY}/json/${MAFRA_FACILITY_VEGETABLE_API}/1/${endIndex}`);
+    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${serviceKey}/json/${MAFRA_FACILITY_VEGETABLE_API}/1/${endIndex}`);
     apiUrl.searchParams.set('EXAMIN_YEAR', year);
     if (region) apiUrl.searchParams.set('AREA_SE', region);
     if (vegetableKind) apiUrl.searchParams.set('VGETBL_KND', vegetableKind);
@@ -192,8 +193,9 @@ async function handleMafraFlowerPrices(url, env, cors) {
   }
 
   try {
+    const serviceKey = mafraPathKey(env.MAFRA_SERVICE_KEY);
     const endIndex = mafraEndIndex(env.MAFRA_SERVICE_KEY);
-    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${env.MAFRA_SERVICE_KEY}/json/${MAFRA_FLOWER_PRICE_API}/1/${endIndex}`);
+    const apiUrl = new URL(`${MAFRA_OPENAPI_ENDPOINT}/${serviceKey}/json/${MAFRA_FLOWER_PRICE_API}/1/${endIndex}`);
     apiUrl.searchParams.set('AUC_DE', date);
     if (item) apiUrl.searchParams.set('PRDLST_NM', item);
     if (categoryCode) apiUrl.searchParams.set('CATGORY_CD', categoryCode);
@@ -1245,6 +1247,15 @@ function pick(row, names, fallback) {
 
 function mafraEndIndex(serviceKey) {
   return String(serviceKey || '').trim() === 'sample' ? 5 : 1000;
+}
+
+function mafraPathKey(serviceKey) {
+  const text = String(serviceKey || '').trim();
+  try {
+    return encodeURIComponent(decodeURIComponent(text));
+  } catch {
+    return encodeURIComponent(text);
+  }
 }
 
 function firstParam(url, ...names) {
