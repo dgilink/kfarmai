@@ -2098,7 +2098,7 @@
             </div>
           </div>
           <div id="agriVideoHero"></div>
-          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록"></div>
+          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록" ontouchstart="stopNestedSwipe(event)" ontouchmove="stopNestedSwipe(event)" onmousedown="stopNestedSwipe(event)"></div>
           <div class="agri-source-note">kFarmAI는 영상을 저장하거나 재업로드하지 않고, 공식 플랫폼의 임베드 방식으로 제공합니다. 영상의 저작권은 각 제공 기관과 원 게시자에게 있습니다.</div>
         </section>
 
@@ -2414,10 +2414,20 @@
   window.switchMainTab = name => go(name === 'diagnosis' ? 1 : name === 'agriData' ? 2 : 0, true);
   window.activateTab = window.switchMainTab;
   tabs.forEach(t => t.addEventListener('click', () => go(parseInt(t.dataset.i), true)));
+  function isNestedHorizontalScroller(target){
+    return !!target?.closest?.('.agri-video-strip, .agri-research-chips');
+  }
+  window.stopNestedSwipe = function(event){
+    event.stopPropagation();
+  };
 
   // Touch swipe
   let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false, axis = null, trackingSwipe = false;
   wrap.addEventListener('touchstart', e => {
+    if(isNestedHorizontalScroller(e.target)){
+      trackingSwipe = false; dragging = false; axis = null; dx = 0; dy = 0;
+      return;
+    }
     if(e.touches.length !== 1){
       trackingSwipe = false; dragging = false; axis = null; dx = 0; dy = 0;
       return;
@@ -2469,7 +2479,10 @@
 
   // Mouse drag (desktop preview)
   let mdown = false, mx = 0;
-  wrap.addEventListener('mousedown', e => { mdown = true; mx = e.clientX; dx = 0; });
+  wrap.addEventListener('mousedown', e => {
+    if(isNestedHorizontalScroller(e.target)){mdown=false;return;}
+    mdown = true; mx = e.clientX; dx = 0;
+  });
   window.addEventListener('mousemove', e => {
     if(!mdown) return;
     dx = e.clientX - mx;
