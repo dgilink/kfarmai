@@ -26,9 +26,24 @@ body {
   font-family: 'Noto Sans KR', sans-serif;
   background: var(--white); color: var(--black);
   font-size: 14px; line-height: 1.6; padding-bottom: 60px;
+  word-break: keep-all;
+  line-break: strict;
 }
 a { text-decoration: none; color: inherit; }
-button { font-family: 'Noto Sans KR', sans-serif; }
+button, input, textarea, select { font-family: 'Noto Sans KR', sans-serif; word-break: keep-all; line-break: strict; }
+p, span, div, li, h1, h2, h3, h4, h5, h6, .card, .section, .notice, .description, .post-title, .post-content, .comment-content, .guide-text, .calendar-text, .weather-text {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
+}
+.url, .email, .code, .mono, .tag, .hash-tag, pre, code {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .kf-nav-item {
+  word-break: keep-all;
+  white-space: nowrap;
+}
 
 /* 헤더 */
 .kf-header {

@@ -19,8 +19,8 @@
   <meta property="og:url" content="https://kfarmai.com/q/ai-plant-diagnosis-accuracy">
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; background: #ffffff; color: #222; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; }
-    header { background: #1B5E20; height: 56px; display: flex; align-items: center; justify-content: center; }
+    body { margin: 0; background: #ffffff; color: #222; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; word-break: keep-all; overflow-wrap: break-word; }
+    header { background: #fff; min-height: 56px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #DDEDE3; }
     header a { display: flex; align-items: center; text-decoration: none; }
     main { max-width: 480px; margin: 0 auto; padding: 18px 16px 32px; }
     h1 { font-size: 22px; line-height: 1.35; color: #1B5E20; margin: 12px 0 16px; }
@@ -43,12 +43,16 @@
     .related-questions { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px; }
     .related-questions h3 { flex: 0 0 100%; }
     .related-questions a { border: 1px solid #C8E6C9; border-radius: 20px; padding: 8px 14px; font-size: 13px; color: #2E7D32; display: inline-block; text-decoration: none; }
+    p, div, span, li, h1, h2, h3, h4, h5, h6, article, section, .summary, .quick-answer, .warning, .sources, .safety-notice { word-break: keep-all; overflow-wrap: break-word; line-break: strict; }
+    a, .url, .email, .long-text, .code, .mono, pre, code { overflow-wrap: anywhere; word-break: break-word; }
+    button, .btn, .chip, .tag-chip, .hash-tag, .category-badge, .cta-button, .related-questions a { word-break: keep-all; white-space: nowrap; }
+    .tag-chip, .hash-tag { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
   </style>
 </head>
 <body>
   <header>
     <a href="/index.html">
-      <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" height="36">
+      <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" height="34">
     </a>
   </header>
 
@@ -57,7 +61,7 @@
     <h1>AI 식물 진단은 얼마나 정확할까 | 사진 진단의 한계와 활용법</h1>
 
     <section class="content">
-      <p>사진 한 장만으로 식물 병을 100% 확정하기는 어렵습니다. 병해, 해충, 생리장해, 약해가 비슷하게 보이는 경우가 많기 때문입니다. AI 진단은 가능성이 높은 원인을 좁혀주고 확인 포인트를 알려주는 도구로 쓰는 것이 좋습니다. 정확도를 높이려면 근접 사진, 전체 사진, 잎 앞·뒤, 흙 상태, 최근 물·비료·약제 이력을 함께 제공해야 합니다.</p>
+      <p>사진 한 장만으로 식물 병을 100% 확정하기는 어렵습니다. 병해, 해충, 생리장해, 약해가 비슷하게 보이는 경우가 많기 때문입니다. AI 참고 진단은 가능성이 높은 원인을 좁혀주고 확인 포인트를 알려주는 도구로 쓰는 것이 좋습니다. 정확도를 높이려면 근접 사진, 전체 사진, 잎 앞·뒤, 흙 상태, 최근 물·비료·약제 이력을 함께 제공해야 합니다.</p>
     </section>
 
     <section class="causes">
@@ -111,16 +115,15 @@
         <strong>직접 사진으로 진단받기</strong>
         <p>사진을 올리면 AI가 증상 후보, 확인 포인트, 조치 순서를 정리해드립니다.</p>
       </div>
-      <a href="/diagnosis.html" class="ai-cta-btn">AI 진단 시작하기 →</a>
+      <a href="/diagnosis.html" class="ai-cta-btn">AI 참고 진단 시작하기 →</a>
     </div>
 
     <div class="related-questions">
       <h3>비슷한 증상 보기</h3>
       <a href="/q/how-to-take-plant-diagnosis-photos">식물 진단 사진 잘 찍는 법</a>
-      <a href="/q/find-nearby-agricultural-supply-store">AI 진단 후 농약 사용 주의</a>
+      <a href="/q/find-nearby-agricultural-supply-store">AI 참고 진단 후 농약 사용 주의</a>
       <a href="/q/find-nearby-agricultural-supply-store">공공데이터 기반 농업 진단</a>
     </div>
   </main>
 </body>
 </html>
-

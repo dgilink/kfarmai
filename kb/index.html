@@ -16,15 +16,19 @@
   <link rel="canonical" href="https://kfarmai.com/kb/index.html">
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f7f9f6; color: #17202a; line-height: 1.7; }
-    header { background: #1f7a4d; color: white; padding: 18px 20px; font-weight: 700; }
+    header { background: #fff; min-height: 56px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #DDEDE3; padding: 0 16px; } header a { display: flex; align-items: center; text-decoration: none; } header img { height: 34px; width: auto; }
     main { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
     section { background: white; margin: 16px 0; padding: 18px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
     a { color: #176c43; font-weight: 700; }
     li { margin-bottom: 14px; }
+    p, div, span, li, h1, h2, h3, h4, h5, h6, article, section, .summary, .quick-answer, .warning, .sources, .safety-notice { word-break: keep-all; overflow-wrap: break-word; line-break: strict; }
+    a, .url, .email, .long-text, .code, .mono, pre, code { overflow-wrap: anywhere; word-break: break-word; }
+    button, .btn, .chip, .tag-chip, .hash-tag, .category-badge, .cta-button, .related-questions a { word-break: keep-all; white-space: nowrap; }
+    .tag-chip, .hash-tag { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
   </style>
 </head>
 <body>
-  <header>kFarmAI</header>
+  <header><a href="/index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
   <main>
     <h1>kFarmAI 농업·식물 문제 해결 Q&A</h1>
     <p>농업 현장과 홈가드닝에서 자주 검색하는 질문을 공식자료 기반으로 정리했습니다.</p>

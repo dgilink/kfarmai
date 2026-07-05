@@ -78,6 +78,8 @@
     background: #0a0a0a;
     color: var(--text);
     -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+    line-break: strict;
   }
   body { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
 
@@ -261,6 +263,14 @@
     display: flex; align-items: center; justify-content: space-between;
     margin: 16px 2px 10px;
   }
+  body, button, input, textarea, select { word-break: keep-all; line-break: strict; }
+  p, span, div, li, h1, h2, h3, h4, h5, h6, .card, .section, .notice, .description, .post-title, .post-content, .comment-content, .guide-text, .calendar-text, .weather-text {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
+  .url, .email, .code, .mono, .tag, .hash-tag, pre, code { word-break: break-all; overflow-wrap: anywhere; }
+  button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .bnav .b, .tab, .section-more-btn { word-break: keep-all; white-space: nowrap; }
   .section-head:first-child { margin-top: 14px; }
   .section-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; }
   .section-title.accent { color: var(--green-dark); }
@@ -1070,6 +1080,21 @@
   }
   .modal-select:focus, .modal-input:focus, .modal-textarea:focus { border-color: var(--green); }
   .modal-textarea { height: 90px; resize: none; }
+  .symptom-extra { display:none; margin-top:8px; }
+  .symptom-extra.show { display:block; }
+  .tag-chip-row { display:flex; flex-wrap:wrap; gap:7px; }
+  .tag-chip, .selected-tag {
+    min-height:30px; border:1px solid #D7EBDD; border-radius:999px; padding:6px 10px;
+    background:#F3FBF7; color:var(--green-dark); font-size:12px; font-weight:850; cursor:pointer;
+    word-break:keep-all; white-space:nowrap;
+  }
+  .selected-tag { display:inline-flex; align-items:center; gap:6px; background:#E8F6F0; }
+  .selected-tag button { width:18px; height:18px; border:0; border-radius:50%; background:rgba(0,0,0,.12); color:#244; cursor:pointer; line-height:18px; }
+  .tag-input-row { display:flex; gap:7px; margin-top:8px; }
+  .tag-input-row input { flex:1; min-width:0; }
+  .tag-add-btn { min-width:54px; border:0; border-radius:10px; background:#111827; color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
+  .post-tags, .question-list-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+  .post-tag, .question-list-tag { color:var(--green-dark); background:#E8F6F0; border-radius:999px; padding:3px 7px; font-size:11px; font-weight:850; }
   .modal-submit {
     width: 100%; padding: 14px; background: var(--green); color: #fff; border: 0; border-radius: 12px;
     font-size: 15px; font-weight: 800; cursor: pointer;
@@ -1274,6 +1299,10 @@
     font-weight: 900;
     cursor: pointer;
   }
+  .nickname-quick-row { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; padding:10px 12px; margin:0 0 10px; border:1px solid #D7EBDD; border-radius:12px; background:#F7FCF9; cursor:pointer; }
+  .nickname-quick-row span:first-child { color:#6B7280; font-size:12px; font-weight:850; }
+  .nickname-quick-value { flex:1; min-width:0; color:#111827; font-size:13px; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+  .nickname-quick-btn { border:0; border-radius:999px; background:#E8F6F0; color:var(--green-dark); padding:6px 10px; font-size:12px; font-weight:900; }
   .nickname-copy {
     margin: 0 0 12px;
     color: var(--sub);
@@ -1937,7 +1966,13 @@
     <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">커뮤니티에 질문하기 <button class="my-close" type="button" onclick="closeModal()" aria-label="닫기">×</button></div>
     <div class="modal-field"><div class="modal-label">채널 선택</div><select class="modal-select" id="channelSelect"><option value="">채널을 선택하세요</option><option value="d88ba519-68fd-488f-8311-e316838ac4cf">식물 병원</option><option value="c7315bd6-eb60-484c-9c07-6def8f93ddc1">식물 질문방</option><option value="f586c6a8-882a-45d0-89e6-6d20fd9675de">작물 상담방</option><option value="9191bf52-84b6-42ca-b2c7-c886bde5d450">내 식물 자랑</option><option value="364c2c71-c313-47fc-a986-3124393bf381">농부 사랑방</option><option value="4619a407-a214-4555-8e63-06fa96ed87a2">나눔·직거래</option><option value="a6095ae4-1d7e-4671-a6b1-4277d343e586">✂️ 원예 클래스</option><option value="ae71a389-0723-4e76-b421-789a1474fd49">식집사 모임</option></select></div>
     <div class="modal-field"><div class="modal-label">지역 선택</div><select class="modal-select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
-    <div class="modal-field"><div class="modal-label">어떤 내용의 질문인가요?</div><select class="modal-select" id="postCategory"><option value="">내용 유형을 선택하세요</option><option value="식물 병원">식물 병원</option><option value="식물 질문방">식물 질문방</option><option value="작물 상담방">작물 상담방</option><option value="내 식물 자랑">내 식물 자랑</option><option value="농부 사랑방">농부 사랑방</option><option value="나눔·직거래">나눔·직거래</option><option value="원예 클래스">원예 클래스</option><option value="식집사 모임">식집사 모임</option></select></div>
+    <div class="modal-field">
+      <div class="modal-label">대표 증상을 선택해주세요</div>
+      <select class="modal-select" id="postCategory" onchange="toggleCustomSymptom()">
+        <option value="">대표 증상 선택</option><option>잎마름</option><option>잎노랑</option><option>잎말림</option><option>시들음</option><option>벌레</option><option>곰팡이</option><option>줄기무름</option><option>열매이상</option><option>생육불량</option><option>물관리</option><option>분갈이</option><option>기타</option>
+      </select>
+      <div class="symptom-extra" id="customSymptomWrap"><input class="modal-input" id="customSymptom" placeholder="증상을 직접 입력해주세요" autocomplete="off"></div>
+    </div>
     <div class="modal-field"><div class="modal-label">제목</div><input class="modal-input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
     <div class="modal-field"><div class="modal-label">내용</div><textarea class="modal-textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
     <div class="modal-field">
@@ -1945,6 +1980,12 @@
       <label class="image-upload-btn" for="postImages">사진 선택</label>
       <input class="image-input" type="file" id="postImages" accept="image/*" multiple onchange="handlePostImages(this)">
       <div class="image-preview-row" id="postImagePreview"></div>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(최대 5개)</span></div>
+      <div class="tag-chip-row" id="tagSuggestions"></div>
+      <div class="tag-input-row"><input class="modal-input" id="tagInput" placeholder="#고추 또는 잎마름" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput()}"><button class="tag-add-btn" type="button" onclick="addTagFromInput()">추가</button></div>
+      <div class="post-tags" id="selectedTags"></div>
     </div>
     <button class="modal-submit" id="postSubmitBtn" onclick="submitPost()">질문 등록하기</button>
   </div>
@@ -1999,6 +2040,9 @@
           <span class="role-badge">일반회원</span>
         </div>
       </div>
+      <button class="nickname-quick-row" type="button" onclick="openNicknameModal(false)">
+        <span>닉네임</span><span class="nickname-quick-value" id="myNicknameQuick">kFarmAI 사용자</span><span class="nickname-quick-btn">변경</span>
+      </button>
       <div class="my-menu" id="myMainMenu">
         <div class="my-row clickable" onclick="openMySubview('myPostsView')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
         <div class="my-row clickable" onclick="openMySubview('myDiagnosesView')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
@@ -2048,16 +2092,17 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nicknameModalTitle">
     <button class="modal-handle" type="button" onclick="if(document.getElementById('nicknameModal').dataset.required!=='1')closeNicknameModal()" aria-label="닫기"></button>
     <div class="modal-title" id="nicknameModalTitle" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      닉네임 설정
+      닉네임 변경
       <button class="my-close" id="nicknameCloseBtn" type="button" onclick="closeNicknameModal()" aria-label="닫기">×</button>
     </div>
-    <p class="nickname-copy">글과 댓글에는 이메일 대신 닉네임이 표시됩니다. 2~16자 안에서 입력해주세요.</p>
+    <p class="nickname-copy">글과 댓글에 표시될 이름입니다. 변경 이후 새 글과 댓글부터 반영됩니다.</p>
     <div class="modal-field">
       <div class="modal-label">닉네임</div>
-      <input class="modal-input" id="nicknameInput" maxlength="16" placeholder="예) 초록농부" autocomplete="nickname">
+      <input class="modal-input" id="nicknameInput" maxlength="16" placeholder="예: 초록농부, 텃밭초보, 식물집사" autocomplete="nickname">
       <div class="nickname-error" id="nicknameError"></div>
     </div>
-    <button class="modal-submit" id="nicknameSaveBtn" type="button" onclick="saveNickname()">저장하기</button>
+    <button class="modal-submit" id="nicknameSaveBtn" type="button" onclick="saveNickname()">완료</button>
+    <button class="modal-submit" type="button" style="margin-top:8px;background:#F3F4F6;color:#374151" onclick="closeNicknameModal()">취소</button>
   </div>
 </div>
 
@@ -2450,10 +2495,12 @@ function renderMyProfile(user){
   document.getElementById('myEmail').textContent=email ? maskEmail(email) : '이메일 정보 없음';
   const accountName=document.getElementById('myAccountName');
   const nicknameEl=document.getElementById('myNickname');
+  const nicknameQuick=document.getElementById('myNicknameQuick');
   const accountEmail=document.getElementById('myAccountEmail');
   const joinedAt=document.getElementById('myJoinedAt');
   if(accountName)accountName.textContent=name;
   if(nicknameEl)nicknameEl.textContent=displayNameForUser(user);
+  if(nicknameQuick)nicknameQuick.textContent=hasNickname(user)?displayNameForUser(user):'닉네임을 설정해주세요';
   if(accountEmail)accountEmail.textContent=email ? maskEmail(email) : '이메일 정보 없음';
   if(joinedAt)joinedAt.textContent=formatMyDate(user.created_at)||'확인 중';
   if(avatarEl)avatarEl.innerHTML=avatar ? `<img src="${escAttr(avatar)}" alt="profile">` : escHtml(getInitial(user));
@@ -2470,6 +2517,8 @@ function displayNameForUser(user=currentUser, profileMap=null){
 }
 function displayNameForPost(post, profileMap={}){
   if(!post?.user_id)return '익명';
+  const snapshot=extractAuthorNicknameFromContent(post.content);
+  if(snapshot)return snapshot;
   if(profileMap[post.user_id])return profileMap[post.user_id];
   if(currentUser?.id&&post.user_id===currentUser.id)return displayNameForUser(currentUser);
   return 'kFarmAI 사용자';
@@ -2500,7 +2549,6 @@ async function hydrateCurrentProfile(user){
   }
   renderHeaderProfile(user);
   renderMyProfile(user);
-  maybePromptNickname(user);
   if(hasNickname(user))upsertUserDisplayProfile(user).then(()=>{});
 }
 async function fetchProfileMap(userIds){
@@ -2526,12 +2574,7 @@ async function upsertUserDisplayProfile(user=currentUser){
   try{await _sb.from('profiles').upsert({id:user.id,nickname},{onConflict:'id'});}catch(_){}
   try{await _sb.from('users').upsert({id:user.id,nickname,email:user.email,role:'user'},{onConflict:'id'});}catch(_){}
 }
-function maybePromptNickname(user=currentUser){
-  if(!user?.id||hasNickname(user))return;
-  if(sessionStorage.getItem(`nickname_prompt_${user.id}`)==='shown')return;
-  sessionStorage.setItem(`nickname_prompt_${user.id}`,'shown');
-  setTimeout(()=>openNicknameModal(true),350);
-}
+function maybePromptNickname(){return;}
 async function loadMyCounts(userId){
   if(!window._sb||!userId)return;
   try{
@@ -2577,12 +2620,13 @@ async function loadMyPosts(userId){
         post.channels?.name||category,
         post.region_tag||'',
         `조회 ${Number(post.view_count||0)}`,
-        `좋아요 ${Number(post.like_count||0)}`,
+        `♡ ${Number(post.like_count||0)}`,
         formatMyDate(post.created_at)
       ].filter(Boolean).map(item=>`<span>${escHtml(item)}</span>`).join('');
       return `<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'">
         <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
         ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
+        ${renderPostTags(post.content)}
         <div class="my-list-meta">${meta}</div>
         <div class="my-list-actions">
           <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">수정</button>
@@ -2698,12 +2742,25 @@ function formatMyDate(value){
   return d.toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit'});
 }
 function extractCategoryFromContent(content){
-  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/m);
+  const match=String(content||'').match(/^\[(?:대표 증상|카테고리):\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
+}
+function extractAuthorNicknameFromContent(content){
+  const match=String(content||'').match(/^\[작성자:\s*([^\]]+)\]/m);
+  return match ? match[1].trim() : '';
+}
+function extractTagsFromContent(content){
+  const match=String(content||'').match(/^\[태그:\s*([^\]]+)\]/m);
+  if(!match)return [];
+  return match[1].split(/\s+/).map(normalizeTag).filter(Boolean).slice(0,8);
+}
+function renderPostTags(content,cls='post-tag'){
+  const tags=extractTagsFromContent(content);
+  return tags.length?`<div class="post-tags">${tags.map(tag=>`<span class="${cls}">${escHtml(tag)}</span>`).join('')}</div>`:'';
 }
 function stripPostPrefixes(content){
   return String(content||'')
-    .replace(/^\[(카테고리|채널|지역):\s*[^\]]+\]\s*/gm,'')
+    .replace(/^\[(작성자|카테고리|대표 증상|태그|채널|지역):\s*[^\]]+\]\s*/gm,'')
     .trim();
 }
 function getInitial(user){return (displayNameForUser(user)||'U').trim()[0].toUpperCase();}
@@ -2715,7 +2772,7 @@ async function loadFeed(channelId=null){
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
   try{
     if(!window._sb)throw new Error('Supabase client is not ready');
-    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
+    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,like_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
     if(channelId)query=query.eq('channel_id',channelId);
     const {data,error}=await query;
     if(error)throw error;
@@ -2741,7 +2798,8 @@ function renderFeedCard(feed,post,profileMap={}){
   card.className='q-card';
   card.style.cursor='pointer';
   card.onclick=()=>{ if(post.id) location.href=`post.html?id=${encodeURIComponent(post.id)}`; };
-  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||post.channelName||'일반')}</span><div class="q-title">${escHtml(post.title||'제목 없음')}</div><div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>좋아요 ${post.like_count||0}</span><span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
+  const symptom=extractCategoryFromContent(post.content);
+  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||post.channelName||'일반')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>♡ ${post.like_count||0}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
   feed.appendChild(card);
 }
 async function renderFeedFallback(message){
@@ -3132,7 +3190,7 @@ function renderQuestionListCard(post,profileMap={}){
     post.region_tag||'',
     `댓글 ${Number(post.comment_count||0)}`,
     `조회 ${Number(post.view_count||0)}`,
-    post.like_count?`좋아요 ${Number(post.like_count)}`:'',
+    post.like_count?`♡ ${Number(post.like_count)}`:'',
     post.created_at?getTimeAgo(post.created_at):''
   ].filter(Boolean);
   const href=post.id ? `post.html?id=${encodeURIComponent(post.id)}` : safeSearchUrl(post.url||'channel.html');
@@ -3140,6 +3198,7 @@ function renderQuestionListCard(post,profileMap={}){
     <div>
       <div class="question-list-card-title">${escHtml(post.title||'제목 없음')}</div>
       ${content?`<div class="question-list-preview">${escHtml(content)}</div>`:''}
+      ${renderPostTags(post.content,'question-list-tag')}
       <div class="question-list-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}</div>
     </div>
     ${thumb?`<img class="question-list-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}
@@ -3181,8 +3240,8 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   const terms=symptomAliases(keyword).concat([keyword]).map(term=>String(term||'').trim()).filter(Boolean);
   const uniqueTerms=[...new Set(terms)].slice(0,8);
   const orQuery=uniqueTerms.flatMap(term=>{
-    const safe=term.replace(/[%_,]/g,'');
-    return [`title.ilike.%${safe}%`,`content.ilike.%${safe}%`];
+    const safe=term.replace(/^#/,'').replace(/[%_,]/g,'');
+    return [`title.ilike.%${safe}%`,`content.ilike.%${safe}%`,`content.ilike.%#${safe}%`,`region_tag.ilike.%${safe}%`];
   }).join(',');
   try{
     const {data,error}=await _sb.from('posts')
@@ -3309,11 +3368,13 @@ async function runSearch(raw){
 async function searchPosts(kw,limit){
   if(!window._sb)return [];
   try{
-    const like=`%${kw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
+    const cleanKw=String(kw||'').replace(/^#/,'');
+    const like=`%${cleanKw.replace(/[%_]/g,'')}%`;
+    const hashLike=`%#${cleanKw.replace(/[%_]/g,'')}%`;
+    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,like_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
     let list=data||[];
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,like_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
       list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return list;
@@ -3329,7 +3390,8 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     const postUrl=post.id?`post.html?id=${encodeURIComponent(post.id)}`:'channel.html';
-    return `<a class="q-card" href="${postUrl}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span><div class="q-title">${highlightText(post.title,kw)}</div><div class="q-meta wrap"><span>${escHtml(displayNameForPost(post))}</span><span>댓글 ${post.comment_count||0}</span><span>도움 됐어요 ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    const symptom=extractCategoryFromContent(post.content);
+    return `<a class="q-card" href="${postUrl}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>♡ ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
@@ -3537,18 +3599,31 @@ function openDiagnosisDemoCase(caseId){
 }
 function closeDiagnosisDemoCase(){document.getElementById('diagnosisDemoModal')?.classList.remove('open');unlockBodyScroll();}
 let selectedPostImages = [];
+let selectedPostTags = [];
+const TAG_LIMIT = 5;
+const TAG_SUGGESTIONS = ['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function handlePostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
 function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');if(!wrap)return;wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
 async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await _sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=_sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
 function cleanPayload(obj){return Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!==''));}
-function contentWithCategory(content,category,channelName='',region=''){
+function normalizeTag(value){const clean=String(value||'').trim().replace(/^#+/,'').replace(/\s+/g,'').slice(0,12);return clean?`#${clean}`:'';}
+function renderTagSuggestions(){const wrap=document.getElementById('tagSuggestions');if(!wrap)return;wrap.innerHTML=TAG_SUGGESTIONS.map(tag=>`<button class="tag-chip" type="button" onclick="addPostTag('${tag}')">#${tag}</button>`).join('');renderSelectedTags();}
+function addPostTag(value){const tag=normalizeTag(value);if(!tag)return;if(selectedPostTags.includes(tag))return renderSelectedTags();if(selectedPostTags.length>=TAG_LIMIT){showToast(`태그는 최대 ${TAG_LIMIT}개까지 추가할 수 있습니다.`);return;}selectedPostTags.push(tag);renderSelectedTags();}
+function addTagFromInput(){const input=document.getElementById('tagInput');addPostTag(input?.value||'');if(input)input.value='';}
+function removePostTag(idx){selectedPostTags.splice(idx,1);renderSelectedTags();}
+function renderSelectedTags(){const wrap=document.getElementById('selectedTags');if(!wrap)return;wrap.innerHTML=selectedPostTags.map((tag,idx)=>`<span class="selected-tag">${escHtml(tag)}<button type="button" onclick="removePostTag(${idx})" aria-label="태그 삭제">×</button></span>`).join('');}
+function toggleCustomSymptom(){const select=document.getElementById('postCategory');document.getElementById('customSymptomWrap')?.classList.toggle('show',select?.value==='기타');}
+function selectedSymptom(){const value=document.getElementById('postCategory')?.value||'';if(value==='기타')return (document.getElementById('customSymptom')?.value||'').trim();return value;}
+function contentWithCategory(content,category,channelName='',region='',tags=[],authorName=''){
   const clean=String(content||'').trim();
   const prefix=[
+    authorName?`[작성자: ${authorName}]`:'',
     channelName?`[채널: ${channelName}]`:'',
     region?`[지역: ${region}]`:'',
-    category?`[카테고리: ${category}]`:''
+    category?`[대표 증상: ${category}]`:'',
+    tags.length?`[태그: ${tags.join(' ')}]`:''
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }
@@ -3557,11 +3632,11 @@ async function submitPost(){
   const channelSelect=document.getElementById('channelSelect');
   const channelId=channelSelect.value;
   const channelName=channelSelect.options[channelSelect.selectedIndex]?.textContent?.replace(/^✂️\s*/,'')||'';
-  const category=document.getElementById('postCategory').value;
+  const category=selectedSymptom();
   const region=document.getElementById('regionSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
-  if(!channelId||!category||!title){showToast('채널, 내용 유형, 제목을 입력해주세요.');return;}
+  if(!channelId||!category||!title){showToast('채널, 대표 증상, 제목을 입력해주세요.');return;}
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
   try{
@@ -3570,14 +3645,17 @@ async function submitPost(){
     if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openMyPanel();return;}
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,category,channelName,region),user_id:userId,region_tag:region||undefined,image_urls:imageUrls.length?imageUrls:undefined});
+    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,category,channelName,region,selectedPostTags,displayNameForUser(session.user)),user_id:userId,region_tag:region||undefined,image_urls:imageUrls.length?imageUrls:undefined});
     const {error}=await _sb.from('posts').insert(payload);
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
     closeModal();
-    ['postTitle','postContent','postCategory','regionSelect'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     selectedPostImages=[];
+    selectedPostTags=[];
     renderPostImagePreview();
+    renderSelectedTags();
+    toggleCustomSymptom();
     await loadFeed();
     await loadMyCounts(userId);
   }catch(err){showToast(friendlyPostError(err));}
@@ -3585,7 +3663,7 @@ async function submitPost(){
 }
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
-function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;modal.classList.add('open');lockBodyScroll();}
+function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;renderTagSuggestions();toggleCustomSymptom();modal.classList.add('open');lockBodyScroll();}
 function closeModal(){document.getElementById('writeModal')?.classList.remove('open');unlockBodyScroll();}
 function openNicknameModal(required=false){
   if(!currentUser)return;
@@ -3634,12 +3712,12 @@ async function saveNickname(){
     renderMyProfile(currentUser);
     document.getElementById('nicknameModal')?.classList.remove('open');
     unlockBodyScroll();
-    showToast('닉네임이 저장되었습니다.');
+    showToast('닉네임이 변경되었습니다.');
   }catch(error){
     console.error('nickname save failed', error);
     setNicknameError('닉네임 저장에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }finally{
-    if(btn){btn.disabled=false;btn.textContent=btn.dataset.originalText||'저장하기';}
+    if(btn){btn.disabled=false;btn.textContent=btn.dataset.originalText||'완료';}
   }
 }
 async function safeOpenMyPanel(){

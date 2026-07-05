@@ -30,12 +30,15 @@
     --shadow:0 10px 28px rgba(0,0,0,.08);
   }
   * { box-sizing:border-box; }
-  html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif; }
+  html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif; word-break:keep-all; line-break:strict; }
   body {
     padding-bottom:16px;
     padding-bottom:calc(16px + env(safe-area-inset-bottom));
   }
-  button, input, textarea { font-family:inherit; }
+  button, input, textarea, select { font-family:inherit; word-break:keep-all; line-break:strict; }
+  p, span, div, li, h1, h2, h3, h4, h5, h6, .card, .section, .notice, .description, .post-title, .post-content, .post-body, .comment-content, .comment-body { word-break:keep-all; overflow-wrap:break-word; line-break:strict; }
+  .url, .email, .code, .mono, .tag, .hash-tag, pre, code { word-break:break-all; overflow-wrap:anywhere; }
+  button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .badge { word-break:keep-all; white-space:nowrap; }
   a { color:inherit; text-decoration:none; }
   .app { max-width:520px; min-height:100vh; margin:0 auto; background:var(--bg); position:relative; }
   .header { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.94); backdrop-filter:blur(14px); border-bottom:1px solid rgba(0,0,0,.06); padding:10px 14px 12px; }
@@ -67,10 +70,6 @@
   .post-owner-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
   .post-owner-actions button, .comment-action, .edit-submit, .edit-cancel { border:1px solid var(--border); background:#fff; border-radius:9px; padding:7px 10px; color:#555; font-size:12px; font-weight:900; cursor:pointer; }
   .post-owner-actions .delete, .comment-action.delete { color:#DC2626; }
-  .ai-card { margin-top:12px; padding:12px; background:#E8F5E9; border-radius:12px; border:1px solid rgba(29,158,117,.15); }
-  .ai-card-title { font-size:14px; font-weight:900; color:var(--green-dark); margin-bottom:6px; }
-  .ai-card-text { font-size:13px; color:#456; line-height:1.5; margin-bottom:10px; }
-  .ai-card-btn { display:inline-flex; align-items:center; justify-content:center; height:38px; padding:0 14px; border:0; border-radius:10px; background:var(--green); color:#fff; font-size:13px; font-weight:900; cursor:pointer; }
   .comment-actions { margin-left:auto; display:flex; gap:5px; }
   .comment-edit-area { width:100%; min-height:72px; border:1.5px solid var(--border); border-radius:10px; padding:10px; font-size:14px; resize:vertical; }
   .comment-edit-actions { display:flex; gap:7px; margin-top:8px; }
@@ -208,7 +207,7 @@
 <div class="edit-modal-overlay" id="editPostModal" onclick="if(event.target===this)closeEditPostModal()">
   <div class="edit-modal">
     <div class="edit-modal-title">게시글 수정</div>
-    <div class="edit-field"><div class="edit-label">어떤 내용의 질문인가요?</div><select class="edit-select" id="editPostCategory"><option value="">내용 유형 선택</option><option value="식물 병원">식물 병원</option><option value="식물 질문방">식물 질문방</option><option value="작물 상담방">작물 상담방</option><option value="내 식물 자랑">내 식물 자랑</option><option value="농부 사랑방">농부 사랑방</option><option value="나눔·직거래">나눔·직거래</option><option value="원예 클래스">원예 클래스</option><option value="식집사 모임">식집사 모임</option></select></div>
+    <div class="edit-field"><div class="edit-label">대표 증상</div><select class="edit-select" id="editPostCategory"><option value="">대표 증상 선택</option><option>잎마름</option><option>잎노랑</option><option>잎말림</option><option>시들음</option><option>벌레</option><option>곰팡이</option><option>줄기무름</option><option>열매이상</option><option>생육불량</option><option>물관리</option><option>분갈이</option><option>기타</option></select></div>
     <div class="edit-field"><div class="edit-label">제목</div><input class="edit-input" id="editPostTitle" autocomplete="off"></div>
     <div class="edit-field"><div class="edit-label">내용</div><textarea class="edit-textarea" id="editPostContent"></textarea></div>
     <div class="edit-field">
@@ -248,6 +247,7 @@ let localLiked = false;
 let editExistingImages = [];
 let editNewImages = [];
 let currentProfileNickname = '';
+let commentAuthorSnapshots = {};
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function ownerId(){return localStorage.getItem('kfarmai_user_id') || getLocalUserId();}
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
@@ -263,6 +263,8 @@ function displayNameForUser(user=currentUser, profileMap=null){
 }
 function displayNameForRecord(record,profileMap={}){
   if(!record?.user_id)return '익명';
+  const snapshot=extractAuthorNicknameFromContent(record.content);
+  if(snapshot)return snapshot;
   if(profileMap[record.user_id])return profileMap[record.user_id];
   if(currentUser?.id&&record.user_id===currentUser.id)return displayNameForUser(currentUser);
   return 'kFarmAI 사용자';
@@ -335,8 +337,8 @@ async function loadPost() {
       .single();
     if (error) throw error;
     currentPost = data;
-    const profileMap=await fetchProfileMap([data.user_id]);
-    renderPost(data,profileMap);
+    renderPost(data,{});
+    fetchProfileMap([data.user_id]).then(profileMap=>renderPost(data,profileMap));
     incrementViewCount(data);
   } catch (err) {
     document.getElementById('postArea').innerHTML = '<div class="empty">게시글을 찾을 수 없습니다.<br>삭제되었거나 접근 권한이 없을 수 있습니다.</div>';
@@ -356,7 +358,7 @@ function renderPost(post,profileMap={}) {
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
   const ownerActions = isOwner ? `<div class="post-owner-actions"><button type="button" onclick="openEditPostModal()">수정</button><button class="delete" type="button" onclick="deletePost()">삭제</button></div>` : '';
   const bodyText=stripCategoryPrefix(post.content||'');
-  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span>좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 참고 진단</div><div class="ai-card-text">사진과 증상을 올리면 원인 후보와 확인 포인트를 정리해볼 수 있습니다.</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 참고 진단 시작</button></div><div class="actions"><span class="stat">공공정보 확인과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
+  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span>♡ ${Number(post.like_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="actions"><span class="stat">댓글과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">♡ ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
@@ -368,7 +370,7 @@ function removeEditExistingImage(idx){editExistingImages.splice(idx,1);renderEdi
 function removeEditNewImage(idx){editNewImages.splice(idx,1);renderEditImagePreview();}
 function renderEditImagePreview(){const wrap=document.getElementById('editImagePreview');if(!wrap)return;const existing=editExistingImages.map((url,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(url)}" alt="기존 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditExistingImage(${idx})">&times;</button></div>`).join('');const added=editNewImages.map((file,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(URL.createObjectURL(file))}" alt="새 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditNewImage(${idx})">&times;</button></div>`).join('');wrap.innerHTML=existing+added||'<div class="empty" style="padding:12px;width:100%">첨부된 사진이 없습니다.</div>';}
 async function uploadEditPostImages(userId){const urls=[];for(let i=0;i<editNewImages.length;i++){const file=editNewImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
-async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(ownerId());const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const {error}=await sb.from('posts').update({title,content:contentWithCategory(content,category),image_urls}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast('수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
+async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(ownerId());const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);const {error}=await sb.from('posts').update({title,content:contentWithCategory(content,category,author),image_urls}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast('수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
 async function deletePost(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',ownerId());if(error)throw error;location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
 
 
@@ -400,9 +402,12 @@ function renderComments(comments,profileMap={}) {
   document.getElementById('commentCount').textContent = comments.length ? comments.length : '';
   const list = document.getElementById('commentList');
   if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
+  commentAuthorSnapshots = {};
   list.innerHTML = comments.map(comment => {
     const isOwner = ownerId() === comment.user_id;
-    return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayNameForRecord(comment,profileMap))}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(comment.content || '')}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(comment.content || '')}</div></article>`;
+    commentAuthorSnapshots[comment.id] = extractAuthorNicknameFromContent(comment.content) || displayNameForRecord(comment,profileMap);
+    const body=stripCategoryPrefix(comment.content||'');
+    return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayNameForRecord(comment,profileMap))}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(body)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(body)}</div></article>`;
   }).join('');
 }
 
@@ -419,7 +424,7 @@ async function submitComment() {
   const btn = document.getElementById('commentSubmit');
   btn.disabled = true;
   try {
-    const { error } = await sb.from('comments').insert({ post_id:postId, user_id:userId, content });
+    const { error } = await sb.from('comments').insert({ post_id:postId, user_id:userId, content:contentWithCategory(content,'',displayNameForUser(currentUser)) });
     if (error) throw error;
     document.getElementById('commentInput').value = '';
     showToast('댓글이 등록되었습니다.');
@@ -483,12 +488,12 @@ function toggleLike() {
   localLiked = !localLiked;
   const base = Number(currentPost.like_count || 0);
   btn.classList.toggle('on', localLiked);
-  btn.textContent = `좋아요 ${(base + (localLiked ? 1 : 0)).toLocaleString('ko-KR')}`;
+  btn.textContent = `${localLiked ? '♥' : '♡'} ${(base + (localLiked ? 1 : 0)).toLocaleString('ko-KR')}`;
 }
 
 
 function editComment(id, content){const el=document.getElementById('comment-'+id);if(!el)return;el.querySelector('.comment-body').innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${id}">${esc(content)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${id}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;}
-async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');try{const {error}=await sb.from('comments').update({content:value}).eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
+async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');try{const author=commentAuthorSnapshots[id]||displayNameForUser(currentUser);const {error}=await sb.from('comments').update({content:contentWithCategory(value,'',author)}).eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
 async function deleteComment(id){if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('comments').delete().eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 삭제되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 삭제에 실패했습니다.');}}
 
 function runSearch() {
@@ -525,15 +530,20 @@ function normalizeImages(value) {
   return [];
 }
 function extractCategoryFromContent(content){
-  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/m);
+  const match=String(content||'').match(/^\[(?:대표 증상|카테고리):\s*([^\]]+)\]/m);
+  return match ? match[1].trim() : '';
+}
+function extractAuthorNicknameFromContent(content){
+  const match=String(content||'').match(/^\[작성자:\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
 }
 function stripCategoryPrefix(content){
-  return String(content||'').replace(/^\[(카테고리|채널|지역):\s*[^\]]+\]\s*/gm,'').trim();
+  return String(content||'').replace(/^\[(작성자|카테고리|대표 증상|태그|채널|지역):\s*[^\]]+\]\s*/gm,'').trim();
 }
-function contentWithCategory(content,category){
+function contentWithCategory(content,category,authorName=''){
   const clean=String(content||'').trim();
-  return category?`[카테고리: ${category}]\n\n${clean}`:clean;
+  const prefix=[authorName?`[작성자: ${authorName}]`:'',category?`[대표 증상: ${category}]`:'' ].filter(Boolean).join('\n');
+  return prefix?`${prefix}\n\n${clean}`:clean;
 }
 function esc(value) {
   return String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
