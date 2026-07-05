@@ -934,19 +934,18 @@
     white-space: nowrap;
   }
   .agri-research-chip.active { background: #14532d; color: #fff; border-color: #14532d; }
-  .agri-research-list { display: grid; gap: 10px; }
-  .agri-research-card { padding: 13px; }
+  .agri-research-list { display: grid; gap: 8px; }
+  .agri-research-card { padding: 11px 12px; }
   .agri-research-card .agri-card-title { margin-top: 7px; }
   .agri-research-summary {
     margin-top: 7px; color: #374151; font-size: 13px; line-height: 1.55;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
   .agri-research-detail {
     display: none; margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--border);
     color: #374151; font-size: 12.5px; line-height: 1.6;
   }
   .agri-research-card.open .agri-research-detail { display: block; }
-  .agri-card-actions { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
+  .agri-card-actions { margin-top: 8px; display: flex; gap: 8px; align-items: center; }
   .agri-card-actions button {
     height: 32px; border-radius: 10px; border: 1px solid #BBF7D0;
     background: #F0FDF4; color: #166534; font-size: 12px; font-weight: 900;
@@ -2820,10 +2819,11 @@ function agriResearchCardHtml(item){
   return `<article class="agri-research-card" id="${detailId}">
     <div class="agri-badges"><span class="agri-badge">${escHtml(item.category||'연구동향')}</span>${agriTagBadges(item.tags)}</div>
     <div class="agri-card-title">${escHtml(item.simpleTitle||item.title)}</div>
-    <div class="agri-research-summary">${escHtml(item.summary)}</div>
-    <div class="agri-meta">관심: ${escHtml(audience||'농가 · 연구기관 · 관련 업체')}</div>
-    ${crops?`<div class="agri-meta">관련 작물: ${escHtml(crops)}</div>`:''}
     <div class="agri-research-detail">
+      <div class="agri-research-summary">${escHtml(item.summary)}</div>
+      <div class="agri-meta">관심: ${escHtml(audience||'농가 · 연구기관 · 관련 업체')}</div>
+      ${crops?`<div class="agri-meta">관련 작물: ${escHtml(crops)}</div>`:''}
+      <br>
       <strong>원래 자료명</strong><br>${escHtml(item.title||'공식자료 확인 예정')}<br><br>
       <strong>왜 흥미로운가</strong><br>${escHtml(item.whyInteresting||'재배와 관리 판단에 참고할 수 있는 연구 흐름입니다.')}<br><br>
       <strong>공식자료 확인</strong><br>${item.sourceUrl?`<a class="agri-source-link" href="${escAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escHtml(item.sourceName||'공식자료')} 보기</a>`:escHtml(item.sourceName||'공식자료 확인 예정')}
