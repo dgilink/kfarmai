@@ -244,8 +244,57 @@ let currentPost = null;
 let localLiked = false;
 let editExistingImages = [];
 let editNewImages = [];
+let currentProfileNickname = '';
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function ownerId(){return localStorage.getItem('kfarmai_user_id') || getLocalUserId();}
+function emailPrefix(email){return String(email||'').split('@')[0]||'';}
+function displayNameForUser(user=currentUser, profileMap=null){
+  if(!user)return 'kFarmAI 사용자';
+  if(profileMap&&user.id&&profileMap[user.id])return profileMap[user.id];
+  return currentProfileNickname
+    || user.user_metadata?.nickname
+    || user.user_metadata?.name
+    || user.user_metadata?.full_name
+    || emailPrefix(user.email)
+    || 'kFarmAI 사용자';
+}
+function displayNameForRecord(record,profileMap={}){
+  if(!record?.user_id)return '익명';
+  if(profileMap[record.user_id])return profileMap[record.user_id];
+  if(currentUser?.id&&record.user_id===currentUser.id)return displayNameForUser(currentUser);
+  return 'kFarmAI 사용자';
+}
+async function hydrateCurrentProfile(user){
+  currentProfileNickname='';
+  if(!sb||!user?.id)return;
+  try{
+    const {data,error}=await sb.from('profiles').select('nickname').eq('id',user.id).maybeSingle();
+    if(!error&&data?.nickname)currentProfileNickname=data.nickname.trim();
+  }catch(_){}
+  if(!currentProfileNickname){
+    try{
+      const {data,error}=await sb.from('users').select('nickname').eq('id',user.id).maybeSingle();
+      if(!error&&data?.nickname)currentProfileNickname=data.nickname.trim();
+    }catch(_){}
+  }
+}
+async function fetchProfileMap(userIds){
+  const ids=[...new Set((userIds||[]).filter(Boolean))];
+  if(!ids.length||!sb)return {};
+  const map={};
+  try{
+    const {data,error}=await sb.from('profiles').select('id,nickname').in('id',ids);
+    if(!error)(data||[]).forEach(row=>{if(row.nickname)map[row.id]=row.nickname;});
+  }catch(_){}
+  const missing=ids.filter(id=>!map[id]);
+  if(missing.length){
+    try{
+      const {data,error}=await sb.from('users').select('id,nickname').in('id',missing);
+      if(!error)(data||[]).forEach(row=>{if(row.nickname)map[row.id]=row.nickname;});
+    }catch(_){}
+  }
+  return map;
+}
 
 document.addEventListener('DOMContentLoaded', init);
 
@@ -253,8 +302,10 @@ async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const { data: authData } = await sb.auth.getUser();
   currentUser = authData?.user || null;
+  if(currentUser)hydrateCurrentProfile(currentUser);
   sb.auth.onAuthStateChange((event,session)=>{
     currentUser=session?.user||null;
+    if(currentUser)hydrateCurrentProfile(currentUser);
     renderCommentFormState();
     if(currentUser)closeLoginModal();
   });
@@ -281,7 +332,8 @@ async function loadPost() {
       .single();
     if (error) throw error;
     currentPost = data;
-    renderPost(data);
+    const profileMap=await fetchProfileMap([data.user_id]);
+    renderPost(data,profileMap);
     incrementViewCount(data);
   } catch (err) {
     document.getElementById('postArea').innerHTML = '<div class="empty">게시글을 찾을 수 없습니다.<br>삭제되었거나 접근 권한이 없을 수 있습니다.</div>';
@@ -290,7 +342,7 @@ async function loadPost() {
   }
 }
 
-function renderPost(post) {
+function renderPost(post,profileMap={}) {
   const slug = post.channels?.slug || '';
   const channelNameValue = post.channels?.name || channelName(slug);
   const isOwner = ownerId() === post.user_id;
@@ -301,7 +353,7 @@ function renderPost(post) {
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
   const ownerActions = isOwner ? `<div class="post-owner-actions"><button type="button" onclick="openEditPostModal()">수정</button><button class="delete" type="button" onclick="deletePost()">삭제</button></div>` : '';
   const bodyText=stripCategoryPrefix(post.content||'');
-  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${post.user_id ? '회원' : '익명'} 작성자</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span>좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 참고 진단</div><div class="ai-card-text">사진과 증상을 올리면 원인 후보와 확인 포인트를 정리해볼 수 있습니다.</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 참고 진단 시작</button></div><div class="actions"><span class="stat">공공정보 확인과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
+  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span>좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 참고 진단</div><div class="ai-card-text">사진과 증상을 올리면 원인 후보와 확인 포인트를 정리해볼 수 있습니다.</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 참고 진단 시작</button></div><div class="actions"><span class="stat">공공정보 확인과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
@@ -334,19 +386,20 @@ async function loadComments() {
       .eq('post_id', postId)
       .order('created_at', { ascending:true });
     if (error) throw error;
-    renderComments(data || []);
+    const profileMap=await fetchProfileMap((data||[]).map(comment=>comment.user_id));
+    renderComments(data || [],profileMap);
   } catch (err) {
     document.getElementById('commentList').innerHTML = '<div class="empty">댓글을 불러오지 못했습니다.</div>';
   }
 }
 
-function renderComments(comments) {
+function renderComments(comments,profileMap={}) {
   document.getElementById('commentCount').textContent = comments.length ? comments.length : '';
   const list = document.getElementById('commentList');
   if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
   list.innerHTML = comments.map(comment => {
     const isOwner = ownerId() === comment.user_id;
-    return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${comment.user_id ? '회원' : '익명'}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(comment.content || '')}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(comment.content || '')}</div></article>`;
+    return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayNameForRecord(comment,profileMap))}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(comment.content || '')}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(comment.content || '')}</div></article>`;
   }).join('');
 }
 
