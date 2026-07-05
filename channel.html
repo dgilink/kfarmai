@@ -23,8 +23,25 @@
   .identity { margin:12px 14px 8px; padding:14px; border-radius:16px; background:#fff; border:1px solid rgba(29,158,117,.16); }
   .identity-title { font-size:15px; font-weight:900; line-height:1.35; }
   .identity-text { margin-top:6px; color:#4B5563; font-size:13px; line-height:1.55; }
-  .identity-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:12px; }
+  .identity-actions { display:grid; grid-template-columns:repeat(2,1fr); gap:7px; margin-top:12px; }
   .identity-actions a { min-height:38px; display:flex; align-items:center; justify-content:center; text-align:center; border-radius:11px; border:1px solid #CDEBDD; background:#E8F6F0; color:var(--green-dark); font-size:12px; font-weight:900; }
+  .identity-actions a.secondary { background:#111827; color:#fff; border-color:#111827; }
+  .hub-section { margin:14px 14px 0; }
+  .hub-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 2px 8px; }
+  .hub-section-title { font-size:14px; font-weight:900; color:#111827; }
+  .hub-more { border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; }
+  .quick-topics { display:flex; flex-wrap:wrap; gap:7px; }
+  .quick-topic { min-height:30px; border:1px solid var(--border); border-radius:999px; background:#fff; padding:0 11px; color:#374151; font-size:12px; font-weight:800; cursor:pointer; }
+  .quick-topic:active, .quick-topic:focus { border-color:var(--green); background:#E8F6F0; outline:0; }
+  .question-hub { display:grid; gap:12px; }
+  .question-block { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:12px; }
+  .mini-list { display:grid; gap:8px; }
+  .mini-post { display:block; border:1px solid #EEF2F7; border-radius:12px; padding:10px; background:#FBFCFE; }
+  .mini-title { font-size:13px; font-weight:900; line-height:1.35; color:#111827; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .mini-meta { margin-top:6px; display:flex; flex-wrap:wrap; gap:7px; color:#8A8A8A; font-size:11px; font-weight:700; }
+  .mini-empty { color:#6B7280; font-size:12px; line-height:1.5; padding:4px 0; }
+  .related-links { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  .related-link { min-height:38px; display:flex; align-items:center; justify-content:center; text-align:center; border-radius:12px; background:#fff; border:1px solid var(--border); color:#374151; font-size:12px; font-weight:900; padding:8px; }
   .chips, .category-tabs { display:flex; gap:8px; overflow-x:auto; padding:8px 14px 4px; scrollbar-width:none; }
   .chips::-webkit-scrollbar, .category-tabs::-webkit-scrollbar { display:none; }
   .chip, .category-tab { flex:0 0 auto; height:34px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:#fff; color:#555; font-size:13px; font-weight:800; cursor:pointer; }
@@ -113,18 +130,55 @@
     </div>
     <form class="search" onsubmit="event.preventDefault(); applyKeywordSearch();">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input type="search" id="searchInput" placeholder="채널 게시글 검색" enterkeyhint="search" autocomplete="off">
+      <input type="search" id="searchInput" placeholder="이 채널에서 증상이나 작물을 검색해보세요" enterkeyhint="search" autocomplete="off">
     </form>
   </header>
 
   <section class="identity">
-    <div class="identity-title">질문, AI 요약, 공공데이터 확인을 한 흐름으로 연결합니다</div>
-    <div class="identity-text">실제 공개 질문이 있으면 먼저 표시하고, 네트워크 문제나 빈 채널에서는 공모전 시연용 질문을 자연스럽게 보여줍니다.</div>
-    <div class="identity-actions">
-      <a href="diagnosis.html">AI 진단하기</a>
-      <a href="diagnosis-cases.html">비슷한 사례 보기</a>
-      <a href="public-data.html">공공데이터 확인</a>
+    <div class="identity-title" id="hubTitle">질문, AI 참고 진단, 공공정보 확인을 한 흐름으로 연결합니다</div>
+    <div class="identity-text" id="hubDescription">식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.</div>
+    <div class="identity-actions" id="hubActions">
+      <a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a>
+      <a href="diagnosis.html">AI 참고 진단</a>
     </div>
+  </section>
+
+  <section class="hub-section" aria-label="빠른 주제">
+    <div class="hub-section-head">
+      <div class="hub-section-title" id="topicTitle">자주 묻는 증상</div>
+    </div>
+    <div class="quick-topics" id="quickTopics"></div>
+  </section>
+
+  <section class="hub-section question-hub" aria-label="채널 질문 모음">
+    <article class="question-block">
+      <div class="hub-section-head">
+        <div class="hub-section-title">방금 올라온 질문</div>
+        <button class="hub-more" type="button" onclick="openMore('latest')">더보기 &gt;</button>
+      </div>
+      <div class="mini-list" id="latestQuestions"><div class="mini-empty">불러오는 중...</div></div>
+    </article>
+    <article class="question-block">
+      <div class="hub-section-head">
+        <div class="hub-section-title">많이 보는 질문</div>
+        <button class="hub-more" type="button" onclick="openMore('popular')">더보기 &gt;</button>
+      </div>
+      <div class="mini-list" id="popularQuestions"><div class="mini-empty">불러오는 중...</div></div>
+    </article>
+    <article class="question-block">
+      <div class="hub-section-head">
+        <div class="hub-section-title">나도 같은 증상</div>
+        <button class="hub-more" type="button" onclick="openMore('symptom')">더보기 &gt;</button>
+      </div>
+      <div class="mini-list" id="symptomQuestions"><div class="mini-empty">불러오는 중...</div></div>
+    </article>
+  </section>
+
+  <section class="hub-section" aria-label="관련 정보">
+    <div class="hub-section-head">
+      <div class="hub-section-title">같이 보면 좋아요</div>
+    </div>
+    <div class="related-links" id="relatedLinks"></div>
   </section>
 
   <div class="chips" id="channelChips" aria-label="커뮤니티 채널"></div>
@@ -205,10 +259,54 @@ const CHANNEL_CONFIG = {
   'garden-class':'원예 클래스',
   'plant-meet':'식집사 모임'
 };
+const CHANNEL_HUB_DEFAULT = {
+  description:'식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.',
+  topics:['잎이 말라요','잎이 노랗게 변해요','물을 줘도 시들어요','벌레가 보여요','사진으로 물어보기','글로 질문하기'],
+  links:[
+    ['AI 참고 진단','diagnosis.html'],
+    ['비슷한 질문','channel.html?sort=symptom'],
+    ['최신 질문','channel.html?sort=latest']
+  ]
+};
+const CHANNEL_HUBS = {
+  'plant-hospital': CHANNEL_HUB_DEFAULT,
+  'plant-question': CHANNEL_HUB_DEFAULT,
+  'plant-brag': {
+    description:'실내식물, 화분, 물주기, 분갈이 고민을 나누는 공간입니다.',
+    topics:['물주기','잎마름','과습','분갈이','벌레','햇빛 부족'],
+    links:[['AI 참고 진단','diagnosis.html'],['분갈이 참고','knowledge-hub.html?q=분갈이'],['상토·화분 정보','santo.html']]
+  },
+  'garden-class': {
+    description:'실내식물, 화분, 물주기, 분갈이 고민을 나누는 공간입니다.',
+    topics:['물주기','잎마름','과습','분갈이','벌레','햇빛 부족'],
+    links:[['AI 참고 진단','diagnosis.html'],['분갈이 참고','knowledge-hub.html?q=분갈이'],['상토·화분 정보','santo.html']]
+  },
+  'plant-meet': {
+    description:'실내식물과 반려식물 관리 경험을 나누고 비슷한 고민을 찾아보는 공간입니다.',
+    topics:['물주기','잎마름','과습','분갈이','벌레','햇빛 부족'],
+    links:[['AI 참고 진단','diagnosis.html'],['비슷한 질문','channel.html?sort=symptom'],['상토·화분 정보','santo.html']]
+  },
+  'crop-consult': {
+    description:'텃밭과 채소 재배 중 생기는 증상과 관리 고민을 확인하는 공간입니다.',
+    topics:['고추','상추','배추','무','마늘','양파','잎말림','생육불량'],
+    links:[['재배가이드','crop-guide.html'],['재배달력','crop-calendar.html'],['농업날씨','agri-weather.html'],['비료·상토 정보','fert.html']]
+  },
+  'farmer-lounge': {
+    description:'지역별 농업날씨, 시세, 보조사업 등 재배 전 확인할 정보를 모아보는 공간입니다.',
+    topics:['농업날씨','시세','보조사업','지역 정보','판매점','시설재배','화훼','공공정보'],
+    links:[['농업날씨 확인','agri-weather.html'],['농산물 시세','market-prices.html'],['보조사업 정보','subsidy-calendar.html'],['지역 판매점 확인','agri_map.html']]
+  },
+  'plant-share': {
+    description:'농자재 종류와 제조사 공식정보, 관리 전 확인할 내용을 정리하는 공간입니다.',
+    topics:['상토','종자','비료','작물보호','관수','시설자재','화분·도구','스마트팜'],
+    links:[['농자재 종류 확인','knowledge-hub.html?q=농자재'],['제조사 공식정보 확인','mfg.html'],['지역 판매점 확인','agri_map.html'],['사용 전 공식정보 확인','public-data.html']]
+  }
+};
 const CHANNEL_BADGE_COLORS = {'plant-hospital':'','plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const PAGE_SIZE = 20;
 const params = new URLSearchParams(location.search);
 const slugParam = params.get('slug') || '';
+const sortParam = params.get('sort') || 'latest';
 const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
 const DEMO_CASE_WRITE_PRESETS = {
   'tomato-leaf-mold': {
@@ -264,6 +362,8 @@ async function loadChannels(){
   document.getElementById('channelTitle').textContent=currentChannel?.name || (slugParam?(CHANNEL_CONFIG[slugParam]||'채널'):'전체 게시글');
   renderChannelSelect();
   renderChannelChips();
+  renderChannelHub();
+  loadHubQuestionSections();
 }
 function defaultChannels(){return Object.entries(CHANNEL_CONFIG).map(([slug,name])=>({id:slug,slug,name}));}
 function mergeDefaultChannels(data){
@@ -286,16 +386,18 @@ function renderChannelChips(){
   const wrap=document.getElementById('channelChips');
   wrap.innerHTML='<button class="chip" data-slug="">전체 채널</button>'+channels.map(ch=>`<button class="chip" data-slug="${esc(ch.slug)}">${esc(ch.name||CHANNEL_CONFIG[ch.slug]||'일반')}</button>`).join('');
   wrap.querySelectorAll('.chip').forEach(btn=>btn.classList.toggle('active',(btn.dataset.slug||'')===(currentChannel?.slug||'')));
-  wrap.addEventListener('click',e=>{
+  wrap.onclick=e=>{
     const btn=e.target.closest('.chip'); if(!btn)return;
     const slug=btn.dataset.slug||'';
     currentChannel=slug?channels.find(ch=>ch.slug===slug):null;
     document.getElementById('channelTitle').textContent=currentChannel?.name||'전체 게시글';
     renderChannelSelect();
+    renderChannelHub();
+    loadHubQuestionSections();
     wrap.querySelectorAll('.chip').forEach(item=>item.classList.remove('active'));
     btn.classList.add('active');
     resetAndLoad();
-  }, {once:false});
+  };
 }
 function bindCategoryTabs(){
   document.getElementById('categoryTabs').addEventListener('click',e=>{
@@ -306,25 +408,86 @@ function bindCategoryTabs(){
     resetAndLoad();
   });
 }
+function currentHub(){
+  return CHANNEL_HUBS[currentChannel?.slug] || CHANNEL_HUB_DEFAULT;
+}
+function renderChannelHub(){
+  const hub=currentHub();
+  const name=currentChannel?.name || '전체 채널';
+  document.getElementById('hubTitle').textContent=`${name} 문제해결 허브`;
+  document.getElementById('hubDescription').textContent=hub.description;
+  const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?channel=${encodeURIComponent(currentChannel.slug)}`:''}`;
+  document.getElementById('hubActions').innerHTML=`<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
+  document.getElementById('quickTopics').innerHTML=hub.topics.map(topic=>`<button class="quick-topic" type="button" onclick="searchTopic('${encodeURIComponent(topic)}')">${esc(topic)}</button>`).join('');
+  document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');
+}
+function withChannelQuery(url){
+  if(!currentChannel?.slug || !url.startsWith('channel.html'))return url;
+  const target=new URL(url, location.href);
+  target.searchParams.set('slug', currentChannel.slug);
+  return `channel.html${target.search}`;
+}
+function searchTopic(encodedTopic){
+  const topic=decodeURIComponent(encodedTopic);
+  const input=document.getElementById('searchInput');
+  input.value=topic;
+  keyword=topic;
+  input.focus();
+  resetAndLoad();
+}
+function openMore(sort){
+  const target=new URL('channel.html', location.href);
+  if(currentChannel?.slug)target.searchParams.set('slug', currentChannel.slug);
+  target.searchParams.set('sort', sort);
+  location.href=`channel.html${target.search}`;
+}
+async function loadHubQuestionSections(){
+  await Promise.all([
+    loadMiniPosts('latestQuestions','created_at'),
+    loadMiniPosts('popularQuestions','view_count'),
+    loadMiniPosts('symptomQuestions','view_count')
+  ]);
+}
+async function loadMiniPosts(targetId,orderColumn){
+  const wrap=document.getElementById(targetId);
+  if(!wrap||!sb)return;
+  wrap.innerHTML='<div class="mini-empty">불러오는 중...</div>';
+  try{
+    let query=sb.from('posts').select('id,user_id,channel_id,title,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(3);
+    if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
+    const {data,error}=await query;
+    if(error)throw error;
+    renderMiniPosts(wrap,data||[]);
+  }catch(e){
+    renderMiniFallback(wrap);
+  }
+}
+function renderMiniPosts(wrap,posts){
+  if(!posts.length){
+    wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
+    return;
+  }
+  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(post.channels?.name||currentChannel?.name||'일반')}</span><span>조회 ${post.view_count||0}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
+}
+async function renderMiniFallback(wrap){
+  const threads=await loadDemoThreads();
+  const filtered=threads.filter(item=>!currentChannel?.slug||item.channelSlug===currentChannel.slug).slice(0,2);
+  if(!filtered.length){
+    wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
+    return;
+  }
+  wrap.innerHTML=filtered.map(item=>`<a class="mini-post" href="channel.html?slug=${encodeURIComponent(item.channelSlug||'')}"><div class="mini-title">${esc(item.title)}</div><div class="mini-meta"><span>${esc(item.channelName||'예시')}</span><span>참고자료</span></div></a>`).join('');
+}
 function applyKeywordSearch(){keyword=document.getElementById('searchInput').value.trim();resetAndLoad();}
 function resetAndLoad(){offset=0;hasMore=true;document.getElementById('postList').innerHTML='<div class="loading"><span class="spinner"></span>불러오는 중...</div>';loadPosts();}
 async function loadPosts(){
   if(isLoading||!hasMore)return;
-  if(offset===0){
-    isLoading=true;
-    hasMore=false;
-    await renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
-    isLoading=false;
-    document.getElementById('moreLoader').style.display='none';
-    return;
-  }
   isLoading=true;
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,category,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'}).order('created_at',{ascending:false}).range(offset,offset+PAGE_SIZE-1);
-    if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
-    if(activeCategory)query=query.eq('category',activeCategory);
-    if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,category,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
+    query=applyPostFilters(query);
+    query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+PAGE_SIZE-1);
     const {data,count,error}=await query;
     if(error)throw error;
     renderPosts(data||[],count||0);
@@ -337,12 +500,23 @@ async function loadPosts(){
     document.getElementById('moreLoader').style.display='none';
   }
 }
+function applyPostFilters(query){
+  if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
+  if(activeCategory)query=query.eq('category',activeCategory);
+  if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
+  return query;
+}
+function listSortColumn(){return sortParam==='popular'||sortParam==='symptom'?'view_count':'created_at';}
 function renderPosts(posts,totalCount){
   const list=document.getElementById('postList');
   document.getElementById('resultLabel').textContent=currentChannel?.name||activeCategory||'최신 글';
   document.getElementById('resultCount').textContent=`${totalCount}개`;
   if(offset===0)list.innerHTML='';
-  if(!posts.length&&offset===0){renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');return;}
+  if(!posts.length&&offset===0){
+    list.innerHTML='<div class="empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
+    hasMore=false;
+    return;
+  }
   posts.forEach(post=>{
     const slug=post.channels?.slug||channels.find(ch=>ch.id===post.channel_id)?.slug||'';
     const imageUrls=normalizeImages(post.image_urls);
