@@ -92,7 +92,7 @@
   .field { margin:12px 0; }
   .label { font-size:13px; font-weight:900; color:#444; margin-bottom:7px; }
   .input, .select, .textarea { width:100%; border:1.5px solid var(--border); border-radius:12px; outline:0; padding:11px 12px; font-size:14px; background:#fff; }
-  .textarea { min-height:110px; resize:vertical; }
+  .textarea { min-height:110px; max-height:240px; line-height:1.55; resize:none; overflow-y:auto; word-break:keep-all; overflow-wrap:break-word; }
   .input:focus, .select:focus, .textarea:focus { border-color:var(--green); }
   .symptom-extra { display:none; margin-top:8px; }
   .symptom-extra.show { display:block; }
@@ -378,8 +378,25 @@ function postLikeButton(){
   return '';
 }
 
+function autoResizeTextarea(el, maxHeight = 240){
+  if(!el)return;
+  el.style.height='auto';
+  const next=Math.min(el.scrollHeight,maxHeight);
+  el.style.height=`${next}px`;
+  el.style.overflowY=el.scrollHeight>maxHeight?'auto':'hidden';
+}
+function bindAutoResizeTextareas(){
+  document.querySelectorAll('#postContent').forEach(el=>{
+    if(el.dataset.autoresizeBound)return;
+    el.dataset.autoresizeBound='1';
+    el.addEventListener('input',()=>autoResizeTextarea(el,240));
+    requestAnimationFrame(()=>autoResizeTextarea(el,240));
+  });
+}
+
 document.addEventListener('DOMContentLoaded', init);
 async function init(){
+  bindAutoResizeTextareas();
   sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
   const {data:{session}}=await sb.auth.getSession();
   currentUser=session?.user||null;
@@ -647,7 +664,7 @@ async function renderDemoThreads(message){
     </article>`).join('');
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
-async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();toggleCustomSymptom();if(preset)fillWritePreset(preset);document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
+async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();toggleCustomSymptom();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
 function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');unlockBodyScroll();}
 function applyDemoWriteQuery(){
   if(didApplyDemoWritePreset || params.get('write')!=='1')return;
@@ -814,6 +831,7 @@ async function submitPost(){
     showToast('질문이 등록되었습니다.');
     closeWriteModal();
     ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    autoResizeTextarea(document.getElementById('postContent'),240);
     selectedPostImages=[];selectedPostTags=[];renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
   }catch(err){showToast('등록 실패: '+(err.message||err));}
   finally{btn.disabled=false;}

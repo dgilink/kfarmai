@@ -81,11 +81,11 @@
     word-break: keep-all;
     line-break: strict;
   }
-  body { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  body { display: flex; justify-content: center; align-items: flex-start; min-height: 100dvh; }
 
   .phone {
     width: 100%; max-width: 480px;
-    height: 100vh; max-height: 920px;
+    height: 100dvh; max-height: 920px;
     background: var(--bg);
     position: relative; overflow: hidden;
     display: flex; flex-direction: column;
@@ -101,6 +101,8 @@
     padding: 10px 14px 0;
     z-index: 10;
     border-bottom: 1px solid var(--border);
+    position: relative;
+    top: 0;
   }
   .top-bar {
     display: flex; align-items: center; justify-content: space-between;
@@ -817,7 +819,7 @@
   .diag-mini-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 0; }
   .diag-mini-input { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 13px; font-family: inherit; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
   .diag-mini-input:focus { border-color: var(--green); }
-  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: inherit; min-height: 96px; line-height: 1.55; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; word-break: keep-all; overflow-wrap: break-word; transition: border-color .15s; }
+  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: inherit; min-height: 96px; max-height: 190px; line-height: 1.55; resize: none; overflow-y: auto; outline: none; background: #fff; color: var(--text); box-sizing: border-box; word-break: keep-all; overflow-wrap: break-word; transition: border-color .15s; }
   .symptom-textarea:focus { border-color: var(--green); }
   .diag-start-btn { width: 100%; height: 46px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; opacity: .4; transition: opacity .2s; }
   .diag-start-btn:not([disabled]) { opacity: 1; }
@@ -1119,7 +1121,7 @@
     font-size: 14px; font-family: inherit; outline: none; background: #fff; color: var(--text);
   }
   .modal-select:focus, .modal-input:focus, .modal-textarea:focus { border-color: var(--green); }
-  .modal-textarea { height: 90px; resize: none; }
+  .modal-textarea { min-height: 96px; max-height: 220px; line-height: 1.55; resize: none; overflow-y: auto; word-break: keep-all; overflow-wrap: break-word; }
   .symptom-extra { display:none; margin-top:8px; }
   .symptom-extra.show { display:block; }
   .tag-chip-row { display:flex; flex-wrap:wrap; gap:7px; }
@@ -1381,6 +1383,13 @@
     cursor: pointer;
   }
   .my-list-action.danger { color: #B91C1C; border-color: #FECACA; background: #FEF2F2; }
+  .diagnosis-detail-card { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+  .diagnosis-detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .diagnosis-detail-title { font-size: 15px; font-weight: 900; color: var(--text); line-height: 1.35; }
+  .diagnosis-detail-meta { color: var(--sub); font-size: 11.5px; font-weight: 750; line-height: 1.4; }
+  .diagnosis-detail-body { color: var(--text); font-size: 13px; line-height: 1.65; word-break: keep-all; overflow-wrap: break-word; }
+  .diagnosis-detail-body pre { white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; font-family: inherit; margin: 0; }
+  .diagnosis-detail-actions { display: flex; gap: 7px; justify-content: flex-end; }
   .my-row.logout { color: #DC2626; cursor: pointer; }
   .account-delete-box {
     margin-top: 14px;
@@ -2202,6 +2211,19 @@
   const TAP_SLOP = 10;
   const SWIPE_RATIO = 1.2;
 
+  function autoResizeTextarea(el, maxHeight = 220){
+    if(!el)return;
+    el.style.height = 'auto';
+    const next = Math.min(el.scrollHeight, maxHeight);
+    el.style.height = `${next}px`;
+    el.style.overflowY = el.scrollHeight > maxHeight ? 'auto' : 'hidden';
+  }
+  window.autoResizeTextarea = autoResizeTextarea;
+  document.querySelectorAll('#diagSymptom, #postContent').forEach(el=>{
+    el.addEventListener('input',()=>autoResizeTextarea(el, el.id === 'diagSymptom' ? 190 : 220));
+    requestAnimationFrame(()=>autoResizeTextarea(el, el.id === 'diagSymptom' ? 190 : 220));
+  });
+
   function go(i, resetScroll = false){
     current = Math.max(0, Math.min(total-1, i));
     pages.style.transform = `translateX(-${current * 100}%)`;
@@ -2341,6 +2363,9 @@ async function runDiagnosis() {
   const loading = document.getElementById('diagLoading');
   const resultWrap = document.getElementById('diagResultWrap');
   const btn = document.getElementById('diagStartBtn');
+  document.activeElement?.blur?.();
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
 
   resultWrap.innerHTML = '';
   loading.classList.add('show');
@@ -2371,6 +2396,7 @@ async function runDiagnosis() {
     loading.classList.remove('show');
     btn.textContent = 'AI 참고 진단 시작';
     updateDiagBtn();
+    document.activeElement?.blur?.();
   }
 }
 
@@ -2760,6 +2786,97 @@ async function deleteMyDiagnosis(event,id){
     console.error('delete diagnosis failed', error);
     showToast('진단 기록 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
+}
+var myDiagnosisRecords=[];
+async function loadMyDiagnoses(userId){
+  const list=document.getElementById('myDiagList');
+  if(!list||!window._sb||!userId)return;
+  try{
+    const {data,error}=await _sb.from('diagnoses')
+      .select('id, crop, symptom, result, created_at')
+      .eq('user_id',userId)
+      .order('created_at',{ascending:false})
+      .limit(20);
+    if(error)throw error;
+    myDiagnosisRecords=data||[];
+    renderMyDiagnosisList();
+  }catch(e){
+    console.error('load diagnoses failed', e);
+    list.innerHTML='<div class="my-list-empty">진단 기록을 불러오지 못했습니다.</div>';
+  }
+}
+function renderMyDiagnosisList(){
+  const list=document.getElementById('myDiagList');
+  if(!list)return;
+  if(!myDiagnosisRecords.length){list.innerHTML='<div class="my-list-empty">아직 진단 기록이 없습니다.</div>';return;}
+  list.innerHTML=myDiagnosisRecords.map(item=>{
+    const symptom=item.symptom||'증상 입력 없음';
+    const title=symptom.length>34?`${symptom.slice(0,34)}...`:symptom;
+    const preview=diagnosisPreviewText(item.result);
+    return `<div class="my-list-item" role="button" tabindex="0" onclick="openMyDiagnosisDetail('${escAttr(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMyDiagnosisDetail('${escAttr(item.id)}');}">
+      <div class="my-list-item-top">
+        <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+        <div class="my-list-actions">
+          <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
+        </div>
+      </div>
+      <div class="my-list-title">${escHtml(title)}</div>
+      ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
+      <div class="my-list-date">${formatMyDate(item.created_at)}</div>
+    </div>`;
+  }).join('');
+}
+function openMyDiagnosisDetail(id){
+  const list=document.getElementById('myDiagList');
+  const item=myDiagnosisRecords.find(row=>String(row.id)===String(id));
+  if(!list||!item)return;
+  list.innerHTML=`<div class="diagnosis-detail-card">
+    <div class="diagnosis-detail-head">
+      <div>
+        <div class="diagnosis-detail-title">${escHtml(item.crop||'AI 참고 진단 기록')}</div>
+        <div class="diagnosis-detail-meta">${escHtml(formatMyDate(item.created_at))}</div>
+      </div>
+      <button class="my-list-action" type="button" onclick="renderMyDiagnosisList()">목록</button>
+    </div>
+    <div class="diagnosis-detail-body"><strong>입력한 증상</strong><br>${escDiagPlain(item.symptom||'입력 내용 없음')}</div>
+    <div class="diagnosis-detail-body"><strong>AI 참고 진단 결과</strong><br>${formatDiagnosisResult(item.result)}</div>
+    <div class="diag-disclaimer">이 내용은 AI 참고 진단 기록입니다. 실제 관리 전에는 공공정보와 재배 환경을 함께 확인해주세요.</div>
+    <div class="diagnosis-detail-actions">
+      <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
+    </div>
+  </div>`;
+}
+function diagnosisPreviewText(result){
+  try{
+    const parsed=typeof result==='string'?JSON.parse(result):result;
+    const value=parsed?.summary||parsed?.result||parsed?.message||parsed?.answer||'';
+    return String(Array.isArray(value)?value.join(' '):value).replace(/\s+/g,' ').slice(0,80);
+  }catch(_){
+    return String(result||'').replace(/\s+/g,' ').slice(0,80);
+  }
+}
+function escDiagPlain(value){
+  return escHtml(value).replace(/\n/g,'<br>');
+}
+function formatDiagnosisResult(result){
+  let parsed=null;
+  try{parsed=typeof result==='string'?JSON.parse(result):result;}catch(_){}
+  if(parsed&&typeof parsed==='object'){
+    const rows=[
+      ['요약', parsed.summary],
+      ['원인 후보', parsed.causes],
+      ['관리 참고', parsed.management],
+      ['관련 농자재', parsed.materials],
+      ['결과', parsed.result||parsed.message||parsed.answer]
+    ].filter(([,value])=>value);
+    if(rows.length){
+      return rows.map(([label,value])=>{
+        const text=Array.isArray(value)?value.join('\n'):String(value);
+        return `<p><strong>${escHtml(label)}</strong><br>${escDiagPlain(text)}</p>`;
+      }).join('');
+    }
+  }
+  return `<pre>${escHtml(result||'저장된 결과 내용이 없습니다.')}</pre>`;
 }
 async function saveDiagnosisHistory(symptomText, resultData){
   if(!window._sb)return;
@@ -3708,6 +3825,7 @@ async function submitPost(){
     showToast('질문이 등록되었습니다.');
     closeModal();
     ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    window.autoResizeTextarea?.(document.getElementById('postContent'),220);
     selectedPostImages=[];
     selectedPostTags=[];
     renderPostImagePreview();
@@ -3720,7 +3838,7 @@ async function submitPost(){
 }
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
-function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;renderTagSuggestions();toggleCustomSymptom();modal.classList.add('open');lockBodyScroll();}
+function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;renderTagSuggestions();toggleCustomSymptom();window.autoResizeTextarea?.(document.getElementById('postContent'),220);modal.classList.add('open');lockBodyScroll();}
 function closeModal(){document.getElementById('writeModal')?.classList.remove('open');unlockBodyScroll();}
 function openNicknameModal(){beginNicknameEdit();}
 function closeNicknameModal(){cancelNicknameEdit();}
