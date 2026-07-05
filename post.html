@@ -314,6 +314,7 @@ const openEditOnLoad = params.get('edit') === '1';
 let sb;
 let currentUser = null;
 let currentPost = null;
+let editAutoOpened = false;
 let editExistingImages = [];
 let editNewImages = [];
 let currentProfileNickname = '';
@@ -431,10 +432,10 @@ async function ensureCurrentUser(){
 }
 
 async function openEditPostFromQuery(){
-  if(!openEditOnLoad || !currentPost)return;
+  if(!openEditOnLoad || editAutoOpened || !currentPost)return;
   await ensureCurrentUser();
   logPostEditClick(currentPost);
-  if(canEditPost(currentPost))openEditPostModal();
+  if(canEditPost(currentPost)){editAutoOpened=true;openEditPostModal();}
   else if(currentUser?.id)showToast('\uBCF8\uC778 \uAE00\uB9CC \uC218\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.');
 }
 
@@ -470,6 +471,7 @@ async function init() {
     if(currentUser)hydrateCurrentProfile(currentUser);
     renderCommentFormState();
     if(postId)loadComments();
+    if(openEditOnLoad && currentPost && !editAutoOpened)openEditPostFromQuery();
     if(currentUser)closeLoginModal();
   });
   if (currentUser?.id) localStorage.setItem('kfarmai_user_id', currentUser.id);

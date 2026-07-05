@@ -2762,7 +2762,7 @@ async function editMyPost(event,id){
   event?.stopPropagation?.();
   console.warn('edit button clicked', {postId:id||null, hasCurrentUser:!!currentUser?.id});
   if(!id)return;
-  window.location.assign(`post.html?v=20260705i&id=${encodeURIComponent(id)}&edit=1`);
+  window.location.assign(`post.html?id=${encodeURIComponent(id)}&edit=1&t=${Date.now()}`);
 }
 async function deleteMyPost(event,id){
   event?.stopPropagation();
