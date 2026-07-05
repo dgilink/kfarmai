@@ -385,6 +385,25 @@ function bindAutoResizeTextareas(){
   });
 }
 
+function sameUserId(a,b){
+  return !!a && !!b && String(a) === String(b);
+}
+
+async function ensureCurrentUser(){
+  if(!sb)return currentUser;
+  try{
+    const {data:{session}} = await sb.auth.getSession();
+    if(session?.user){
+      currentUser = session.user;
+      hydrateCurrentProfile(currentUser);
+    }
+  }catch(error){
+    console.warn('auth session check failed', error);
+  }
+  renderCommentFormState();
+  return currentUser;
+}
+
 async function safeInit(){
   bindAutoResizeTextareas();
   try{
@@ -405,13 +424,18 @@ async function safeInit(){
 
 async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-  const { data: authData } = await withTimeout(sb.auth.getUser(), 3000, {data:{user:null}});
-  currentUser = authData?.user || null;
+  const { data: sessionData } = await withTimeout(sb.auth.getSession(), 3000, {data:{session:null}});
+  currentUser = sessionData?.session?.user || null;
+  if(!currentUser){
+    const { data: authData } = await withTimeout(sb.auth.getUser(), 3000, {data:{user:null}});
+    currentUser = authData?.user || null;
+  }
   if(currentUser)hydrateCurrentProfile(currentUser);
   sb.auth.onAuthStateChange((event,session)=>{
     currentUser=session?.user||null;
     if(currentUser)hydrateCurrentProfile(currentUser);
     renderCommentFormState();
+    if(postId)loadComments();
     if(currentUser)closeLoginModal();
   });
   if (currentUser?.id) localStorage.setItem('kfarmai_user_id', currentUser.id);
@@ -514,24 +538,37 @@ async function loadComments() {
   try {
     const { data, error } = await sb
       .from('comments')
-      .select('*')
-      .eq('post_id', postId)
+      .select('id,post_id,user_id,content,is_ai,created_at')
+      .eq('post_id', String(postId))
       .order('created_at', { ascending:true });
     if (error) throw error;
+    console.info('comments loaded', {postId, count:(data||[]).length});
     const profileMap=await fetchProfileMap((data||[]).map(comment=>comment.user_id));
     renderComments(data || [],profileMap);
   } catch (err) {
+    console.error('comments load failed', {postId, error:err});
+    document.getElementById('commentCount').textContent = '0';
     document.getElementById('commentList').innerHTML = '<div class="empty">댓글을 불러오지 못했습니다.</div>';
   }
 }
 
+async function fetchCommentById(id){
+  const {data,error}=await sb
+    .from('comments')
+    .select('id,post_id,user_id,content,is_ai,created_at')
+    .eq('id',id)
+    .maybeSingle();
+  if(error)throw error;
+  return data;
+}
+
 function renderComments(comments,profileMap={}) {
-  document.getElementById('commentCount').textContent = comments.length ? comments.length : '';
+  document.getElementById('commentCount').textContent = String(comments.length || 0);
   const list = document.getElementById('commentList');
   if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
   commentAuthorSnapshots = {};
   list.innerHTML = comments.map(comment => {
-    const isOwner = !!currentUser?.id && currentUser.id === comment.user_id;
+    const isOwner = sameUserId(currentUser?.id, comment.user_id);
     commentAuthorSnapshots[comment.id] = extractAuthorNicknameFromContent(comment.content) || displayNameForRecord(comment,profileMap);
     const body=stripCategoryPrefix(comment.content||'');
     return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayNameForRecord(comment,profileMap))}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(body)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(body)}</div></article>`;
@@ -540,27 +577,35 @@ function renderComments(comments,profileMap={}) {
 
 
 async function submitComment() {
-  if(!currentUser?.id){
+  const authUser = await ensureCurrentUser();
+  if(!authUser?.id){
     showToast('로그인 후 댓글을 등록할 수 있습니다.');
     renderCommentFormState();
     return;
   }
   const content = document.getElementById('commentInput').value.trim();
   if (!content) return showToast('댓글 내용을 입력해주세요.');
-  const userId = currentUser.id;
+  const userId = authUser.id;
   const btn = document.getElementById('commentSubmit');
   btn.disabled = true;
   try {
-    const { error } = await sb.from('comments').insert({ post_id:postId, user_id:userId, content:contentWithCategory(content,'',displayNameForUser(currentUser)), is_ai:false });
+    const { data, error } = await sb
+      .from('comments')
+      .insert({ post_id:String(postId), user_id:String(userId), content, is_ai:false })
+      .select('id,post_id,user_id,content,is_ai,created_at')
+      .single();
     if (error) throw error;
+    if(!sameUserId(data?.user_id,userId))console.warn('comment user_id mismatch after insert', {saved:data?.user_id,current:userId});
     document.getElementById('commentInput').value = '';
     autoResizeTextarea(document.getElementById('commentInput'),180);
     showToast('댓글이 등록되었습니다.');
-    loadComments();
+    await loadComments();
   } catch (err) {
+    console.error('comment insert failed', err);
     showToast(err.message || '댓글 등록에 실패했습니다.');
   } finally {
     btn.disabled = false;
+    renderCommentFormState();
   }
 }
 
@@ -614,8 +659,53 @@ function renderRelatedPosts(posts) {
 }
 
 function editComment(id, content){const el=document.getElementById('comment-'+id);if(!el)return;el.querySelector('.comment-body').innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${id}">${esc(content)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${id}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;bindAutoResizeTextareas();}
-async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');if(!currentUser?.id)return showToast('로그인 후 댓글을 수정할 수 있습니다.');try{const author=commentAuthorSnapshots[id]||displayNameForUser(currentUser);const {data,error}=await sb.from('comments').update({content:contentWithCategory(value,'',author)}).eq('id',id).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('댓글 수정 권한이 없거나 이미 삭제된 댓글입니다.');showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
-async function deleteComment(id){if(!confirm('정말 삭제하시겠습니까?'))return;if(!currentUser?.id)return showToast('로그인 후 댓글을 삭제할 수 있습니다.');try{const {data,error}=await sb.from('comments').delete().eq('id',id).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('댓글 삭제 권한이 없거나 이미 삭제된 댓글입니다.');showToast('댓글이 삭제되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 삭제에 실패했습니다.');}}
+async function saveCommentEdit(id){
+  const value=document.getElementById('commentEdit-'+id)?.value.trim();
+  if(!value)return showToast('댓글 내용을 입력해주세요.');
+  const authUser=await ensureCurrentUser();
+  if(!authUser?.id)return showToast('로그인 후 댓글을 수정할 수 있습니다.');
+  try{
+    const before=await fetchCommentById(id);
+    if(!before)throw new Error('댓글이 이미 삭제되었습니다.');
+    if(!sameUserId(before.user_id,authUser.id))throw new Error('본인 댓글만 수정할 수 있습니다.');
+    const {error}=await sb
+      .from('comments')
+      .update({content:value})
+      .eq('id',id)
+      .eq('user_id',String(authUser.id));
+    if(error)throw error;
+    const after=await fetchCommentById(id);
+    if(!after||after.content!==value)throw new Error('댓글 수정 권한 또는 RLS 정책을 확인해야 합니다.');
+    showToast('댓글이 수정되었습니다.');
+    await loadComments();
+  }catch(err){
+    console.error('comment update failed', {id,userId:authUser?.id,error:err});
+    showToast('댓글 수정에 실패했습니다.');
+  }
+}
+async function deleteComment(id){
+  if(!confirm('정말 삭제하시겠습니까?'))return;
+  const authUser=await ensureCurrentUser();
+  if(!authUser?.id)return showToast('로그인 후 댓글을 삭제할 수 있습니다.');
+  try{
+    const before=await fetchCommentById(id);
+    if(!before)throw new Error('댓글이 이미 삭제되었습니다.');
+    if(!sameUserId(before.user_id,authUser.id))throw new Error('본인 댓글만 삭제할 수 있습니다.');
+    const {error}=await sb
+      .from('comments')
+      .delete()
+      .eq('id',id)
+      .eq('user_id',String(authUser.id));
+    if(error)throw error;
+    const after=await fetchCommentById(id);
+    if(after)throw new Error('댓글 삭제 권한 또는 RLS 정책을 확인해야 합니다.');
+    showToast('댓글이 삭제되었습니다.');
+    await loadComments();
+  }catch(err){
+    console.error('comment delete failed', {id,userId:authUser?.id,error:err});
+    showToast('댓글 삭제에 실패했습니다.');
+  }
+}
 
 function runSearch() {
   const q = document.getElementById('searchInput').value.trim();
