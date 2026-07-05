@@ -46,9 +46,26 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     rice: { alt: "벼 재배 대표 참고 이미지", file: "rice-ai.png" },
     pepper: { alt: "고추 재배 대표 참고 이미지", file: "pepper-ai.png" },
     strawberry: { alt: "딸기 재배 대표 참고 이미지", file: "strawberry-ai.png" },
+    tomato: { alt: "토마토 재배 대표 참고 이미지", file: "tomato-ai.png" },
+    cucumber: { alt: "오이 재배 대표 참고 이미지", file: "cucumber-ai.png" },
+    watermelon: { alt: "수박 재배 대표 참고 이미지", file: "watermelon-ai.png" },
+    "korean-melon": { alt: "참외 재배 대표 참고 이미지", file: "melon-ai.png" },
+    cabbage: { alt: "배추 재배 대표 참고 이미지", file: "cabbage-ai.png" },
+    radish: { alt: "무 재배 대표 참고 이미지", file: "radish-ai.png" },
+    lettuce: { alt: "상추 재배 대표 참고 이미지", file: "lettuce-ai.png" },
+    garlic: { alt: "마늘 재배 대표 참고 이미지", file: "garlic-ai.png" },
+    onion: { alt: "양파 재배 대표 참고 이미지", file: "onion-ai.png" },
+    "green-onion": { alt: "대파 재배 대표 참고 이미지", file: "greenonion-ai.png" },
+    potato: { alt: "감자 재배 대표 참고 이미지", file: "potato-ai.png" },
+    "sweet-potato": { alt: "고구마 재배 대표 참고 이미지", file: "sweetpotato-ai.png" },
+    soybean: { alt: "콩 재배 대표 참고 이미지", file: "soybean-ai.png" },
+    corn: { alt: "옥수수 재배 대표 참고 이미지", file: "corn-ai.png" },
     apple: { alt: "사과 재배 대표 참고 이미지", file: "apple-ai.png" },
     pear: { alt: "배 재배 대표 참고 이미지", file: "pear-ai.png" },
-    peach: { alt: "복숭아 재배 대표 참고 이미지", file: "peach-ai.png" }
+    peach: { alt: "복숭아 재배 대표 참고 이미지", file: "peach-ai.png" },
+    grape: { alt: "포도 재배 대표 참고 이미지", file: "grape-ai.png" },
+    citrus: { alt: "감귤 재배 대표 참고 이미지", file: "tangerine-ai.png" },
+    blueberry: { alt: "블루베리 재배 대표 참고 이미지", file: "blueberry-ai.png" }
   };
 
   const growthStageGroupImageTargets = {
