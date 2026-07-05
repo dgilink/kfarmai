@@ -1390,6 +1390,21 @@
     -webkit-appearance: none;
   }
   .my-list-action.danger { color: #B91C1C; border-color: #FECACA; background: #FEF2F2; }
+  .my-post-edit-form { display:grid; gap:8px; margin-top:10px; padding:10px; border:1px solid #D7EBDD; border-radius:12px; background:#F7FCF9; cursor:default; }
+  .my-post-edit-label { color:#14532D; font-size:11.5px; font-weight:900; text-align:left; }
+  .my-post-edit-input,
+  .my-post-edit-select,
+  .my-post-edit-textarea { width:100%; border:1.5px solid var(--border); border-radius:10px; background:#fff; color:#111827; font-size:13px; font-weight:800; outline:0; }
+  .my-post-edit-input,
+  .my-post-edit-select { height:38px; padding:0 10px; }
+  .my-post-edit-textarea { min-height:120px; max-height:260px; padding:10px; line-height:1.55; resize:vertical; word-break:keep-all; overflow-wrap:break-word; }
+  .my-post-edit-input:focus,
+  .my-post-edit-select:focus,
+  .my-post-edit-textarea:focus { border-color:var(--green); }
+  .my-post-edit-images { display:flex; gap:7px; overflow-x:auto; padding-bottom:2px; }
+  .my-post-edit-images img { width:58px; height:58px; border-radius:10px; object-fit:cover; border:1px solid var(--border); background:#fff; flex:0 0 auto; }
+  .my-post-edit-help { color:#6B7280; font-size:11.5px; line-height:1.45; text-align:left; }
+  .my-post-edit-actions { display:flex; justify-content:flex-end; gap:7px; }
   .diagnosis-detail-card { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
   .diagnosis-detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .diagnosis-detail-title { font-size: 15px; font-weight: 900; color: var(--text); line-height: 1.35; }
@@ -2456,6 +2471,8 @@ sbScript.onload = () => { window._sb = supabase.createClient(SUPABASE_URL, SUPAB
 document.head.appendChild(sbScript);
 let currentUser = null;
 let currentProfileNickname = '';
+let myPostEditingId = null;
+let myPostCache = [];
 const I18N = {
   ko: {
     community: '커뮤니티',
@@ -2719,10 +2736,12 @@ async function loadMyPosts(userId){
   if(!list||!window._sb||!userId)return;
   try{
     const data=await attachCommentCounts(await fetchMyPosts(userId));
+    myPostCache=data||[];
     if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>{
       const category=post.crop_tag||extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
       const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
+      const isEditing=String(myPostEditingId||'')===String(post.id);
       const meta=[
         displayNameForPost(post,{[userId]:displayNameForUser(currentUser)}),
         displayChannelName(post.channels?.slug,post.channels?.name)||category,
@@ -2740,6 +2759,7 @@ async function loadMyPosts(userId){
           <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">&#49688;&#51221;</button>
           <button class="my-list-action danger" type="button" onclick="deleteMyPost(event,'${escAttr(post.id)}')">삭제</button>
         </div>
+        ${isEditing?renderMyPostEditForm(post):''}
       </div>`;
     }).join('');
   }catch(e){
@@ -2758,12 +2778,96 @@ async function fetchMyPosts(userId){
     return data||[];
   }
 }
+function canEditMyPost(post){
+  return !!currentUser?.id && !!post?.user_id && String(currentUser.id) === String(post.user_id);
+}
+function myPostById(id){
+  return (myPostCache||[]).find(post=>String(post.id)===String(id));
+}
+function myPostSymptomOptions(active=''){
+  const options=['','잎마름','잎노랑','잎말림','시들음','벌레','곰팡이','줄기무름','열매이상','생육불량','물관리','분갈이','기타'];
+  return options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||'대표 증상 선택')}</option>`).join('');
+}
+function myPostRegionOptions(active=''){
+  const options=['','서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','세종특별자치시','경기도','강원특별자치도','충청북도','충청남도','전북특별자치도','전라남도','경상북도','경상남도','제주특별자치도','기타'];
+  return options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||'지역 미선택')}</option>`).join('');
+}
+function renderMyPostEditForm(post){
+  const body=stripPostPrefixes(post.content||'');
+  const images=postImageList(post);
+  const imageHtml=images.length?`<div class="my-post-edit-images">${images.map(url=>`<img src="${escAttr(url)}" alt="기존 첨부 이미지" loading="lazy">`).join('')}</div>`:'<div class="my-post-edit-help">기존 첨부 사진이 없습니다.</div>';
+  return `<div class="my-post-edit-form" onclick="event.stopPropagation()">
+    <label><div class="my-post-edit-label">제목</div><input class="my-post-edit-input" id="myEditTitle-${escAttr(post.id)}" value="${escAttr(post.title||'')}" autocomplete="off"></label>
+    <label><div class="my-post-edit-label">대표 증상</div><select class="my-post-edit-select" id="myEditCrop-${escAttr(post.id)}">${myPostSymptomOptions(post.crop_tag||extractCategoryFromContent(post.content)||'')}</select></label>
+    <label><div class="my-post-edit-label">지역</div><select class="my-post-edit-select" id="myEditRegion-${escAttr(post.id)}">${myPostRegionOptions(post.region_tag||'')}</select></label>
+    <label><div class="my-post-edit-label">내용</div><textarea class="my-post-edit-textarea" id="myEditContent-${escAttr(post.id)}">${escHtml(body)}</textarea></label>
+    <div><div class="my-post-edit-label">기존 이미지</div>${imageHtml}<div class="my-post-edit-help">이번 수정에서는 기존 이미지를 유지합니다. 사진 추가/삭제는 게시글 상세 수정 화면에서 별도로 처리할 수 있습니다.</div></div>
+    <div class="my-post-edit-actions">
+      <button class="my-list-action" type="button" onclick="saveMyPostEdit(event,'${escAttr(post.id)}')">저장</button>
+      <button class="my-list-action" type="button" onclick="cancelMyPostEdit(event)">취소</button>
+    </div>
+  </div>`;
+}
 async function editMyPost(event,id){
   event?.preventDefault?.();
   event?.stopPropagation?.();
-  console.warn('edit button clicked', {postId:id||null, hasCurrentUser:!!currentUser?.id});
-  if(!id)return;
-  window.location.assign(`post.html?id=${encodeURIComponent(id)}&edit=1&t=${Date.now()}`);
+  const post=myPostById(id);
+  const idsMatch=canEditMyPost(post);
+  console.warn('my post edit clicked', {postId:id||null, hasCurrentUser:!!currentUser?.id, hasPostUser:!!post?.user_id, idsMatch});
+  if(!post)return showToast('글 정보를 찾지 못했습니다.');
+  if(!idsMatch)return showToast('본인 글만 수정할 수 있습니다.');
+  myPostEditingId=id;
+  await loadMyPosts(currentUser.id);
+}
+function cancelMyPostEdit(event){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  myPostEditingId=null;
+  if(currentUser?.id)loadMyPosts(currentUser.id);
+}
+async function saveMyPostEdit(event,id){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  const post=myPostById(id);
+  const authUserId=currentUser?.id||'';
+  const postUserId=post?.user_id||'';
+  const idsMatch=!!authUserId&&!!postUserId&&String(authUserId)===String(postUserId);
+  const title=document.getElementById(`myEditTitle-${id}`)?.value.trim()||'';
+  const content=document.getElementById(`myEditContent-${id}`)?.value.trim()||'';
+  const cropTag=document.getElementById(`myEditCrop-${id}`)?.value||'';
+  const regionTag=document.getElementById(`myEditRegion-${id}`)?.value||'';
+  const imageUrls=postImageList(post);
+  const author=extractAuthorNicknameFromContent(post?.content)||displayNameForPost(post,{[authUserId]:displayNameForUser(currentUser)});
+  const payload={
+    title,
+    content:contentWithCategory(content,'','',regionTag,[],author),
+    crop_tag:cropTag||null,
+    region_tag:regionTag||null,
+    image_urls:Array.isArray(imageUrls)?imageUrls:[]
+  };
+  const payloadKeys=Object.keys(payload);
+  if(!authUserId||!post||!idsMatch)return showToast('본인 글만 수정할 수 있습니다.');
+  if(!title||!content)return showToast('제목과 내용을 입력해주세요.');
+  try{
+    const {data,error}=await _sb.from('posts')
+      .update(payload)
+      .eq('id',id)
+      .eq('user_id',authUserId)
+      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en')
+      .single();
+    if(error){
+      console.warn('my post update failed', {postId:id, hasCurrentUser:!!authUserId, hasPostUser:!!postUserId, idsMatch, payloadKeys, message:error.message});
+      throw error;
+    }
+    myPostEditingId=null;
+    myPostCache=(myPostCache||[]).map(item=>String(item.id)===String(id)?{...item,...data,channels:item.channels}:item);
+    showToast('수정되었습니다.');
+    await loadMyPosts(authUserId);
+    loadMyCounts(authUserId);
+  }catch(error){
+    console.warn('my post edit failed', {postId:id, hasCurrentUser:!!authUserId, hasPostUser:!!postUserId, idsMatch, payloadKeys, message:error?.message});
+    showToast('글 수정에 실패했습니다.');
+  }
 }
 async function deleteMyPost(event,id){
   event?.stopPropagation();
