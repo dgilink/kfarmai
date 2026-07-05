@@ -319,6 +319,7 @@ let currentProfileNickname = '';
 let commentAuthorSnapshots = {};
 const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
 let replyParentId = null;
+let commentsById = {};
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -592,7 +593,7 @@ function renderCommentArticle(comment,profileMap={},isReply=false){
   const body=visible ? stripCategoryPrefix(comment.content||'') : '비밀댓글입니다.';
   const longBody=visible && isLongComment(body);
   const bodyId=`commentBody-${escAttr(comment.id)}`;
-  const ownerActions=isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(body)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : '';
+  const ownerActions=isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : '';
   const replyAction=(!isReply && currentUser?.id) ? `<button class="comment-action" type="button" onclick="startReply('${escAttr(comment.id)}','${escAttr(displayName)}')">답글</button>` : '';
   const secretBadge=comment.is_secret ? '<span class="ai-badge">비밀</span>' : '';
   const authorHint=isPostOwner && comment.is_secret && !isOwner ? '<span class="ai-badge">원글 작성자 열람</span>' : '';
@@ -604,6 +605,8 @@ function renderComments(comments,profileMap={}) {
   const list = document.getElementById('commentList');
   if (!activeComments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
   commentAuthorSnapshots = {};
+  commentsById = {};
+  activeComments.forEach(comment=>{commentsById[String(comment.id)] = comment;});
   const roots=activeComments.filter(comment=>!comment.parent_id);
   const repliesByParent=activeComments.reduce((map,comment)=>{
     if(comment.parent_id){
@@ -734,7 +737,21 @@ function renderRelatedPosts(posts) {
   }).join('');
 }
 
-function editComment(id, content){const el=document.getElementById('comment-'+id);if(!el)return;el.querySelector('.comment-body').innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${id}">${esc(content)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${id}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;bindAutoResizeTextareas();}
+function editComment(id){
+  const comment=commentsById[String(id)];
+  const el=document.getElementById('comment-'+id);
+  if(!el||!comment)return;
+  if(!sameUserId(currentUser?.id,comment.user_id))return showToast('본인 댓글만 수정할 수 있습니다.');
+  const body=stripCategoryPrefix(comment.content||'');
+  const target=el.querySelector('.comment-body');
+  if(!target)return;
+  target.classList.remove('collapsed','expanded');
+  target.removeAttribute('onclick');
+  const toggle=el.querySelector('.comment-toggle');
+  if(toggle)toggle.remove();
+  target.innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${escAttr(id)}">${esc(body)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${escAttr(id)}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;
+  bindAutoResizeTextareas();
+}
 async function saveCommentEdit(id){
   const value=document.getElementById('commentEdit-'+id)?.value.trim();
   if(!value)return showToast('댓글 내용을 입력해주세요.');
@@ -742,21 +759,30 @@ async function saveCommentEdit(id){
   if(!authUser?.id)return showToast('로그인 후 댓글을 수정할 수 있습니다.');
   try{
     const before=await fetchCommentById(id);
-    if(!before)throw new Error('댓글이 이미 삭제되었습니다.');
+    if(!before||before.deleted_at)throw new Error('댓글이 이미 삭제되었습니다.');
     if(!sameUserId(before.user_id,authUser.id))throw new Error('본인 댓글만 수정할 수 있습니다.');
-    const {error}=await sb
+    const payload={content:value};
+    const {data,error}=await sb
       .from('comments')
-      .update({content:value,updated_at:new Date().toISOString()})
-      .eq('id',id)
-      .eq('user_id',String(authUser.id));
+      .update(payload)
+      .eq('id',String(id))
+      .eq('user_id',String(authUser.id))
+      .is('deleted_at',null)
+      .select('id,post_id,user_id,content,is_ai,created_at,parent_id,is_secret,updated_at,deleted_at')
+      .maybeSingle();
     if(error)throw error;
-    const after=await fetchCommentById(id);
-    if(!after||after.content!==value)throw new Error('댓글 수정 권한 또는 RLS 정책을 확인해야 합니다.');
-    showToast('댓글이 수정되었습니다.');
+    if(!data)throw new Error('댓글 수정 권한 또는 RLS 정책을 확인해야 합니다.');
+    showToast('수정되었습니다.');
     await loadComments();
   }catch(err){
-    console.error('comment update failed', {id,userId:authUser?.id,error:err});
-    showToast(err.message||'댓글 수정에 실패했습니다.');
+    console.warn('comment update failed', {
+      commentId:id,
+      hasCurrentUser:!!authUser?.id,
+      hasCommentUser:!!commentsById[String(id)]?.user_id,
+      payloadKeys:['content'],
+      message:err?.message
+    });
+    showToast('댓글 수정에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }
 }
 async function deleteComment(id){
