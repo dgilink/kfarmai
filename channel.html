@@ -48,9 +48,9 @@
   .chip.active, .category-tab.active { border-color:var(--green); background:rgba(29,158,117,.1); color:var(--green-dark); }
   .status-line { display:flex; justify-content:space-between; padding:8px 16px 6px; color:#777; font-size:12px; font-weight:700; }
   .list { padding:0 14px 18px; }
-  .post-card, .demo-card { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:14px; margin:10px 0; box-shadow:0 4px 14px rgba(0,0,0,.04); }
-  .post-card.has-thumb { display:grid; grid-template-columns:1fr 86px; gap:10px; align-items:start; }
-  .post-thumb { width:86px; height:86px; object-fit:cover; border-radius:12px; border:1px solid var(--border); background:#F3F4F6; }
+  .post-card, .demo-card { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:13px; padding:12px; margin:8px 0; box-shadow:0 3px 10px rgba(0,0,0,.035); }
+  .post-card.has-thumb { display:grid; grid-template-columns:1fr 66px; gap:10px; align-items:start; }
+  .post-thumb { width:66px; height:66px; object-fit:cover; border-radius:10px; border:1px solid var(--border); background:#F3F4F6; }
   .badge, .category-badge, .demo-notice { display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:7px; font-size:11px; font-weight:900; margin:0 6px 8px 0; }
   .badge { background:rgba(29,158,117,.12); color:var(--green-dark); }
   .badge.blue { background:#E8F1FF; color:#2563EB; }
@@ -58,9 +58,9 @@
   .badge.teal { background:#E6FFFA; color:#0F766E; }
   .category-badge { background:#E8F5E9; color:var(--green-dark); }
   .demo-notice { background:#F8FAFC; border:1px solid #E2E8F0; color:#475569; }
-  .post-title { font-size:15px; font-weight:900; line-height:1.35; margin-bottom:7px; color:#111; }
-  .post-content { font-size:13px; color:#555; line-height:1.45; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:9px; }
-  .meta { display:flex; flex-wrap:wrap; gap:8px; color:#8A8A8A; font-size:11px; font-weight:700; }
+  .post-title { font-size:14px; font-weight:900; line-height:1.35; margin-bottom:5px; color:#111; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .post-content { font-size:12px; color:#555; line-height:1.45; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:7px; }
+  .meta { display:flex; flex-wrap:wrap; gap:7px; color:#8A8A8A; font-size:11px; font-weight:700; line-height:1.35; }
   .label-row { display:flex; flex-wrap:wrap; gap:5px; margin:9px 0; }
   .status-badge { display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:999px; background:#E8F6F0; color:var(--green-dark); font-size:11px; font-weight:900; }
   .ai-summary { margin-top:9px; border-radius:12px; background:#F8FAFC; border:1px solid #E2E8F0; padding:10px; color:#374151; font-size:13px; line-height:1.55; font-weight:650; }
@@ -69,7 +69,7 @@
   .demo-actions a:nth-child(2) { background:#FFF1E8; color:#EA580C; border-color:#FFD7C2; }
   .demo-actions a:nth-child(3) { background:#F8FAFC; color:#334155; border-color:#E2E8F0; }
   .demo-actions button { background:#111827; color:#fff; border-color:#111827; }
-  .empty, .loading { color:#777; text-align:center; padding:34px 20px; font-size:14px; line-height:1.6; }
+  .empty, .loading { color:#777; text-align:left; padding:12px 4px; font-size:13px; line-height:1.55; }
   .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(29,158,117,.18); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .fab { position:fixed; right:calc(50% - 246px); bottom:86px; z-index:45; height:48px; padding:0 18px; border:0; border-radius:999px; background:var(--green); color:#fff; font-size:15px; font-weight:900; box-shadow:0 10px 24px rgba(29,158,117,.34); cursor:pointer; }
@@ -184,12 +184,14 @@
   <div class="chips" id="channelChips" aria-label="커뮤니티 채널"></div>
   <div class="category-tabs" id="categoryTabs">
     <button class="category-tab active" data-category="">전체</button>
-    <button class="category-tab" data-category="반려식물">반려식물</button>
-    <button class="category-tab" data-category="텃밭">텃밭</button>
-    <button class="category-tab" data-category="벼농사">벼농사</button>
-    <button class="category-tab" data-category="고추·마늘·양파">고추·마늘·양파</button>
-    <button class="category-tab" data-category="딸기·토마토">딸기·토마토</button>
-    <button class="category-tab" data-category="농약·비료·상토">농약·비료·상토</button>
+    <button class="category-tab" data-category="식물 병원">식물 병원</button>
+    <button class="category-tab" data-category="식물 질문방">식물 질문방</button>
+    <button class="category-tab" data-category="작물 상담방">작물 상담방</button>
+    <button class="category-tab" data-category="내 식물 자랑">내 식물 자랑</button>
+    <button class="category-tab" data-category="농부 사랑방">농부 사랑방</button>
+    <button class="category-tab" data-category="나눔·직거래">나눔·직거래</button>
+    <button class="category-tab" data-category="원예 클래스">원예 클래스</button>
+    <button class="category-tab" data-category="식집사 모임">식집사 모임</button>
   </div>
   <div class="status-line"><span id="resultLabel">최신 글</span><span id="resultCount"></span></div>
   <main class="list" id="postList"><div class="loading"><span class="spinner"></span>불러오는 중...</div></main>
@@ -210,8 +212,8 @@
     <button class="modal-handle" type="button" onclick="closeWriteModal()" aria-label="닫기"></button>
     <div class="modal-head"><div class="modal-title">커뮤니티에 질문하기</div><button class="modal-close" type="button" onclick="closeWriteModal()" aria-label="닫기">×</button></div>
     <div class="field"><div class="label">채널 선택</div><select class="select" id="channelSelect"></select></div>
-    <div class="field"><div class="label">지역 태그</div><select class="select" id="regionSelect"><option value="">지역 선택</option><option>전남</option><option>경남</option><option>경북</option><option>충남</option><option>기타</option></select></div>
-    <div class="field"><div class="label">카테고리 선택</div><select class="select" id="postCategory"><option value="">카테고리 선택</option><option value="반려식물">반려식물</option><option value="텃밭">텃밭</option><option value="벼농사">벼농사</option><option value="고추·마늘·양파">고추·마늘·양파</option><option value="딸기·토마토">딸기·토마토</option><option value="농약·비료·상토">농약·비료·상토</option><option value="기타">기타</option></select></div>
+    <div class="field"><div class="label">지역 선택</div><select class="select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
+    <div class="field"><div class="label">어떤 내용의 질문인가요?</div><select class="select" id="postCategory"><option value="">내용 유형을 선택하세요</option><option value="식물 병원">식물 병원</option><option value="식물 질문방">식물 질문방</option><option value="작물 상담방">작물 상담방</option><option value="내 식물 자랑">내 식물 자랑</option><option value="농부 사랑방">농부 사랑방</option><option value="나눔·직거래">나눔·직거래</option><option value="원예 클래스">원예 클래스</option><option value="식집사 모임">식집사 모임</option></select></div>
     <div class="field"><div class="label">제목</div><input class="input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
     <div class="field"><div class="label">내용</div><textarea class="textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
     <div class="field">
@@ -311,25 +313,25 @@ const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
 const DEMO_CASE_WRITE_PRESETS = {
   'tomato-leaf-mold': {
     channelSlug: 'plant-hospital',
-    category: '딸기·토마토',
+    category: '식물 병원',
     title: '토마토 잎 뒷면에 회색 곰팡이가 보입니다',
     content: 'AI 참고 진단에서 잎곰팡이병 가능성을 확인했습니다. 공공자료 기준으로 어떤 점을 더 확인하면 좋을까요?'
   },
   'pepper-anthracnose': {
     channelSlug: 'crop-consult',
-    category: '고추·마늘·양파',
+    category: '작물 상담방',
     title: '고추 열매에 작은 검은 반점이 생겼습니다',
     content: 'AI 참고 진단에서 탄저병 초기 가능성을 확인했습니다. 공공자료 기준으로 사진에서 어떤 증상을 더 확인하면 좋을까요?'
   },
   'cucumber-downy-or-good': {
     channelSlug: 'plant-hospital',
-    category: '텃밭',
+    category: '식물 병원',
     title: '오이 잎 반점이 노균병인지 정상 생육인지 궁금합니다',
     content: 'AI 참고 진단에서 노균병 가능성과 정상 생육 변화를 함께 확인해야 한다고 나왔습니다. 어떤 관찰 포인트를 더 보면 좋을까요?'
   },
   'strawberry-powdery-mildew': {
     channelSlug: 'crop-consult',
-    category: '딸기·토마토',
+    category: '작물 상담방',
     title: '딸기 잎 표면에 흰 가루 같은 흔적이 보입니다',
     content: 'AI 참고 진단에서 흰가루병 가능성을 확인했습니다. 공공자료 기준으로 어떤 증상을 더 확인하면 좋을까요?'
   }
@@ -485,7 +487,7 @@ async function loadPosts(){
   isLoading=true;
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,category,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
     query=applyPostFilters(query);
     query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+PAGE_SIZE-1);
     const {data,count,error}=await query;
@@ -502,15 +504,15 @@ async function loadPosts(){
 }
 function applyPostFilters(query){
   if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
-  if(activeCategory)query=query.eq('category',activeCategory);
   if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
   return query;
 }
 function listSortColumn(){return sortParam==='popular'||sortParam==='symptom'?'view_count':'created_at';}
 function renderPosts(posts,totalCount){
   const list=document.getElementById('postList');
+  posts=activeCategory?posts.filter(post=>extractCategoryFromContent(post.content)===activeCategory):posts;
   document.getElementById('resultLabel').textContent=currentChannel?.name||activeCategory||'최신 글';
-  document.getElementById('resultCount').textContent=`${totalCount}개`;
+  document.getElementById('resultCount').textContent=`${activeCategory?posts.length:totalCount}개`;
   if(offset===0)list.innerHTML='';
   if(!posts.length&&offset===0){
     list.innerHTML='<div class="empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
@@ -522,11 +524,13 @@ function renderPosts(posts,totalCount){
     const imageUrls=normalizeImages(post.image_urls);
     const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
     const commentCount=0;
+    const category=extractCategoryFromContent(post.content);
+    const preview=stripPostPrefixes(post.content||'');
     const card=document.createElement('article');
     card.className='post-card'+(thumbHtml?' has-thumb':'');
     card.style.cursor='pointer';
     card.onclick=()=>{location.href='post.html?id='+encodeURIComponent(post.id);};
-    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(post.channels?.name||CHANNEL_CONFIG[slug]||'일반')}</span>${post.category?`<span class="category-badge">${esc(post.category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div><div class="post-content">${esc(post.content||'')}</div><div class="meta"><span>${post.user_id?'회원':'익명'} 작성자</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span><span>${post.region_tag?'#'+esc(post.region_tag):'지역 미정'}</span><span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
+    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(post.channels?.name||CHANNEL_CONFIG[slug]||'일반')}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}<div class="meta"><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
     list.appendChild(card);
   });
 }
@@ -610,11 +614,10 @@ function guessChannelSlug(crop){
   return /몬스테라|화분|실내|상토/.test(crop) ? 'plant-hospital' : 'crop-consult';
 }
 function guessCategory(crop){
-  if(/몬스테라|화분|실내/.test(crop))return '반려식물';
-  if(/고추|마늘|양파/.test(crop))return '고추·마늘·양파';
-  if(/딸기|토마토/.test(crop))return '딸기·토마토';
-  if(/상토|농약|비료/.test(crop))return '농약·비료·상토';
-  return '기타';
+  if(/몬스테라|화분|실내/.test(crop))return '식물 질문방';
+  if(/고추|마늘|양파|딸기|토마토/.test(crop))return '작물 상담방';
+  if(/상토|농약|비료/.test(crop))return '나눔·직거래';
+  return '식물 질문방';
 }
 function fillWritePreset(preset){
   const channel=channels.find(ch=>ch.slug===preset.channelSlug) || channels.find(ch=>ch.slug==='plant-hospital') || channels[0];
@@ -656,19 +659,21 @@ function renderPostImagePreview(){const wrap=document.getElementById('postImageP
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
 async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
 async function submitPost(){
-  const channelId=document.getElementById('channelSelect').value;
+  const channelSelect=document.getElementById('channelSelect');
+  const channelId=channelSelect.value;
+  const channelName=channelSelect.options[channelSelect.selectedIndex]?.textContent||'';
   const category=document.getElementById('postCategory').value;
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
   const region=document.getElementById('regionSelect').value;
-  if(!channelId||!category||!title||!content)return showToast('채널, 카테고리, 제목, 내용을 입력해주세요.');
+  if(!channelId||!category||!title||!content)return showToast('채널, 내용 유형, 제목, 내용을 입력해주세요.');
   const btn=document.getElementById('submitBtn');btn.disabled=true;
   try{
     const {data:{session}}=await sb.auth.getSession();
     const userId=session?.user?.id||getLocalUserId();
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const {error}=await sb.from('posts').insert({user_id:userId,channel_id:channelId,title,content,category,region_tag:region||null,image_urls:imageUrls});
+    const {error}=await sb.from('posts').insert({user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,category,channelName,region),region_tag:region||null,image_urls:imageUrls});
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
     closeWriteModal();
@@ -687,6 +692,24 @@ async function logout(){if(!sb)return;await sb.auth.signOut();currentUser=null;r
 function normalizeImages(value){if(!value)return[];if(Array.isArray(value))return value.filter(Boolean);if(typeof value==='string'){try{const parsed=JSON.parse(value);return Array.isArray(parsed)?parsed.filter(Boolean):[value].filter(Boolean);}catch(e){return value.split(',').map(v=>v.trim()).filter(Boolean);}}return[];}
 function timeAgo(dateValue){if(!dateValue)return '방금 전';const diff=Date.now()-new Date(dateValue).getTime();const min=Math.floor(diff/60000);if(min<1)return '방금 전';if(min<60)return `${min}분 전`;const hour=Math.floor(min/60);if(hour<24)return `${hour}시간 전`;const day=Math.floor(hour/24);if(day<7)return `${day}일 전`;return new Date(dateValue).toLocaleDateString('ko-KR');}
 function debounce(fn,wait){let timer;return(...args)=>{clearTimeout(timer);timer=setTimeout(()=>fn(...args),wait);};}
+function extractCategoryFromContent(content){
+  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/m);
+  return match ? match[1].trim() : '';
+}
+function stripPostPrefixes(content){
+  return String(content||'')
+    .replace(/^\[(카테고리|채널|지역):\s*[^\]]+\]\s*/gm,'')
+    .trim();
+}
+function contentWithCategory(content,category,channelName='',region=''){
+  const clean=String(content||'').trim();
+  const prefix=[
+    channelName?`[채널: ${channelName}]`:'',
+    region?`[지역: ${region}]`:'',
+    category?`[카테고리: ${category}]`:''
+  ].filter(Boolean).join('\n');
+  return prefix?`${prefix}\n\n${clean}`:clean;
+}
 function escapeLike(value){return String(value||'').replace(/[%_]/g,m=>'\\'+m);}
 function esc(value){return String(value||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function showToast(message){const toast=document.getElementById('toast');toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800);}

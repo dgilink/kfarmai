@@ -47,24 +47,24 @@
   .search { height:42px; display:flex; align-items:center; gap:8px; background:#F3F4F6; border:1px solid #ECEFF1; border-radius:999px; padding:0 13px; }
   .search svg { width:18px; height:18px; color:var(--green); }
   .search input { flex:1; min-width:0; border:0; outline:0; background:transparent; font-size:14px; }
-  .content { padding:14px; }
-  .card { background:var(--card); border:1px solid rgba(0,0,0,.06); border-radius:16px; padding:16px; box-shadow:0 4px 14px rgba(0,0,0,.04); }
+  .content { padding:12px 14px 16px; }
+  .card { background:var(--card); border:1px solid rgba(0,0,0,.06); border-radius:15px; padding:14px; box-shadow:0 3px 12px rgba(0,0,0,.035); }
   .badge { display:inline-flex; align-items:center; height:24px; padding:0 9px; border-radius:8px; background:rgba(29,158,117,.12); color:var(--green-dark); font-size:12px; font-weight:900; }
   .badge.blue { background:#E8F1FF; color:#2563EB; }
   .badge.orange { background:#FFF1E8; color:#EA580C; }
   .badge.teal { background:#E6FFFA; color:#0F766E; }
   .ai-badge { display:inline-flex; align-items:center; height:20px; padding:0 7px; border-radius:999px; background:#FFF1E8; color:#EA580C; font-size:10px; font-weight:900; margin-left:5px; }
-  .post-title { margin:12px 0 8px; font-size:22px; line-height:1.32; font-weight:900; color:#111; }
-  .meta { display:flex; flex-wrap:wrap; gap:8px; color:#8A8A8A; font-size:12px; font-weight:700; }
-  .post-body { margin-top:18px; color:#333; font-size:15px; line-height:1.68; white-space:pre-wrap; word-break:break-word; }
+  .post-title { margin:10px 0 6px; font-size:21px; line-height:1.34; font-weight:900; color:#111; text-align:left; }
+  .meta { display:flex; flex-wrap:wrap; gap:7px; color:#8A8A8A; font-size:11.5px; font-weight:700; line-height:1.35; }
+  .post-body { margin-top:13px; color:#333; font-size:15px; line-height:1.62; white-space:pre-wrap; word-break:break-word; text-align:left; }
 
   .image-slider { display:flex; gap:10px; overflow-x:auto; margin-top:16px; padding-bottom:4px; scrollbar-width:none; }
   .image-slider::-webkit-scrollbar { display:none; }
   .post-image { flex:0 0 88%; max-width:360px; height:240px; object-fit:cover; border-radius:14px; border:1px solid var(--border); background:#F3F4F6; cursor:pointer; }
-  .post-owner-actions { display:flex; gap:8px; margin-top:12px; }
+  .post-owner-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:10px; }
   .post-owner-actions button, .comment-action, .edit-submit, .edit-cancel { border:1px solid var(--border); background:#fff; border-radius:9px; padding:7px 10px; color:#555; font-size:12px; font-weight:900; cursor:pointer; }
   .post-owner-actions .delete, .comment-action.delete { color:#DC2626; }
-  .ai-card { margin-top:14px; padding:14px; background:#E8F5E9; border-radius:12px; border:1px solid rgba(29,158,117,.15); }
+  .ai-card { margin-top:12px; padding:12px; background:#E8F5E9; border-radius:12px; border:1px solid rgba(29,158,117,.15); }
   .ai-card-title { font-size:14px; font-weight:900; color:var(--green-dark); margin-bottom:6px; }
   .ai-card-text { font-size:13px; color:#456; line-height:1.5; margin-bottom:10px; }
   .ai-card-btn { display:inline-flex; align-items:center; justify-content:center; height:38px; padding:0 14px; border:0; border-radius:10px; background:var(--green); color:#fff; font-size:13px; font-weight:900; cursor:pointer; }
@@ -92,25 +92,26 @@
   .edit-modal-actions { display:flex; gap:8px; }
   .edit-submit { flex:1; background:var(--green); border-color:var(--green); color:#fff; height:42px; }
   .edit-cancel { flex:1; height:42px; }
-  .actions { display:flex; align-items:center; gap:10px; margin-top:18px; padding-top:14px; border-top:1px solid var(--border); }
+  .actions { display:flex; align-items:center; gap:10px; margin-top:13px; padding-top:11px; border-top:1px solid var(--border); }
   .stat { color:#777; font-size:13px; font-weight:800; }
   .like-btn { margin-left:auto; height:38px; padding:0 14px; border:1px solid rgba(29,158,117,.25); border-radius:999px; background:rgba(29,158,117,.08); color:var(--green-dark); font-size:13px; font-weight:900; cursor:pointer; }
   .like-btn.on { background:var(--green); color:#fff; }
-  .section { margin-top:14px; }
-  .section-head { display:flex; align-items:center; justify-content:space-between; margin:0 2px 10px; }
+  .section { margin-top:12px; }
+  .section-head { display:flex; align-items:center; justify-content:space-between; margin:0 2px 7px; }
   .section-title { font-size:16px; font-weight:900; }
-  .comment { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:13px; margin:8px 0; }
-  .comment-head { display:flex; align-items:center; gap:6px; color:#777; font-size:12px; font-weight:800; margin-bottom:7px; }
+  .comment { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:12px; padding:11px 12px; margin:7px 0; }
+  .comment-head { display:flex; align-items:center; gap:6px; color:#777; font-size:11.5px; font-weight:800; margin-bottom:6px; }
   .comment-body { color:#333; font-size:14px; line-height:1.55; white-space:pre-wrap; word-break:break-word; }
-  .comment-form { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:12px; margin-top:10px; }
-  .comment-form textarea { width:100%; min-height:80px; border:1.5px solid var(--border); border-radius:12px; outline:0; padding:11px 12px; font-size:14px; resize:vertical; }
+  .comment-form { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:12px; padding:10px; margin-top:8px; }
+  .comment-login-note { margin:0 0 8px; color:#6B7280; font-size:12px; font-weight:800; }
+  .comment-form textarea { width:100%; min-height:58px; border:1.5px solid var(--border); border-radius:10px; outline:0; padding:10px 11px; font-size:14px; resize:vertical; }
   .comment-form textarea:focus { border-color:var(--green); }
-  .comment-submit { width:100%; height:42px; margin-top:8px; border:0; border-radius:12px; background:var(--green); color:#fff; font-size:14px; font-weight:900; cursor:pointer; }
+  .comment-submit { min-width:82px; height:36px; margin-top:7px; margin-left:auto; display:block; border:0; border-radius:10px; background:var(--green); color:#fff; font-size:13px; font-weight:900; cursor:pointer; }
   .comment-submit:disabled { opacity:.55; cursor:not-allowed; }
   .related-card { display:block; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:13px; margin:8px 0; }
   .related-title { font-size:14px; font-weight:900; margin:7px 0 6px; line-height:1.35; }
   .related-meta { color:#8A8A8A; font-size:11px; font-weight:700; }
-  .empty, .loading { color:#777; text-align:center; padding:42px 20px; font-size:14px; line-height:1.6; }
+  .empty, .loading { color:#777; text-align:left; padding:10px 4px; font-size:13px; line-height:1.55; }
   .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(29,158,117,.18); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .bottom-nav { position:fixed; left:50%; bottom:0; transform:translateX(-50%); z-index:50; width:100%; max-width:520px; height:66px; display:flex; background:rgba(255,255,255,.97); border-top:1px solid var(--border); backdrop-filter:blur(14px); }
@@ -164,6 +165,7 @@
       </div>
       <div id="commentList" class="loading"><span class="spinner"></span>댓글을 불러오는 중...</div>
       <div class="comment-form">
+        <p class="comment-login-note" id="commentLoginNote"></p>
         <textarea id="commentInput" placeholder="댓글을 입력하세요. 로그인 후 등록할 수 있습니다."></textarea>
         <button class="comment-submit" id="commentSubmit" type="button" onclick="submitComment()">댓글 등록</button>
       </div>
@@ -203,7 +205,7 @@
 <div class="edit-modal-overlay" id="editPostModal" onclick="if(event.target===this)closeEditPostModal()">
   <div class="edit-modal">
     <div class="edit-modal-title">게시글 수정</div>
-    <div class="edit-field"><div class="edit-label">카테고리 선택</div><select class="edit-select" id="editPostCategory"><option value="">카테고리 선택</option><option value="반려식물">반려식물</option><option value="텃밭">텃밭</option><option value="벼농사">벼농사</option><option value="고추·마늘·양파">고추·마늘·양파</option><option value="딸기·토마토">딸기·토마토</option><option value="농약·비료·상토">농약·비료·상토</option><option value="기타">기타</option></select></div>
+    <div class="edit-field"><div class="edit-label">어떤 내용의 질문인가요?</div><select class="edit-select" id="editPostCategory"><option value="">내용 유형 선택</option><option value="식물 병원">식물 병원</option><option value="식물 질문방">식물 질문방</option><option value="작물 상담방">작물 상담방</option><option value="내 식물 자랑">내 식물 자랑</option><option value="농부 사랑방">농부 사랑방</option><option value="나눔·직거래">나눔·직거래</option><option value="원예 클래스">원예 클래스</option><option value="식집사 모임">식집사 모임</option></select></div>
     <div class="edit-field"><div class="edit-label">제목</div><input class="edit-input" id="editPostTitle" autocomplete="off"></div>
     <div class="edit-field"><div class="edit-label">내용</div><textarea class="edit-textarea" id="editPostContent"></textarea></div>
     <div class="edit-field">
@@ -251,8 +253,14 @@ async function init() {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const { data: authData } = await sb.auth.getUser();
   currentUser = authData?.user || null;
+  sb.auth.onAuthStateChange((event,session)=>{
+    currentUser=session?.user||null;
+    renderCommentFormState();
+    if(currentUser)closeLoginModal();
+  });
   if (currentUser?.id) localStorage.setItem('kfarmai_user_id', currentUser.id);
   else getLocalUserId();
+  renderCommentFormState();
   if (!postId) {
     document.getElementById('postArea').innerHTML = '<div class="empty">게시글 ID가 없습니다.</div>';
     document.getElementById('commentList').innerHTML = '<div class="empty">댓글을 표시할 수 없습니다.</div>';
@@ -292,7 +300,8 @@ function renderPost(post) {
   const images = normalizeImages(post.image_urls);
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
   const ownerActions = isOwner ? `<div class="post-owner-actions"><button type="button" onclick="openEditPostModal()">수정</button><button class="delete" type="button" onclick="deletePost()">삭제</button></div>` : '';
-  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${post.user_id ? '회원' : '익명'} 작성자</span><span>${post.region_tag ? '#' + esc(post.region_tag) : '지역 미지정'}</span><span>${timeAgo(post.created_at)}</span></div><div class="post-body">${esc(post.content || '')}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 분석</div><div class="ai-card-text">사진과 증상을 올리면 AI가 분석해드려요</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 진단 시작하기</button></div><div class="actions"><span class="stat">조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
+  const bodyText=stripCategoryPrefix(post.content||'');
+  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${post.user_id ? '회원' : '익명'} 작성자</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span>좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="ai-card"><div class="ai-card-title">AI 참고 진단</div><div class="ai-card-text">사진과 증상을 올리면 원인 후보와 확인 포인트를 정리해볼 수 있습니다.</div><button class="ai-card-btn" type="button" onclick="location.href='diagnosis.html'">AI 참고 진단 시작</button></div><div class="actions"><span class="stat">공공정보 확인과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">좋아요 ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
@@ -332,9 +341,9 @@ async function loadComments() {
 }
 
 function renderComments(comments) {
-  document.getElementById('commentCount').textContent = comments.length;
+  document.getElementById('commentCount').textContent = comments.length ? comments.length : '';
   const list = document.getElementById('commentList');
-  if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.<br>첫 댓글을 남겨보세요.</div>'; return; }
+  if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
   list.innerHTML = comments.map(comment => {
     const isOwner = ownerId() === comment.user_id;
     return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${comment.user_id ? '회원' : '익명'}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(comment.content || '')}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(comment.content || '')}</div></article>`;
@@ -343,9 +352,14 @@ function renderComments(comments) {
 
 
 async function submitComment() {
+  if(!currentUser?.id){
+    showToast('로그인 후 댓글을 등록할 수 있습니다.');
+    renderCommentFormState();
+    return;
+  }
   const content = document.getElementById('commentInput').value.trim();
   if (!content) return showToast('댓글 내용을 입력해주세요.');
-  const userId = currentUser?.id || ownerId();
+  const userId = currentUser.id;
   const btn = document.getElementById('commentSubmit');
   btn.disabled = true;
   try {
@@ -359,6 +373,16 @@ async function submitComment() {
   } finally {
     btn.disabled = false;
   }
+}
+
+function renderCommentFormState(){
+  const note=document.getElementById('commentLoginNote');
+  const input=document.getElementById('commentInput');
+  const btn=document.getElementById('commentSubmit');
+  const loggedIn=!!currentUser?.id;
+  if(note)note.textContent=loggedIn?'':'로그인 후 댓글을 등록할 수 있습니다.';
+  if(input)input.disabled=!loggedIn;
+  if(btn)btn.disabled=!loggedIn;
 }
 
 async function loadRelatedPosts() {
@@ -445,11 +469,11 @@ function normalizeImages(value) {
   return [];
 }
 function extractCategoryFromContent(content){
-  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/);
+  const match=String(content||'').match(/^\[카테고리:\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
 }
 function stripCategoryPrefix(content){
-  return String(content||'').replace(/^\[카테고리:\s*[^\]]+\]\s*\n*/,'').trim();
+  return String(content||'').replace(/^\[(카테고리|채널|지역):\s*[^\]]+\]\s*/gm,'').trim();
 }
 function contentWithCategory(content,category){
   const clean=String(content||'').trim();
