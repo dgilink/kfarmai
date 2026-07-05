@@ -867,3 +867,49 @@ kFarmAI 저장소에서 아래 기능만 안전하게 수정해줘.
 ```
 
 이 흐름이 모바일에서 끊기지 않으면 kFarmAI는 “아이디어”가 아니라 “실제 작동형 공공데이터 기반 농업·식물 문제해결 시제품”으로 보일 수 있습니다.
+
+---
+
+## 10. 최신 인수인계 지침
+
+다음 작업 세션을 시작할 때는 반드시 저장소 루트의 `handoff.md`를 먼저 읽고 현재 상태를 확인합니다.
+
+작업 시작 전 필수 명령:
+
+```bash
+git status -sb
+git branch --show-current
+git log --oneline -5
+git diff --stat
+```
+
+현재 저장소에는 `resend api key.txt` 미추적 파일이 있을 수 있습니다. 이 파일은 secret 가능성이 있으므로 절대 `git add`, commit, push 하지 않습니다. Resend API key는 코드나 문서가 아니라 Supabase Dashboard의 SMTP Settings에만 입력합니다.
+
+최근 반영된 주요 흐름:
+
+- Google 로그인은 정상화됨.
+- 이메일 OTP는 Resend + Supabase Custom SMTP로 운영.
+- 홈 질문 섹션 더보기와 실제 `posts` 최신순 조회가 반영됨.
+- 마이페이지 내가 쓴 글 카운트는 진입/작성 후 재조회하도록 수정됨.
+- 게시글 수정에서 기존 사진 유지/삭제 및 새 사진 추가가 가능함.
+- `diagnosis.html`은 `index.html` AI 참고 진단 탭과 같은 밝은 카드형 UI로 정리됨.
+
+주의:
+
+- `git add .` 금지.
+- API key, secret, `.env.local`, Resend key, Supabase service role key를 저장소에 넣지 말 것.
+- AI 관련 화면에서는 "AI 참고 진단", "원인 후보", "확인 포인트", "공공정보 확인", "참고자료" 표현을 우선 사용.
+- "정확한 진단", "최종 처방", "추천 농약", "이 농약을 쓰세요", "오늘 방제하세요", "가격비교", "장바구니", "결제" 표현 금지.
+
+---
+
+## 11. 작물별 재배달력·재배가이드 MVP 지침
+
+- API 키는 코드, HTML, JSON, 문서에 하드코딩하지 않는다. 실제 값은 `.env.local` 또는 배포 플랫폼 secret에만 둔다.
+- 작물 사진은 농촌진흥청, 농사로, NCPMS, 농업기술원, 시군 농업기술센터, 스마트팜코리아, 공공누리 공식 자료처럼 공공기관 또는 공식 출처만 사용한다.
+- 개인 블로그, 카페, 커뮤니티, 쇼핑몰, 뉴스, 검색엔진 직접 이미지, 저작권 불명 이미지, AI 생성 이미지는 공식 작물 사진으로 등록하지 않는다.
+- 관리자 검수 전 데이터는 `needs_review` 상태로 저장한다.
+- 사용자 화면에는 `approved` 데이터만 노출한다. 이미지는 `approved`이면서 `is_official_source=true`인 항목만 표시한다.
+- 기존 정적 HTML, `data/*.json`, `scripts/*.cjs` 구조를 우선 따른다.
+- 작업 후 가능한 범위에서 `node scripts/crops/seed-crops.cjs`, `node scripts/crops/probe-api-coverage.cjs`, 문법 검사 또는 정적 확인을 실행한다.
+- 변경사항 요약과 남은 TODO는 최종 보고 또는 `handoff.md`에 기록한다.

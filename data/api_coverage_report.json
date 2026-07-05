@@ -1,0 +1,700 @@
+{
+  "generatedAt": "2026-07-05T00:40:46.239Z",
+  "summary": {
+    "FULL": 22,
+    "PARTIAL": 1
+  },
+  "missingKeys": [],
+  "crops": [
+    {
+      "crop": "벼",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "갈색균핵병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "고추",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "갈색점무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "딸기",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "겹무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "토마토",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은점뿌리썩음병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "오이",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은별무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "상추",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "갈색무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "배추",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "무",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "반점세균병 인도고무나무",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "마늘",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "갈색잎마름병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "양파",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "감자",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "가루더뎅이병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "고구마",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "콩",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "옥수수",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은줄오갈병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "대파",
+      "coverage": "PARTIAL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": false,
+        "source": "NCPMS",
+        "hasImages": false,
+        "sampleTitle": "",
+        "reason": "NCPMS empty or HTTP 200"
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "시금치",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "노균병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "가지",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "갈색둥근무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "호박",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "흰가루병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "수박",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은별무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "참외",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은별무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "사과",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "가지검은마름병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "복숭아",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은별무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    },
+    {
+      "crop": "배",
+      "coverage": "FULL",
+      "cropGuide": {
+        "available": true,
+        "source": "농촌진흥청_작목별농업기술정보",
+        "hasCalendarText": false,
+        "hasRegionText": false,
+        "hasFacilityText": false,
+        "reason": ""
+      },
+      "weeklyFarming": {
+        "available": true,
+        "source": "농촌진흥청_주간농사정보",
+        "reason": ""
+      },
+      "pestDisease": {
+        "available": true,
+        "source": "NCPMS",
+        "hasImages": true,
+        "sampleTitle": "검은무늬병",
+        "reason": ""
+      },
+      "growthImages": {
+        "available": false,
+        "needsManualOfficialMapping": true,
+        "source": ""
+      },
+      "notes": "원문은 일부 확인됐으나 서비스형 달력/사진 매핑은 관리자 검수가 필요합니다."
+    }
+  ]
+}
