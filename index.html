@@ -2205,6 +2205,7 @@
 <script src="static/seed_data.js"></script>
 <script src="static/cpa_data.js"></script>
 <script src="static/fert_data.js"></script>
+<script src="static/crop-pages.js?v=20260706-regional"></script>
 <script>
 (function(){
   const pages = document.getElementById('pages');
@@ -3635,9 +3636,27 @@ async function loadStaticSearchIndex(){
   }
   return staticSearchIndexPromise;
 }
+function buildCropRegionalSearchIndex(){
+  const data=window.KFARM_CROP_PAGE_DATA;
+  if(!data?.core?.length)return [];
+  const regionKeywords=['충남','충청남도','경남','경상남도','제주','제주특별자치도','강원','강원특별자치도','경기','경기도','전남','전라남도','전북','전북특별자치도','중부권','남부권','제주권','고랭지'];
+  const topicKeywords=['정식','파종','수확','육묘','개화','착과','월동','고랭지','노지','시설재배','텃밭','화분','베란다','과수원','농업날씨'];
+  return data.core.flatMap(crop=>{
+    const cropTerms=[crop.name,...(crop.aliases||[])].filter(Boolean);
+    const monthly=(crop.monthlyCalendar||[]).flatMap(item=>[item.month,item.task,...(item.tasks||[])]);
+    const regional=Object.values(crop.regionAdjustments||{}).flat();
+    const types=(crop.availableCultivationTypes||[]).flatMap(item=>[item.label,item.note]);
+    const text=[...cropTerms,...regionKeywords,...topicKeywords,...monthly,...regional,...types].join(' ');
+    return [
+      {type:'지역 재배달력',title:`${crop.name} 지역 재배달력`,description:'지역과 재배유형 기준으로 월별 작업과 이번 달 할 일을 확인합니다.',url:`crop-calendar.html?crop=${encodeURIComponent(crop.id)}`,keywords:[...cropTerms,...regionKeywords,...topicKeywords],searchText:text},
+      {type:'재배가이드',title:`${crop.name} 재배가이드`,description:'선택 지역 관리 포인트와 공공데이터 참고 경로를 확인합니다.',url:`crop-guide.html?crop=${encodeURIComponent(crop.id)}`,keywords:[...cropTerms,'재배가이드','관리포인트',...regionKeywords],searchText:text},
+      {type:'농업날씨',title:`${crop.name} 농업날씨 체크`,description:'지역별 기온, 강수, 바람 상태를 함께 확인하는 참고자료입니다.',url:'agri-weather.html',keywords:[...cropTerms,'농업날씨','날씨','강풍','장마','고온','저온'],searchText:text}
+    ];
+  });
+}
 async function searchStaticIndex(kw,limit=20){
   const remoteList=await loadStaticSearchIndex();
-  const list=LOCAL_SEARCH_INDEX.concat(remoteList||[]);
+  const list=LOCAL_SEARCH_INDEX.concat(remoteList||[]).concat(buildCropRegionalSearchIndex());
   const needle=normalizeKeyword(kw).toLowerCase();
   const compact=needle.replace(/\s/g,'');
   const initial=isInitialQuery(needle);

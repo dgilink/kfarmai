@@ -122,11 +122,95 @@ window.KFARM_CROP_PAGE_DATA = (() => {
 
   const nongsaroCropIds = new Set(coreIds);
 
+  const regionOptions = [
+    { value: "", label: "지역 미선택", group: "national" },
+    { value: "seoul", label: "서울특별시", group: "central" },
+    { value: "busan", label: "부산광역시", group: "southern" },
+    { value: "daegu", label: "대구광역시", group: "southern" },
+    { value: "incheon", label: "인천광역시", group: "central" },
+    { value: "gwangju", label: "광주광역시", group: "southern" },
+    { value: "daejeon", label: "대전광역시", group: "central" },
+    { value: "ulsan", label: "울산광역시", group: "southern" },
+    { value: "sejong", label: "세종특별자치시", group: "central" },
+    { value: "gyeonggi", label: "경기도", group: "central" },
+    { value: "gangwon", label: "강원특별자치도", group: "highland" },
+    { value: "chungbuk", label: "충청북도", group: "central" },
+    { value: "chungnam", label: "충청남도", group: "central" },
+    { value: "jeonbuk", label: "전북특별자치도", group: "southern" },
+    { value: "jeonnam", label: "전라남도", group: "southern" },
+    { value: "gyeongbuk", label: "경상북도", group: "southern" },
+    { value: "gyeongnam", label: "경상남도", group: "southern" },
+    { value: "jeju", label: "제주특별자치도", group: "jeju" }
+  ];
+
+  const regionGroups = {
+    national: {
+      label: "전국 평균",
+      shiftNote: "지역을 선택하지 않은 전국 평균 참고정보입니다.",
+      cautions: ["지역별 기온 차이", "작형별 시기 차이", "농업날씨 확인"]
+    },
+    central: {
+      label: "중부권",
+      shiftNote: "남부권보다 파종·정식·수확이 다소 늦어질 수 있습니다.",
+      cautions: ["늦서리", "일교차", "장마 전 배수"]
+    },
+    southern: {
+      label: "남부권",
+      shiftNote: "중부권보다 파종·정식·수확이 다소 빠를 수 있습니다.",
+      cautions: ["고온", "장마", "습도"]
+    },
+    jeju: {
+      label: "제주권",
+      shiftNote: "해양성 기후 영향으로 노지 재배 시기가 일부 달라질 수 있습니다.",
+      cautions: ["강풍", "습도", "태풍"]
+    },
+    highland: {
+      label: "강원권·고랭지 참고",
+      shiftNote: "고랭지·산간 작형은 평지와 재배시기가 크게 다를 수 있습니다.",
+      cautions: ["저온", "서리", "일교차"]
+    }
+  };
+
+  const cultivationOptions = {
+    openField: { label: "노지", note: "기온과 강수, 서리 영향을 직접 받으므로 지역별 차이가 큽니다." },
+    greenhouse: { label: "시설재배", note: "시설 내 온습도 관리에 따라 노지보다 재배시기가 앞당겨지거나 길어질 수 있습니다." },
+    garden: { label: "텃밭", note: "소규모 재배는 배수, 햇빛, 물관리 차이가 큽니다." },
+    pot: { label: "화분·베란다", note: "흙 양과 통풍이 제한되므로 과습과 일조 부족을 확인해야 합니다." },
+    orchard: { label: "과수원", note: "개화, 착과, 비대, 수확 시기가 지역 기상과 품종에 따라 달라집니다." },
+    smartFarm: { label: "스마트팜", note: "센서와 시설 제어 값에 따라 노지보다 작기가 길어질 수 있습니다." }
+  };
+
+  const cropCultivationTypes = {
+    rice: ["openField"],
+    pepper: ["openField", "garden", "greenhouse"],
+    strawberry: ["greenhouse", "garden", "smartFarm"],
+    tomato: ["openField", "greenhouse", "garden", "smartFarm"],
+    cucumber: ["openField", "greenhouse", "garden", "smartFarm"],
+    watermelon: ["openField", "greenhouse", "garden"],
+    "korean-melon": ["greenhouse", "openField", "garden"],
+    cabbage: ["openField", "garden", "greenhouse"],
+    radish: ["openField", "garden"],
+    lettuce: ["openField", "greenhouse", "garden", "pot", "smartFarm"],
+    garlic: ["openField", "garden"],
+    onion: ["openField", "garden"],
+    "green-onion": ["openField", "greenhouse", "garden", "pot"],
+    potato: ["openField", "garden"],
+    "sweet-potato": ["openField", "garden"],
+    soybean: ["openField", "garden"],
+    corn: ["openField", "garden"],
+    apple: ["orchard"],
+    pear: ["orchard"],
+    peach: ["orchard"],
+    grape: ["orchard", "greenhouse"],
+    citrus: ["orchard", "greenhouse"],
+    blueberry: ["orchard", "garden", "pot"]
+  };
+
 
   const core = cropRows.map(([id, name, categoryKey, icon, aliases, summary, season], index) => {
     const category = categoryLabels[categoryKey] || categoryKey;
     const detail = detailByCategory(categoryKey, name);
-    const monthlyCalendar = calendarFor(categoryKey, name);
+    const monthlyCalendar = calendarForRegional(categoryKey, name);
     return {
       id, name, category, icon, aliases, summary, type: "core",
       displayOrder: index + 1, guideLevel: "detailed", calendarLevel: "detailed",
@@ -141,6 +225,10 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       publicDataConnections: publicDataConnectionsFor(id, name, categoryKey),
       marketPriceReference: marketPriceReferenceFor(id, name),
       facilityVegetableReference: facilityVegetableReferenceFor(id, name),
+      availableCultivationTypes: cultivationTypesFor(id, categoryKey),
+      regionAdjustments: regionAdjustmentsFor(id),
+      cultivationAdjustments: cultivationAdjustmentsFor(id),
+      localExtensionSources: localExtensionSourcesFor(name),
       officialSources: [],
       officialImages: officialImagePlaceholders(name),
       representativeImage: representativeImageFor(id, name),
@@ -387,6 +475,275 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     }];
   }
 
+  function cultivationTypesFor(id, categoryKey) {
+    return (cropCultivationTypes[id] || (categoryKey === "fruit_tree" ? ["orchard"] : ["openField", "garden"]))
+      .map(value => ({ value, ...cultivationOptions[value] }))
+      .filter(item => item.label);
+  }
+
+  function regionAdjustmentsFor(id) {
+    return {
+      national: regionSpecificNotes(id, "national"),
+      central: regionSpecificNotes(id, "central"),
+      southern: regionSpecificNotes(id, "southern"),
+      jeju: regionSpecificNotes(id, "jeju"),
+      highland: regionSpecificNotes(id, "highland")
+    };
+  }
+
+  function cultivationAdjustmentsFor(id) {
+    const result = {};
+    cultivationTypesFor(id).forEach(item => {
+      result[item.value] = {
+        label: item.label,
+        note: item.note,
+        points: cultivationSpecificNotes(id, item.value)
+      };
+    });
+    return result;
+  }
+
+  function localExtensionSourcesFor(cropName) {
+    return regionOptions.filter(region => region.value).map(region => ({
+      region: region.label,
+      sourceName: `${region.label} 농업기술원·시군 농업기술센터`,
+      url: null,
+      status: "pending",
+      note: `${cropName} 지역 재배자료는 공식자료 확인 후 순차 연결 예정입니다.`
+    }));
+  }
+
+  function regionSpecificNotes(id, group) {
+    const common = {
+      national: ["지역을 선택하면 권역별 재배시기와 주의사항을 더 구체적으로 볼 수 있습니다."],
+      central: ["늦서리와 일교차를 확인하고 노지 정식 시기를 보수적으로 잡습니다.", "장마 전 배수로와 지주 상태를 점검합니다."],
+      southern: ["중부권보다 정식과 수확이 빠를 수 있어 고온기 관리 일정을 앞당겨 확인합니다.", "장마와 습도 변화에 대비해 배수와 통풍을 확인합니다."],
+      jeju: ["강풍, 습도, 태풍 시기 영향을 함께 확인합니다.", "해양성 기후 영향으로 노지 작형 시기가 달라질 수 있습니다."],
+      highland: ["저온, 일교차, 늦서리 가능성을 함께 확인합니다.", "고랭지 작형은 평지와 달라 별도 공식자료 확인이 필요합니다."]
+    };
+    const cropNotes = {
+      pepper: {
+        central: ["중부권 노지는 늦서리 이후 정식 가능성을 확인합니다.", "장마 전 배수와 지주 고정 상태를 점검합니다."],
+        southern: ["남부권은 정식과 수확이 다소 빠를 수 있어 고온기 물관리 일정을 앞당겨 확인합니다."],
+        highland: ["고랭지는 저온과 일교차로 초기 활착이 늦어질 수 있습니다."]
+      },
+      strawberry: {
+        central: ["시설재배는 저온기 보온과 환기 균형을 확인합니다."],
+        southern: ["고온기 육묘 관리와 시설 내 습도 관리를 함께 확인합니다."],
+        jeju: ["강풍과 습도 영향을 고려해 시설 환기와 보온 상태를 확인합니다."]
+      },
+      rice: {
+        central: ["이앙 전후 저온과 늦서리 가능성을 확인합니다."],
+        southern: ["이앙과 수확이 다소 빠를 수 있어 장마 전후 물관리 일정을 확인합니다."],
+        jeju: ["강풍과 태풍 시기 논물과 쓰러짐 가능성을 확인합니다."],
+        highland: ["저온과 일조 부족이 육묘와 등숙에 미치는 영향을 확인합니다."]
+      },
+      cabbage: {
+        highland: ["고랭지 작형은 여름 고온기 평지 작형과 시기가 크게 다릅니다."],
+        central: ["가을 작형은 정식 전후 고온과 늦장마를 함께 확인합니다."],
+        southern: ["고온기 생육과 배수 상태를 우선 확인합니다."]
+      },
+      radish: {
+        highland: ["고랭지 작형은 평지와 파종·수확 시기가 다를 수 있습니다."],
+        central: ["봄·가을 작형별 늦서리와 가을 저온을 확인합니다."],
+        southern: ["고온기 파종은 생육 지연과 수분 변화를 함께 확인합니다."]
+      },
+      lettuce: {
+        central: ["봄·가을 중심으로 추대와 저온 가능성을 함께 확인합니다."],
+        southern: ["여름 고온기에는 추대와 생육불량 가능성을 더 자주 확인합니다."],
+        jeju: ["바람과 습도 조건에 따라 잎마름과 통풍 상태를 확인합니다."]
+      },
+      garlic: {
+        central: ["월동 전 활착과 봄 생육 재개 시기를 확인합니다."],
+        southern: ["월동 부담은 낮을 수 있으나 봄 고온과 건조를 함께 확인합니다."]
+      },
+      onion: {
+        central: ["월동 전 뿌리 활착과 봄 생육 재개 상태를 확인합니다."],
+        southern: ["초여름 수확 전 고온과 쓰러짐 시기를 확인합니다."]
+      },
+      citrus: {
+        jeju: ["제주권 중심 작물로 강풍, 습도, 월동기 온도 변화를 함께 확인합니다."],
+        southern: ["남부 해안 지역은 월동 온도와 강풍 영향을 확인합니다."],
+        central: ["중부권 노지 기준으로는 공식자료 확인이 필요합니다."]
+      }
+    };
+    const fruitTreeIds = new Set(["apple","pear","peach","grape","blueberry"]);
+    if (fruitTreeIds.has(id)) {
+      const fruitNotes = {
+        central: ["개화기 저온과 늦서리 가능성을 확인합니다.", "수확기는 품종과 지역 기상에 따라 달라질 수 있습니다."],
+        southern: ["개화와 수확이 다소 빠를 수 있어 고온기 수분 관리와 착색 상태를 확인합니다."],
+        highland: ["개화 지연과 일교차 영향을 함께 확인합니다."],
+        jeju: ["강풍과 습도 조건을 함께 확인합니다."]
+      };
+      return [...(common[group] || common.national), ...(fruitNotes[group] || [])];
+    }
+    return [...(common[group] || common.national), ...((cropNotes[id] && cropNotes[id][group]) || [])];
+  }
+
+  function cultivationSpecificNotes(id, value) {
+    const base = {
+      openField: ["기온, 강수, 바람 변화를 직접 받으므로 농업날씨를 함께 확인합니다."],
+      greenhouse: ["시설 내부 온습도, 환기, 관수 간격을 기록합니다."],
+      garden: ["소규모 재배지는 햇빛, 배수, 물관리 편차를 확인합니다."],
+      pot: ["화분은 흙 양이 적어 과습과 건조가 빠르게 나타날 수 있습니다."],
+      orchard: ["전정, 개화, 착과, 비대, 수확 후 관리 일정을 분리해 확인합니다."],
+      smartFarm: ["센서 값과 실제 잎·과실 상태를 함께 확인합니다."]
+    };
+    const special = {
+      strawberry: { greenhouse: ["여름 육묘, 가을 정식, 겨울~봄 수확 흐름을 기준으로 확인합니다."] },
+      lettuce: { pot: ["베란다 재배는 일조 부족과 통풍 부족을 먼저 확인합니다."] },
+      citrus: { orchard: ["월동기 온도와 강풍 영향을 함께 확인합니다."] }
+    };
+    return [...(base[value] || []), ...((special[id] && special[id][value]) || [])];
+  }
+
+  function computeRegionalContext(crop, regionValue = "", cultivationValue = "") {
+    const region = regionOptions.find(item => item.value === regionValue) || regionOptions[0];
+    const group = region.group || "national";
+    const groupInfo = regionGroups[group] || regionGroups.national;
+    const available = crop.availableCultivationTypes || [];
+    const cultivation = available.find(item => item.value === cultivationValue) || available[0] || { value: "", label: "재배유형 미선택", note: "재배유형을 선택하면 관리 포인트를 더 구체적으로 볼 수 있습니다." };
+    const regionPoints = (crop.regionAdjustments && crop.regionAdjustments[group]) || regionSpecificNotes(crop.id, group);
+    const cultivationInfo = (crop.cultivationAdjustments && crop.cultivationAdjustments[cultivation.value]) || { label: cultivation.label, note: cultivation.note, points: [] };
+    const now = new Date();
+    const monthNumber = now.getMonth() + 1;
+    const months = crop.monthlyCalendar || [];
+    const currentMonth = months.find(item => String(item.month).replace("월", "") === String(monthNumber)) || null;
+    const nextMonthNumber = monthNumber === 12 ? 1 : monthNumber + 1;
+    const nextMonth = months.find(item => String(item.month).replace("월", "") === String(nextMonthNumber)) || null;
+    const weatherTasks = [
+      ...(groupInfo.cautions || []),
+      ...((crop.weatherCheckpoints || []).slice(0, 2))
+    ];
+    return {
+      cropName: crop.name,
+      region,
+      group,
+      groupLabel: groupInfo.label,
+      cultivation,
+      shiftNote: groupInfo.shiftNote,
+      cautions: groupInfo.cautions || [],
+      regionPoints,
+      cultivationPoints: cultivationInfo.points || [],
+      cultivationNote: cultivationInfo.note || cultivation.note,
+      currentMonth,
+      nextMonth,
+      monthNumber,
+      weatherTasks,
+      extensionSource: (crop.localExtensionSources || []).find(item => item.region === region.label) || null
+    };
+  }
+
+  function calendarForRegional(categoryKey, cropName) {
+    const templates = {
+      grain: [
+        ["1월", "종자와 재배 계획을 확인하고 전년도 기록을 정리합니다."],
+        ["2월", "못자리 자재와 토양 준비 상태를 점검합니다."],
+        ["3월", "파종 또는 육묘 준비를 시작하고 지역별 기온을 확인합니다."],
+        ["4월", "못자리와 육묘 상태를 확인하고 저온 가능성을 살핍니다."],
+        ["5월", "이앙 전후 활착과 논물 관리 상태를 확인합니다."],
+        ["6월", "분얼기 생육과 물관리, 잡초 발생 여부를 점검합니다."],
+        ["7월", "고온기 생육과 쓰러짐 가능성, 강풍 영향을 살핍니다."],
+        ["8월", "출수와 등숙기 수분 상태, 일조 부족 여부를 확인합니다."],
+        ["9월", "수확 전 품질과 기상 변화를 확인합니다."],
+        ["10월", "수확과 건조 상태를 점검합니다."],
+        ["11월", "수확 후 포장 정리와 다음 작기 토양 상태를 기록합니다."],
+        ["12월", "다음 작기 품종과 재배 일정을 준비합니다."]
+      ],
+      bean: [
+        ["1월", "재배 품종과 포장 계획을 정리합니다."],
+        ["2월", "종자와 배수 계획을 확인합니다."],
+        ["3월", "파종 전 토양 준비와 기상 흐름을 확인합니다."],
+        ["4월", "파종 전 토양과 배수 상태를 확인합니다."],
+        ["5월", "파종과 초기 활착을 확인합니다."],
+        ["6월", "초기 생육과 잡초 관리 필요 여부를 살핍니다."],
+        ["7월", "개화기 수분 상태를 확인합니다."],
+        ["8월", "꼬투리 형성과 고온 스트레스를 확인합니다."],
+        ["9월", "등숙 상태와 수확 전 기상 변화를 확인합니다."],
+        ["10월", "수확과 건조 상태를 확인합니다."],
+        ["11월", "저장 전 건조와 선별 상태를 확인합니다."],
+        ["12월", "다음 작기 기록을 정리합니다."]
+      ],
+      fruit_vegetable: [
+        ["1월", "시설 작형은 보온과 환기 상태를 확인합니다."],
+        ["2월", "육묘와 파종 준비를 점검합니다."],
+        ["3월", "육묘 생육과 정식 예정 포장 상태를 확인합니다."],
+        ["4월", "정식 전후 활착과 저온 피해 가능성을 확인합니다."],
+        ["5월", "초기 생육, 유인, 관수 간격을 점검합니다."],
+        ["6월", "개화·착과와 관수 간격을 살핍니다."],
+        ["7월", "고온·장마기 통풍과 배수를 확인합니다."],
+        ["8월", "수확과 후기 생육, 과실 갈라짐 가능성을 확인합니다."],
+        ["9월", "수확과 후기 생육 상태를 기록합니다."],
+        ["10월", "작기 정리와 시설 환경을 점검합니다."],
+        ["11월", "다음 작기 시설 보온과 배수 계획을 세웁니다."],
+        ["12월", "시설 작형은 보온, 환기, 습도 변화를 확인합니다."]
+      ],
+      leaf_vegetable: [
+        ["1월", "시설 또는 텃밭 재배 계획을 정리합니다."],
+        ["2월", "봄 작형 파종과 육묘를 준비합니다."],
+        ["3월", "파종 또는 정식 전 토양 수분과 배수 상태를 확인합니다."],
+        ["4월", "정식 후 활착과 잎 생육을 확인합니다."],
+        ["5월", "생육과 수확 가능 시기를 함께 확인합니다."],
+        ["6월", "고온기 추대와 잎끝 마름을 확인합니다."],
+        ["7월", "여름 작형은 차광, 통풍, 수분 변화를 확인합니다."],
+        ["8월", "가을 작형 파종 전 토양을 준비합니다."],
+        ["9월", "가을 작형 파종과 초기 생육을 확인합니다."],
+        ["10월", "수확기 품질과 저온 변화를 확인합니다."],
+        ["11월", "저온기 생육과 보온 필요 여부를 확인합니다."],
+        ["12월", "다음 작기 계획과 자재를 점검합니다."]
+      ],
+      root_vegetable: [
+        ["1월", "저장 상태와 다음 작기 계획을 확인합니다."],
+        ["2월", "봄 작형 토양 준비와 배수 계획을 세웁니다."],
+        ["3월", "봄 파종과 배수 상태를 확인합니다."],
+        ["4월", "초기 생육과 토양 수분을 확인합니다."],
+        ["5월", "뿌리 비대 전 생육 균형을 점검합니다."],
+        ["6월", "뿌리 비대와 갈라짐 여부를 확인합니다."],
+        ["7월", "저장 작물은 온습도와 부패 가능성을 확인합니다."],
+        ["8월", "가을 작형 파종을 준비합니다."],
+        ["9월", "가을 작형 초기 생육과 수분 상태를 확인합니다."],
+        ["10월", "수확 전 품질과 저장성을 확인합니다."],
+        ["11월", "수확 후 저장과 선별 상태를 점검합니다."],
+        ["12월", "다음 작기 재배 기록을 정리합니다."]
+      ],
+      bulb_vegetable: [
+        ["1월", "월동 상태와 저온 피해 가능성을 확인합니다."],
+        ["2월", "월동 후 생육 재개 전 포장 상태를 점검합니다."],
+        ["3월", "봄 생육 재개와 잎마름을 확인합니다."],
+        ["4월", "구 비대 초기 물관리와 생육 균형을 확인합니다."],
+        ["5월", "구 비대와 물관리 상태를 확인합니다."],
+        ["6월", "수확과 건조 상태를 점검합니다."],
+        ["7월", "저장 중 온습도와 부패 가능성을 확인합니다."],
+        ["8월", "파종 또는 육묘 준비를 시작합니다."],
+        ["9월", "파종 또는 육묘를 준비합니다."],
+        ["10월", "정식과 월동 전 활착을 확인합니다."],
+        ["11월", "월동 전 배수와 보온 상태를 확인합니다."],
+        ["12월", "월동 중 포장 상태와 기상 변화를 살핍니다."]
+      ],
+      fruit_tree: [
+        ["1월", "휴면기 전정과 동해 흔적을 확인합니다."],
+        ["2월", "동해와 수세 상태를 점검하고 작업 계획을 정리합니다."],
+        ["3월", "개화 전 수세와 저온 가능성을 확인합니다."],
+        ["4월", "개화와 착과 상태를 기록합니다."],
+        ["5월", "적과와 신초 생육 상태를 확인합니다."],
+        ["6월", "과실 비대와 강풍·장마 영향을 확인합니다."],
+        ["7월", "고온기 수분과 일조 상태를 확인합니다."],
+        ["8월", "착색과 수확 전 품질 변화를 확인합니다."],
+        ["9월", "수확기 품질과 기상 변화를 확인합니다."],
+        ["10월", "수확 후 나무 상태와 토양 관리를 점검합니다."],
+        ["11월", "낙엽 후 수세와 토양 상태를 기록합니다."],
+        ["12월", "동계 전정과 다음 작기 계획을 준비합니다."]
+      ]
+    };
+    return (templates[categoryKey] || templates.fruit_vegetable).map(([month, task]) => ({
+      month,
+      title: month,
+      task: `${cropName}: ${task}`,
+      tasks: [task, "지역, 품종, 시설 여부에 따라 시기가 달라질 수 있습니다."],
+      note: "지역, 품종, 시설 여부와 그해 기상 조건에 따라 달라질 수 있는 참고자료입니다."
+    }));
+  }
+
   function calendarFor(categoryKey, cropName) {
     const templates = {
       grain: [
@@ -512,6 +869,10 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       ...(crop.relatedInputs || []),
       ...(crop.monthlyCalendar || []).flatMap(item => [item.month, item.title, item.task, ...(item.tasks || [])]),
       ...(crop.publicDataConnections || []).flatMap(item => [item.label, item.source, item.status, item.note]),
+      ...(crop.availableCultivationTypes || []).flatMap(item => [item.label, item.note]),
+      ...(crop.localExtensionSources || []).flatMap(item => [item.region, item.sourceName, item.note]),
+      ...Object.values(crop.regionAdjustments || {}).flat(),
+      ...Object.values(crop.cultivationAdjustments || {}).flatMap(item => [item.label, item.note, ...(item.points || [])]),
       crop.marketPriceReference?.label,
       crop.marketPriceReference?.note,
       crop.facilityVegetableReference?.label,
@@ -527,5 +888,5 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     }
   });
 
-  return { core, basic, all, coreIds, calendarByCategory, matchesCrop };
+  return { core, basic, all, coreIds, calendarByCategory, matchesCrop, regionOptions, regionGroups, cultivationOptions, computeRegionalContext };
 })();
