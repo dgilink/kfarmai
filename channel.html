@@ -350,6 +350,10 @@ let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', k
 const TAG_LIMIT=5;
 const TAG_SUGGESTIONS=['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
 let currentProfileNickname='';
+const POST_LIKE_STORAGE_KEY='kfarmai_liked_posts';
+function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
+function isPostLiked(id){return likedPostIds().has(String(id));}
+function postLikeLabel(post){return `${isPostLiked(post?.id)?'♥':'♡'} ${Number(post?.like_count||0)}`;}
 
 document.addEventListener('DOMContentLoaded', init);
 async function init(){
@@ -465,7 +469,7 @@ async function loadMiniPosts(targetId,orderColumn){
   if(!wrap||!sb)return;
   wrap.innerHTML='<div class="mini-empty">불러오는 중...</div>';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?30:3);
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,created_at,view_count,like_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?30:3);
     const {data,error}=await query;
     if(error)throw error;
     const posts=(data||[]).filter(postBelongsToCurrentChannel).slice(0,3);
@@ -480,7 +484,7 @@ function renderMiniPosts(wrap,posts,profileMap={}){
     wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
     return;
   }
-  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(post.channels?.name||currentChannel?.name||'일반')}</span><span>조회 ${post.view_count||0}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
+  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(post.channels?.name||currentChannel?.name||'일반')}</span><span>조회 ${post.view_count||0}</span><span>${postLikeLabel(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
 async function renderMiniFallback(wrap){
   const threads=await loadDemoThreads();
@@ -498,7 +502,7 @@ async function loadPosts(){
   isLoading=true;
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,image_urls,view_count,like_count,created_at,channels(name,slug)',{count:'exact'});
     query=applyPostFilters(query);
     const pageSize=currentChannel?80:PAGE_SIZE;
     query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+pageSize-1);
@@ -543,7 +547,7 @@ function renderPosts(posts,totalCount,profileMap={}){
     card.className='post-card'+(thumbHtml?' has-thumb':'');
     card.style.cursor='pointer';
     card.onclick=()=>{location.href='post.html?id='+encodeURIComponent(post.id);};
-    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(post.channels?.name||CHANNEL_CONFIG[slug]||'일반')}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
+    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(post.channels?.name||CHANNEL_CONFIG[slug]||'일반')}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span><span>${postLikeLabel(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
     list.appendChild(card);
   });
 }

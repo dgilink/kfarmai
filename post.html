@@ -236,6 +236,7 @@ let editExistingImages = [];
 let editNewImages = [];
 let currentProfileNickname = '';
 let commentAuthorSnapshots = {};
+const POST_LIKE_STORAGE_KEY = 'kfarmai_liked_posts';
 function readCachedPostPreview(){
   if(!postId)return null;
   try{
@@ -249,6 +250,9 @@ function readCachedPostPreview(){
 }
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function ownerId(){return localStorage.getItem('kfarmai_user_id') || getLocalUserId();}
+function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
+function isPostLiked(id=postId){return likedPostIds().has(String(id));}
+function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -352,6 +356,7 @@ async function loadPost() {
 }
 
 function renderPost(post,profileMap={}) {
+  localLiked = isPostLiked(post.id);
   const slug = post.channels?.slug || '';
   const channelNameValue = post.channels?.name || channelName(slug);
   const isOwner = ownerId() === post.user_id;
@@ -363,6 +368,7 @@ function renderPost(post,profileMap={}) {
   const ownerActions = isOwner ? `<div class="post-owner-actions"><button type="button" onclick="openEditPostModal()">수정</button><button class="delete" type="button" onclick="deletePost()">삭제</button></div>` : '';
   const bodyText=stripCategoryPrefix(post.content||'');
   document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span>♡ ${Number(post.like_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="actions"><span class="stat">댓글과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" onclick="toggleLike()">♡ ${Number(post.like_count || 0).toLocaleString('ko-KR')}</button></div></article>`;
+  renderLikeButton();
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
@@ -486,13 +492,29 @@ function renderRelatedPosts(posts) {
   }).join('');
 }
 
-function toggleLike() {
+function renderLikeButton(){
   const btn = document.getElementById('likeBtn');
   if (!btn || !currentPost) return;
-  localLiked = !localLiked;
-  const base = Number(currentPost.like_count || 0);
   btn.classList.toggle('on', localLiked);
-  btn.textContent = `${localLiked ? '♥' : '♡'} ${(base + (localLiked ? 1 : 0)).toLocaleString('ko-KR')}`;
+  btn.textContent = `${localLiked ? '♥' : '♡'} ${Number(currentPost.like_count || 0).toLocaleString('ko-KR')}`;
+}
+
+async function toggleLike() {
+  if (!currentPost) return;
+  const wasLiked = isPostLiked(currentPost.id);
+  const nextLiked = !wasLiked;
+  const currentCount = Number(currentPost.like_count || 0);
+  const nextCount = Math.max(0, currentCount + (nextLiked ? 1 : -1));
+  setPostLiked(currentPost.id, nextLiked);
+  localLiked = nextLiked;
+  currentPost.like_count = nextCount;
+  renderLikeButton();
+  try {
+    const { error } = await sb.from('posts').update({ like_count: nextCount }).eq('id', currentPost.id);
+    if (error) throw error;
+  } catch (_) {
+    showToast('좋아요 표시는 저장됐지만, 숫자 반영은 잠시 후 다시 확인해주세요.');
+  }
 }
 
 
