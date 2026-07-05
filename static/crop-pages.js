@@ -103,6 +103,13 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     perilla: "perilla-stages-ai.png"
   };
 
+  const growthStageStepLabels = [
+    "\uC721\uBB18/\uCD08\uAE30",
+    "\uC0DD\uC721\uAE30",
+    "\uAC1C\uD654\u00B7\uACB0\uC2E4",
+    "\uC218\uD655\uAE30"
+  ];
+
 
   const core = cropRows.map(([id, name, categoryKey, icon, aliases, summary, season], index) => {
     const category = categoryLabels[categoryKey] || categoryKey;
@@ -124,6 +131,7 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       representativeImage: representativeImageFor(id, name),
       growthStageGroupImage: growthStageGroupImageFor(id, name),
       growthStageImage: growthStageImageFor(id, name),
+      growthStageImages: growthStageStepImagesFor(id, name),
       contentStatus: "official-review-needed",
       officialImageUrl: "", officialImageSource: "", officialImageLicenseNote: "", officialImageStatus: "pending",
       stages: detail.growthStages.map(stage => `${stage.name}: ${stage.points.join(" ")}`),
@@ -158,6 +166,7 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     representativeImage: null,
     growthStageGroupImage: growthStageGroupImageFor(id, name),
     growthStageImage: growthStageImageFor(id, name),
+    growthStageImages: growthStageStepImagesFor(id, name),
     officialImageUrl: "", officialImageSource: "", officialImageLicenseNote: "", officialImageStatus: "pending"
   }));
 
@@ -255,6 +264,19 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       caption: `\u0041\u0049\uB85C \uC0DD\uC131\uD55C ${cropName} \uC0DD\uC721\uB2E8\uACC4 \uCC38\uACE0 \uC774\uBBF8\uC9C0\uC785\uB2C8\uB2E4.`,
       note: "\uC2E4\uC81C \uD488\uC885, \uC0DD\uC721\uC0C1\uD0DC, \uC7AC\uBC30\uD658\uACBD\uC740 \uB2E4\uB97C \uC218 \uC788\uC2B5\uB2C8\uB2E4."
     };
+  }
+
+  function growthStageStepImagesFor(id, cropName) {
+    const file = growthStageImageTargets[id];
+    if (!file) return [];
+    const stem = file.replace("-stages-ai.png", "");
+    return growthStageStepLabels.map((stage, index) => ({
+      type: "ai-generated",
+      stage,
+      url: `/static/crops/stages/steps/${stem}-stage-${index + 1}-ai.png`,
+      alt: `${cropName} ${stage} \uCC38\uACE0 \uC774\uBBF8\uC9C0`,
+      caption: "\u0041\u0049\uB85C \uC0DD\uC131\uD55C \uC0DD\uC721\uB2E8\uACC4 \uCC38\uACE0 \uC774\uBBF8\uC9C0\uC785\uB2C8\uB2E4."
+    }));
   }
 
   function calendarFor(categoryKey, cropName) {
