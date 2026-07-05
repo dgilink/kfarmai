@@ -935,7 +935,24 @@
   }
   .agri-research-chip.active { background: #14532d; color: #fff; border-color: #14532d; }
   .agri-research-list { display: grid; gap: 8px; }
-  .agri-research-card { padding: 11px 12px; }
+  .agri-research-card {
+    padding: 11px 12px;
+    --research-bg: #ECFDF5;
+    --research-border: #BBF7D0;
+    --research-color: #166534;
+  }
+  .agri-research-card.tone-smart { --research-bg: #EFF6FF; --research-border: #BFDBFE; --research-color: #1D4ED8; }
+  .agri-research-card.tone-ai { --research-bg: #F5F3FF; --research-border: #DDD6FE; --research-color: #6D28D9; }
+  .agri-research-card.tone-seed { --research-bg: #FEFCE8; --research-border: #FDE68A; --research-color: #854D0E; }
+  .agri-research-card.tone-facility { --research-bg: #ECFEFF; --research-border: #A5F3FC; --research-color: #0E7490; }
+  .agri-research-card.tone-climate { --research-bg: #FFF7ED; --research-border: #FED7AA; --research-color: #C2410C; }
+  .agri-research-card.tone-protection { --research-bg: #FEF2F2; --research-border: #FECACA; --research-color: #B91C1C; }
+  .agri-research-card.tone-soil { --research-bg: #F7FEE7; --research-border: #D9F99D; --research-color: #4D7C0F; }
+  .agri-research-card .agri-badge {
+    background: var(--research-bg);
+    border-color: var(--research-border);
+    color: var(--research-color);
+  }
   .agri-research-card .agri-card-title { margin-top: 7px; }
   .agri-research-summary {
     margin-top: 7px; color: #374151; font-size: 13px; line-height: 1.55;
@@ -945,10 +962,10 @@
     color: #374151; font-size: 12.5px; line-height: 1.6;
   }
   .agri-research-card.open .agri-research-detail { display: block; }
-  .agri-card-actions { margin-top: 8px; display: flex; gap: 8px; align-items: center; }
+  .agri-card-actions { margin-top: 8px; display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
   .agri-card-actions button {
-    height: 32px; border-radius: 10px; border: 1px solid #BBF7D0;
-    background: #F0FDF4; color: #166534; font-size: 12px; font-weight: 900;
+    height: 32px; border-radius: 10px; border: 1px solid var(--research-border);
+    background: var(--research-bg); color: var(--research-color); font-size: 12px; font-weight: 900;
     padding: 0 10px; white-space: nowrap;
   }
   .agri-issue-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
@@ -2816,7 +2833,8 @@ function agriResearchCardHtml(item){
   const audience=(item.audience||item.whoCares||[]).slice(0,4).join(' · ');
   const crops=(item.relatedCrops||[]).slice(0,4).join(' · ');
   const detailId=`agri-research-${escAttr(item.id)}`;
-  return `<article class="agri-research-card" id="${detailId}">
+  const tone=agriResearchTone(item.category);
+  return `<article class="agri-research-card ${tone}" id="${detailId}">
     <div class="agri-badges"><span class="agri-badge">${escHtml(item.category||'연구동향')}</span>${agriTagBadges(item.tags)}</div>
     <div class="agri-card-title">${escHtml(item.simpleTitle||item.title)}</div>
     <div class="agri-research-detail">
@@ -2830,6 +2848,17 @@ function agriResearchCardHtml(item){
     </div>
     <div class="agri-card-actions"><button type="button" onclick="toggleAgriResearchDetail('${detailId}')">자세히 보기</button></div>
   </article>`;
+}
+function agriResearchTone(category){
+  const key=String(category||'');
+  if(key.includes('스마트'))return 'tone-smart';
+  if(key.includes('AI')||key.includes('로봇'))return 'tone-ai';
+  if(key.includes('품종')||key.includes('종자'))return 'tone-seed';
+  if(key.includes('시설'))return 'tone-facility';
+  if(key.includes('기후'))return 'tone-climate';
+  if(key.includes('병해충')||key.includes('작물보호'))return 'tone-protection';
+  if(key.includes('토양')||key.includes('비료'))return 'tone-soil';
+  return 'tone-smart';
 }
 function toggleAgriResearchDetail(id){
   const card=document.getElementById(id);
