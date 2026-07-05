@@ -2631,15 +2631,16 @@ async function loadMyCounts(userId){
   loadMyPosts(userId);
   loadMyDiagnoses(userId);
 }
-const POST_LIKE_STORAGE_KEY = 'kfarmai_liked_posts';
-const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_post_like_counts';
+const POST_LIKE_STORAGE_KEY = 'kfarmai_synced_liked_posts';
+const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_synced_post_like_counts';
 function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
 function isPostLiked(id){return likedPostIds().has(String(id));}
 function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
 function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
 function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
 function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
-function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?Number(post?.like_count||0):saved;}
+function basePostLikeCount(post){return Number(post?.likes_count ?? post?.like_count ?? 0);}
+function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?basePostLikeCount(post):saved;}
 function postLikeLabel(post){return `${isPostLiked(post?.id)?'\u2665':'\u2661'} ${displayPostLikeCount(post)}`;}
 function postLikeButton(post){
   if(!post?.id)return `<span>${postLikeLabel(post)}</span>`;
@@ -2659,22 +2660,45 @@ async function togglePostLike(event,id){
   event?.preventDefault();
   event?.stopPropagation();
   if(!id)return;
+  if(!currentUser?.id){
+    showToast('로그인 후 하트를 누를 수 있습니다.');
+    if(typeof openMyPanel==='function')openMyPanel();
+    return;
+  }
   const wasLiked=isPostLiked(id);
   const source=event?.currentTarget;
   const currentCount=Number(source?.dataset?.count ?? savedPostLikeCount(id) ?? 0);
   const nextLiked=!wasLiked;
   const nextCount=Math.max(0,currentCount+(nextLiked?1:-1));
-  setPostLiked(id,nextLiked);
-  setSavedPostLikeCount(id,nextCount);
   updatePostLikeButtons(id,nextLiked,nextCount);
   try{
-    if(window._sb){
-      const {error}=await _sb.from('posts').update({like_count:nextCount}).eq('id',id);
-      if(error)throw error;
-    }
+    const savedCount=await persistPostLike(id,nextLiked,nextCount);
+    setPostLiked(id,nextLiked);
+    setSavedPostLikeCount(id,savedCount);
+    updatePostLikeButtons(id,nextLiked,savedCount);
   }catch(error){
     console.warn('post like persistence failed',error);
+    updatePostLikeButtons(id,wasLiked,currentCount);
+    showToast('하트 저장을 위해 Supabase 설정이 필요합니다.');
   }
+}
+async function persistPostLike(id,nextLiked,nextCount){
+  if(!window._sb||!currentUser?.id)throw new Error('missing auth');
+  if(nextLiked){
+    const {error}=await _sb.from('post_likes').insert({post_id:id,user_id:currentUser.id});
+    if(error&&error.code!=='23505')throw error;
+  }else{
+    const {error}=await _sb.from('post_likes').delete().eq('post_id',id).eq('user_id',currentUser.id);
+    if(error)throw error;
+  }
+  let count=nextCount;
+  try{
+    const {count:likeCount,error}=await _sb.from('post_likes').select('*',{count:'exact',head:true}).eq('post_id',id);
+    if(!error&&Number.isFinite(Number(likeCount)))count=Number(likeCount);
+  }catch(_){}
+  try{await _sb.from('posts').update({likes_count:count}).eq('id',id);}catch(_){}
+  try{await _sb.from('posts').update({like_count:count}).eq('id',id);}catch(_){}
+  return count;
 }
 function openMySubview(id){
   if(!currentUser)return;

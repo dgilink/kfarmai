@@ -236,8 +236,8 @@ let editExistingImages = [];
 let editNewImages = [];
 let currentProfileNickname = '';
 let commentAuthorSnapshots = {};
-const POST_LIKE_STORAGE_KEY = 'kfarmai_liked_posts';
-const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_post_like_counts';
+const POST_LIKE_STORAGE_KEY = 'kfarmai_synced_liked_posts';
+const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_synced_post_like_counts';
 function readCachedPostPreview(){
   if(!postId)return null;
   try{
@@ -257,7 +257,8 @@ function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if
 function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
 function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
 function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
-function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?Number(post?.like_count||0):saved;}
+function basePostLikeCount(post){return Number(post?.likes_count ?? post?.like_count ?? 0);}
+function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?basePostLikeCount(post):saved;}
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -510,19 +511,30 @@ function renderLikeButton(){
 
 async function toggleLike() {
   if (!currentPost) return;
+  if (!currentUser?.id) {
+    showToast('로그인 후 하트를 누를 수 있습니다.');
+    openLoginModal();
+    return;
+  }
   const wasLiked = isPostLiked(currentPost.id);
   const nextLiked = !wasLiked;
   const currentCount = displayPostLikeCount(currentPost);
   const nextCount = Math.max(0, currentCount + (nextLiked ? 1 : -1));
-  setPostLiked(currentPost.id, nextLiked);
-  setSavedPostLikeCount(currentPost.id, nextCount);
   localLiked = nextLiked;
   currentPost.like_count = nextCount;
   renderLikeButton();
   try {
-    const { error } = await sb.from('posts').update({ like_count: nextCount }).eq('id', currentPost.id);
-    if (error) throw error;
-  } catch (_) {
+    const savedCount = await persistPostLike(currentPost.id, nextLiked, nextCount);
+    setPostLiked(currentPost.id, nextLiked);
+    setSavedPostLikeCount(currentPost.id, savedCount);
+    localLiked = nextLiked;
+    currentPost.like_count = savedCount;
+    renderLikeButton();
+  } catch (error) {
+    console.warn('post like persistence failed', error);
+    localLiked = wasLiked;
+    currentPost.like_count = currentCount;
+    renderLikeButton();
     showToast('좋아요 표시는 저장됐지만, 숫자 반영은 잠시 후 다시 확인해주세요.');
   }
 }
@@ -531,6 +543,25 @@ async function toggleLike() {
 function editComment(id, content){const el=document.getElementById('comment-'+id);if(!el)return;el.querySelector('.comment-body').innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${id}">${esc(content)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${id}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;}
 async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');try{const author=commentAuthorSnapshots[id]||displayNameForUser(currentUser);const {error}=await sb.from('comments').update({content:contentWithCategory(value,'',author)}).eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
 async function deleteComment(id){if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('comments').delete().eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 삭제되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 삭제에 실패했습니다.');}}
+
+async function persistPostLike(id,nextLiked,nextCount){
+  if(!sb||!currentUser?.id)throw new Error('missing auth');
+  if(nextLiked){
+    const {error}=await sb.from('post_likes').insert({post_id:id,user_id:currentUser.id});
+    if(error&&error.code!=='23505')throw error;
+  }else{
+    const {error}=await sb.from('post_likes').delete().eq('post_id',id).eq('user_id',currentUser.id);
+    if(error)throw error;
+  }
+  let count=nextCount;
+  try{
+    const {count:likeCount,error}=await sb.from('post_likes').select('*',{count:'exact',head:true}).eq('post_id',id);
+    if(!error&&Number.isFinite(Number(likeCount)))count=Number(likeCount);
+  }catch(_){}
+  try{await sb.from('posts').update({likes_count:count}).eq('id',id);}catch(_){}
+  try{await sb.from('posts').update({like_count:count}).eq('id',id);}catch(_){}
+  return count;
+}
 
 function runSearch() {
   const q = document.getElementById('searchInput').value.trim();
