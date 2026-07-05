@@ -10,14 +10,14 @@
   :root { --green:#1D9E75; --green-dark:#0E8A5F; --border:#E5E7EB; --bg:#F6F8F5; --text:#111827; --muted:#6B7280; --card:#fff; }
   * { box-sizing:border-box; }
   html, body { margin:0; min-height:100%; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif; word-break:keep-all; line-break:strict; }
-  body { padding-bottom:78px; }
+  body { padding-bottom:18px; padding-bottom:calc(18px + env(safe-area-inset-bottom)); }
   button, input, textarea, select { word-break:keep-all; line-break:strict; }
   p, span, div, li, h1, h2, h3, h4, h5, h6, .card, .section, .notice, .description, .post-title, .post-content, .comment-content { word-break:keep-all; overflow-wrap:break-word; line-break:strict; }
   .url, .email, .code, .mono, .tag, .hash-tag, pre, code { word-break:break-all; overflow-wrap:anywhere; }
   button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .quick-topic, .category-tab, .badge { word-break:keep-all; white-space:nowrap; }
   a { color:inherit; text-decoration:none; }
   .app { max-width:520px; margin:0 auto; min-height:100vh; background:var(--bg); }
-  .header { position:sticky; top:0; z-index:20; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(14px); }
+  .header { position:sticky; top:0; z-index:100; background:rgba(255,255,255,.96); border-bottom:1px solid var(--border); backdrop-filter:blur(14px); transform:translateZ(0); }
   .top { height:58px; display:grid; grid-template-columns:42px auto 1fr; align-items:center; gap:8px; padding:0 14px; }
   .back { width:38px; height:38px; border:0; border-radius:50%; background:#F3F4F6; font-size:20px; cursor:pointer; }
   .channel-title { min-width:0; font-size:18px; font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -76,12 +76,8 @@
   .empty, .loading { color:#777; text-align:left; padding:12px 4px; font-size:13px; line-height:1.55; }
   .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(29,158,117,.18); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
   @keyframes spin { to { transform:rotate(360deg); } }
-  .fab { position:fixed; right:calc(50% - 246px); bottom:86px; z-index:45; height:48px; padding:0 18px; border:0; border-radius:999px; background:var(--green); color:#fff; font-size:15px; font-weight:900; box-shadow:0 10px 24px rgba(29,158,117,.34); cursor:pointer; }
+  .fab { position:fixed; right:calc(50% - 246px); bottom:22px; bottom:calc(22px + env(safe-area-inset-bottom)); z-index:45; height:48px; padding:0 18px; border:0; border-radius:999px; background:var(--green); color:#fff; font-size:15px; font-weight:900; box-shadow:0 10px 24px rgba(29,158,117,.34); cursor:pointer; }
   @media (max-width:540px) { .fab { right:16px; } }
-  .bottom-nav { position:fixed; left:50%; bottom:0; transform:translateX(-50%); z-index:50; width:100%; max-width:520px; height:66px; display:flex; background:rgba(255,255,255,.97); border-top:1px solid var(--border); backdrop-filter:blur(14px); }
-  .nav-item { flex:1; border:0; background:transparent; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#9CA3AF; font-size:10px; font-weight:800; cursor:pointer; }
-  .nav-item svg { width:22px; height:22px; }
-  .nav-item.active { color:var(--green); }
   .modal-overlay, .my-panel-overlay { position:fixed; inset:0; z-index:100; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.38); }
   .modal-overlay.open, .my-panel-overlay.open { display:flex; }
   .modal { width:100%; max-width:520px; max-height:88vh; overflow:auto; background:#fff; border-radius:22px 22px 0 0; padding:18px 18px 24px; }
@@ -123,7 +119,7 @@
   .email-auth-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
   .btn-email { border:0; background:var(--green); color:#fff; }
   .btn-email.secondary { background:#111827; }
-  .toast { position:fixed; left:50%; bottom:84px; transform:translateX(-50%); z-index:200; background:#111; color:#fff; border-radius:999px; padding:11px 16px; font-size:13px; font-weight:800; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .toast { position:fixed; left:50%; bottom:24px; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:200; background:#111; color:#fff; border-radius:999px; padding:11px 16px; font-size:13px; font-weight:800; opacity:0; pointer-events:none; transition:opacity .2s; }
   .toast.show { opacity:1; }
 </style>
 </head>
@@ -213,14 +209,6 @@
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
   <button class="fab" type="button" onclick="openWriteFlow()">+ 글쓰기</button>
 </div>
-
-<nav class="bottom-nav">
-  <a class="nav-item" href="index.html"><svg><use href="#nav-home"/></svg><span>홈</span></a>
-  <a class="nav-item active" href="channel.html"><svg><use href="#nav-q"/></svg><span>질문</span></a>
-  <a class="nav-item" href="index.html#diagnosis"><svg><use href="#nav-d"/></svg><span>진단</span></a>
-  <a class="nav-item" href="agri_map.html"><svg><use href="#nav-pin"/></svg><span>주변</span></a>
-  <button class="nav-item" type="button" onclick="safeOpenMyPanel()"><svg><use href="#nav-my"/></svg><span>MY</span></button>
-</nav>
 
 <div class="modal-overlay" id="writeModal" onclick="if(event.target===this)closeWriteModal()">
   <div class="modal">

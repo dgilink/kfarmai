@@ -18,8 +18,10 @@
 
 /* 헤더 검색바 */
 .hd-search {
+  position:sticky;top:57px;z-index:49;
   padding:10px 14px;background:#f0f9f2;border-bottom:2px solid #c0e0c8;
   display:flex;gap:8px;align-items:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.04);
 }
 .hd-input {
   flex:1;padding:10px 14px;border:1.5px solid #b0d8b8;border-radius:24px;
@@ -35,6 +37,7 @@
 
 /* 탭 */
 .tab-bar {
+  position:sticky;top:111px;z-index:48;
   display:flex;background:white;border-bottom:2px solid #e8e8e8;
   overflow-x:auto;scrollbar-width:none;
 }
@@ -160,14 +163,6 @@
 </div>
 
 <!-- 바텀 네비 -->
-<nav style="position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8e8e8;display:flex;z-index:100;">
-  <a href="index.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏠</span><span>홈</span></a>
-  <a href="agri_map.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🗺️</span><span>농약사</span></a>
-  <a href="mfg.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🏭</span><span>제조공급</span></a>
-  <a href="news_sub.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">📰</span><span>소식</span></a>
-  <a href="links.html" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 0 10px;color:#999;font-size:11px;gap:2px;text-decoration:none;"><span style="font-size:20px;">🔗</span><span>사이트</span></a>
-</nav>
-
 <!-- 데이터 -->
 <script src="static/pesticide_data.js"></script>
 <script src="static/santo_data.js"></script>
