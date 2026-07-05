@@ -266,7 +266,7 @@
       render(cached);
     }
   }catch(_){}
-  const select = 'id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name,slug)';
+  const select = 'id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en';
   const url = `${apiUrl}/rest/v1/posts?select=${encodeURIComponent(select)}&id=eq.${encodeURIComponent(id)}&limit=1`;
   const controller = new AbortController();
   const timeout = setTimeout(()=>controller.abort(), 5000);
@@ -574,7 +574,7 @@ function renderRelatedPosts(posts) {
   }
   list.innerHTML = posts.map(post => {
     const slug = post.channels?.slug || '';
-    return `<a class="related-card" href="post.html?id=${encodeURIComponent(post.id)}">
+    return `<a class="related-card" href="post.html?v=20260705c&id=${encodeURIComponent(post.id)}">
       <span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(post.channels?.name || channelName(slug))}</span>
       <div class="related-title">${esc(post.title || '제목 없음')}</div>
       <div class="related-meta">${post.region_tag ? '#' + esc(post.region_tag) + ' · ' : ''}${timeAgo(post.created_at)}</div>
