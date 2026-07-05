@@ -374,74 +374,8 @@ let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', k
 const TAG_LIMIT=5;
 const TAG_SUGGESTIONS=['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
 let currentProfileNickname='';
-const POST_LIKE_STORAGE_KEY='kfarmai_synced_liked_posts';
-const POST_LIKE_COUNT_STORAGE_KEY='kfarmai_synced_post_like_counts';
-function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
-function isPostLiked(id){return likedPostIds().has(String(id));}
-function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
-function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
-function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
-function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
-function basePostLikeCount(post){return Number(post?.likes_count ?? post?.like_count ?? 0);}
-function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?basePostLikeCount(post):saved;}
-function postLikeLabel(post){return `${isPostLiked(post?.id)?'\u2665':'\u2661'} ${displayPostLikeCount(post)}`;}
-function postLikeButton(post){
-  if(!post?.id)return `<span>${postLikeLabel(post)}</span>`;
-  const liked=isPostLiked(post.id);
-  const count=displayPostLikeCount(post);
-  return `<button class="inline-like-btn${liked?' on':''}" type="button" data-post-like="${esc(post.id)}" data-count="${count}" onclick="togglePostLike(event,'${esc(post.id)}')">${liked?'\u2665':'\u2661'} ${count}</button>`;
-}
-function updatePostLikeButtons(id,liked,count){
-  document.querySelectorAll('[data-post-like]').forEach(btn=>{
-    if(String(btn.dataset.postLike)!==String(id))return;
-    btn.dataset.count=String(count);
-    btn.classList.toggle('on',liked);
-    btn.textContent=`${liked?'\u2665':'\u2661'} ${count}`;
-  });
-}
-async function togglePostLike(event,id){
-  event?.preventDefault();
-  event?.stopPropagation();
-  if(!id)return;
-  if(!currentUser?.id){
-    showToast('로그인 후 하트를 누를 수 있습니다.');
-    openLoginModal();
-    return;
-  }
-  const wasLiked=isPostLiked(id);
-  const source=event?.currentTarget;
-  const currentCount=Number(source?.dataset?.count ?? savedPostLikeCount(id) ?? 0);
-  const nextLiked=!wasLiked;
-  const nextCount=Math.max(0,currentCount+(nextLiked?1:-1));
-  updatePostLikeButtons(id,nextLiked,nextCount);
-  try{
-    const savedCount=await persistPostLike(id,nextLiked,nextCount);
-    setPostLiked(id,nextLiked);
-    setSavedPostLikeCount(id,savedCount);
-    updatePostLikeButtons(id,nextLiked,savedCount);
-  }catch(error){
-    console.warn('post like persistence failed',error);
-    updatePostLikeButtons(id,wasLiked,currentCount);
-    showToast('하트 저장을 위해 Supabase 설정이 필요합니다.');
-  }
-}
-async function persistPostLike(id,nextLiked,nextCount){
-  if(!sb||!currentUser?.id)throw new Error('missing auth');
-  if(nextLiked){
-    const {error}=await sb.from('post_likes').insert({post_id:id,user_id:currentUser.id});
-    if(error&&error.code!=='23505')throw error;
-  }else{
-    const {error}=await sb.from('post_likes').delete().eq('post_id',id).eq('user_id',currentUser.id);
-    if(error)throw error;
-  }
-  let count=nextCount;
-  try{
-    const {count:likeCount,error}=await sb.from('post_likes').select('*',{count:'exact',head:true}).eq('post_id',id);
-    if(!error&&Number.isFinite(Number(likeCount)))count=Number(likeCount);
-  }catch(_){}
-  try{await sb.from('posts').update({likes_count:count}).eq('id',id);}catch(_){}
-  try{await sb.from('posts').update({like_count:count}).eq('id',id);}catch(_){}
-  return count;
+function postLikeButton(){
+  return '';
 }
 
 document.addEventListener('DOMContentLoaded', init);
@@ -566,7 +500,7 @@ async function loadMiniPosts(targetId,orderColumn){
   if(!wrap||!sb)return;
   wrap.innerHTML='<div class="mini-empty">불러오는 중...</div>';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?30:3);
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?30:3);
     const {data,error}=await query;
     if(error)throw error;
     const posts=(data||[]).filter(postBelongsToCurrentChannel).slice(0,3);
@@ -602,7 +536,7 @@ async function loadPosts(){
   isLoading=true;
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
     query=applyPostFilters(query);
     const pageSize=currentChannel?80:PAGE_SIZE;
     query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+pageSize-1);
@@ -646,7 +580,7 @@ function renderPosts(posts,totalCount,profileMap={}){
     const imageUrls=normalizeImages(post.image_urls);
     const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
     const commentCount=0;
-    const category=extractCategoryFromContent(post.content);
+    const category=post.crop_tag||extractCategoryFromContent(post.content);
     const preview=stripPostPrefixes(post.content||'');
     const card=document.createElement('article');
     card.className='post-card'+(thumbHtml?' has-thumb':'');
@@ -871,7 +805,7 @@ async function submitPost(){
     const userId=session?.user?.id||getLocalUserId();
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const {error}=await sb.from('posts').insert({user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,category,channelName,region,selectedPostTags,displayNameForUser(currentUser)),region_tag:region||null,image_urls:imageUrls});
+    const {error}=await sb.from('posts').insert({user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(currentUser)),crop_tag:category||null,region_tag:region||null,image_urls:imageUrls});
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
     closeWriteModal();
@@ -895,7 +829,7 @@ function extractCategoryFromContent(content){
   return match ? match[1].trim() : '';
 }
 function extractAuthorNicknameFromContent(content){
-  const match=String(content||'').match(/^\[작성자:\s*([^\]]+)\]/m);
+  const match=String(content||'').match(/^\[(?:\uC791\uC131\uC790|[^:\]]*):\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
 }
 function extractTagsFromContent(content){
@@ -908,18 +842,14 @@ function renderPostTags(content){
   return tags.length?`<div class="post-tags">${tags.map(tag=>`<span class="post-tag">${esc(tag)}</span>`).join('')}</div>`:'';
 }
 function stripPostPrefixes(content){
-  return String(content||'')
-    .replace(/^\[(작성자|카테고리|대표 증상|태그|채널|지역):\s*[^\]]+\]\s*/gm,'')
-    .trim();
+  return String(content||'').replace(/^\[(?:\uC791\uC131\uC790|\uCC44\uB110|\uC9C0\uC5ED|\uB300\uD45C\s*\uC99D\uC0C1|\uD0DC\uADF8|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
 }
 function contentWithCategory(content,category,channelName='',region='',tags=[],authorName=''){
   const clean=String(content||'').trim();
   const prefix=[
     authorName?`[작성자: ${authorName}]`:'',
     channelName?`[채널: ${channelName}]`:'',
-    region?`[지역: ${region}]`:'',
-    category?`[대표 증상: ${category}]`:'',
-    tags.length?`[태그: ${tags.join(' ')}]`:''
+    region?`[지역: ${region}]`:''
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }

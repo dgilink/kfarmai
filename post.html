@@ -231,34 +231,10 @@ const openEditOnLoad = params.get('edit') === '1';
 let sb;
 let currentUser = null;
 let currentPost = null;
-let localLiked = false;
 let editExistingImages = [];
 let editNewImages = [];
 let currentProfileNickname = '';
 let commentAuthorSnapshots = {};
-const POST_LIKE_STORAGE_KEY = 'kfarmai_synced_liked_posts';
-const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_synced_post_like_counts';
-function readCachedPostPreview(){
-  if(!postId)return null;
-  try{
-    const raw=sessionStorage.getItem('kfarmai_post_preview');
-    if(!raw)return null;
-    const post=JSON.parse(raw);
-    if(String(post?.id)!==String(postId))return null;
-    if(post._cachedAt&&Date.now()-Number(post._cachedAt)>5*60*1000)return null;
-    return post;
-  }catch(_){return null;}
-}
-function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
-function ownerId(){return localStorage.getItem('kfarmai_user_id') || getLocalUserId();}
-function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
-function isPostLiked(id=postId){return likedPostIds().has(String(id));}
-function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
-function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
-function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
-function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
-function basePostLikeCount(post){return Number(post?.likes_count ?? post?.like_count ?? 0);}
-function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?basePostLikeCount(post):saved;}
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -346,7 +322,7 @@ async function loadPost() {
   try {
     const { data, error } = await sb
       .from('posts')
-      .select('*, channels(name, slug)')
+      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name, slug)')
       .eq('id', postId)
       .single();
     if (error) throw error;
@@ -362,31 +338,29 @@ async function loadPost() {
 }
 
 function renderPost(post,profileMap={}) {
-  localLiked = isPostLiked(post.id);
   const slug = post.channels?.slug || '';
   const channelNameValue = post.channels?.name || channelName(slug);
   const isOwner = !!currentUser?.id && currentUser.id === post.user_id;
-  const categoryLabel = post.category || extractCategoryFromContent(post.content);
+  const categoryLabel = post.crop_tag || extractCategoryFromContent(post.content);
   document.getElementById('channelTitle').textContent = channelNameValue;
   document.title = `${post.title || '게시글'} - kFarmAI`;
   const images = normalizeImages(post.image_urls);
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
   const ownerActions = isOwner ? `<div class="post-owner-actions"><button type="button" onclick="openEditPostModal()">수정</button><button class="delete" type="button" onclick="deletePost()">삭제</button></div>` : '';
   const bodyText=stripCategoryPrefix(post.content||'');
-  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span><span id="postLikeMeta">${localLiked?'♥':'♡'} ${displayPostLikeCount(post).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="actions"><span class="stat">댓글과 비슷한 질문을 함께 참고하세요.</span><button class="like-btn" id="likeBtn" type="button" data-post-like="${escAttr(post.id)}" data-count="${displayPostLikeCount(post)}" onclick="toggleLike()">♡ ${displayPostLikeCount(post).toLocaleString('ko-KR')}</button></div></article>`;
-  renderLikeButton();
+  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<h1 class="post-title">${esc(post.title || '제목 없음')}</h1><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}${ownerActions}<div class="actions"><span class="stat">댓글과 비슷한 질문을 함께 참고하세요.</span></div></article>`;
 }
 
 function openImageModal(url){const modal=document.getElementById('imageModal');document.getElementById('imageModalImg').src=url;modal.classList.add('show');}
 function closeImageModal(){document.getElementById('imageModal').classList.remove('show');document.getElementById('imageModalImg').removeAttribute('src');}
-function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.category||extractCategoryFromContent(currentPost.content)||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=stripCategoryPrefix(currentPost.content||'');editExistingImages=normalizeImages(currentPost.image_urls);editNewImages=[];renderEditImagePreview();document.getElementById('editPostModal').classList.add('open');}
+function openEditPostModal(){if(!currentPost)return;document.getElementById('editPostCategory').value=currentPost.crop_tag||extractCategoryFromContent(currentPost.content)||'';document.getElementById('editPostTitle').value=currentPost.title||'';document.getElementById('editPostContent').value=stripCategoryPrefix(currentPost.content||'');editExistingImages=normalizeImages(currentPost.image_urls);editNewImages=[];renderEditImagePreview();document.getElementById('editPostModal').classList.add('open');}
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
 function handleEditPostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));const remain=3-editExistingImages.length-editNewImages.length;if(remain<=0){showToast('사진은 최대 3장까지 첨부할 수 있습니다.');input.value='';return;}editNewImages=editNewImages.concat(incoming.slice(0,remain));input.value='';renderEditImagePreview();}
 function removeEditExistingImage(idx){editExistingImages.splice(idx,1);renderEditImagePreview();}
 function removeEditNewImage(idx){editNewImages.splice(idx,1);renderEditImagePreview();}
 function renderEditImagePreview(){const wrap=document.getElementById('editImagePreview');if(!wrap)return;const existing=editExistingImages.map((url,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(url)}" alt="기존 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditExistingImage(${idx})">&times;</button></div>`).join('');const added=editNewImages.map((file,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(URL.createObjectURL(file))}" alt="새 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditNewImage(${idx})">&times;</button></div>`).join('');wrap.innerHTML=existing+added||'<div class="empty" style="padding:12px;width:100%">첨부된 사진이 없습니다.</div>';}
 async function uploadEditPostImages(userId){const urls=[];for(let i=0;i<editNewImages.length;i++){const file=editNewImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
-async function savePostEdit(){if(!currentUser?.id||!currentPost||currentUser.id!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(currentUser.id);const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);const {data,error}=await sb.from('posts').update({title,content:contentWithCategory(content,category,author),image_urls}).eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 수정 권한이 없거나 이미 삭제된 글입니다.');closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast(err.message||'수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
+async function savePostEdit(){if(!currentUser?.id||!currentPost||currentUser.id!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(currentUser.id);const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);const {data,error}=await sb.from('posts').update({title,content:contentWithCategory(content,'',author),crop_tag:category||null,image_urls}).eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 수정 권한이 없거나 이미 삭제된 글입니다.');closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast(err.message||'수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
 async function deletePost(){if(!currentUser?.id||!currentPost||currentUser.id!==currentPost.user_id)return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {data,error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 삭제 권한이 없거나 이미 삭제된 글입니다.');location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
 
 
@@ -440,7 +414,7 @@ async function submitComment() {
   const btn = document.getElementById('commentSubmit');
   btn.disabled = true;
   try {
-    const { error } = await sb.from('comments').insert({ post_id:postId, user_id:userId, content:contentWithCategory(content,'',displayNameForUser(currentUser)) });
+    const { error } = await sb.from('comments').insert({ post_id:postId, user_id:userId, content:contentWithCategory(content,'',displayNameForUser(currentUser)), is_ai:false });
     if (error) throw error;
     document.getElementById('commentInput').value = '';
     showToast('댓글이 등록되었습니다.');
@@ -498,70 +472,9 @@ function renderRelatedPosts(posts) {
   }).join('');
 }
 
-function renderLikeButton(){
-  const btn = document.getElementById('likeBtn');
-  if (!btn || !currentPost) return;
-  const count = displayPostLikeCount(currentPost);
-  btn.classList.toggle('on', localLiked);
-  btn.dataset.count = String(count);
-  btn.textContent = `${localLiked ? '♥' : '♡'} ${count.toLocaleString('ko-KR')}`;
-  const meta = document.getElementById('postLikeMeta');
-  if (meta) meta.textContent = `${localLiked ? '♥' : '♡'} ${count.toLocaleString('ko-KR')}`;
-}
-
-async function toggleLike() {
-  if (!currentPost) return;
-  if (!currentUser?.id) {
-    showToast('로그인 후 하트를 누를 수 있습니다.');
-    openLoginModal();
-    return;
-  }
-  const wasLiked = isPostLiked(currentPost.id);
-  const nextLiked = !wasLiked;
-  const currentCount = displayPostLikeCount(currentPost);
-  const nextCount = Math.max(0, currentCount + (nextLiked ? 1 : -1));
-  localLiked = nextLiked;
-  currentPost.like_count = nextCount;
-  renderLikeButton();
-  try {
-    const savedCount = await persistPostLike(currentPost.id, nextLiked, nextCount);
-    setPostLiked(currentPost.id, nextLiked);
-    setSavedPostLikeCount(currentPost.id, savedCount);
-    localLiked = nextLiked;
-    currentPost.like_count = savedCount;
-    renderLikeButton();
-  } catch (error) {
-    console.warn('post like persistence failed', error);
-    localLiked = wasLiked;
-    currentPost.like_count = currentCount;
-    renderLikeButton();
-    showToast('좋아요 표시는 저장됐지만, 숫자 반영은 잠시 후 다시 확인해주세요.');
-  }
-}
-
-
 function editComment(id, content){const el=document.getElementById('comment-'+id);if(!el)return;el.querySelector('.comment-body').innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${id}">${esc(content)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${id}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;}
 async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');if(!currentUser?.id)return showToast('로그인 후 댓글을 수정할 수 있습니다.');try{const author=commentAuthorSnapshots[id]||displayNameForUser(currentUser);const {data,error}=await sb.from('comments').update({content:contentWithCategory(value,'',author)}).eq('id',id).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('댓글 수정 권한이 없거나 이미 삭제된 댓글입니다.');showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
 async function deleteComment(id){if(!confirm('정말 삭제하시겠습니까?'))return;if(!currentUser?.id)return showToast('로그인 후 댓글을 삭제할 수 있습니다.');try{const {data,error}=await sb.from('comments').delete().eq('id',id).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('댓글 삭제 권한이 없거나 이미 삭제된 댓글입니다.');showToast('댓글이 삭제되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 삭제에 실패했습니다.');}}
-
-async function persistPostLike(id,nextLiked,nextCount){
-  if(!sb||!currentUser?.id)throw new Error('missing auth');
-  if(nextLiked){
-    const {error}=await sb.from('post_likes').insert({post_id:id,user_id:currentUser.id});
-    if(error&&error.code!=='23505')throw error;
-  }else{
-    const {error}=await sb.from('post_likes').delete().eq('post_id',id).eq('user_id',currentUser.id);
-    if(error)throw error;
-  }
-  let count=nextCount;
-  try{
-    const {count:likeCount,error}=await sb.from('post_likes').select('*',{count:'exact',head:true}).eq('post_id',id);
-    if(!error&&Number.isFinite(Number(likeCount)))count=Number(likeCount);
-  }catch(_){}
-  try{await sb.from('posts').update({likes_count:count}).eq('id',id);}catch(_){}
-  try{await sb.from('posts').update({like_count:count}).eq('id',id);}catch(_){}
-  return count;
-}
 
 function runSearch() {
   const q = document.getElementById('searchInput').value.trim();
@@ -601,15 +514,15 @@ function extractCategoryFromContent(content){
   return match ? match[1].trim() : '';
 }
 function extractAuthorNicknameFromContent(content){
-  const match=String(content||'').match(/^\[작성자:\s*([^\]]+)\]/m);
+  const match=String(content||'').match(/^\[(?:\uC791\uC131\uC790|[^:\]]*):\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
 }
 function stripCategoryPrefix(content){
-  return String(content||'').replace(/^\[(작성자|카테고리|대표 증상|태그|채널|지역):\s*[^\]]+\]\s*/gm,'').trim();
+  return String(content||'').replace(/^\[(?:\uC791\uC131\uC790|\uCC44\uB110|\uC9C0\uC5ED|\uB300\uD45C\s*\uC99D\uC0C1|\uD0DC\uADF8|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
 }
 function contentWithCategory(content,category,authorName=''){
   const clean=String(content||'').trim();
-  const prefix=[authorName?`[작성자: ${authorName}]`:'',category?`[대표 증상: ${category}]`:'' ].filter(Boolean).join('\n');
+  const prefix=[authorName?`[작성자: ${authorName}]`:''].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }
 function esc(value) {

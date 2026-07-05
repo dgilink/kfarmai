@@ -2637,74 +2637,8 @@ async function loadMyCounts(userId){
   loadMyPosts(userId);
   loadMyDiagnoses(userId);
 }
-const POST_LIKE_STORAGE_KEY = 'kfarmai_synced_liked_posts';
-const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_synced_post_like_counts';
-function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
-function isPostLiked(id){return likedPostIds().has(String(id));}
-function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
-function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
-function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
-function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
-function basePostLikeCount(post){return Number(post?.likes_count ?? post?.like_count ?? 0);}
-function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?basePostLikeCount(post):saved;}
-function postLikeLabel(post){return `${isPostLiked(post?.id)?'\u2665':'\u2661'} ${displayPostLikeCount(post)}`;}
-function postLikeButton(post){
-  if(!post?.id)return `<span>${postLikeLabel(post)}</span>`;
-  const liked=isPostLiked(post.id);
-  const count=displayPostLikeCount(post);
-  return `<button class="inline-like-btn${liked?' on':''}" type="button" data-post-like="${escAttr(post.id)}" data-count="${count}" onclick="togglePostLike(event,'${escAttr(post.id)}')">${liked?'\u2665':'\u2661'} ${count}</button>`;
-}
-function updatePostLikeButtons(id,liked,count){
-  document.querySelectorAll('[data-post-like]').forEach(btn=>{
-    if(String(btn.dataset.postLike)!==String(id))return;
-    btn.dataset.count=String(count);
-    btn.classList.toggle('on',liked);
-    btn.textContent=`${liked?'\u2665':'\u2661'} ${count}`;
-  });
-}
-async function togglePostLike(event,id){
-  event?.preventDefault();
-  event?.stopPropagation();
-  if(!id)return;
-  if(!currentUser?.id){
-    showToast('로그인 후 하트를 누를 수 있습니다.');
-    if(typeof openMyPanel==='function')openMyPanel();
-    return;
-  }
-  const wasLiked=isPostLiked(id);
-  const source=event?.currentTarget;
-  const currentCount=Number(source?.dataset?.count ?? savedPostLikeCount(id) ?? 0);
-  const nextLiked=!wasLiked;
-  const nextCount=Math.max(0,currentCount+(nextLiked?1:-1));
-  updatePostLikeButtons(id,nextLiked,nextCount);
-  try{
-    const savedCount=await persistPostLike(id,nextLiked,nextCount);
-    setPostLiked(id,nextLiked);
-    setSavedPostLikeCount(id,savedCount);
-    updatePostLikeButtons(id,nextLiked,savedCount);
-  }catch(error){
-    console.warn('post like persistence failed',error);
-    updatePostLikeButtons(id,wasLiked,currentCount);
-    showToast('하트 저장을 위해 Supabase 설정이 필요합니다.');
-  }
-}
-async function persistPostLike(id,nextLiked,nextCount){
-  if(!window._sb||!currentUser?.id)throw new Error('missing auth');
-  if(nextLiked){
-    const {error}=await _sb.from('post_likes').insert({post_id:id,user_id:currentUser.id});
-    if(error&&error.code!=='23505')throw error;
-  }else{
-    const {error}=await _sb.from('post_likes').delete().eq('post_id',id).eq('user_id',currentUser.id);
-    if(error)throw error;
-  }
-  let count=nextCount;
-  try{
-    const {count:likeCount,error}=await _sb.from('post_likes').select('*',{count:'exact',head:true}).eq('post_id',id);
-    if(!error&&Number.isFinite(Number(likeCount)))count=Number(likeCount);
-  }catch(_){}
-  try{await _sb.from('posts').update({likes_count:count}).eq('id',id);}catch(_){}
-  try{await _sb.from('posts').update({like_count:count}).eq('id',id);}catch(_){}
-  return count;
+function postLikeButton(){
+  return '';
 }
 function openMySubview(id){
   if(!currentUser)return;
@@ -2727,7 +2661,7 @@ async function loadMyPosts(userId){
     const data=await fetchMyPosts(userId);
     if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>{
-      const category=extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
+      const category=post.crop_tag||extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
       const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
       const meta=[
         displayNameForPost(post,{[userId]:displayNameForUser(currentUser)}),
@@ -2754,7 +2688,7 @@ async function loadMyPosts(userId){
 async function fetchMyPosts(userId){
   const base=query=>query.eq('user_id',userId).order('created_at',{ascending:false}).limit(10);
   try{
-    const {data,error}=await base(_sb.from('posts').select('id, title, content, created_at, region_tag, view_count, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, title, content, crop_tag, created_at, region_tag, view_count, channels(name, slug)'));
     if(error)throw error;
     return data||[];
   }catch(e){
@@ -2859,7 +2793,7 @@ function extractCategoryFromContent(content){
   return match ? match[1].trim() : '';
 }
 function extractAuthorNicknameFromContent(content){
-  const match=String(content||'').match(/^\[작성자:\s*([^\]]+)\]/m);
+  const match=String(content||'').match(/^\[(?:\uC791\uC131\uC790|[^:\]]*):\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
 }
 function extractTagsFromContent(content){
@@ -2872,9 +2806,7 @@ function renderPostTags(content,cls='post-tag'){
   return tags.length?`<div class="post-tags">${tags.map(tag=>`<span class="${cls}">${escHtml(tag)}</span>`).join('')}</div>`:'';
 }
 function stripPostPrefixes(content){
-  return String(content||'')
-    .replace(/^\[(작성자|카테고리|대표 증상|태그|채널|지역):\s*[^\]]+\]\s*/gm,'')
-    .trim();
+  return String(content||'').replace(/^\[(?:\uC791\uC131\uC790|\uCC44\uB110|\uC9C0\uC5ED|\uB300\uD45C\s*\uC99D\uC0C1|\uD0DC\uADF8|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
 }
 function getInitial(user){return (displayNameForUser(user)||'U').trim()[0].toUpperCase();}
 async function loadFeed(channelId=null){
@@ -2887,7 +2819,7 @@ async function loadFeed(channelId=null){
     let data=[];
     if(channelId){
       const result=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+        .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
         .eq('channel_id',channelId)
         .order('created_at',{ascending:false})
         .limit(5);
@@ -2916,7 +2848,7 @@ function renderFeedCard(feed,post,profileMap={}){
   card.className='q-card';
   card.style.cursor='pointer';
   card.onclick=()=>openPostDetail(post);
-  const symptom=extractCategoryFromContent(post.content);
+  const symptom=post.crop_tag||extractCategoryFromContent(post.content);
   card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name||post.channelName))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
   feed.appendChild(card);
 }
@@ -3249,7 +3181,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
   const orderColumn=sort==='popular'||sort==='symptom'?'view_count':'created_at';
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
       .order(orderColumn,{ascending:false})
       .limit(limit);
     if(error)throw error;
@@ -3257,7 +3189,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
   }catch(e){
     try{
       const {data}=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,created_at,channels(name, slug)')
+        .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
         .order('created_at',{ascending:false})
         .limit(limit);
       return data||[];
@@ -3372,7 +3304,7 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   }).join(',');
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
       .or(orQuery)
       .order('created_at',{ascending:false})
       .limit(limit);
@@ -3381,7 +3313,7 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   }catch(_){
     try{
       const {data}=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,created_at,channels(name, slug)')
+        .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
         .order('created_at',{ascending:false})
         .limit(limit);
       const lowered=uniqueTerms.map(term=>term.toLowerCase());
@@ -3498,10 +3430,10 @@ async function searchPosts(kw,limit){
     const cleanKw=String(kw||'').replace(/^#/,'');
     const like=`%${cleanKw.replace(/[%_]/g,'')}%`;
     const hashLike=`%#${cleanKw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
+    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
     let list=data||[];
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
       list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return list;
@@ -3517,7 +3449,7 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     const postUrl=post.id?`post.html?id=${encodeURIComponent(post.id)}`:'channel.html';
-    const symptom=extractCategoryFromContent(post.content);
+    const symptom=post.crop_tag||extractCategoryFromContent(post.content);
     const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
     return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
@@ -3749,9 +3681,7 @@ function contentWithCategory(content,category,channelName='',region='',tags=[],a
   const prefix=[
     authorName?`[작성자: ${authorName}]`:'',
     channelName?`[채널: ${channelName}]`:'',
-    region?`[지역: ${region}]`:'',
-    category?`[대표 증상: ${category}]`:'',
-    tags.length?`[태그: ${tags.join(' ')}]`:''
+    region?`[지역: ${region}]`:''
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }
@@ -3773,7 +3703,7 @@ async function submitPost(){
     if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openMyPanel();return;}
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,category,channelName,region,selectedPostTags,displayNameForUser(session.user)),user_id:userId,region_tag:region||undefined,image_urls:imageUrls.length?imageUrls:undefined});
+    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(session.user)),user_id:userId,crop_tag:category||undefined,region_tag:region||undefined,image_urls:imageUrls.length?imageUrls:undefined});
     const {error}=await _sb.from('posts').insert(payload);
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
