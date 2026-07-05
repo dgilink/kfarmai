@@ -451,7 +451,17 @@
   }
   .frequent-symptoms::before { background: var(--green); }
   .frequent-symptoms .insight-title { color: var(--green-dark); font-weight: 850; }
-  .frequent-symptoms .insight-desc { font-size: 13px; line-height: 1.5; word-break: keep-all; }
+  .frequent-symptoms .insight-head { margin-bottom: 8px; }
+  .frequent-symptoms .insight-desc {
+    font-size: 12px;
+    line-height: 1.3;
+    margin-top: 2px;
+    color: #6B7280;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: keep-all;
+  }
   .frequent-symptoms .insight-icon { background: #DCFCE7; color: var(--green-dark); }
   .recent-question-head .insight-icon { background: #DBEAFE; color: #1D4ED8; }
   .recent-question-head .section-title {
@@ -508,32 +518,39 @@
   .recent-question-head .live-dot::before { background: #2563EB; box-shadow: none; animation: none; }
   .insight-list { display: grid; gap: 8px; }
   .symptom-chip-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
   }
   .symptom-chip-list a {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 32px;
-    padding: 8px 9px;
-    border-radius: 10px;
+    min-height: 30px;
+    padding: 7px 10px;
+    border-radius: 999px;
     background: #FAFFFB;
     border: 1px solid #D9F7E3;
     color: #14532D;
     font-size: 12px;
     font-weight: 800;
     text-decoration: none;
-    line-height: 1.25;
+    line-height: 1.2;
     min-width: 0;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(15,23,42,.04);
   }
   .symptom-chip-list a span {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .symptom-chip-list a.tone-green { background:#F0FDF4; border-color:#BBF7D0; color:#166534; }
+  .symptom-chip-list a.tone-yellow { background:#FEFCE8; border-color:#FDE68A; color:#854D0E; }
+  .symptom-chip-list a.tone-orange { background:#FFF7ED; border-color:#FED7AA; color:#9A3412; }
+  .symptom-chip-list a.tone-blue { background:#EFF6FF; border-color:#BFDBFE; color:#1D4ED8; }
+  .phone[hidden] { display: none !important; }
   .insight-card {
     display: block;
     color: inherit;
@@ -2907,28 +2924,28 @@ const SEARCH_ALIASES=[
   {label:'비료',initial:'ㅂㄹ'}
 ];
 const DEFAULT_SYMPTOM_KEYWORDS=[
-  '잎이 말라요',
-  '잎이 노랗게 변해요',
-  '잎끝이 타요',
-  '물을 줘도 시들어요',
-  '벌레가 보여요',
-  '잎이 오그라들어요',
-  '줄기가 물러요',
-  '열매가 갈라져요',
-  '곰팡이가 보여요',
-  '새순이 안 자라요'
+  '잎마름',
+  '잎노랑',
+  '잎끝탐',
+  '시들음',
+  '벌레',
+  '잎말림',
+  '줄기무름',
+  '열매갈라짐',
+  '곰팡이',
+  '새순불량'
 ];
 const SYMPTOM_KEYWORD_ALIASES={
-  '잎이 말라요':['잎이 말라요','잎마름','마름','시듦','시들','갈변','잎끝 마름'],
-  '잎이 노랗게 변해요':['잎이 노랗게 변해요','노랗게','황화','잎색','색이 연해짐','노란잎'],
-  '잎끝이 타요':['잎끝이 타요','잎끝','끝이 타','탄 것','갈색 끝'],
-  '물을 줘도 시들어요':['물을 줘도 시들어요','시들','시듦','축 처짐','물 줘도'],
-  '벌레가 보여요':['벌레가 보여요','벌레','해충','진딧물','응애','깍지벌레'],
-  '잎이 오그라들어요':['잎이 오그라들어요','오그라','말림','잎 말림','쪼그라'],
-  '줄기가 물러요':['줄기가 물러요','줄기','무름','물러','썩음'],
-  '열매가 갈라져요':['열매가 갈라져요','열매','갈라','터짐','균열'],
-  '곰팡이가 보여요':['곰팡이가 보여요','곰팡이','흰가루','회색 곰팡이','분말'],
-  '새순이 안 자라요':['새순이 안 자라요','새순','생육불량','안 자라','생장']
+  '잎마름':['잎마름','잎이 말라요','마름','시듦','시들','갈변','잎끝 마름'],
+  '잎노랑':['잎노랑','잎이 노랗게 변해요','노랗게','황화','잎색','색이 연해짐','노란잎'],
+  '잎끝탐':['잎끝탐','잎끝이 타요','잎끝','끝이 타','탄 것','갈색 끝'],
+  '시들음':['시들음','물을 줘도 시들어요','시들','시듦','축 처짐','물 줘도'],
+  '벌레':['벌레','벌레가 보여요','해충','진딧물','응애','깍지벌레'],
+  '잎말림':['잎말림','잎이 오그라들어요','오그라','말림','잎 말림','쪼그라'],
+  '줄기무름':['줄기무름','줄기가 물러요','줄기','무름','물러','썩음'],
+  '열매갈라짐':['열매갈라짐','열매가 갈라져요','열매','갈라','터짐','균열'],
+  '곰팡이':['곰팡이','곰팡이가 보여요','흰가루','회색 곰팡이','분말'],
+  '새순불량':['새순불량','새순이 안 자라요','새순','생육불량','안 자라','생장']
 };
 function symptomAliases(keyword){
   return SYMPTOM_KEYWORD_ALIASES[keyword]||[keyword];
@@ -2937,17 +2954,18 @@ function renderFrequentSymptomSection(keywords=DEFAULT_SYMPTOM_KEYWORDS.slice(0,
   const wrap=document.getElementById('frequentSymptomSection');
   if(!wrap)return;
   const symptoms=(keywords&&keywords.length?keywords:DEFAULT_SYMPTOM_KEYWORDS).slice(0,8);
+  const tones=['tone-green','tone-yellow','tone-orange','tone-blue'];
   wrap.innerHTML=`
     <section class="insight-block frequent-symptoms">
       <div class="insight-head">
         <div>
           <div class="insight-title"><span class="insight-icon" aria-hidden="true">🔍</span>자주 묻는 증상</div>
-          <div class="insight-desc">처음 방문한 사용자도 바로 들어갈 수 있는 증상별 질문입니다.</div>
+          <div class="insight-desc">처음 방문자도 바로 볼 수 있는 증상별 질문입니다.</div>
         </div>
         <span class="insight-note">증상</span>
       </div>
       <div class="symptom-chip-list">
-        ${symptoms.map(item=>`<a href="index.html?view=questions&keyword=${encodeURIComponent(item)}"><span>${escHtml(item)}</span></a>`).join('')}
+        ${symptoms.map((item,idx)=>`<a class="symptom-chip ${tones[idx%tones.length]}" href="index.html?view=questions&keyword=${encodeURIComponent(item)}"><span>${escHtml(item)}</span></a>`).join('')}
       </div>
     </section>`;
 }
@@ -3077,9 +3095,9 @@ function postImageList(post){
 }
 function questionListLabels(sort){
   const map={
-    popular:{title:'많이 보는 질문',label:'인기순',caption:'조회가 많은 질문을 모았습니다.'},
-    symptom:{title:'나도 같은 증상',label:'공감순',caption:'비슷한 증상 반응이 많은 질문을 모았습니다.'},
-    latest:{title:'방금 올라온 질문',label:'최신순',caption:'최근 등록된 질문을 최신순으로 확인합니다.'}
+    popular:{title:'많이 보는 질문',label:'인기순',caption:'인기순 기준으로 질문을 모았습니다.'},
+    symptom:{title:'나도 같은 증상',label:'공감순',caption:'공감순 기준으로 질문을 모았습니다.'},
+    latest:{title:'방금 올라온 질문',label:'최신순',caption:'최신순 기준으로 질문을 모았습니다.'}
   };
   return map[normalizeQuestionSort(sort)]||map.latest;
 }
@@ -3143,8 +3161,8 @@ async function renderQuestionListView(sort='latest'){
   if(caption)caption.textContent=labels.caption;
   if(sortLabel)sortLabel.textContent=labels.label;
   if(actions){
-    actions.hidden=!keyword;
-    actions.innerHTML=keyword ? `<button class="primary" type="button" onclick="openModal()">질문하기</button><a href="diagnosis.html?q=${encodeURIComponent(keyword)}">AI 참고 진단</a>` : '';
+    actions.hidden=false;
+    actions.innerHTML=`<button class="primary" type="button" onclick="openModal()">질문하기</button><a href="diagnosis.html${keyword?`?q=${encodeURIComponent(keyword)}`:''}">AI 참고 진단</a>`;
   }
   if(!list)return;
   list.innerHTML='<div class="question-list-empty">질문 목록을 불러오는 중입니다.</div>';
