@@ -307,6 +307,7 @@ let editExistingImages = [];
 let editNewImages = [];
 let currentProfileNickname = '';
 let commentAuthorSnapshots = {};
+const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -542,9 +543,10 @@ async function loadComments() {
       .eq('post_id', String(postId))
       .order('created_at', { ascending:true });
     if (error) throw error;
-    console.info('comments loaded', {postId, count:(data||[]).length});
-    const profileMap=await fetchProfileMap((data||[]).map(comment=>comment.user_id));
-    renderComments(data || [],profileMap);
+    const visibleComments=(data||[]).filter(comment=>String(comment.content||'').trim()!==COMMENT_DELETE_MARKER);
+    console.info('comments loaded', {postId, count:visibleComments.length, rawCount:(data||[]).length});
+    const profileMap=await fetchProfileMap(visibleComments.map(comment=>comment.user_id));
+    renderComments(visibleComments,profileMap);
   } catch (err) {
     console.error('comments load failed', {postId, error:err});
     document.getElementById('commentCount').textContent = '0';
@@ -680,7 +682,7 @@ async function saveCommentEdit(id){
     await loadComments();
   }catch(err){
     console.error('comment update failed', {id,userId:authUser?.id,error:err});
-    showToast('댓글 수정에 실패했습니다.');
+    showToast(err.message||'댓글 수정에 실패했습니다.');
   }
 }
 async function deleteComment(id){
@@ -698,12 +700,31 @@ async function deleteComment(id){
       .eq('user_id',String(authUser.id));
     if(error)throw error;
     const after=await fetchCommentById(id);
-    if(after)throw new Error('댓글 삭제 권한 또는 RLS 정책을 확인해야 합니다.');
+    if(after){
+      const fallback=await softDeleteComment(id,authUser.id);
+      if(!fallback)throw new Error('댓글 삭제 권한 정책을 확인해야 합니다.');
+    }
     showToast('댓글이 삭제되었습니다.');
     await loadComments();
   }catch(err){
     console.error('comment delete failed', {id,userId:authUser?.id,error:err});
-    showToast('댓글 삭제에 실패했습니다.');
+    showToast(err.message||'댓글 삭제에 실패했습니다.');
+  }
+}
+
+async function softDeleteComment(id,userId){
+  try{
+    const {error}=await sb
+      .from('comments')
+      .update({content:COMMENT_DELETE_MARKER})
+      .eq('id',id)
+      .eq('user_id',String(userId));
+    if(error)throw error;
+    const row=await fetchCommentById(id);
+    return String(row?.content||'').trim()===COMMENT_DELETE_MARKER;
+  }catch(error){
+    console.error('comment soft delete fallback failed', {id,userId,error});
+    return false;
   }
 }
 
