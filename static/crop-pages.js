@@ -121,5 +121,84 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     ];
   }
 
-  return { core, basic, all: [...core, ...basic], coreIds, calendarByCategory };
+  const typoAliases = {
+    "배추": ["베추"],
+    "상추": ["상치"],
+    "양파": ["양바"],
+    "대파": ["대바"],
+    "감자": ["감짜"],
+    "고구마": ["고구머"],
+    "옥수수": ["옥슈수", "옥시시"],
+    "복숭아": ["복숭", "복송아"],
+    "블루베리": ["블루배리"],
+    "브로콜리": ["브로컬리"],
+    "콜리플라워": ["컬리플라워"],
+    "로즈마리": ["로즈메리"],
+    "몬스테라": ["몬스테라", "몬스태라"],
+    "산세베리아": ["산세베리아", "산세베리아"]
+  };
+
+  const all = [...core, ...basic].map(item => ({
+    ...item,
+    aliases: [...new Set([...(item.aliases || []), ...(typoAliases[item.name] || [])])]
+  }));
+
+  function normalizeSearch(value) {
+    return String(value || "").toLowerCase().replace(/\s+/g, "").replace(/[ㆍ·]/g, "");
+  }
+
+  function hangulInitials(value) {
+    const initials = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+    return String(value || "").split("").map(ch => {
+      const code = ch.charCodeAt(0) - 44032;
+      return code >= 0 && code <= 11171 ? initials[Math.floor(code / 588)] : ch;
+    }).join("");
+  }
+
+  function editDistance(a, b) {
+    a = normalizeSearch(a);
+    b = normalizeSearch(b);
+    if (!a || !b) return Math.max(a.length, b.length);
+    const prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+    const curr = Array(b.length + 1);
+    for (let i = 1; i <= a.length; i++) {
+      curr[0] = i;
+      for (let j = 1; j <= b.length; j++) {
+        curr[j] = Math.min(
+          prev[j] + 1,
+          curr[j - 1] + 1,
+          prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)
+        );
+      }
+      for (let j = 0; j <= b.length; j++) prev[j] = curr[j];
+    }
+    return prev[b.length];
+  }
+
+  function isSubsequence(shortText, longText) {
+    let index = 0;
+    for (const ch of longText) if (ch === shortText[index]) index++;
+    return index === shortText.length;
+  }
+
+  function matchesCrop(crop, query) {
+    const q = normalizeSearch(query);
+    if (!q) return true;
+    const nameFields = [crop.name, ...(crop.aliases || [])].filter(Boolean);
+    const directFields = [crop.category, crop.id].filter(Boolean);
+    const qInitial = hangulInitials(q);
+    const isInitialQuery = /^[ㄱ-ㅎ]+$/.test(q);
+    if (directFields.some(field => normalizeSearch(field).includes(q))) return true;
+    return nameFields.some(field => {
+      const text = normalizeSearch(field);
+      const initials = hangulInitials(text);
+      if (text.includes(q)) return true;
+      if (isInitialQuery && initials.startsWith(q)) return true;
+      if (!isInitialQuery && initials === qInitial) return true;
+      if (q.length >= 3 && isSubsequence(q, text)) return true;
+      return q.length >= 3 && editDistance(q, text) <= 1;
+    });
+  }
+
+  return { core: all.filter(c => c.type === "core"), basic: all.filter(c => c.type === "basic"), all, coreIds, calendarByCategory, matchesCrop };
 })();
