@@ -13,6 +13,7 @@
     "sourceName": "농촌진흥청 보도자료",
     "sourceUrl": "https://www.rda.go.kr/board/board.do?dataNo=100000807318&mode=view&prgId=day_farmprmninfoEntry",
     "sourceYear": "2026",
+    "sourcePublishedAt": "2026-01-25",
     "status": "active",
     "tags": ["AI", "초분광", "종자"]
   },
@@ -30,6 +31,7 @@
     "sourceName": "농촌진흥청 보도자료",
     "sourceUrl": "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo&currPage=10&dataNo=100000809840&mode=updateCnt&prgId=day_farmprmninfoEntry&searchEDate=&searchKey=subject&searchOrgDeptKey=&searchOrgDeptVal=&searchSDate=&searchVal=",
     "sourceYear": "2026",
+    "sourcePublishedAt": "2026-05-14",
     "status": "active",
     "tags": ["유전체", "빅데이터", "품종"]
   },
@@ -47,6 +49,7 @@
     "sourceName": "농촌진흥청 2024년 연구성과 보고서",
     "sourceUrl": "https://www.rda.go.kr/org/gud/gud_rsachoutcomeQuery_2024.do?prgId=gud_rsachoutcomeQuery",
     "sourceYear": "2024",
+    "sourcePublishedAt": "2024",
     "status": "active",
     "tags": ["딸기", "디지털육종", "품종"]
   },
@@ -64,6 +67,7 @@
     "sourceName": "농촌진흥청 2024년 연구성과 보고서",
     "sourceUrl": "https://www.rda.go.kr/org/gud/gud_rsachoutcomeQuery_2024.do?prgId=gud_rsachoutcomeQuery",
     "sourceYear": "2024",
+    "sourcePublishedAt": "2024",
     "status": "active",
     "tags": ["노지", "스마트기술", "데이터"]
   },

@@ -860,6 +860,12 @@
   }
   .agri-section-title h3 { font-size: 16px; font-weight: 900; color: #14532d; }
   .agri-section-title p { margin-top: 3px; color: var(--sub); font-size: 12px; line-height: 1.45; }
+  .agri-section-more {
+    flex: 0 0 auto; display: inline-flex; align-items: center; height: 30px;
+    padding: 0 10px; border-radius: 999px; border: 1px solid #BBF7D0;
+    background: #F0FDF4; color: #166534; font-size: 12px; font-weight: 900;
+    text-decoration: none; white-space: nowrap;
+  }
   .agri-video-hero, .agri-research-card, .agri-issue-card {
     background: #fff;
     border: 1px solid var(--border);
@@ -889,6 +895,9 @@
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .agri-meta { margin-top: 6px; font-size: 12px; color: var(--sub); line-height: 1.45; }
+  .agri-date {
+    margin-top: 5px; font-size: 11.5px; color: #64748b; line-height: 1.4;
+  }
   .agri-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
   .agri-badge {
     display: inline-flex; align-items: center; height: 23px; padding: 0 8px;
@@ -2116,6 +2125,7 @@
               <h3>오늘의 농업 영상</h3>
               <p>공식기관과 연구기관의 공개 영상을 임베드 방식으로 제공합니다.</p>
             </div>
+            <a class="agri-section-more" href="agri-videos.html">더보기</a>
           </div>
           <div id="agriVideoHero"></div>
           <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록" ontouchstart="stopNestedSwipe(event)" ontouchmove="stopNestedSwipe(event)" onmousedown="stopNestedSwipe(event)"></div>
@@ -2128,6 +2138,7 @@
               <h3>최신 농업연구동향</h3>
               <p>농업 연구성과와 기술자료를 쉽게 풀어 정리합니다.</p>
             </div>
+            <a class="agri-section-more" href="agri-research.html">더보기</a>
           </div>
           <div class="agri-research-chips" id="agriResearchChips" aria-label="연구동향 카테고리"></div>
           <div class="agri-research-list" id="agriResearchList"></div>
@@ -2727,6 +2738,15 @@ function agriVideoThumb(videoId, fallback){
 function agriVideoEmbed(videoId){
   return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=0&rel=0&modestbranding=1`;
 }
+function agriDisplayDate(value, fallback='게시일 확인 중'){
+  if(!value)return fallback;
+  const text=String(value);
+  const date=new Date(text);
+  if(!Number.isNaN(date.getTime())&&/^\d{4}-\d{2}-\d{2}/.test(text)){
+    return date.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+  }
+  return text;
+}
 function agriTagBadges(tags=[]){
   return (tags||[]).slice(0,3).map(tag=>`<span class="agri-badge">${escHtml(tag)}</span>`).join('');
 }
@@ -2763,6 +2783,7 @@ function agriVideoHeroHtml(item){
     <div class="agri-video-body">
       <div class="agri-card-title">${escHtml(item.title)}</div>
       <div class="agri-meta">${escHtml(item.channelName||'공개 채널')}</div>
+      <div class="agri-date">게시일: ${escHtml(agriDisplayDate(item.publishedAt))}</div>
       <div class="agri-badges">${agriVideoBadge(item)}${agriTagBadges(item.tags)}</div>
       <a class="agri-source-link" href="${escAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">원본 영상 보기</a>
     </div>
@@ -2779,6 +2800,7 @@ function agriVideoCardHtml(item){
     <div class="agri-video-body">
       <div class="agri-card-title">${escHtml(item.title)}</div>
       <div class="agri-meta">${escHtml(item.channelName||'공개 채널')}</div>
+      <div class="agri-date">게시일: ${escHtml(agriDisplayDate(item.publishedAt))}</div>
       <div class="agri-badges">${agriVideoBadge(item)}</div>
     </div>
   </article>`;
@@ -2837,6 +2859,7 @@ function agriResearchCardHtml(item){
   return `<article class="agri-research-card ${tone}" id="${detailId}">
     <div class="agri-badges"><span class="agri-badge">${escHtml(item.category||'연구동향')}</span>${agriTagBadges(item.tags)}</div>
     <div class="agri-card-title">${escHtml(item.simpleTitle||item.title)}</div>
+    <div class="agri-date">배포일: ${escHtml(agriDisplayDate(item.sourcePublishedAt||item.sourceYear,'배포일 확인 중'))}</div>
     <div class="agri-research-detail">
       <div class="agri-research-summary">${escHtml(item.summary)}</div>
       <div class="agri-meta">관심: ${escHtml(audience||'농가 · 연구기관 · 관련 업체')}</div>

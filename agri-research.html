@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>최신 농업연구동향 - kFarmAI</title>
+<style>
+  :root{--green:#2f8f5b;--deep:#14532d;--bg:#f7faf7;--text:#111827;--sub:#64748b;--border:#e5e7eb}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+  .app-header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);padding:10px 14px}.head-row{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px}.back{width:34px;height:34px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--deep);font-weight:900}.logo{height:26px}
+  .title{max-width:720px;margin:10px auto 0}.title h1{font-size:20px;margin:0;color:var(--deep)}.title p{font-size:12.5px;color:var(--sub);margin:5px 0 0;line-height:1.5}
+  main{max-width:720px;margin:0 auto;padding:14px}.chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:10px}.chips::-webkit-scrollbar{display:none}.chip{height:30px;border-radius:999px;border:1px solid var(--border);background:#fff;color:#374151;padding:0 11px;font-size:12px;font-weight:800;white-space:nowrap}.chip.active{background:#14532d;color:#fff;border-color:#14532d}
+  .list{display:grid;gap:10px}.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:13px;box-shadow:0 4px 14px rgba(15,23,42,.06);--tone-bg:#ecfdf5;--tone-border:#bbf7d0;--tone-color:#166534}.card.tone-ai{--tone-bg:#f5f3ff;--tone-border:#ddd6fe;--tone-color:#6d28d9}.card.tone-smart{--tone-bg:#eff6ff;--tone-border:#bfdbfe;--tone-color:#1d4ed8}.card.tone-seed{--tone-bg:#fefce8;--tone-border:#fde68a;--tone-color:#854d0e}
+  .badges{display:flex;flex-wrap:wrap;gap:5px}.badge{height:23px;padding:0 8px;border-radius:999px;background:var(--tone-bg);color:var(--tone-color);border:1px solid var(--tone-border);font-size:11px;font-weight:800;display:inline-flex;align-items:center;white-space:nowrap}.card-title{font-size:15px;font-weight:900;line-height:1.45;margin-top:8px}.date,.meta,.summary{font-size:12.5px;color:var(--sub);line-height:1.55;margin-top:7px}.summary{color:#374151}.source{display:inline-flex;margin-top:9px;color:var(--green);font-size:12px;font-weight:900;text-decoration:none;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="head-row">
+    <button class="back" type="button" onclick="history.length>1?history.back():location.href='index.html'">‹</button>
+    <img class="logo" src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI">
+  </div>
+  <div class="title">
+    <h1>최신 농업연구동향</h1>
+    <p>공식기관, 대학, 연구기관 자료를 농가와 제조사가 이해하기 쉬운 참고 카드로 정리합니다.</p>
+  </div>
+</header>
+<main>
+  <div class="chips" id="chips"></div>
+  <div class="list" id="list"></div>
+</main>
+<script>
+const CATS=['전체','스마트농업','AI·로봇','품종·종자','시설재배','기후변화','병해충·작물보호','토양·비료','수확후관리','농자재·기계','식품·가공'];let items=[],active='전체';
+function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function escAttr(str){return escHtml(str).replace(/'/g,'&#39;')}
+function displayDate(value){if(!value)return '배포일 확인 중';const date=new Date(String(value));if(!Number.isNaN(date.getTime())&&/^\d{4}-\d{2}-\d{2}/.test(String(value)))return date.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});return String(value)}
+function tone(cat){const key=String(cat||'');if(key.includes('AI')||key.includes('로봇'))return 'tone-ai';if(key.includes('스마트'))return 'tone-smart';if(key.includes('품종')||key.includes('종자'))return 'tone-seed';return ''}
+function render(cat=active){active=cat;document.getElementById('chips').innerHTML=CATS.map(c=>`<button class="chip ${c===active?'active':''}" type="button" onclick="render('${escAttr(c)}')">${escHtml(c)}</button>`).join('');const rows=items.filter(i=>active==='전체'||i.category===active);document.getElementById('list').innerHTML=rows.map(i=>`<article class="card ${tone(i.category)}"><div class="badges"><span class="badge">${escHtml(i.category||'연구동향')}</span>${(i.tags||[]).slice(0,3).map(t=>`<span class="badge">${escHtml(t)}</span>`).join('')}</div><div class="card-title">${escHtml(i.simpleTitle||i.title)}</div><div class="date">배포일: ${escHtml(displayDate(i.sourcePublishedAt||i.sourceYear))}</div><div class="summary">${escHtml(i.summary)}</div><div class="meta">관심: ${escHtml((i.audience||i.whoCares||[]).slice(0,4).join(' · ')||'농가 · 연구기관 · 관련 업체')}</div>${i.relatedCrops?.length?`<div class="meta">관련 작물: ${escHtml(i.relatedCrops.slice(0,4).join(' · '))}</div>`:''}<div class="summary"><strong>왜 흥미로운가</strong><br>${escHtml(i.whyInteresting||'재배와 관리 판단에 참고할 수 있는 연구 흐름입니다.')}</div>${i.sourceUrl?`<a class="source" href="${escAttr(i.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escHtml(i.sourceName||'공식자료')} 보기</a>`:`<div class="meta">${escHtml(i.sourceName||'공식자료 확인 예정')}</div>`}</article>`).join('')||'<p class="meta">표시할 연구동향이 없습니다.</p>'}
+async function init(){try{const res=await fetch('data/agri-research-trends.json',{cache:'no-store'});const data=await res.json();items=(Array.isArray(data)?data:[]).filter(i=>i.status==='active');render()}catch(e){document.getElementById('list').innerHTML='<p class="meta">연구동향을 불러오지 못했습니다.</p>'}}init();
+</script>
+</body>
+</html>

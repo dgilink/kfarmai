@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>농업 영상 큐레이션 - kFarmAI</title>
+<style>
+  :root{--green:#2f8f5b;--deep:#14532d;--bg:#f7faf7;--text:#111827;--sub:#64748b;--border:#e5e7eb}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);word-break:keep-all;overflow-wrap:break-word;line-break:strict}
+  .app-header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);padding:10px 14px}
+  .head-row{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px}
+  .back{width:34px;height:34px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--deep);font-weight:900}
+  .logo{height:26px}.title{max-width:720px;margin:10px auto 0}.title h1{font-size:20px;margin:0;color:var(--deep)}.title p{font-size:12.5px;color:var(--sub);margin:5px 0 0;line-height:1.5}
+  main{max-width:720px;margin:0 auto;padding:14px}.video-list{display:grid;gap:12px}.video-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(15,23,42,.06)}
+  .video-media{position:relative;aspect-ratio:16/9;background:#e5e7eb;cursor:pointer}.video-media img,.video-media iframe{width:100%;height:100%;display:block;object-fit:cover;border:0}
+  .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border:0;border-radius:999px;background:rgba(20,83,45,.92);color:#fff;font-size:21px}
+  .body{padding:12px}.card-title{font-size:15px;font-weight:900;line-height:1.45}.meta,.date,.note{font-size:12px;color:var(--sub);line-height:1.5;margin-top:6px}.badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}.badge{height:23px;padding:0 8px;border-radius:999px;background:#ecfdf5;color:#166534;border:1px solid #bbf7d0;font-size:11px;font-weight:800;display:inline-flex;align-items:center;white-space:nowrap}.source{display:inline-flex;margin-top:9px;color:var(--green);font-size:12px;font-weight:900;text-decoration:none;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="head-row">
+    <button class="back" type="button" onclick="history.length>1?history.back():location.href='index.html'">‹</button>
+    <img class="logo" src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI">
+  </div>
+  <div class="title">
+    <h1>농업 영상 큐레이션</h1>
+    <p>공식기관과 연구기관의 공개 영상을 저장하지 않고 YouTube 임베드 방식으로 제공합니다.</p>
+  </div>
+</header>
+<main>
+  <div class="video-list" id="videoList"></div>
+  <p class="note">해외 영상은 국내 품종, 기후, 작형과 다를 수 있으므로 참고용으로 확인하세요. 영상의 저작권은 각 제공 기관과 원 게시자에게 있습니다.</p>
+</main>
+<script>
+function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function escAttr(str){return escHtml(str).replace(/'/g,'&#39;')}
+function displayDate(value){if(!value)return '게시일 확인 중';const date=new Date(String(value));if(!Number.isNaN(date.getTime())&&/^\d{4}-\d{2}-\d{2}/.test(String(value)))return date.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});return String(value)}
+function thumb(id,url){return url||`https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`}
+function embed(id){return `https://www.youtube.com/embed/${encodeURIComponent(id)}?autoplay=0&rel=0&modestbranding=1`}
+function badge(item){return String(item.sourceType||'').startsWith('overseas')?'<span class="badge">해외 참고</span>':item.sourceType==='domestic_official'?'<span class="badge">국내 공식</span>':'<span class="badge">공개 영상</span>'}
+function play(id){const media=document.querySelector(`[data-video-id="${CSS.escape(id)}"]`);if(media)media.innerHTML=`<iframe src="${escAttr(embed(id))}" title="농업 영상 재생" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`}
+async function init(){const wrap=document.getElementById('videoList');try{const res=await fetch('data/agri-videos.json',{cache:'no-store'});const data=await res.json();const videos=(Array.isArray(data)?data:[]).filter(v=>v.status==='active'&&v.platform==='youtube'&&v.videoId);wrap.innerHTML=videos.map(v=>`<article class="video-card"><div class="video-media" data-video-id="${escAttr(v.videoId)}" onclick="play('${escAttr(v.videoId)}')"><img src="${escAttr(thumb(v.videoId,v.thumbnailUrl))}" alt="${escAttr(v.title)} 썸네일" loading="lazy"><button class="play" type="button">▶</button></div><div class="body"><div class="card-title">${escHtml(v.title)}</div><div class="meta">${escHtml(v.channelName||'공개 채널')}</div><div class="date">게시일: ${escHtml(displayDate(v.publishedAt))}</div><div class="badges">${badge(v)}${(v.tags||[]).slice(0,3).map(t=>`<span class="badge">${escHtml(t)}</span>`).join('')}</div><a class="source" href="${escAttr(v.sourceUrl)}" target="_blank" rel="noopener noreferrer">원본 영상 보기</a></div></article>`).join('')||'<p class="note">표시할 영상이 없습니다.</p>'}catch(e){wrap.innerHTML='<p class="note">영상을 불러오지 못했습니다.</p>'}}
+init();
+</script>
+</body>
+</html>
