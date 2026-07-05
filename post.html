@@ -210,6 +210,68 @@
 </div>
 
 
+<script>
+(function renderPostBeforeSupabase(){
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id') || '';
+  const postArea = document.getElementById('postArea');
+  if(!id || !postArea) return;
+  const apiUrl = 'https://xzetqijeucldbfgjuoes.supabase.co';
+  const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
+  const channelNames = {
+    'plant-hospital':'식물 병원',
+    'plant-question':'식물 질문방',
+    'crop-consult':'작물 상담방',
+    'plant-brag':'내 식물 자랑',
+    'farmer-lounge':'농부 사랑방',
+    'plant-share':'나눔·직거래',
+    'garden-class':'원예 클래스',
+    'plant-meet':'식집사 모임'
+  };
+  const esc = value => String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const strip = value => String(value || '').replace(/^\[(?:작성자|채널|지역|대표\s*증상|태그|카테고리|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
+  const normalizeImages = value => {
+    if(!value) return [];
+    if(Array.isArray(value)) return value.filter(Boolean);
+    if(typeof value === 'string'){
+      try{ const parsed = JSON.parse(value); return Array.isArray(parsed) ? parsed.filter(Boolean) : [value].filter(Boolean); }
+      catch(_){ return value.split(',').map(v=>v.trim()).filter(Boolean); }
+    }
+    return [];
+  };
+  const timeAgo = value => {
+    if(!value) return '';
+    const diff = Date.now() - new Date(value).getTime();
+    const min = Math.floor(diff / 60000);
+    if(min < 1) return '방금';
+    if(min < 60) return `${min}분 전`;
+    const hour = Math.floor(min / 60);
+    if(hour < 24) return `${hour}시간 전`;
+    return new Date(value).toLocaleDateString('ko-KR');
+  };
+  function render(post){
+    const channel = post.channels?.name || channelNames[post.channels?.slug] || '질문';
+    const badge = post.crop_tag ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(post.crop_tag)}</span>` : '';
+    const images = normalizeImages(post.image_urls);
+    const imageHtml = images.length ? `<div class="image-slider">${images.map(url=>`<img class="post-image" src="${esc(url)}" alt="게시글 이미지" loading="lazy">`).join('')}</div>` : '';
+    const title = post.title || '제목 없음';
+    document.getElementById('channelTitle').textContent = channel;
+    document.title = `${title} - kFarmAI`;
+    postArea.classList.remove('loading');
+    postArea.innerHTML = `<article class="card"><span class="badge">${esc(channel)}</span>${badge}<h1 class="post-title">${esc(title)}</h1><div class="meta">${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(strip(post.content))}</div>${imageHtml}</article>`;
+  }
+  const select = 'id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name,slug)';
+  const url = `${apiUrl}/rest/v1/posts?select=${encodeURIComponent(select)}&id=eq.${encodeURIComponent(id)}&limit=1`;
+  fetch(url, {headers:{apikey:apiKey, Authorization:`Bearer ${apiKey}`}})
+    .then(res => res.ok ? res.json() : Promise.reject(new Error(`post ${res.status}`)))
+    .then(rows => { if(rows && rows[0]) render(rows[0]); else throw new Error('not found'); })
+    .catch(error => {
+      console.error('early post render failed', error);
+      postArea.classList.remove('loading');
+      postArea.innerHTML = '<div class="empty">게시글을 불러오지 못했습니다.<br>잠시 후 다시 시도해주세요.</div>';
+    });
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
