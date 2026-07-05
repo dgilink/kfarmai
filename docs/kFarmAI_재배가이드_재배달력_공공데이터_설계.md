@@ -134,3 +134,50 @@
 - `usageStatus`가 `verified`인 이미지만 화면에 표시하고, `pending` 또는 `blocked` 이미지는 안내 문구만 표시한다.
 - 외부 이미지 hotlink는 지양하며, 허용된 이미지는 저장소 또는 kFarmAI 서버에 저장한 뒤 출처를 표기한다.
 - 농촌진흥청, 농사로 등 공식기관이 kFarmAI를 후원하거나 제휴한 것처럼 보이지 않게 “출처”로만 표시한다.
+
+---
+
+## 2026-07-06 공공데이터/API 진단 및 반영 메모
+
+### 실제 호출 진단 요약
+
+| API | endpoint | key/secret 상태 | 호출 결과 | 반영 위치 | 비고 |
+|---|---|---|---|---|---|
+| Worker health | /api/health | secret 불필요 | 성공 | 진단 기준 | Worker 기본 응답 정상 |
+| KMA 농업날씨 | /api/weather/forecast | 배포 Worker에서 호출 가능 | 성공 | 재배가이드/재배달력 공공데이터 참고 | 지역 nx/ny가 있는 경우 활용 |
+| KAMIS/aT 시세 | /api/kamis/prices | 배포 Worker에서 호출 가능 | 토마토, 배추 샘플 성공 | 시세 참고 가능 품목 | 시장 흐름 참고자료로만 표시 |
+| NCPMS 병해충 정보 | /api/ncpms/diseases | 배포 Worker에서 호출 가능 | 고추 샘플 성공 | 공공정보 확인 | 병해충 정보는 확인할 문제 수준으로만 표시 |
+| 농사로 작목별 정보 | /api/nongsaro/service | 배포 Worker에서 호출 가능 | 고추 cropEbook 샘플 성공 | 농사로 작목별 참고자료 | 작물별 공식 참고자료 연결 후보 |
+| 공공정보 통합 | /api/agri/public-info | Worker 내부 구성 | 성공 | 공공정보 확인 | 작물명과 증상 키워드 기반 참고 경로 |
+| MAFRA 시설채소 | /api/mafra/facility-vegetables | endpoint 있음 | fallback/실패 | 연동 예정 | service key 또는 호출 파라미터 점검 필요 |
+| MAFRA 화훼 시세 | /api/mafra/flower-prices | endpoint 있음 | fallback/실패 | 화훼 확장 TODO | service key 또는 호출 파라미터 점검 필요 |
+| PSIS 농약안전 | /api/psis/pesticide-safety | endpoint 있음 | fallback/실패 | 연동 예정 | 안전사용기준 확인용으로 추후 보강 |
+
+API key 원문은 확인하거나 기록하지 않았다. 존재 여부와 Worker 응답 상태만 기준으로 정리했다.
+
+### 이번 반영 내용
+
+- 23개 core 작물의 재배달력 데이터를 1월부터 12월까지 월별 구조로 보강했다.
+- 재배가이드/재배달력 상세에 공공데이터 참고 영역을 추가했다.
+- KMA 농업날씨, 농사로 작목별 참고자료, NCPMS, 공공정보 통합 endpoint는 active 상태로 표시한다.
+- KAMIS/aT는 실제 호출 가능한 품목에 한해 시세 참고 가능 항목으로 표시한다.
+- MAFRA 시설채소와 화훼류 시세는 fallback 상태라 연동 예정으로 표시한다.
+- 공식자료가 확정되지 않은 항목은 공식자료 확인 예정으로 유지한다.
+
+### 향후 API/secret 보강 항목
+
+- 농촌진흥청 작목별농업기술정보 상세 API
+- 농촌진흥청 농작업일정 정보
+- 농촌진흥청 주간농사정보
+- 농촌진흥청 농작물재해예방정보
+- PSIS 농약안전사용기준 정상 호출 구조
+- MAFRA 시설채소 생산실적 정상 호출 구조
+- MAFRA 화훼류 시세현황 정상 호출 구조
+- 홈 통합검색에서 crop-pages 공공데이터 메타까지 함께 검색하는 구조
+
+### 표시 원칙
+
+- 모든 내용은 참고자료로 표시한다.
+- 특정 처방이나 구매 유도 표현은 사용하지 않는다.
+- 실패한 API 응답은 성공처럼 표시하지 않는다.
+- 공식 출처가 확인되지 않은 자료는 공식자료 확인 예정으로 표시한다.
