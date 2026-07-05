@@ -3179,13 +3179,14 @@ const LOCAL_SEARCH_INDEX=[
 ];
 const AGRI_LINKS=[
   {type:'map',label:'농약사',initial:'ㄴㅇㅅ',url:'agri_map.html',text:'농약사 - 지도에서 보기'},
-  {type:'material',label:'상토',initial:'ㅅㅌ',url:'santo.html',text:'상토 정보 보기'},
-  {type:'material',label:'종자',initial:'ㅈㅈ',url:'seed.html',text:'종자 정보 보기'},
-  {type:'material',label:'작물보호제',initial:'ㅈㅁㅂㅎㅈ',url:'cpa.html',text:'작물보호제 정보 보기'},
-  {type:'material',label:'비료',initial:'ㅂㄹ',url:'fert.html',text:'비료 정보 보기'},
-  {type:'material',label:'관수·시설자재',initial:'ㄱㅅㅅㅅㅈㅈ',url:'mfg.html?category=irrigation-facility',text:'관수·시설자재 참고 정보 보기'},
-  {type:'material',label:'화분·도구',initial:'ㅎㅂㄷㄱ',url:'mfg.html?category=home-gardening-tools',text:'화분·도구 참고 정보 보기'},
-  {type:'material',label:'스마트팜',initial:'ㅅㅁㅌㅍ',url:'mfg.html?category=smartfarm',text:'스마트팜 참고 정보 보기'}
+  {type:'material',label:'상토',initial:'ㅅㅌ',url:'santo.html',text:'상토 정보 보기',badge:'농자재 정보',keywords:['육묘용 상토','분갈이 상토','수도용 상토','원예용 상토','배양토','상토 곰팡이','배수']},
+  {type:'material',label:'종자',initial:'ㅈㅈ',url:'seed.html',text:'종자 정보 보기',badge:'농자재 정보',keywords:['채소종자','곡류종자','모종','육묘','파종시기','품종','봄작기','가을작기']},
+  {type:'material',label:'작물보호제',initial:'ㅈㅁㅂㅎㅈ',url:'cpa.html',text:'작물보호제 공식정보 확인',badge:'작물보호 공식정보',keywords:['작물보호','농약등록정보','안전사용기준','대상 병해충','제품 라벨','NCPMS','병해충 정보']},
+  {type:'material',label:'비료',initial:'ㅂㄹ',url:'fert.html',text:'비료·토양 정보 보기',badge:'비료·토양',keywords:['토양검정','밑거름','웃거름','액비','미량요소','유기질비료','복합비료','토양개량제']},
+  {type:'material',label:'관수·시설자재',initial:'ㄱㅅㅅㅅㅈㅈ',url:'mfg.html?category=irrigation-facility',text:'관수·시설자재 참고 정보 보기',badge:'관수·시설',keywords:['점적관수','분수호스','관수타이머','하우스 필름','차광망','지주대','유인줄','고추 지주대','딸기 관수']},
+  {type:'material',label:'화분·도구',initial:'ㅎㅂㄷㄱ',url:'mfg.html?category=home-gardening-tools',text:'화분·도구 참고 정보 보기',badge:'농자재 정보',keywords:['화분','분갈이','배수망','전지가위','지지대','물조리개','식물등','홈가드닝']},
+  {type:'material',label:'스마트팜',initial:'ㅅㅁㅌㅍ',url:'mfg.html?category=smartfarm',text:'스마트팜 참고 정보 보기',badge:'관수·시설',keywords:['스마트팜 센서','온습도 센서','토양수분 센서','EC 센서','pH 센서','자동관수','환경제어기','양액기']},
+  {type:'material',label:'농기계·안전용품',initial:'ㄴㄱㄱㅇㅈㅇㅍ',url:'mfg.html?category=machinery-safety',text:'농기계·안전용품 참고 정보 보기',badge:'농자재 정보',keywords:['농기계','예초기','분무기','보호안경','방진마스크','장갑','안전용품','농기계 안전']}
 ];
 const SEARCH_ALIASES=[
   {label:'식물 병원',initial:'ㅅㅂ'},
@@ -3624,7 +3625,7 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     (materials.length?'<div class="search-group-title">공공자료 기반 참고 콘텐츠</div>'+materialHtml:'');
 }
 function resultLinkCard(item,kw,badge){
-  return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${badge}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
+  return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${escHtml(item.badge||badge)}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
 }
 async function loadStaticSearchIndex(){
   if(staticSearchIndex)return staticSearchIndex;
@@ -3742,8 +3743,8 @@ function getMaterialSuggestions(kw,limit=6){
     });
   });
   if(results.length)return results.slice(0,limit);
-  if(matchesSearchText('농자재 농자재회사 농업자재 agri products',kw))return AGRI_LINKS.filter(item=>item.type==='material').map(item=>({...item,query:kw,meta:'농자재 정보 페이지'})).slice(0,limit);
-  return AGRI_LINKS.filter(item=>item.type==='material'&&matchesSearchText(`${item.label} ${item.initial} ${item.text}`,kw)).map(item=>({...item,query:kw,meta:'농자재 정보 페이지'})).slice(0,limit);
+  if(matchesSearchText('농자재 농자재회사 농업자재 농자재관리 공식정보 제조사 공식정보 지역 판매점 agri products',kw))return AGRI_LINKS.filter(item=>item.type==='material').map(item=>({...item,query:kw,meta:item.badge||'농자재 정보 페이지'})).slice(0,limit);
+  return AGRI_LINKS.filter(item=>item.type==='material'&&matchesSearchText(`${item.label} ${item.initial} ${item.text} ${(item.keywords||[]).join(' ')}`,kw)).map(item=>({...item,query:kw,meta:item.badge||'농자재 정보 페이지'})).slice(0,limit);
 }
 function matchesSearchText(text,kw){const hay=String(text||'').toLowerCase();const compactHay=hay.replace(/\s/g,'');const needle=String(kw||'').toLowerCase();return hay.includes(needle)||compactHay.includes(needle.replace(/\s/g,''))||getInitials(hay).includes(needle)||SEARCH_ALIASES.some(a=>(a.initial===needle||a.label.includes(needle))&&compactHay.includes(a.label.toLowerCase().replace(/\s/g,'')));}
 function getInitials(text){return String(text||'').split('').map(ch=>{const code=ch.charCodeAt(0)-44032;if(code>=0&&code<=11171)return CHO_LIST[Math.floor(code/588)];return ch;}).join('');}

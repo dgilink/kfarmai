@@ -57,6 +57,14 @@
   .guide-list { margin: 0; padding-left: 18px; color: #374151; font-size: 12px; line-height: 1.7; }
   .guide-list li + li { margin-top: 4px; }
   .guide-notice { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #f0fdf4; color: #166534; font-size: 12px; line-height: 1.6; font-weight: 700; }
+  .source-list { display: grid; gap: 8px; }
+  .source-item { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 9px; }
+  .source-item strong { display: block; color: #111827; font-size: 12px; margin-bottom: 4px; }
+  .source-item p { margin: 0; color: #4b5563; font-size: 11.5px; line-height: 1.55; }
+  .source-item a { color: #166534; font-weight: 900; text-decoration: none; overflow-wrap: anywhere; }
+  .status-grid { display: grid; gap: 7px; }
+  .status-row { display: grid; grid-template-columns: 96px 1fr; gap: 8px; align-items: start; font-size: 12px; line-height: 1.55; color: #374151; }
+  .status-row b { color: #14532d; }
   .official-site-list { display: grid; grid-template-columns: 1fr; gap: 9px; }
   .official-site-card { background: #fff; border: 1px solid #dbeafe; border-radius: 12px; padding: 11px; }
   .official-site-card h4 { margin: 0 0 6px; color: #111827; font-size: 13px; line-height: 1.35; }
@@ -146,6 +154,10 @@
         <div class="hub-links"><a class="hub-link" href="mfg.html?category=smartfarm">스마트팜 참고</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
       </article>
       <article class="hub-card">
+        <div><h2>농기계·안전용품</h2><p>작업 전 장비 점검, 보호장비, 세척·보관, 지역 안전교육 경로를 확인합니다.</p></div>
+        <div class="hub-links"><a class="hub-link" href="mfg.html?category=machinery-safety">안전용품 참고</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
+      </article>
+      <article class="hub-card">
         <div><h2>보조사업</h2><p>지자체와 공공기관의 보조사업 공식 공고 확인 경로를 정리합니다.</p></div>
         <div class="hub-links"><a class="hub-link" href="subsidy-calendar.html">보조사업 공식 공고 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
       </article>
@@ -214,7 +226,9 @@ const CATEGORY_ALIASES = {
   fert: 'fertilizer',
   fertilizer: 'fertilizer',
   soil: 'santo',
-  potting: 'santo'
+  potting: 'santo',
+  machinery: 'machinery-safety',
+  safety: 'machinery-safety'
 };
 const OFFICIAL_COMPANY_TAB_COLORS = {
   'irrigation-facility': 'kf-tag-teal',
@@ -506,29 +520,29 @@ function arrangeMfgCategoryLayout(hasSelectedCategory) {
 function renderGuideSummary(item) {
   return `<article class="guide-summary">
     <h3>${escapeHtml(item.name)}</h3>
-    <p>${escapeHtml(item.description)}</p>
+    <p>${escapeHtml(item.summary || item.description)}</p>
     <div class="hub-links"><a class="hub-link" href="mfg.html?category=${encodeURIComponent(item.id)}">${escapeHtml(item.name)} 보기</a></div>
   </article>`;
 }
 
 function renderGuideDetail(item) {
-  const firstTags = item.situations || item.stages || [];
-  const secondTags = item.items || item.equipment || [];
-  const noteList = item.checkpoints || [];
+  const firstTags = item.situations || item.stages || item.problemLinks || [];
+  const secondTags = item.subTypes || item.items || item.equipment || [];
+  const noteList = item.checkPoints || item.checkpoints || [];
   const useCompanyGridFirst = Boolean(OFFICIAL_COMPANY_TAB_COLORS[item.id]);
   const orderedCompanyBlocks = item.officialCompanies ? renderCompanyFirstGuideBlocks(item, firstTags, secondTags, noteList) : '';
   const legacyGuideBlocks = item.officialCompanies ? '' : `
       ${item.problemLinks ? renderTagBlock('이 카테고리는 언제 확인하나요?', item.problemLinks) : ''}
+      ${secondTags.length ? renderTagBlock('주요 종류', secondTags) : ''}
       ${item.productGroups ? renderTagBlock('확인할 제품군', item.productGroups) : ''}
-      ${item.checkBeforeUse ? renderListBlock('선택 전 체크포인트', item.checkBeforeUse) : ''}
+      ${noteList.length ? renderListBlock('선택 전 체크포인트', noteList) : ''}
       ${item.publicDataLinks ? renderListBlock('관련 공공정보', item.publicDataLinks) : ''}
       ${(item.regionUse || item.manufacturerUse) ? renderListBlock('지역 판매점과 제조사 정보 구분', [item.regionUse, item.manufacturerUse].filter(Boolean)) : ''}
       ${item.nextActions ? renderTagBlock('다음 확인 경로', item.nextActions) : ''}
-      ${renderTagBlock(item.stages ? '도입 단계' : '상황 선택', firstTags)}
-      ${renderTagBlock(item.equipment ? '확인 장비' : '확인할 품목', secondTags)}
-      ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}`;
+      ${item.relatedCrops ? renderTagBlock('관련 작물', item.relatedCrops) : ''}
+      ${item.relatedProblems ? renderTagBlock('관련 증상·상황', item.relatedProblems) : ''}`;
   return `<h2>${escapeHtml(item.title || item.name)}</h2>
-    <p>${escapeHtml(item.description)}</p>
+    <p>${escapeHtml(item.description || item.summary)}</p>
     ${renderMafraDataEntry(item)}
     ${item.officialCompanies && !useCompanyGridFirst ? renderOfficialCompanySearch(item) : ''}
     ${item.officialCompanies && !useCompanyGridFirst ? renderOfficialCompanies(item.officialCompanies, item) : ''}
@@ -540,6 +554,8 @@ function renderGuideDetail(item) {
       ${item.plantNotes ? renderPlantNotes(item.plantNotes) : ''}
       ${item.cropExamples ? renderTagBlock('작물 예시', item.cropExamples) : ''}
       ${item.officialInfo ? renderListBlock('공식 정보 확인', item.officialInfo) : ''}
+      ${item.officialSources ? renderOfficialSources(item.officialSources) : ''}
+      ${renderStatusBlock(item)}
       ${item.regionInfo ? renderListBlock('지역 판매점 확인', item.regionInfo) : ''}
       ${item.cautions ? renderListBlock('확인 전 주의', item.cautions) : ''}
       ${item.relatedActions ? renderListBlock('다음 확인 경로', item.relatedActions) : ''}
@@ -583,9 +599,10 @@ function renderCompanyFirstGuideBlocks(item, firstTags, secondTags, noteList) {
   const itemLabel = item.equipment ? '확인 장비' : '확인할 품목';
   return `
       ${renderTagBlock(item.stages ? '도입 단계' : '이 카테고리는 언제 확인하나요?', firstTags)}
-      ${renderTagBlock(itemLabel, secondTags)}
-      ${item.checkBeforeUse ? renderListBlock('선택 전 체크포인트', item.checkBeforeUse) : ''}
-      ${noteList.length ? renderListBlock('체크포인트', noteList) : ''}
+      ${renderTagBlock(item.subTypes ? '주요 종류' : itemLabel, secondTags)}
+      ${noteList.length ? renderListBlock('선택 전 체크포인트', noteList) : ''}
+      ${item.relatedCrops ? renderTagBlock('관련 작물', item.relatedCrops) : ''}
+      ${item.relatedProblems ? renderTagBlock('관련 증상·상황', item.relatedProblems) : ''}
       ${(item.regionUse || item.manufacturerUse) ? renderListBlock('지역 판매점과 제조사 정보 구분', [item.regionUse, item.manufacturerUse].filter(Boolean)) : ''}
       ${item.nextActions ? renderTagBlock('다음 확인 경로', item.nextActions) : ''}
       ${item.publicDataLinks ? renderListBlock('관련 공공정보', item.publicDataLinks) : ''}`;
@@ -667,6 +684,25 @@ function bindOfficialCompanySearch(item) {
 function renderListBlock(title, items) {
   if(!items || !items.length) return '';
   return `<div class="guide-block"><h3>${escapeHtml(title)}</h3><ul class="guide-list">${items.map(v=>`<li>${escapeHtml(v)}</li>`).join('')}</ul></div>`;
+}
+
+function renderOfficialSources(items) {
+  if(!items || !items.length) return '';
+  return `<div class="guide-block"><h3>공공데이터·공식자료 상태</h3><div class="source-list">${items.map(item => {
+    const status = item.status ? ` · ${item.status}` : '';
+    const url = item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">출처 확인</a>` : '<span>링크 준비 중</span>';
+    return `<div class="source-item"><strong>${escapeHtml(item.name || '공식자료')}${escapeHtml(status)}</strong><p>${escapeHtml(item.note || '공식자료 확인 예정입니다.')}</p><p>${url}</p></div>`;
+  }).join('')}</div></div>`;
+}
+
+function renderStatusBlock(item) {
+  const rows = [
+    ['공공데이터', item.officialDataStatus],
+    ['제조사 정보', item.manufacturerInfoStatus],
+    ['지역 판매점', item.localStoreInfoStatus]
+  ].filter(row => row[1]);
+  if(!rows.length) return '';
+  return `<div class="guide-block"><h3>데이터 보강 상태</h3><div class="status-grid">${rows.map(([label,value])=>`<div class="status-row"><b>${escapeHtml(label)}</b><span>${escapeHtml(value)}</span></div>`).join('')}</div></div>`;
 }
 
 function renderPlantNotes(items) {
