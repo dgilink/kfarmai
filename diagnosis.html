@@ -773,7 +773,7 @@
     cursor:pointer;
   }
   .input-action.primary { border:0; background:var(--green); color:#fff; }
-  .diag-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+  .diag-form-grid { display:grid; grid-template-columns:1fr; gap:8px; margin-top:0; }
   .diag-form-input {
     width:100%;
     border:1.5px solid var(--border);
@@ -788,14 +788,51 @@
   .sec-label { color:#333; margin-bottom:8px; }
   .optional { color:var(--green-dark); border-color:#CDEBDD; }
   .num-badge { background:var(--green); color:#fff; box-shadow:none; }
+  .ai-symptom-help {
+    min-height:18px;
+    margin:6px 1px 0;
+    color:#6B7280;
+    font-size:12px;
+    line-height:1.35;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+  }
+  .diag-extra {
+    margin-top:10px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:#fff;
+    overflow:hidden;
+  }
+  .diag-extra summary {
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    padding:0 12px;
+    color:var(--green-dark);
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+    list-style:none;
+    white-space:nowrap;
+  }
+  .diag-extra summary::-webkit-details-marker { display:none; }
+  .diag-extra summary::after { content:'＋'; margin-left:auto; color:var(--green); font-weight:900; }
+  .diag-extra[open] summary::after { content:'－'; }
+  .diag-extra-body { padding:0 10px 10px; }
   #symptomBody { display:block !important; }
   #symptomInput {
     background:#fff;
     border:1.5px solid var(--border);
     color:var(--text);
-    min-height:76px;
+    min-height:96px;
+    line-height:1.55;
+    padding:10px 12px;
     resize:vertical;
     overflow:auto;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+    transition:border-color .15s;
   }
   #symptomInput:focus, .diag-form-input:focus { border-color:var(--green); box-shadow:none; }
   #symptomInput::placeholder { color:#8A8A8A; }
@@ -940,26 +977,31 @@
           </div>
 
           <!-- Symptom input -->
-          <div class="diag-form-grid">
-            <input class="diag-form-input" id="cropInput" type="text" placeholder="작물명 예: 고추, 몬스테라">
-            <input class="diag-form-input" id="envInput" type="text" placeholder="재배환경 예: 하우스, 실내">
-          </div>
           <div class="sec">
             <div class="sec-label">
-              <span class="num-badge" id="symptomToggle" style="cursor:pointer" onclick="toggleSymptom()">+</span>
               증상 설명
               <span class="optional">사진 없이 입력 가능</span>
             </div>
-            <div id="symptomBody" style="display:none">
+            <div id="symptomBody">
               <textarea
                 id="symptomInput"
-                placeholder="사진이 없어도 증상, 작물명, 재배환경을 적어주세요. 예: 고추 잎이 노랗게 변하고 아래잎부터 말라갑니다."
-                rows="2"
+                placeholder="증상을 간단히 적어주세요"
+                rows="4"
                 maxlength="500"
               ></textarea>
+              <p class="ai-symptom-help">예: 잎이 노랗게 변해요, 잎끝이 말라요, 줄기가 물러요</p>
               <div class="char-count"><span id="charCount">0</span>/500</div>
             </div>
           </div>
+          <details class="diag-extra" id="diagExtra">
+            <summary>추가 정보 입력</summary>
+            <div class="diag-extra-body">
+              <div class="diag-form-grid">
+                <input class="diag-form-input" id="cropInput" type="text" placeholder="작물명 예: 고추, 몬스테라">
+                <input class="diag-form-input" id="envInput" type="text" placeholder="재배환경 예: 하우스, 실내">
+              </div>
+            </div>
+          </details>
 
           <!-- Start button -->
           <div class="diag-btn-wrap">
@@ -1194,8 +1236,6 @@ const symptomEl  = document.getElementById('symptomInput');
 const charCountEl = document.getElementById('charCount');
 symptomEl.addEventListener('input', () => {
   charCountEl.textContent = symptomEl.value.length;
-  symptomEl.style.height = 'auto';
-  symptomEl.style.height = symptomEl.scrollHeight + 'px';
 });
 
 /* ── Step indicator (2 steps) ── */
@@ -1763,15 +1803,13 @@ function resetDiagnosis() {
   rv.innerHTML = '';
 
   symptomEl.value          = '';
-  symptomEl.style.height   = 'auto';
   charCountEl.textContent  = '0';
   const cropInput = document.getElementById('cropInput');
   const envInput = document.getElementById('envInput');
   if (cropInput) cropInput.value = '';
   if (envInput) envInput.value = '';
-
-  document.getElementById('symptomBody').style.display   = 'none';
-  document.getElementById('symptomToggle').textContent   = '+';
+  const diagExtra = document.getElementById('diagExtra');
+  if (diagExtra) diagExtra.open = false;
 
   document.getElementById('imgBadge').classList.remove('show');
 }

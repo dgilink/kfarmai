@@ -239,7 +239,7 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
     touch-action: pan-y;
-    padding: 12px 14px 100px;
+    padding: 12px 14px 28px;
   }
   .pages.dragging { transition: none; }
 
@@ -270,7 +270,7 @@
     line-break: strict;
   }
   .url, .email, .code, .mono, .tag, .hash-tag, pre, code { word-break: break-all; overflow-wrap: anywhere; }
-  button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .bnav .b, .tab, .section-more-btn { word-break: keep-all; white-space: nowrap; }
+  button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .tab, .section-more-btn { word-break: keep-all; white-space: nowrap; }
   .section-head:first-child { margin-top: 14px; }
   .section-title { font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; }
   .section-title.accent { color: var(--green-dark); }
@@ -759,10 +759,43 @@
   .diag-preview-img { width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; }
   .diag-preview-clear { display: block; width: 100%; margin-top: 6px; background: none; border: none; color: var(--sub); font-size: 12px; cursor: pointer; text-align: center; padding: 0; }
   .symptom-area { margin-top: 10px; }
-  .diag-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .ai-symptom-field { margin-top: 10px; }
+  .ai-symptom-help {
+    min-height: 18px;
+    margin: 6px 1px 0;
+    color: var(--sub);
+    font-size: 12px;
+    line-height: 1.35;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+  .diag-extra {
+    margin-top: 10px;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .diag-extra summary {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    color: var(--green-dark);
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    list-style: none;
+    white-space: nowrap;
+  }
+  .diag-extra summary::-webkit-details-marker { display: none; }
+  .diag-extra summary::after { content: '＋'; margin-left: auto; color: var(--green); font-weight: 900; }
+  .diag-extra[open] summary::after { content: '－'; }
+  .diag-extra-body { padding: 0 10px 10px; }
+  .diag-mini-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 0; }
   .diag-mini-input { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 13px; font-family: inherit; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
   .diag-mini-input:focus { border-color: var(--green); }
-  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: inherit; min-height: 64px; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; }
+  .symptom-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 12px; font-size: 14px; font-family: inherit; min-height: 96px; line-height: 1.55; resize: vertical; outline: none; background: #fff; color: var(--text); box-sizing: border-box; word-break: keep-all; overflow-wrap: break-word; transition: border-color .15s; }
   .symptom-textarea:focus { border-color: var(--green); }
   .diag-start-btn { width: 100%; height: 46px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; opacity: .4; transition: opacity .2s; }
   .diag-start-btn:not([disabled]) { opacity: 1; }
@@ -875,21 +908,6 @@
     font-weight: 800;
     line-height: 1.45;
   }
-
-  /* ===== Bottom Nav ===== */
-  .bnav {
-    flex-shrink: 0; background: #fff;
-    border-top: 1px solid var(--border);
-    display: flex; padding: 6px 0 12px;
-    z-index: 10;
-  }
-  .bnav .b {
-    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;
-    font-size: 10.5px; font-weight: 700; color: var(--muted); cursor: pointer;
-  }
-  .bnav a.b { text-decoration: none; }
-  .bnav .b svg { width: 24px; height: 24px; }
-  .bnav .b.on { color: var(--green); }
 
   .question-list-view {
     width: 100%;
@@ -1132,8 +1150,9 @@
     transform: translateY(100%); transition: transform .28s cubic-bezier(.32,.72,.36,1);
   }
   .my-panel-overlay.open .my-panel { transform: translateY(0); }
-  .my-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .my-title { font-size: 18px; font-weight: 900; letter-spacing: -0.4px; }
+  .my-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .my-title { font-size: 21px; font-weight: 800; letter-spacing: -0.35px; color: var(--green-dark); line-height: 1.25; }
+  .my-head-copy { margin-top: 4px; color: var(--sub); font-size: 12.5px; line-height: 1.35; word-break: keep-all; }
   .my-close {
     width: 34px; height: 34px; border: 0; border-radius: 50%;
     background: #F3F4F6; color: #4B5563; font-size: 20px; cursor: pointer;
@@ -1182,7 +1201,7 @@
     line-height: 1.45;
     font-weight: 700;
   }
-  .my-profile { display: flex; align-items: center; gap: 12px; padding: 8px 0 18px; }
+  .my-profile { display: flex; align-items: center; gap: 12px; padding: 6px 0 14px; }
   .my-profile.clickable { cursor: pointer; border-radius: 14px; }
   .my-profile.clickable:active { background: #F9FAFB; }
   .my-avatar {
@@ -1299,10 +1318,16 @@
     font-weight: 900;
     cursor: pointer;
   }
-  .nickname-quick-row { display:flex; align-items:center; justify-content:space-between; gap:10px; width:100%; padding:10px 12px; margin:0 0 10px; border:1px solid #D7EBDD; border-radius:12px; background:#F7FCF9; cursor:pointer; }
-  .nickname-quick-row span:first-child { color:#6B7280; font-size:12px; font-weight:850; }
+  .nickname-quick-row { width:100%; padding:10px 12px; margin:0 0 12px; border:1px solid #D7EBDD; border-radius:12px; background:#F7FCF9; }
+  .nickname-quick-label { display:block; margin-bottom:6px; color:#6B7280; font-size:12px; font-weight:850; }
+  .nickname-view, .nickname-edit { display:flex; align-items:center; gap:8px; min-height:34px; }
+  .nickname-view.hidden, .nickname-edit.hidden { display:none; }
   .nickname-quick-value { flex:1; min-width:0; color:#111827; font-size:13px; font-weight:900; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
-  .nickname-quick-btn { border:0; border-radius:999px; background:#E8F6F0; color:var(--green-dark); padding:6px 10px; font-size:12px; font-weight:900; }
+  .nickname-quick-btn, .nickname-inline-save, .nickname-inline-cancel { border:0; border-radius:999px; padding:7px 10px; font-size:12px; font-weight:900; cursor:pointer; white-space:nowrap; }
+  .nickname-quick-btn, .nickname-inline-save { background:#E8F6F0; color:var(--green-dark); }
+  .nickname-inline-cancel { background:#F3F4F6; color:#4B5563; }
+  .nickname-inline-input { flex:1; min-width:0; height:34px; border:1.5px solid var(--border); border-radius:10px; padding:0 10px; color:#111827; font-size:13px; font-weight:850; outline:0; }
+  .nickname-inline-input:focus { border-color:var(--green); }
   .nickname-copy {
     margin: 0 0 12px;
     color: var(--sub);
@@ -1820,13 +1845,19 @@
             <input type="file" id="diagAlbumInput" accept="image/*" style="display:none" onchange="diagHandleFile(this)">
           </div>
 
-          <div class="diag-mini-grid">
-            <input class="diag-mini-input" id="diagCrop" type="text" placeholder="작물명 예: 고추, 몬스테라" oninput="updateDiagBtn()">
-            <input class="diag-mini-input" id="diagEnv" type="text" placeholder="재배환경 예: 하우스, 실내" oninput="updateDiagBtn()">
+          <div class="symptom-area ai-symptom-field">
+            <textarea class="symptom-textarea" id="diagSymptom" placeholder="증상을 간단히 적어주세요" oninput="updateDiagBtn()"></textarea>
+            <p class="ai-symptom-help">예: 잎이 노랗게 변해요, 잎끝이 말라요, 줄기가 물러요</p>
           </div>
-          <div class="symptom-area">
-            <textarea class="symptom-textarea" id="diagSymptom" placeholder="사진이 없어도 증상, 작물명, 재배환경을 적어주세요. 예: 고추 잎이 노랗게 변하고 아래잎부터 말라갑니다." oninput="updateDiagBtn()"></textarea>
-          </div>
+          <details class="diag-extra">
+            <summary>추가 정보 입력</summary>
+            <div class="diag-extra-body">
+              <div class="diag-mini-grid">
+                <input class="diag-mini-input" id="diagCrop" type="text" placeholder="작물명 예: 고추, 몬스테라" oninput="updateDiagBtn()">
+                <input class="diag-mini-input" id="diagEnv" type="text" placeholder="재배환경 예: 하우스, 실내" oninput="updateDiagBtn()">
+              </div>
+            </div>
+          </details>
           <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">AI 참고 진단 시작</button>
         </div>
         <div class="diag-loading" id="diagLoading"><div class="spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--sub)">AI가 원인 후보를 정리 중입니다...</div></div>
@@ -1950,13 +1981,6 @@
   </div>
 
   <!-- Bottom Nav (fixed) -->
-  <nav class="bnav">
-    <div class="b on"><svg><use href="#nav-home"/></svg><span>홈</span></div>
-    <a class="b" href="channel.html"><svg><use href="#nav-q"/></svg><span data-i18n="qa">질문</span></a>
-    <div class="b" onclick="switchMainTab('diagnosis')"><svg><use href="#nav-d"/></svg><span data-i18n="diagnosisShort">진단</span></div>
-    <a class="b" href="agri_map.html"><svg><use href="#nav-pin"/></svg><span data-i18n="nearby">주변</span></a>
-    <div class="b" onclick="safeOpenMyPanel()"><svg><use href="#nav-my"/></svg><span>MY</span></div>
-  </nav>
 </div>
 
 <!-- WRITE MODAL -->
@@ -2005,7 +2029,10 @@
   <div class="my-panel">
     <div class="modal-handle"></div>
     <div class="my-head">
-      <div class="my-title">MY</div>
+      <div>
+        <div class="my-title">마이페이지</div>
+        <div class="my-head-copy">내 질문과 댓글, 닉네임을 관리할 수 있습니다.</div>
+      </div>
       <button class="my-close" type="button" onclick="closeMyPanel()">×</button>
     </div>
 
@@ -2040,9 +2067,19 @@
           <span class="role-badge">일반회원</span>
         </div>
       </div>
-      <button class="nickname-quick-row" type="button" onclick="openNicknameModal(false)">
-        <span>닉네임</span><span class="nickname-quick-value" id="myNicknameQuick">kFarmAI 사용자</span><span class="nickname-quick-btn">변경</span>
-      </button>
+      <div class="nickname-quick-row">
+        <span class="nickname-quick-label">닉네임</span>
+        <div class="nickname-view" id="nicknameView">
+          <span class="nickname-quick-value" id="myNicknameQuick">kFarmAI 사용자</span>
+          <button class="nickname-quick-btn" type="button" onclick="beginNicknameEdit()">변경</button>
+        </div>
+        <div class="nickname-edit hidden" id="nicknameEdit">
+          <input class="nickname-inline-input" id="nicknameInlineInput" maxlength="16" placeholder="초록농부" autocomplete="nickname">
+          <button class="nickname-inline-save" id="nicknameSaveBtn" type="button" onclick="saveNickname()">완료</button>
+          <button class="nickname-inline-cancel" type="button" onclick="cancelNicknameEdit()">취소</button>
+        </div>
+        <div class="nickname-error" id="nicknameInlineError"></div>
+      </div>
       <div class="my-menu" id="myMainMenu">
         <div class="my-row clickable" onclick="openMySubview('myPostsView')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
         <div class="my-row clickable" onclick="openMySubview('myDiagnosesView')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
@@ -2063,7 +2100,7 @@
           <div class="account-info-row"><span>등록 이메일</span><span id="myAccountEmail">user@example.com</span></div>
           <div class="account-info-row"><span>가입일</span><span id="myJoinedAt">확인 중</span></div>
         </div>
-        <button class="nickname-edit-btn" type="button" onclick="openNicknameModal(false)">닉네임 수정</button>
+        <button class="nickname-edit-btn" type="button" onclick="beginNicknameEdit()">닉네임 수정</button>
         <div class="account-delete-box">
           <button class="account-delete-btn" type="button" onclick="openAccountDeleteModal()">회원 탈퇴</button>
           <p>계정과 작성한 데이터 삭제를 요청합니다.</p>
@@ -2085,24 +2122,6 @@
       </div>
       <div class="my-version">앱 버전: v2.0</div>
     </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="nicknameModal" onclick="if(event.target===this && this.dataset.required!=='1')closeNicknameModal()">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="nicknameModalTitle">
-    <button class="modal-handle" type="button" onclick="if(document.getElementById('nicknameModal').dataset.required!=='1')closeNicknameModal()" aria-label="닫기"></button>
-    <div class="modal-title" id="nicknameModalTitle" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      닉네임 변경
-      <button class="my-close" id="nicknameCloseBtn" type="button" onclick="closeNicknameModal()" aria-label="닫기">×</button>
-    </div>
-    <p class="nickname-copy">글과 댓글에 표시될 이름입니다. 변경 이후 새 글과 댓글부터 반영됩니다.</p>
-    <div class="modal-field">
-      <div class="modal-label">닉네임</div>
-      <input class="modal-input" id="nicknameInput" maxlength="16" placeholder="예: 초록농부, 텃밭초보, 식물집사" autocomplete="nickname">
-      <div class="nickname-error" id="nicknameError"></div>
-    </div>
-    <button class="modal-submit" id="nicknameSaveBtn" type="button" onclick="saveNickname()">완료</button>
-    <button class="modal-submit" type="button" style="margin-top:8px;background:#F3F4F6;color:#374151" onclick="closeNicknameModal()">취소</button>
   </div>
 </div>
 
@@ -2288,10 +2307,8 @@ function diagClearImage() {
 
 function updateDiagBtn() {
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
-  const crop = (document.getElementById('diagCrop')?.value || '').trim();
-  const env = (document.getElementById('diagEnv')?.value || '').trim();
   const btn = document.getElementById('diagStartBtn');
-  if (btn) btn.disabled = !(symptom || crop || env || diagImageBase64);
+  if (btn) btn.disabled = !(symptom || diagImageBase64);
 }
 
 async function runDiagnosis() {
@@ -2767,16 +2784,22 @@ function getInitial(user){return (displayNameForUser(user)||'U').trim()[0].toUpp
 async function loadFeed(channelId=null){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
-  const timeout=setTimeout(()=>{ if(feed.dataset.loading==='1') renderFeedFallback('현재 데이터를 불러오지 못했습니다. 공개 예시 질문을 표시합니다.'); }, 1800);
   feed.dataset.loading='1';
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
   try{
     if(!window._sb)throw new Error('Supabase client is not ready');
-    let query=_sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,like_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(5);
-    if(channelId)query=query.eq('channel_id',channelId);
-    const {data,error}=await query;
-    if(error)throw error;
-    clearTimeout(timeout);
+    let data=[];
+    if(channelId){
+      const result=await _sb.from('posts')
+        .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,like_count,image_urls,channels(name, slug)')
+        .eq('channel_id',channelId)
+        .order('created_at',{ascending:false})
+        .limit(5);
+      if(result.error)throw result.error;
+      data=result.data||[];
+    }else{
+      data=await loadSortedQuestionPosts('latest',3);
+    }
     feed.dataset.loading='0';
     if(!data||data.length===0){
       feed.innerHTML='<div class="feed-loading">아직 등록된 질문이 없습니다.</div>';
@@ -2786,7 +2809,6 @@ async function loadFeed(channelId=null){
     const profileMap=await fetchProfileMap((data||[]).map(post=>post.user_id));
     data.forEach(post=>renderFeedCard(feed, post, profileMap));
   }catch(e){
-    clearTimeout(timeout);
     feed.dataset.loading='0';
     await renderFeedFallback('현재 데이터를 불러오지 못했습니다. 공개 예시 질문을 표시합니다.');
   }
@@ -2797,10 +2819,19 @@ function renderFeedCard(feed,post,profileMap={}){
   const card=document.createElement('div');
   card.className='q-card';
   card.style.cursor='pointer';
-  card.onclick=()=>{ if(post.id) location.href=`post.html?id=${encodeURIComponent(post.id)}`; };
+  card.onclick=()=>openPostDetail(post);
   const symptom=extractCategoryFromContent(post.content);
   card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||post.channelName||'일반')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>♡ ${post.like_count||0}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
   feed.appendChild(card);
+}
+function cachePostForDetail(post){
+  if(!post?.id)return;
+  try{sessionStorage.setItem('kfarmai_post_preview',JSON.stringify({...post,_cachedAt:Date.now()}));}catch(_){}
+}
+function openPostDetail(post){
+  if(!post?.id)return;
+  cachePostForDetail(post);
+  location.href=`post.html?id=${encodeURIComponent(post.id)}`;
 }
 async function renderFeedFallback(message){
   const feed=document.getElementById('recentFeed');
@@ -3194,7 +3225,8 @@ function renderQuestionListCard(post,profileMap={}){
     post.created_at?getTimeAgo(post.created_at):''
   ].filter(Boolean);
   const href=post.id ? `post.html?id=${encodeURIComponent(post.id)}` : safeSearchUrl(post.url||'channel.html');
-  return `<a class="question-list-card${thumb?' has-thumb':''}" href="${href}">
+  const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
+  return `<a class="question-list-card${thumb?' has-thumb':''}" href="${href}"${clickAttr}>
     <div>
       <div class="question-list-card-title">${escHtml(post.title||'제목 없음')}</div>
       ${content?`<div class="question-list-preview">${escHtml(content)}</div>`:''}
@@ -3391,7 +3423,8 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     const postUrl=post.id?`post.html?id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=extractCategoryFromContent(post.content);
-    return `<a class="q-card" href="${postUrl}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>♡ ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
+    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>♡ ${post.like_count||0}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
@@ -3665,37 +3698,39 @@ function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
 function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;renderTagSuggestions();toggleCustomSymptom();modal.classList.add('open');lockBodyScroll();}
 function closeModal(){document.getElementById('writeModal')?.classList.remove('open');unlockBodyScroll();}
-function openNicknameModal(required=false){
+function openNicknameModal(){beginNicknameEdit();}
+function closeNicknameModal(){cancelNicknameEdit();}
+function beginNicknameEdit(){
   if(!currentUser)return;
-  const modal=document.getElementById('nicknameModal');
-  const input=document.getElementById('nicknameInput');
-  const closeBtn=document.getElementById('nicknameCloseBtn');
-  if(!modal||!input)return;
-  modal.dataset.required=required?'1':'0';
-  if(closeBtn)closeBtn.style.display=required?'none':'';
-  input.value=hasNickname(currentUser)?displayNameForUser(currentUser):'';
+  const view=document.getElementById('nicknameView');
+  const edit=document.getElementById('nicknameEdit');
+  const input=document.getElementById('nicknameInlineInput');
+  if(!view||!edit||!input)return;
   clearNicknameError();
-  modal.classList.add('open');
-  lockBodyScroll();
-  setTimeout(()=>input.focus(),80);
+  input.value=hasNickname(currentUser)?displayNameForUser(currentUser):'';
+  view.classList.add('hidden');
+  edit.classList.remove('hidden');
 }
-function closeNicknameModal(){
-  const modal=document.getElementById('nicknameModal');
-  if(modal?.dataset.required==='1')return;
-  modal?.classList.remove('open');
-  unlockBodyScroll();
+function cancelNicknameEdit(){
+  const view=document.getElementById('nicknameView');
+  const edit=document.getElementById('nicknameEdit');
+  if(view)view.classList.remove('hidden');
+  if(edit)edit.classList.add('hidden');
+  clearNicknameError();
 }
 function clearNicknameError(){
-  const error=document.getElementById('nicknameError');
-  if(error){error.textContent='';error.classList.remove('show');}
+  ['nicknameInlineError','nicknameError'].forEach(id=>{
+    const error=document.getElementById(id);
+    if(error){error.textContent='';error.classList.remove('show');}
+  });
 }
 function setNicknameError(message){
-  const error=document.getElementById('nicknameError');
+  const error=document.getElementById('nicknameInlineError')||document.getElementById('nicknameError');
   if(error){error.textContent=message;error.classList.add('show');}
 }
 async function saveNickname(){
   if(!window._sb||!currentUser?.id)return;
-  const input=document.getElementById('nicknameInput');
+  const input=document.getElementById('nicknameInlineInput')||document.getElementById('nicknameInput');
   const btn=document.getElementById('nicknameSaveBtn');
   const nickname=(input?.value||'').trim().replace(/\s+/g,' ');
   clearNicknameError();
@@ -3710,8 +3745,7 @@ async function saveNickname(){
     await upsertUserDisplayProfile(currentUser);
     renderHeaderProfile(currentUser);
     renderMyProfile(currentUser);
-    document.getElementById('nicknameModal')?.classList.remove('open');
-    unlockBodyScroll();
+    cancelNicknameEdit();
     showToast('닉네임이 변경되었습니다.');
   }catch(error){
     console.error('nickname save failed', error);
