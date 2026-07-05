@@ -2666,6 +2666,32 @@ async function loadMyCounts(userId){
 function postLikeButton(){
   return '';
 }
+const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
+async function attachCommentCounts(posts){
+  const list=Array.isArray(posts)?posts:[];
+  const ids=[...new Set(list.map(post=>post?.id).filter(Boolean).map(String))];
+  if(!ids.length||!window._sb)return list;
+  try{
+    const {data,error}=await _sb.from('comments')
+      .select('post_id,content,deleted_at')
+      .in('post_id',ids)
+      .is('deleted_at',null);
+    if(error)throw error;
+    const counts={};
+    (data||[]).forEach(comment=>{
+      if(String(comment.content||'').trim()===COMMENT_DELETE_MARKER)return;
+      const key=String(comment.post_id);
+      counts[key]=(counts[key]||0)+1;
+    });
+    return list.map(post=>({...post,comment_count:counts[String(post.id)]||0}));
+  }catch(error){
+    console.error('comment count load failed',error);
+    return list;
+  }
+}
+function commentCountLabel(post){
+  return `댓글 ${Number(post?.comment_count||0)}`;
+}
 function openMySubview(id){
   if(!currentUser)return;
   const main=document.getElementById('myMainMenu');
@@ -2684,7 +2710,7 @@ async function loadMyPosts(userId){
   const list=document.getElementById('myPostList');
   if(!list||!window._sb||!userId)return;
   try{
-    const data=await fetchMyPosts(userId);
+    const data=await attachCommentCounts(await fetchMyPosts(userId));
     if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>{
       const category=post.crop_tag||extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
@@ -2693,6 +2719,7 @@ async function loadMyPosts(userId){
         displayNameForPost(post,{[userId]:displayNameForUser(currentUser)}),
         displayChannelName(post.channels?.slug,post.channels?.name)||category,
         post.region_tag||'',
+        commentCountLabel(post),
         `조회 ${Number(post.view_count||0)}`,
         formatMyDate(post.created_at)
       ].filter(Boolean).map(item=>`<span>${escHtml(item)}</span>`).join('');
@@ -2716,7 +2743,7 @@ async function fetchMyPosts(userId){
   try{
     const {data,error}=await base(_sb.from('posts').select('id, title, content, crop_tag, created_at, region_tag, view_count, channels(name, slug)'));
     if(error)throw error;
-    return data||[];
+    return await attachCommentCounts(data||[]);
   }catch(e){
     const {data,error}=await base(_sb.from('posts').select('id, title, content, created_at, channels(name, slug)'));
     if(error)throw error;
@@ -2945,6 +2972,7 @@ async function loadFeed(channelId=null){
     }else{
       data=await loadSortedQuestionPosts('latest',3);
     }
+    data=await attachCommentCounts(data);
     feed.dataset.loading='0';
     if(!data||data.length===0){
       feed.innerHTML='<div class="feed-loading">아직 등록된 질문이 없습니다.</div>';
@@ -2966,7 +2994,7 @@ function renderFeedCard(feed,post,profileMap={}){
   card.style.cursor='pointer';
   card.onclick=()=>openPostDetail(post);
   const symptom=post.crop_tag||extractCategoryFromContent(post.content);
-  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name||post.channelName))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
+  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name||post.channelName))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>${commentCountLabel(post)}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
   feed.appendChild(card);
 }
 function cachePostForDetail(post){
@@ -3308,7 +3336,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
         .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
         .order('created_at',{ascending:false})
         .limit(limit);
-      return data||[];
+      return await attachCommentCounts(data||[]);
     }catch(_){
       return [];
     }
@@ -3363,7 +3391,7 @@ function renderQuestionListCard(post,profileMap={}){
     displayNameForPost(post,profileMap),
     displayChannelName(post.channels?.slug,post.channels?.name||post.channelName),
     post.region_tag||'',
-    `댓글 ${Number(post.comment_count||0)}`,
+    commentCountLabel(post),
     `조회 ${Number(post.view_count||0)}`,
     post.created_at?getTimeAgo(post.created_at):''
   ].filter(Boolean);
@@ -3425,7 +3453,7 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
       .order('created_at',{ascending:false})
       .limit(limit);
     if(error)throw error;
-    return data||[];
+    return await attachCommentCounts(data||[]);
   }catch(_){
     try{
       const {data}=await _sb.from('posts')
@@ -3433,10 +3461,11 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
         .order('created_at',{ascending:false})
         .limit(limit);
       const lowered=uniqueTerms.map(term=>term.toLowerCase());
-      return (data||[]).filter(post=>{
+      const filtered=(data||[]).filter(post=>{
         const text=`${post.title||''} ${post.content||''}`.toLowerCase();
         return lowered.some(term=>text.includes(term));
       });
+      return await attachCommentCounts(filtered);
     }catch(__){
       return [];
     }
@@ -3552,7 +3581,7 @@ async function searchPosts(kw,limit){
       const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
       list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
-    return list;
+    return await attachCommentCounts(list);
   }catch(e){return [];}
 }
 function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
@@ -3567,7 +3596,7 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const postUrl=post.id?`post.html?v=20260705d&id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=post.crop_tag||extractCategoryFromContent(post.content);
     const clickAttr=post.id?``:'';
-    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>${commentCountLabel(post)}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');

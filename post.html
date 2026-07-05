@@ -103,7 +103,15 @@
   .section-title { font-size:16px; font-weight:900; }
   .comment { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:12px; padding:11px 12px; margin:7px 0; }
   .comment-head { display:flex; align-items:center; gap:6px; color:#777; font-size:11.5px; font-weight:800; margin-bottom:6px; }
-  .comment-body { color:#333; font-size:14px; line-height:1.55; white-space:pre-wrap; word-break:break-word; }
+  .comment.reply { margin-left:18px; border-left:3px solid rgba(56,142,60,.18); }
+  .comment-body { color:#333; font-size:14px; line-height:1.55; white-space:pre-wrap; word-break:keep-all; overflow-wrap:break-word; }
+  .comment-body.collapsed { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; white-space:normal; cursor:pointer; }
+  .comment-toggle { margin-top:6px; border:0; background:transparent; color:var(--green); font-size:12px; font-weight:900; padding:0; cursor:pointer; }
+  .reply-state { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 8px; padding:8px 10px; border-radius:10px; background:#F1F8E9; color:var(--green-dark); font-size:12px; font-weight:900; }
+  .reply-state[hidden] { display:none; }
+  .reply-state button { border:0; background:transparent; color:#555; font-size:12px; font-weight:900; cursor:pointer; white-space:nowrap; }
+  .secret-row { display:inline-flex; align-items:center; gap:6px; margin-top:8px; color:#555; font-size:12px; font-weight:800; user-select:none; }
+  .secret-row input { width:14px; height:14px; accent-color:var(--green); }
   .comment-form { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:12px; padding:10px; margin-top:8px; }
   .comment-login-note { margin:0 0 8px; color:#6B7280; font-size:12px; font-weight:800; }
   .comment-form textarea { width:100%; min-height:52px; max-height:180px; border:1.5px solid var(--border); border-radius:10px; outline:0; padding:10px 11px; font-size:14px; line-height:1.55; resize:none; overflow-y:auto; word-break:keep-all; overflow-wrap:break-word; }
@@ -164,7 +172,9 @@
       <div id="commentList" class="loading"><span class="spinner"></span>댓글을 불러오는 중...</div>
       <div class="comment-form">
         <p class="comment-login-note" id="commentLoginNote"></p>
+        <div class="reply-state" id="replyState" hidden><span id="replyStateText"></span><button type="button" onclick="cancelReply()">취소</button></div>
         <textarea id="commentInput" placeholder="댓글을 입력하세요"></textarea>
+        <label class="secret-row"><input type="checkbox" id="commentSecret"> 비밀댓글</label>
         <button class="comment-submit" id="commentSubmit" type="button" onclick="submitComment()">댓글 등록</button>
       </div>
     </section>
@@ -308,6 +318,7 @@ let editNewImages = [];
 let currentProfileNickname = '';
 let commentAuthorSnapshots = {};
 const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
+let replyParentId = null;
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -539,8 +550,9 @@ async function loadComments() {
   try {
     const { data, error } = await sb
       .from('comments')
-      .select('id,post_id,user_id,content,is_ai,created_at')
+      .select('id,post_id,user_id,content,is_ai,created_at,parent_id,is_secret,updated_at,deleted_at')
       .eq('post_id', String(postId))
+      .is('deleted_at', null)
       .order('created_at', { ascending:true });
     if (error) throw error;
     const visibleComments=(data||[]).filter(comment=>String(comment.content||'').trim()!==COMMENT_DELETE_MARKER);
@@ -557,24 +569,79 @@ async function loadComments() {
 async function fetchCommentById(id){
   const {data,error}=await sb
     .from('comments')
-    .select('id,post_id,user_id,content,is_ai,created_at')
+    .select('id,post_id,user_id,content,is_ai,created_at,parent_id,is_secret,updated_at,deleted_at')
     .eq('id',id)
     .maybeSingle();
   if(error)throw error;
   return data;
 }
 
+function canViewComment(comment){
+  if(!comment?.is_secret)return true;
+  return sameUserId(currentUser?.id, comment.user_id) || sameUserId(currentUser?.id, currentPost?.user_id);
+}
+function isLongComment(body){
+  return String(body||'').length > 110 || String(body||'').split(/\n/).length > 3;
+}
+function renderCommentArticle(comment,profileMap={},isReply=false){
+  const isOwner = sameUserId(currentUser?.id, comment.user_id);
+  const isPostOwner = sameUserId(currentUser?.id, currentPost?.user_id);
+  const displayName=displayNameForRecord(comment,profileMap);
+  commentAuthorSnapshots[comment.id] = extractAuthorNicknameFromContent(comment.content) || displayName;
+  const visible=canViewComment(comment);
+  const body=visible ? stripCategoryPrefix(comment.content||'') : '비밀댓글입니다.';
+  const longBody=visible && isLongComment(body);
+  const bodyId=`commentBody-${escAttr(comment.id)}`;
+  const ownerActions=isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(body)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : '';
+  const replyAction=(!isReply && currentUser?.id) ? `<button class="comment-action" type="button" onclick="startReply('${escAttr(comment.id)}','${escAttr(displayName)}')">답글</button>` : '';
+  const secretBadge=comment.is_secret ? '<span class="ai-badge">비밀</span>' : '';
+  const authorHint=isPostOwner && comment.is_secret && !isOwner ? '<span class="ai-badge">원글 작성자 열람</span>' : '';
+  return `<article class="comment${isReply?' reply':''}" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayName)}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}${secretBadge}${authorHint}<span>${timeAgo(comment.created_at)}</span>${replyAction}${ownerActions}</div><div class="comment-body${longBody?' collapsed':''}" id="${bodyId}"${longBody?` onclick="toggleCommentBody(event,'${escAttr(comment.id)}')"`:''}>${esc(body)}</div>${longBody?`<button class="comment-toggle" type="button" onclick="toggleCommentBody(event,'${escAttr(comment.id)}')">더보기</button>`:''}</article>`;
+}
 function renderComments(comments,profileMap={}) {
-  document.getElementById('commentCount').textContent = String(comments.length || 0);
+  const activeComments=(comments||[]).filter(comment=>!comment.deleted_at);
+  document.getElementById('commentCount').textContent = String(activeComments.length || 0);
   const list = document.getElementById('commentList');
-  if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
+  if (!activeComments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
   commentAuthorSnapshots = {};
-  list.innerHTML = comments.map(comment => {
-    const isOwner = sameUserId(currentUser?.id, comment.user_id);
-    commentAuthorSnapshots[comment.id] = extractAuthorNicknameFromContent(comment.content) || displayNameForRecord(comment,profileMap);
-    const body=stripCategoryPrefix(comment.content||'');
-    return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayNameForRecord(comment,profileMap))}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(body)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(body)}</div></article>`;
+  const roots=activeComments.filter(comment=>!comment.parent_id);
+  const repliesByParent=activeComments.reduce((map,comment)=>{
+    if(comment.parent_id){
+      const key=String(comment.parent_id);
+      if(!map[key])map[key]=[];
+      map[key].push(comment);
+    }
+    return map;
+  },{});
+  list.innerHTML = roots.map(comment => {
+    const replies=(repliesByParent[String(comment.id)]||[]).map(reply=>renderCommentArticle(reply,profileMap,true)).join('');
+    return renderCommentArticle(comment,profileMap,false)+replies;
   }).join('');
+}
+function toggleCommentBody(event,id){
+  event?.stopPropagation?.();
+  const body=document.getElementById(`commentBody-${id}`);
+  if(!body)return;
+  const expanded=body.classList.toggle('expanded');
+  body.classList.toggle('collapsed',!expanded);
+  const btn=body.parentElement?.querySelector('.comment-toggle');
+  if(btn)btn.textContent=expanded?'접기':'더보기';
+}
+function startReply(parentId,displayName){
+  replyParentId=parentId;
+  const state=document.getElementById('replyState');
+  const text=document.getElementById('replyStateText');
+  if(text)text.textContent=`${displayName || '댓글'}에 답글 작성 중`;
+  if(state)state.hidden=false;
+  const input=document.getElementById('commentInput');
+  if(input)input.placeholder='답글을 입력하세요';
+}
+function cancelReply(){
+  replyParentId=null;
+  const state=document.getElementById('replyState');
+  if(state)state.hidden=true;
+  const input=document.getElementById('commentInput');
+  if(input)input.placeholder=currentUser?.id?'댓글을 입력하세요':'로그인 후 댓글을 등록할 수 있습니다.';
 }
 
 
@@ -588,17 +655,21 @@ async function submitComment() {
   const content = document.getElementById('commentInput').value.trim();
   if (!content) return showToast('댓글 내용을 입력해주세요.');
   const userId = authUser.id;
+  const parentId = replyParentId ? String(replyParentId) : null;
+  const isSecret = !!document.getElementById('commentSecret')?.checked;
   const btn = document.getElementById('commentSubmit');
   btn.disabled = true;
   try {
     const { data, error } = await sb
       .from('comments')
-      .insert({ post_id:String(postId), user_id:String(userId), content, is_ai:false })
-      .select('id,post_id,user_id,content,is_ai,created_at')
+      .insert({ post_id:String(postId), user_id:String(userId), content, is_ai:false, parent_id:parentId, is_secret:isSecret })
+      .select('id,post_id,user_id,content,is_ai,created_at,parent_id,is_secret,updated_at,deleted_at')
       .single();
     if (error) throw error;
     if(!sameUserId(data?.user_id,userId))console.warn('comment user_id mismatch after insert', {saved:data?.user_id,current:userId});
     document.getElementById('commentInput').value = '';
+    document.getElementById('commentSecret').checked = false;
+    cancelReply();
     autoResizeTextarea(document.getElementById('commentInput'),180);
     showToast('댓글이 등록되었습니다.');
     await loadComments();
@@ -615,6 +686,7 @@ function renderCommentFormState(){
   const note=document.getElementById('commentLoginNote');
   const input=document.getElementById('commentInput');
   const btn=document.getElementById('commentSubmit');
+  const secret=document.getElementById('commentSecret');
   const loggedIn=!!currentUser?.id;
   if(note)note.textContent=loggedIn?'':'로그인 후 댓글을 등록할 수 있습니다.';
   if(input){
@@ -622,6 +694,8 @@ function renderCommentFormState(){
     input.placeholder=loggedIn?'댓글을 입력하세요':'로그인 후 댓글을 등록할 수 있습니다.';
   }
   if(btn)btn.disabled=!loggedIn;
+  if(secret)secret.disabled=!loggedIn;
+  if(!loggedIn)cancelReply();
 }
 
 async function loadRelatedPosts() {
@@ -672,7 +746,7 @@ async function saveCommentEdit(id){
     if(!sameUserId(before.user_id,authUser.id))throw new Error('본인 댓글만 수정할 수 있습니다.');
     const {error}=await sb
       .from('comments')
-      .update({content:value})
+      .update({content:value,updated_at:new Date().toISOString()})
       .eq('id',id)
       .eq('user_id',String(authUser.id));
     if(error)throw error;
@@ -695,15 +769,12 @@ async function deleteComment(id){
     if(!sameUserId(before.user_id,authUser.id))throw new Error('본인 댓글만 삭제할 수 있습니다.');
     const {error}=await sb
       .from('comments')
-      .delete()
+      .update({deleted_at:new Date().toISOString(),updated_at:new Date().toISOString()})
       .eq('id',id)
       .eq('user_id',String(authUser.id));
     if(error)throw error;
     const after=await fetchCommentById(id);
-    if(after){
-      const fallback=await softDeleteComment(id,authUser.id);
-      if(!fallback)throw new Error('댓글 삭제 권한 정책을 확인해야 합니다.');
-    }
+    if(after && !after.deleted_at)throw new Error('댓글 삭제 권한 정책을 확인해야 합니다.');
     showToast('댓글이 삭제되었습니다.');
     await loadComments();
   }catch(err){
