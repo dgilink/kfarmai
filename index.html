@@ -704,6 +704,7 @@
     border: 0; cursor: pointer; z-index: 80;
     transition: opacity 0.2s ease;
   }
+  body.my-panel-active .fab { display:none !important; }
   @media (min-width: 520px) {
     .fab {
       right: calc(50% - 226px);
@@ -4085,13 +4086,14 @@ async function safeOpenMyPanel(){
   openMyPanel();
 }
 function openMyPanel(){
+  document.body.classList.add('my-panel-active');
   document.getElementById('myPanel')?.classList.add('open');
   const fab=document.querySelector('.fab');
   if(fab)fab.hidden=true;
   if(currentUser?.id)loadMyCounts(currentUser.id);
   lockBodyScroll();
 }
-function closeMyPanel(){document.getElementById('myPanel')?.classList.remove('open');const fab=document.querySelector('.fab');if(fab)fab.hidden=false;closeMySubview();unlockBodyScroll();}
+function closeMyPanel(){document.body.classList.remove('my-panel-active');document.getElementById('myPanel')?.classList.remove('open');const fab=document.querySelector('.fab');if(fab)fab.hidden=false;closeMySubview();unlockBodyScroll();}
 let accountDeleteModalHistory = false;
 function openAccountDeleteModal(){
   if(!currentUser){

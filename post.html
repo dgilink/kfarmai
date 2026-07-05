@@ -65,9 +65,9 @@
   .post-title-row .post-title { flex:1; min-width:0; margin:0; }
   .post-menu-wrap { position:relative; flex:0 0 auto; }
   .post-menu-btn { width:34px; height:34px; border:0; border-radius:50%; background:#F3F4F6; color:#555; font-size:20px; line-height:1; font-weight:900; cursor:pointer; }
-  .post-menu { display:none; position:absolute; right:0; top:38px; z-index:20; min-width:112px; padding:6px; border:1px solid var(--border); border-radius:12px; background:#fff; box-shadow:var(--shadow); }
+  .post-menu { display:none; position:absolute; right:0; top:40px; z-index:40; min-width:124px; padding:7px; border:1px solid var(--border); border-radius:12px; background:#fff; box-shadow:var(--shadow); }
   .post-menu.open { display:block; }
-  .post-menu button { width:100%; height:34px; border:0; border-radius:8px; background:#fff; color:#333; text-align:left; padding:0 10px; font-size:13px; font-weight:900; cursor:pointer; }
+  .post-menu button { width:100%; min-height:40px; border:0; border-radius:9px; background:#fff; color:#333; text-align:left; padding:0 12px; font-size:14px; font-weight:900; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:flex-start; }
   .post-menu button:hover { background:#F3F4F6; }
   .post-menu button.delete { color:#DC2626; }
   .meta { display:flex; flex-wrap:wrap; gap:7px; color:#8A8A8A; font-size:11.5px; font-weight:700; line-height:1.35; }
@@ -281,7 +281,7 @@
     document.getElementById('channelTitle').textContent = channel;
     document.title = `${title} - kFarmAI`;
     postArea.classList.remove('loading');
-    const ownerMenu = sameUserId(localUserId(), post.user_id) ? `<div class="post-menu-wrap"><button class="post-menu-btn" type="button" aria-label="post menu" onclick="togglePostActionMenu(event)">&#8942;</button><div class="post-menu" id="postActionMenu"><button type="button" onclick="openEditPostModal(event)">&#49688;&#51221;</button><button class="delete" type="button" onclick="deletePost()">&#49325;&#51228;</button></div></div>` : '';
+    const ownerMenu = sameUserId(localUserId(), post.user_id) ? `<div class="post-menu-wrap"><button class="post-menu-btn" type="button" aria-label="post menu" onclick="togglePostActionMenu(event)">&#8942;</button><div class="post-menu" id="postActionMenu"><button type="button" onclick="openEditPostModal(event)">&#49688;&#51221;</button><button class="delete" type="button" onclick="deletePost(event)">&#49325;&#51228;</button></div></div>` : '';
     postArea.innerHTML = `<article class="card"><span class="badge">${esc(channel)}</span>${badge}<div class="post-title-row"><h1 class="post-title">${esc(title)}</h1>${ownerMenu}</div><div class="meta">${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(strip(post.content))}</div>${imageHtml}</article>`;
   }
   try{
@@ -543,7 +543,7 @@ function renderPost(post,profileMap={}) {
   document.title = `${post.title || '게시글'} - kFarmAI`;
   const images = normalizeImages(post.image_urls);
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
-  const ownerMenu = isOwner ? `<div class="post-menu-wrap"><button class="post-menu-btn" type="button" aria-label="post menu" onclick="togglePostActionMenu(event)">&#8942;</button><div class="post-menu" id="postActionMenu"><button type="button" onclick="openEditPostModal(event)">&#49688;&#51221;</button><button class="delete" type="button" onclick="deletePost()">&#49325;&#51228;</button></div></div>` : '';
+  const ownerMenu = isOwner ? `<div class="post-menu-wrap"><button class="post-menu-btn" type="button" aria-label="post menu" onclick="togglePostActionMenu(event)">&#8942;</button><div class="post-menu" id="postActionMenu"><button type="button" onclick="openEditPostModal(event)">&#49688;&#51221;</button><button class="delete" type="button" onclick="deletePost(event)">&#49325;&#51228;</button></div></div>` : '';
   const bodyText=stripCategoryPrefix(post.content||'');
   document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<div class="post-title-row"><h1 class="post-title">${esc(post.title || '\uC81C\uBAA9 \uC5C6\uC74C')}</h1>${ownerMenu}</div><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>\uC870\uD68C ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}<div class="actions"><span class="stat">\uB313\uAE00\uACFC \uBE44\uC2B7\uD55C \uC9C8\uBB38\uC744 \uD568\uAED8 \uCC38\uACE0\uD558\uC138\uC694.</span></div></article>`;
 }
@@ -569,7 +569,28 @@ function openImageModal(url){const modal=document.getElementById('imageModal');d
 function closeImageModal(){document.getElementById('imageModal').classList.remove('show');document.getElementById('imageModalImg').removeAttribute('src');}
 function togglePostActionMenu(event){event?.preventDefault?.();event?.stopPropagation?.();document.getElementById('postActionMenu')?.classList.toggle('open');}
 document.addEventListener('click',()=>document.getElementById('postActionMenu')?.classList.remove('open'));
-async function openEditPostModal(event,allowOpenBeforeOwnerCheck=false){event?.preventDefault?.();event?.stopPropagation?.();if(!currentPost)return;await ensureCurrentUser();logPostEditClick(currentPost);if(!allowOpenBeforeOwnerCheck&&!canEditPost(currentPost))return showToast('\uBCF8\uC778 \uAE00\uB9CC \uC218\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.');document.getElementById('editPostCategory').value=currentPost.crop_tag||extractCategoryFromContent(currentPost.content)||'';const regionSelect=document.getElementById('editPostRegion');if(regionSelect)regionSelect.value=currentPost.region_tag||'';document.getElementById('editPostTitle').value=currentPost.title||'';const editContent=document.getElementById('editPostContent');editContent.value=stripCategoryPrefix(currentPost.content||'');autoResizeTextarea(editContent,260);editExistingImages=normalizeImages(currentPost.image_urls);editNewImages=[];renderEditImagePreview();document.getElementById('editPostModal').classList.add('open');requestAnimationFrame(()=>{editContent.focus({preventScroll:true});editContent.setSelectionRange(editContent.value.length,editContent.value.length);});}
+async function openEditPostModal(event,allowOpenBeforeOwnerCheck=false){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  document.getElementById('postActionMenu')?.classList.remove('open');
+  if(!currentPost)await loadPost();
+  if(!currentPost)return showToast('게시글 정보를 불러온 뒤 다시 시도해주세요.');
+  await ensureCurrentUser();
+  logPostEditClick(currentPost);
+  if(!allowOpenBeforeOwnerCheck&&!canEditPost(currentPost))return showToast('\uBCF8\uC778 \uAE00\uB9CC \uC218\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.');
+  document.getElementById('editPostCategory').value=currentPost.crop_tag||extractCategoryFromContent(currentPost.content)||'';
+  const regionSelect=document.getElementById('editPostRegion');
+  if(regionSelect)regionSelect.value=currentPost.region_tag||'';
+  document.getElementById('editPostTitle').value=currentPost.title||'';
+  const editContent=document.getElementById('editPostContent');
+  editContent.value=stripCategoryPrefix(currentPost.content||'');
+  autoResizeTextarea(editContent,260);
+  editExistingImages=normalizeImages(currentPost.image_urls);
+  editNewImages=[];
+  renderEditImagePreview();
+  document.getElementById('editPostModal').classList.add('open');
+  requestAnimationFrame(()=>{editContent.focus({preventScroll:true});editContent.setSelectionRange(editContent.value.length,editContent.value.length);});
+}
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
 function handleEditPostImages(input){
   const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));
@@ -665,7 +686,23 @@ async function savePostEdit(){
     btn.disabled=false;
   }
 }
-async function deletePost(){if(!currentUser?.id||!currentPost||!sameUserId(currentUser.id,currentPost.user_id))return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {data,error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 삭제 권한이 없거나 이미 삭제된 글입니다.');location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
+async function deletePost(event){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  document.getElementById('postActionMenu')?.classList.remove('open');
+  if(!currentPost)await loadPost();
+  const authUser=await ensureCurrentUser();
+  if(!authUser?.id||!currentPost||!sameUserId(authUser.id,currentPost.user_id))return showToast('권한이 없습니다.');
+  if(!confirm('정말 삭제하시겠습니까?'))return;
+  try{
+    const {data,error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',authUser.id).select('id');
+    if(error)throw error;
+    if(!data?.length)throw new Error('게시글 삭제 권한이 없거나 이미 삭제된 글입니다.');
+    location.href='channel.html';
+  }catch(err){
+    showToast(err.message||'삭제에 실패했습니다.');
+  }
+}
 
 
 async function incrementViewCount(post) {
