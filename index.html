@@ -1372,6 +1372,9 @@
   .my-list-actions { display: flex; justify-content: flex-end; gap: 6px; flex-shrink: 0; margin-top: 6px; }
   .my-list-meta { display: flex; flex-wrap: wrap; gap: 6px; color: #8A8A8A; font-size: 11px; font-weight: 700; line-height: 1.35; }
   .my-list-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     min-height: 28px;
     padding: 0 9px;
     border: 1px solid var(--border);
@@ -1381,6 +1384,10 @@
     font-size: 11px;
     font-weight: 900;
     cursor: pointer;
+    line-height: 1;
+    text-decoration: none;
+    appearance: none;
+    -webkit-appearance: none;
   }
   .my-list-action.danger { color: #B91C1C; border-color: #FECACA; background: #FEF2F2; }
   .diagnosis-detail-card { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
@@ -2729,7 +2736,7 @@ async function loadMyPosts(userId){
         ${renderPostTags(post.content)}
         <div class="my-list-meta">${meta}<span>${postLikeButton(post)}</span></div>
         <div class="my-list-actions">
-          <a class="my-list-action" href="post.html?v=20260705f&id=${encodeURIComponent(post.id)}&edit=1" onclick="event.stopPropagation()">&#49688;&#51221;</a>
+          <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">&#49688;&#51221;</button>
           <button class="my-list-action danger" type="button" onclick="deleteMyPost(event,'${escAttr(post.id)}')">삭제</button>
         </div>
       </div>`;
@@ -2741,11 +2748,11 @@ async function loadMyPosts(userId){
 async function fetchMyPosts(userId){
   const base=query=>query.eq('user_id',userId).order('created_at',{ascending:false}).limit(10);
   try{
-    const {data,error}=await base(_sb.from('posts').select('id, title, content, crop_tag, created_at, region_tag, view_count, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, title, content, crop_tag, created_at, region_tag, view_count, image_urls, channels(name, slug)'));
     if(error)throw error;
     return await attachCommentCounts(data||[]);
   }catch(e){
-    const {data,error}=await base(_sb.from('posts').select('id, title, content, created_at, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, title, content, created_at, channels(name, slug)'));
     if(error)throw error;
     return data||[];
   }
@@ -2755,7 +2762,7 @@ async function editMyPost(event,id){
   event?.stopPropagation?.();
   console.warn('edit button clicked', {postId:id||null, hasCurrentUser:!!currentUser?.id});
   if(!id)return;
-  window.location.assign(`post.html?v=20260705f&id=${encodeURIComponent(id)}&edit=1`);
+  window.location.assign(`post.html?v=20260705h&id=${encodeURIComponent(id)}&edit=1`);
 }
 async function deleteMyPost(event,id){
   event?.stopPropagation();
