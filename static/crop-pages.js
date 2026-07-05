@@ -427,6 +427,14 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       status: "active",
       note: "\uC791\uBB3C\uBA85 \uAE30\uC900 \uACF5\uACF5 \uBCD1\uD574\uCDA9 \uC815\uBCF4 \uAC80\uC0C9\uC744 \uC5F0\uACB0\uD569\uB2C8\uB2E4. \uD654\uBA74\uC5D0\uC11C\uB294 \uD655\uC778\uD560 \uBB38\uC81C \uC218\uC900\uC73C\uB85C\uB9CC \uD45C\uC2DC\uD569\uB2C8\uB2E4."
     });
+    rows.push({
+      type: "pesticide-safety",
+      label: "\uB18D\uC57D\uC548\uC804\uC0AC\uC6A9\uAE30\uC900 \uD655\uC778",
+      source: "PSIS",
+      endpoint: "/api/psis/pesticide-safety",
+      status: "fallback",
+      note: "\uD604\uC7AC Worker endpoint\uB294 \uC788\uC73C\uB098 fallback \uC751\uB2F5 \uC0C1\uD0DC\uC785\uB2C8\uB2E4. \uC791\uBB3C\uBCF4\uD638\uC81C \uC0AC\uC6A9 \uC804\uC5D0\uB294 \uB18D\uC57D\uC548\uC804\uC815\uBCF4\uC2DC\uC2A4\uD15C\uACFC \uC81C\uD488 \uB77C\uBCA8\uC758 \uB4F1\uB85D\uC815\uBCF4\u00B7\uC548\uC804\uC0AC\uC6A9\uAE30\uC900\uC744 \uD568\uAED8 \uD655\uC778\uD574\uC57C \uD569\uB2C8\uB2E4."
+    });
     if (nongsaroCropIds.has(id)) {
       rows.push({
         type: "nongsaro",
@@ -481,15 +489,29 @@ window.KFARM_CROP_PAGE_DATA = (() => {
   }
 
   function basicPublicDataConnectionsFor(id, category) {
-    if (!String(category || "").includes("\uD654\uD6FC")) return [];
-    return [{
-      type: "flower-price",
-      label: "\uD654\uD6FC\uB958 \uC2DC\uC138\uD604\uD669 \uC5F0\uACB0 \uD6C4\uBCF4",
-      source: "MAFRA",
-      endpoint: "/api/mafra/flower-prices",
-      status: "pending",
-      note: "\uD604\uC7AC \uD638\uCD9C\uC740 fallback \uC0C1\uD0DC\uB77C \uACF5\uC2DD\uC790\uB8CC \uD655\uC778 \uD6C4 \uC5F0\uACB0 \uC608\uC815\uC785\uB2C8\uB2E4."
-    }];
+    const rows = [];
+    if (String(category || "").includes("\uD654\uD6FC")) {
+      rows.push({
+        type: "flower-price",
+        label: "\uD654\uD6FC\uB958 \uC2DC\uC138\uD604\uD669 \uC5F0\uACB0 \uD6C4\uBCF4",
+        source: "MAFRA",
+        endpoint: "/api/mafra/flower-prices",
+        status: "pending",
+        note: "\uD604\uC7AC \uD638\uCD9C\uC740 fallback \uC0C1\uD0DC\uB77C \uACF5\uC2DD\uC790\uB8CC \uD655\uC778 \uD6C4 \uC5F0\uACB0 \uC608\uC815\uC785\uB2C8\uB2E4."
+      });
+    }
+    const indoorIds = new Set(["succulent", "monstera", "stuckyi", "sansevieria", "rubber-tree", "basil", "rosemary", "mint"]);
+    if (indoorIds.has(id)) {
+      rows.push({
+        type: "indoor-plant",
+        label: "\uBC18\uB824\uC2DD\uBB3C \uAD00\uB9AC \uCC38\uACE0",
+        source: "\uB0B4\uBD80 weather-crop-profiles",
+        endpoint: "data/weather-crop-profiles.json",
+        status: "active",
+        note: "\uAD11\uB7C9, \uBB3C\uC8FC\uAE30, \uACC4\uC808\uBCC4 \uAD00\uB9AC, \uACFC\uC2B5\u00B7\uD1B5\uD48D \uCCB4\uD06C\uB97C \uC2E4\uB0B4\uC2DD\uBB3C \uCC38\uACE0\uC790\uB8CC\uB85C \uC5F0\uACB0\uD569\uB2C8\uB2E4."
+      });
+    }
+    return rows;
   }
 
   function cultivationTypesFor(id, categoryKey) {

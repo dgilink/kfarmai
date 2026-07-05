@@ -3647,7 +3647,10 @@ function buildCropRegionalSearchIndex(){
     const monthly=(crop.monthlyCalendar||[]).flatMap(item=>[item.month,item.task,...(item.tasks||[])]);
     const regional=Object.values(crop.regionAdjustments||{}).flat();
     const types=(crop.availableCultivationTypes||[]).flatMap(item=>[item.label,item.note]);
-    const text=[...cropTerms,...regionKeywords,...topicKeywords,...monthly,...regional,...types].join(' ');
+    const publicData=(crop.publicDataConnections||[]).flatMap(item=>[item.label,item.source,item.status,item.note]);
+    const materials=(crop.relatedInputs||[]).concat(crop.materials||[]);
+    const market=[crop.marketPriceReference?.label,crop.marketPriceReference?.source,crop.marketPriceReference?.note];
+    const text=[...cropTerms,...regionKeywords,...topicKeywords,...monthly,...regional,...types,...publicData,...materials,...market,'공공데이터','공공정보','NCPMS','농사로','농약안전사용기준','KAMIS','농산물 시세','농자재 정보','상토','종자','비료','관수','토양검정','실내식물 물주기'].join(' ');
     return [
       {type:'지역 재배달력',title:`${crop.name} 지역 재배달력`,description:'지역과 재배유형 기준으로 월별 작업과 이번 달 할 일을 확인합니다.',url:`crop-calendar.html?crop=${encodeURIComponent(crop.id)}`,keywords:[...cropTerms,...regionKeywords,...topicKeywords],searchText:text},
       {type:'재배가이드',title:`${crop.name} 재배가이드`,description:'선택 지역 관리 포인트와 공공데이터 참고 경로를 확인합니다.',url:`crop-guide.html?crop=${encodeURIComponent(crop.id)}`,keywords:[...cropTerms,'재배가이드','관리포인트',...regionKeywords],searchText:text},
