@@ -338,7 +338,7 @@ async function init() {
     renderPost(cachedPost,{});
   }
   await loadPost();
-  if (openEditOnLoad && currentPost && ownerId() === currentPost.user_id) openEditPostModal();
+  if (openEditOnLoad && currentPost && currentUser?.id === currentPost.user_id) openEditPostModal();
   await Promise.all([loadComments(), loadRelatedPosts()]);
 }
 
@@ -365,7 +365,7 @@ function renderPost(post,profileMap={}) {
   localLiked = isPostLiked(post.id);
   const slug = post.channels?.slug || '';
   const channelNameValue = post.channels?.name || channelName(slug);
-  const isOwner = ownerId() === post.user_id;
+  const isOwner = !!currentUser?.id && currentUser.id === post.user_id;
   const categoryLabel = post.category || extractCategoryFromContent(post.content);
   document.getElementById('channelTitle').textContent = channelNameValue;
   document.title = `${post.title || '게시글'} - kFarmAI`;
@@ -386,8 +386,8 @@ function removeEditExistingImage(idx){editExistingImages.splice(idx,1);renderEdi
 function removeEditNewImage(idx){editNewImages.splice(idx,1);renderEditImagePreview();}
 function renderEditImagePreview(){const wrap=document.getElementById('editImagePreview');if(!wrap)return;const existing=editExistingImages.map((url,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(url)}" alt="기존 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditExistingImage(${idx})">&times;</button></div>`).join('');const added=editNewImages.map((file,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(URL.createObjectURL(file))}" alt="새 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditNewImage(${idx})">&times;</button></div>`).join('');wrap.innerHTML=existing+added||'<div class="empty" style="padding:12px;width:100%">첨부된 사진이 없습니다.</div>';}
 async function uploadEditPostImages(userId){const urls=[];for(let i=0;i<editNewImages.length;i++){const file=editNewImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
-async function savePostEdit(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(ownerId());const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);const {error}=await sb.from('posts').update({title,content:contentWithCategory(content,category,author),image_urls}).eq('id',postId).eq('user_id',ownerId());if(error)throw error;closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast('수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
-async function deletePost(){if(!currentPost||ownerId()!==currentPost.user_id)return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',ownerId());if(error)throw error;location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
+async function savePostEdit(){if(!currentUser?.id||!currentPost||currentUser.id!==currentPost.user_id)return showToast('권한이 없습니다.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;if(!title||!content)return showToast('제목과 내용을 입력해주세요.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;try{const addedUrls=await uploadEditPostImages(currentUser.id);const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);const {data,error}=await sb.from('posts').update({title,content:contentWithCategory(content,category,author),image_urls}).eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 수정 권한이 없거나 이미 삭제된 글입니다.');closeEditPostModal();showToast('게시글이 수정되었습니다.');await loadPost();}catch(err){console.error('post edit failed',err);showToast(err.message||'수정에 실패했습니다. 사진 저장 권한 또는 잠시 후 다시 시도해주세요.');}finally{btn.disabled=false;}}
+async function deletePost(){if(!currentUser?.id||!currentPost||currentUser.id!==currentPost.user_id)return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {data,error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 삭제 권한이 없거나 이미 삭제된 글입니다.');location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
 
 
 async function incrementViewCount(post) {
@@ -420,7 +420,7 @@ function renderComments(comments,profileMap={}) {
   if (!comments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
   commentAuthorSnapshots = {};
   list.innerHTML = comments.map(comment => {
-    const isOwner = ownerId() === comment.user_id;
+    const isOwner = !!currentUser?.id && currentUser.id === comment.user_id;
     commentAuthorSnapshots[comment.id] = extractAuthorNicknameFromContent(comment.content) || displayNameForRecord(comment,profileMap);
     const body=stripCategoryPrefix(comment.content||'');
     return `<article class="comment" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayNameForRecord(comment,profileMap))}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}<span>${timeAgo(comment.created_at)}</span>${isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}', '${escAttr(body)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : ''}</div><div class="comment-body">${esc(body)}</div></article>`;
@@ -541,8 +541,8 @@ async function toggleLike() {
 
 
 function editComment(id, content){const el=document.getElementById('comment-'+id);if(!el)return;el.querySelector('.comment-body').innerHTML=`<textarea class="comment-edit-area" id="commentEdit-${id}">${esc(content)}</textarea><div class="comment-edit-actions"><button class="edit-submit" type="button" onclick="saveCommentEdit('${id}')">저장</button><button class="edit-cancel" type="button" onclick="loadComments()">취소</button></div>`;}
-async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');try{const author=commentAuthorSnapshots[id]||displayNameForUser(currentUser);const {error}=await sb.from('comments').update({content:contentWithCategory(value,'',author)}).eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
-async function deleteComment(id){if(!confirm('정말 삭제하시겠습니까?'))return;try{const {error}=await sb.from('comments').delete().eq('id',id).eq('user_id',ownerId());if(error)throw error;showToast('댓글이 삭제되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 삭제에 실패했습니다.');}}
+async function saveCommentEdit(id){const value=document.getElementById('commentEdit-'+id)?.value.trim();if(!value)return showToast('댓글 내용을 입력해주세요.');if(!currentUser?.id)return showToast('로그인 후 댓글을 수정할 수 있습니다.');try{const author=commentAuthorSnapshots[id]||displayNameForUser(currentUser);const {data,error}=await sb.from('comments').update({content:contentWithCategory(value,'',author)}).eq('id',id).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('댓글 수정 권한이 없거나 이미 삭제된 댓글입니다.');showToast('댓글이 수정되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 수정에 실패했습니다.');}}
+async function deleteComment(id){if(!confirm('정말 삭제하시겠습니까?'))return;if(!currentUser?.id)return showToast('로그인 후 댓글을 삭제할 수 있습니다.');try{const {data,error}=await sb.from('comments').delete().eq('id',id).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('댓글 삭제 권한이 없거나 이미 삭제된 댓글입니다.');showToast('댓글이 삭제되었습니다.');loadComments();}catch(err){showToast(err.message||'댓글 삭제에 실패했습니다.');}}
 
 async function persistPostLike(id,nextLiked,nextCount){
   if(!sb||!currentUser?.id)throw new Error('missing auth');

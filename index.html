@@ -2410,6 +2410,12 @@ function renderMarkdown(text) {
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
 const CHANNEL_BADGE_COLORS = {'plant-hospital':'green','plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
+const CHANNEL_DISPLAY_NAMES = {'plant-share':'나눔·직거래'};
+function displayChannelName(slug,name){
+  if(slug&&CHANNEL_DISPLAY_NAMES[slug])return CHANNEL_DISPLAY_NAMES[slug];
+  if(String(name||'').replace(/\s+/g,'')==='식물나눔직거래')return '나눔·직거래';
+  return name||'일반';
+}
 const sbScript = document.createElement('script');
 sbScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 sbScript.onload = () => { window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); initSupabaseApp(); };
@@ -2721,11 +2727,11 @@ async function loadMyPosts(userId){
     const data=await fetchMyPosts(userId);
     if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>{
-      const category=extractCategoryFromContent(post.content)||post.channels?.name||'질문';
+      const category=extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
       const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
       const meta=[
         displayNameForPost(post,{[userId]:displayNameForUser(currentUser)}),
-        post.channels?.name||category,
+        displayChannelName(post.channels?.slug,post.channels?.name)||category,
         post.region_tag||'',
         `조회 ${Number(post.view_count||0)}`,
         formatMyDate(post.created_at)
@@ -2748,7 +2754,7 @@ async function loadMyPosts(userId){
 async function fetchMyPosts(userId){
   const base=query=>query.eq('user_id',userId).order('created_at',{ascending:false}).limit(10);
   try{
-    const {data,error}=await base(_sb.from('posts').select('id, title, content, created_at, region_tag, view_count, like_count, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, title, content, created_at, region_tag, view_count, channels(name, slug)'));
     if(error)throw error;
     return data||[];
   }catch(e){
@@ -2881,7 +2887,7 @@ async function loadFeed(channelId=null){
     let data=[];
     if(channelId){
       const result=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,like_count,image_urls,channels(name, slug)')
+        .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,image_urls,channels(name, slug)')
         .eq('channel_id',channelId)
         .order('created_at',{ascending:false})
         .limit(5);
@@ -2911,7 +2917,7 @@ function renderFeedCard(feed,post,profileMap={}){
   card.style.cursor='pointer';
   card.onclick=()=>openPostDetail(post);
   const symptom=extractCategoryFromContent(post.content);
-  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||post.channelName||'일반')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
+  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name||post.channelName))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
   feed.appendChild(card);
 }
 function cachePostForDetail(post){
@@ -3243,7 +3249,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
   const orderColumn=sort==='popular'||sort==='symptom'?'view_count':'created_at';
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,like_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,image_urls,channels(name, slug)')
       .order(orderColumn,{ascending:false})
       .limit(limit);
     if(error)throw error;
@@ -3307,7 +3313,7 @@ function renderQuestionListCard(post,profileMap={}){
   const content=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
   const meta=[
     displayNameForPost(post,profileMap),
-    post.channels?.name||post.channelName||'일반',
+    displayChannelName(post.channels?.slug,post.channels?.name||post.channelName),
     post.region_tag||'',
     `댓글 ${Number(post.comment_count||0)}`,
     `조회 ${Number(post.view_count||0)}`,
@@ -3366,7 +3372,7 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   }).join(',');
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,like_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,title,content,created_at,region_tag,view_count,image_urls,channels(name, slug)')
       .or(orQuery)
       .order('created_at',{ascending:false})
       .limit(limit);
@@ -3437,7 +3443,7 @@ function renderSuggestSection(title,items){
 function postSuggestHtml(post,kw){
   const slug=post.channels?.slug||'';
   const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
-    return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'일반')}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
+    return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name))}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
 }
 function linkSuggestHtml(item,kw,kind){
   const url=`${item.url}?q=${encodeURIComponent(item.query||kw)}`;
@@ -3492,10 +3498,10 @@ async function searchPosts(kw,limit){
     const cleanKw=String(kw||'').replace(/^#/,'');
     const like=`%${cleanKw.replace(/[%_]/g,'')}%`;
     const hashLike=`%#${cleanKw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,like_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
+    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
     let list=data||[];
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,like_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,view_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
       list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return list;
@@ -3513,7 +3519,7 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const postUrl=post.id?`post.html?id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=extractCategoryFromContent(post.content);
     const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
-    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
