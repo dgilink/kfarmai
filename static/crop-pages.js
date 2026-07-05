@@ -42,6 +42,15 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     ["blueberry", "블루베리", "fruit_tree", "🫐", ["블루베리"], "블루베리는 산성 토양, 수분 균형, 착과와 수확 후 가지 관리가 중요한 과수입니다. 화분 재배 시 배수와 토양 산도를 함께 확인합니다.", { sowing: "묘목 식재는 봄·가을", transplant: "화분 또는 노지 식재", harvest: "6~8월 수확" }]
   ];
 
+  const representativeImageTargets = {
+    rice: "벼 재배 대표 참고 이미지",
+    pepper: "고추 재배 대표 참고 이미지",
+    strawberry: "딸기 재배 대표 참고 이미지",
+    apple: "사과 재배 대표 참고 이미지",
+    pear: "배 재배 대표 참고 이미지",
+    peach: "복숭아 재배 대표 참고 이미지"
+  };
+
   const core = cropRows.map(([id, name, categoryKey, icon, aliases, summary, season], index) => {
     const category = categoryLabels[categoryKey] || categoryKey;
     const detail = detailByCategory(categoryKey, name);
@@ -59,6 +68,7 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       monthlyCalendar,
       officialSources: [],
       officialImages: officialImagePlaceholders(name),
+      representativeImage: representativeImageFor(id, name),
       contentStatus: "official-review-needed",
       officialImageUrl: "", officialImageSource: "", officialImageLicenseNote: "", officialImageStatus: "pending",
       stages: detail.growthStages.map(stage => `${stage.name}: ${stage.points.join(" ")}`),
@@ -90,6 +100,7 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     summary: `${name}은 지역, 품종, 시설 여부에 따라 재배 시기와 관리 방법이 달라질 수 있는 ${category} 작물입니다.`,
     basicNote: "현재 이 작물은 기본 정보만 제공 중입니다. 공공기관 재배자료와 지역별 재배달력은 순차적으로 보강 예정입니다.",
     officialSources: [], officialImages: officialImagePlaceholders(name), contentStatus: "official-review-needed",
+    representativeImage: null,
     officialImageUrl: "", officialImageSource: "", officialImageLicenseNote: "", officialImageStatus: "pending"
   }));
 
@@ -150,6 +161,17 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       usageStatus: "pending",
       caption: "공식 사진 확인 예정"
     }];
+  }
+
+  function representativeImageFor(id, cropName) {
+    if (!representativeImageTargets[id]) return null;
+    return {
+      type: "ai-generated",
+      url: null,
+      alt: representativeImageTargets[id],
+      caption: `AI로 생성한 ${cropName} 재배 참고 이미지입니다.`,
+      note: "실제 품종, 생육상태, 재배환경은 다를 수 있습니다."
+    };
   }
 
   function calendarFor(categoryKey, cropName) {
