@@ -43,12 +43,12 @@ window.KFARM_CROP_PAGE_DATA = (() => {
   ];
 
   const representativeImageTargets = {
-    rice: "벼 재배 대표 참고 이미지",
-    pepper: "고추 재배 대표 참고 이미지",
-    strawberry: "딸기 재배 대표 참고 이미지",
-    apple: "사과 재배 대표 참고 이미지",
-    pear: "배 재배 대표 참고 이미지",
-    peach: "복숭아 재배 대표 참고 이미지"
+    rice: { alt: "벼 재배 대표 참고 이미지", file: "rice-ai.png" },
+    pepper: { alt: "고추 재배 대표 참고 이미지", file: "pepper-ai.png" },
+    strawberry: { alt: "딸기 재배 대표 참고 이미지", file: "strawberry-ai.png" },
+    apple: { alt: "사과 재배 대표 참고 이미지", file: "apple-ai.png" },
+    pear: { alt: "배 재배 대표 참고 이미지", file: "pear-ai.png" },
+    peach: { alt: "복숭아 재배 대표 참고 이미지", file: "peach-ai.png" }
   };
 
   const core = cropRows.map(([id, name, categoryKey, icon, aliases, summary, season], index) => {
@@ -164,11 +164,12 @@ window.KFARM_CROP_PAGE_DATA = (() => {
   }
 
   function representativeImageFor(id, cropName) {
-    if (!representativeImageTargets[id]) return null;
+    const target = representativeImageTargets[id];
+    if (!target) return null;
     return {
       type: "ai-generated",
-      url: null,
-      alt: representativeImageTargets[id],
+      url: `/static/crops/${target.file}`,
+      alt: target.alt,
       caption: `AI로 생성한 ${cropName} 재배 참고 이미지입니다.`,
       note: "실제 품종, 생육상태, 재배환경은 다를 수 있습니다."
     };

@@ -10,7 +10,7 @@
 - 이미지 안에 텍스트, 로고, 워터마크를 넣지 않는다.
 - 모바일 카드에 어울리도록 4:3 또는 16:9 비율을 사용한다.
 - 실제 품종, 생육상태, 재배환경은 다를 수 있다는 안내와 함께 사용한다.
-- 저장 파일명은 `static/crops/{crop-id}-ai.webp` 형식을 권장한다.
+- 저장 파일명은 `static/crops/{crop-id}-ai.png` 또는 `static/crops/{crop-id}-ai.webp` 형식을 사용한다. 실제 화면 데이터의 URL은 저장된 파일 확장자와 반드시 일치시킨다.
 
 ## 벼
 
@@ -20,7 +20,7 @@ Prompt:
 Clean natural rice paddy field in Korea, healthy green rice plants, soft daylight, realistic agricultural reference image, no disease symptoms, no pests, no text, no logo, no watermark, 4:3 aspect ratio, mobile-friendly composition
 ```
 
-권장 파일명: `static/crops/rice-ai.webp`
+현재 적용 파일명: `static/crops/rice-ai.png`
 
 ## 고추
 
@@ -30,7 +30,7 @@ Prompt:
 Healthy pepper plants growing in a small farm row, green leaves and red and green peppers visible, natural daylight, realistic agricultural reference image, clean background, no disease symptoms, no pests, no text, no logo, no watermark, 4:3 aspect ratio
 ```
 
-권장 파일명: `static/crops/pepper-ai.webp`
+현재 적용 파일명: `static/crops/pepper-ai.png`
 
 ## 딸기
 
@@ -40,7 +40,7 @@ Prompt:
 Healthy strawberry plants in a greenhouse bed, ripe red strawberries and clean green leaves, soft natural light, realistic agricultural reference image, no disease symptoms, no pests, no text, no logo, no watermark, 4:3 aspect ratio
 ```
 
-권장 파일명: `static/crops/strawberry-ai.webp`
+현재 적용 파일명: `static/crops/strawberry-ai.png`
 
 ## 사과
 
@@ -50,7 +50,7 @@ Prompt:
 Healthy apple tree branch in an orchard, red apples and green leaves, natural daylight, realistic agricultural reference image, clean orchard background, no disease symptoms, no pests, no text, no logo, no watermark, 4:3 aspect ratio
 ```
 
-권장 파일명: `static/crops/apple-ai.webp`
+현재 적용 파일명: `static/crops/apple-ai.png`
 
 ## 배
 
@@ -60,7 +60,7 @@ Prompt:
 Healthy Korean pear tree branch in an orchard, round yellow-green pears and clean leaves, natural daylight, realistic agricultural reference image, no disease symptoms, no pests, no text, no logo, no watermark, 4:3 aspect ratio
 ```
 
-권장 파일명: `static/crops/pear-ai.webp`
+현재 적용 파일명: `static/crops/pear-ai.png`
 
 ## 복숭아
 
@@ -70,7 +70,7 @@ Prompt:
 Healthy peach tree branch in an orchard, ripe peaches with green leaves, warm natural daylight, realistic agricultural reference image, no disease symptoms, no pests, no text, no logo, no watermark, 4:3 aspect ratio
 ```
 
-권장 파일명: `static/crops/peach-ai.webp`
+현재 적용 파일명: `static/crops/peach-ai.png`
 
 ## 화면 고지 문구
 
