@@ -4086,10 +4086,12 @@ async function safeOpenMyPanel(){
 }
 function openMyPanel(){
   document.getElementById('myPanel')?.classList.add('open');
+  const fab=document.querySelector('.fab');
+  if(fab)fab.hidden=true;
   if(currentUser?.id)loadMyCounts(currentUser.id);
   lockBodyScroll();
 }
-function closeMyPanel(){document.getElementById('myPanel')?.classList.remove('open');closeMySubview();unlockBodyScroll();}
+function closeMyPanel(){document.getElementById('myPanel')?.classList.remove('open');const fab=document.querySelector('.fab');if(fab)fab.hidden=false;closeMySubview();unlockBodyScroll();}
 let accountDeleteModalHistory = false;
 function openAccountDeleteModal(){
   if(!currentUser){

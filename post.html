@@ -251,6 +251,8 @@
   };
   const esc = value => String(value || '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const strip = value => String(value || '').replace(/^\[(?:작성자|채널|지역|대표\s*증상|태그|카테고리|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
+  const sameUserId = (a,b) => !!a && !!b && String(a) === String(b);
+  const localUserId = () => localStorage.getItem('kfarmai_user_id') || '';
   const normalizeImages = value => {
     if(!value) return [];
     if(Array.isArray(value)) return value.filter(Boolean);
@@ -279,7 +281,7 @@
     document.getElementById('channelTitle').textContent = channel;
     document.title = `${title} - kFarmAI`;
     postArea.classList.remove('loading');
-    const ownerMenu = '';
+    const ownerMenu = sameUserId(localUserId(), post.user_id) ? `<div class="post-menu-wrap"><button class="post-menu-btn" type="button" aria-label="post menu" onclick="togglePostActionMenu(event)">&#8942;</button><div class="post-menu" id="postActionMenu"><button type="button" onclick="openEditPostModal(event)">&#49688;&#51221;</button><button class="delete" type="button" onclick="deletePost()">&#49325;&#51228;</button></div></div>` : '';
     postArea.innerHTML = `<article class="card"><span class="badge">${esc(channel)}</span>${badge}<div class="post-title-row"><h1 class="post-title">${esc(title)}</h1>${ownerMenu}</div><div class="meta">${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(strip(post.content))}</div>${imageHtml}</article>`;
   }
   try{
@@ -415,7 +417,8 @@ function sameUserId(a,b){
   return !!a && !!b && String(a) === String(b);
 }
 function canEditPost(post){
-  return !!post && sameUserId(currentUser?.id, post.user_id);
+  const localUserId = localStorage.getItem('kfarmai_user_id') || '';
+  return !!post && (sameUserId(currentUser?.id, post.user_id) || sameUserId(localUserId, post.user_id));
 }
 
 function logPostEditClick(post){
@@ -506,6 +509,8 @@ async function init() {
   }
   if (openEditOnLoad && currentPost) await openEditPostFromQuery();
   await Promise.all([loadComments(), loadRelatedPosts()]);
+  await ensureCurrentUser();
+  if(currentPost)renderPost(currentPost,{});
 }
 
 async function loadPost() {
