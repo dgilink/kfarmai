@@ -953,9 +953,13 @@
     padding: 0 10px; white-space: nowrap;
   }
   .agri-issue-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-  .agri-issue-card { padding: 12px; }
+  .agri-issue-card { padding: 12px; text-decoration: none; color: inherit; position: relative; }
+  .agri-issue-card[href]::after {
+    content: '›'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    color: #16a34a; font-size: 20px; font-weight: 900;
+  }
   .agri-issue-card strong { display: block; font-size: 13.5px; color: #14532d; margin-bottom: 5px; }
-  .agri-issue-card span { display: block; color: #4b5563; font-size: 12px; line-height: 1.5; }
+  .agri-issue-card span { display: block; color: #4b5563; font-size: 12px; line-height: 1.5; padding-right: 18px; }
 
   .stat-row {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px;
@@ -2121,8 +2125,8 @@
             </div>
           </div>
           <div class="agri-issue-grid">
-            <div class="agri-issue-card"><strong>날씨 확인</strong><span>지역별 기온, 강수, 바람 상태를 농업날씨에서 함께 확인해보세요.</span></div>
-            <div class="agri-issue-card"><strong>재배 흐름</strong><span>재배달력에서 이번 달 할 일과 다음 달 준비를 작물별로 확인할 수 있습니다.</span></div>
+            <a class="agri-issue-card" href="agri-weather.html"><strong>날씨 확인</strong><span>지역별 기온, 강수, 바람 상태를 농업날씨에서 함께 확인해보세요.</span></a>
+            <a class="agri-issue-card" href="crop-guide.html"><strong>재배 흐름</strong><span>재배가이드에서 작물별 관리 포인트와 생육단계를 확인할 수 있습니다.</span></a>
             <div class="agri-issue-card"><strong>공식자료</strong><span>농촌진흥청, 농사로, 공공데이터 자료는 출처 확인 후 순차적으로 연결합니다.</span></div>
           </div>
         </section>
