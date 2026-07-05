@@ -678,14 +678,23 @@
 
   /* FAB */
   .fab {
-    position: absolute; right: 14px; bottom: 78px;
+    position: fixed;
+    right: max(14px, calc((100vw - 480px) / 2 + 14px));
+    bottom: calc(18px + env(safe-area-inset-bottom));
     display: inline-flex; align-items: center; gap: 5px;
     background: #111; color: #fff;
-    padding: 11px 16px; border-radius: 26px;
+    min-height: 44px;
+    padding: 10px 15px; border-radius: 26px;
     font-size: 13.5px; font-weight: 700;
     box-shadow: 0 8px 20px rgba(0,0,0,.28);
-    border: 0; cursor: pointer; z-index: 5;
+    border: 0; cursor: pointer; z-index: 80;
     transition: opacity 0.2s ease;
+  }
+  @media (min-width: 520px) {
+    .fab {
+      right: calc(50% - 226px);
+      bottom: calc(4vh + 18px);
+    }
   }
 
   /* ===== AI Diagnosis ===== */
