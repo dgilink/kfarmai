@@ -1,0 +1,29 @@
+[
+  {
+    "id": "nongsaro-tv",
+    "name": "농촌진흥청 농사로TV",
+    "platform": "youtube",
+    "channelUrl": "https://www.youtube.com/channel/UC2KGt8uvjYQDSl0mlVO9glA",
+    "sourceType": "domestic_official",
+    "usageRule": "영상 파일을 다운로드하거나 저장하지 않고 YouTube 공식 임베드 방식으로만 표시합니다.",
+    "status": "active"
+  },
+  {
+    "id": "domestic-university-research",
+    "name": "국내 농업대학·생명과학대학·농생물·농업경제 연구기관",
+    "platform": "source-link",
+    "channelUrl": "",
+    "sourceType": "domestic_university",
+    "usageRule": "대학·연구기관 공식 페이지, 논문 DOI, 보도자료 원문 링크가 확인된 자료만 검수 후 표시합니다.",
+    "status": "pending"
+  },
+  {
+    "id": "overseas-university-reference",
+    "name": "해외 대학·공공 연구기관",
+    "platform": "youtube-or-source-link",
+    "channelUrl": "",
+    "sourceType": "overseas_university",
+    "usageRule": "국내 품종, 기후, 작형과 다를 수 있음을 명확히 표시하고 참고자료로만 제공합니다.",
+    "status": "pending"
+  }
+]

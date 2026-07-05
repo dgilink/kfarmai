@@ -848,6 +848,109 @@
   .page3-title h2 { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; }
   .page3-title p { font-size: 12.5px; color: var(--sub); margin-top: 4px; }
 
+  .agri-content-section {
+    margin: 14px 0 16px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    line-break: strict;
+  }
+  .agri-section-title {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 8px;
+    margin: 0 2px 8px;
+  }
+  .agri-section-title h3 { font-size: 16px; font-weight: 900; color: #14532d; }
+  .agri-section-title p { margin-top: 3px; color: var(--sub); font-size: 12px; line-height: 1.45; }
+  .agri-video-hero, .agri-research-card, .agri-issue-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+    overflow: hidden;
+  }
+  .agri-video-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #e5e7eb;
+    cursor: pointer;
+  }
+  .agri-video-media img, .agri-video-media iframe {
+    width: 100%; height: 100%; display: block; object-fit: cover; border: 0;
+  }
+  .agri-video-play {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 54px; height: 54px; border-radius: 999px; border: 0;
+    background: rgba(20, 83, 45, .92); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 8px 20px rgba(0,0,0,.22);
+  }
+  .agri-video-body { padding: 12px 13px 13px; }
+  .agri-card-title {
+    font-size: 15px; font-weight: 900; line-height: 1.45; color: var(--text);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .agri-meta { margin-top: 6px; font-size: 12px; color: var(--sub); line-height: 1.45; }
+  .agri-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .agri-badge {
+    display: inline-flex; align-items: center; height: 23px; padding: 0 8px;
+    border-radius: 999px; background: #ECFDF5; color: #166534;
+    border: 1px solid #BBF7D0; font-size: 11px; font-weight: 800;
+    white-space: nowrap;
+  }
+  .agri-badge.overseas { background: #EFF6FF; color: #1D4ED8; border-color: #BFDBFE; }
+  .agri-source-link {
+    display: inline-flex; margin-top: 9px; font-size: 12px; font-weight: 800;
+    color: var(--green); text-decoration: none; overflow-wrap: anywhere;
+  }
+  .agri-video-strip {
+    display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 2px;
+    scroll-snap-type: x proximity;
+  }
+  .agri-video-strip::-webkit-scrollbar { display: none; }
+  .agri-video-card {
+    flex: 0 0 190px; scroll-snap-align: start; background: #fff;
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    box-shadow: 0 3px 10px rgba(15, 23, 42, .05);
+  }
+  .agri-video-card .agri-video-media { aspect-ratio: 16 / 9; }
+  .agri-video-card .agri-video-play { width: 38px; height: 38px; font-size: 16px; }
+  .agri-video-card .agri-video-body { padding: 9px 10px 10px; }
+  .agri-video-card .agri-card-title { font-size: 12.5px; }
+  .agri-source-note, .agri-empty {
+    margin: 9px 2px 0; color: var(--sub); font-size: 11.5px; line-height: 1.5;
+  }
+  .agri-research-chips {
+    display: flex; gap: 7px; overflow-x: auto; padding: 2px 2px 9px;
+  }
+  .agri-research-chips::-webkit-scrollbar { display: none; }
+  .agri-research-chip {
+    flex: 0 0 auto; height: 30px; border-radius: 999px; border: 1px solid var(--border);
+    background: #fff; color: #374151; padding: 0 11px; font-size: 12px; font-weight: 800;
+    white-space: nowrap;
+  }
+  .agri-research-chip.active { background: #14532d; color: #fff; border-color: #14532d; }
+  .agri-research-list { display: grid; gap: 10px; }
+  .agri-research-card { padding: 13px; }
+  .agri-research-card .agri-card-title { margin-top: 7px; }
+  .agri-research-summary {
+    margin-top: 7px; color: #374151; font-size: 13px; line-height: 1.55;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .agri-research-detail {
+    display: none; margin-top: 9px; padding-top: 9px; border-top: 1px dashed var(--border);
+    color: #374151; font-size: 12.5px; line-height: 1.6;
+  }
+  .agri-research-card.open .agri-research-detail { display: block; }
+  .agri-card-actions { margin-top: 10px; display: flex; gap: 8px; align-items: center; }
+  .agri-card-actions button {
+    height: 32px; border-radius: 10px; border: 1px solid #BBF7D0;
+    background: #F0FDF4; color: #166534; font-size: 12px; font-weight: 900;
+    padding: 0 10px; white-space: nowrap;
+  }
+  .agri-issue-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  .agri-issue-card { padding: 12px; }
+  .agri-issue-card strong { display: block; font-size: 13.5px; color: #14532d; margin-bottom: 5px; }
+  .agri-issue-card span { display: block; color: #4b5563; font-size: 12px; line-height: 1.5; }
+
   .stat-row {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px;
     margin-bottom: 16px;
@@ -1977,9 +2080,46 @@
       <!-- ============ PAGE 3: 농업정보 ============ -->
       <section class="page">
         <div class="page3-title">
-          <h2>농업·식물 관리정보</h2>
-          <p>농업날씨, 시세, 재배가이드, 계산기, 보조사업, 농자재 참고정보를 한곳에서 확인합니다.</p>
+          <h2>농업정보</h2>
+          <p>농업 영상, 연구동향, 재배정보를 쉽게 모아봤습니다.</p>
         </div>
+
+        <section class="agri-content-section" id="agriVideoSection" hidden>
+          <div class="agri-section-title">
+            <div>
+              <h3>오늘의 농업 영상</h3>
+              <p>공식기관과 연구기관의 공개 영상을 임베드 방식으로 제공합니다.</p>
+            </div>
+          </div>
+          <div id="agriVideoHero"></div>
+          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록"></div>
+          <div class="agri-source-note">kFarmAI는 영상을 저장하거나 재업로드하지 않고, 공식 플랫폼의 임베드 방식으로 제공합니다. 영상의 저작권은 각 제공 기관과 원 게시자에게 있습니다.</div>
+        </section>
+
+        <section class="agri-content-section" id="agriResearchSection">
+          <div class="agri-section-title">
+            <div>
+              <h3>최신 농업연구동향</h3>
+              <p>농업 연구성과와 기술자료를 쉽게 풀어 정리합니다.</p>
+            </div>
+          </div>
+          <div class="agri-research-chips" id="agriResearchChips" aria-label="연구동향 카테고리"></div>
+          <div class="agri-research-list" id="agriResearchList"></div>
+        </section>
+
+        <section class="agri-content-section">
+          <div class="agri-section-title">
+            <div>
+              <h3>이번 주 농업 이슈</h3>
+              <p>날씨, 재배, 정책, 시세 흐름을 참고자료로 정리합니다.</p>
+            </div>
+          </div>
+          <div class="agri-issue-grid">
+            <div class="agri-issue-card"><strong>날씨 확인</strong><span>지역별 기온, 강수, 바람 상태를 농업날씨에서 함께 확인해보세요.</span></div>
+            <div class="agri-issue-card"><strong>재배 흐름</strong><span>재배달력에서 이번 달 할 일과 다음 달 준비를 작물별로 확인할 수 있습니다.</span></div>
+            <div class="agri-issue-card"><strong>공식자료</strong><span>농촌진흥청, 농사로, 공공데이터 자료는 출처 확인 후 순차적으로 연결합니다.</span></div>
+          </div>
+        </section>
 
         <div class="section-head" style="margin-top:4px"><div class="section-title">핵심 바로가기</div></div>
         <div class="ql-grid">
@@ -2532,6 +2672,136 @@ function toggleLanguage(){
   applyLanguage(next);
 }
 initLanguage();
+const AGRI_RESEARCH_CATEGORIES = ['전체','스마트농업','AI·로봇','품종·종자','시설재배','기후변화','병해충·작물보호','토양·비료','수확후관리','농자재·기계','식품·가공'];
+let agriResearchItems = [];
+let agriResearchCategory = '전체';
+
+function agriVideoBadge(item){
+  const type = item?.sourceType || '';
+  if(type.startsWith('overseas'))return '<span class="agri-badge overseas">해외 참고</span>';
+  if(type === 'domestic_official')return '<span class="agri-badge">국내 공식</span>';
+  return '<span class="agri-badge">공개 영상</span>';
+}
+function agriVideoThumb(videoId, fallback){
+  return fallback || `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/hqdefault.jpg`;
+}
+function agriVideoEmbed(videoId){
+  return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?autoplay=0&rel=0&modestbranding=1`;
+}
+function agriTagBadges(tags=[]){
+  return (tags||[]).slice(0,3).map(tag=>`<span class="agri-badge">${escHtml(tag)}</span>`).join('');
+}
+async function loadAgriInfoContent(){
+  await Promise.all([loadAgriVideos(), loadAgriResearch()]);
+}
+async function loadAgriVideos(){
+  const section=document.getElementById('agriVideoSection');
+  const hero=document.getElementById('agriVideoHero');
+  const list=document.getElementById('agriVideoList');
+  if(!section||!hero||!list)return;
+  try{
+    const res=await fetch('data/agri-videos.json',{cache:'no-store'});
+    if(!res.ok)throw new Error('video data unavailable');
+    const items=await res.json();
+    const videos=(Array.isArray(items)?items:[]).filter(item=>item.status==='active'&&item.platform==='youtube'&&item.videoId);
+    if(!videos.length){section.hidden=true;return;}
+    section.hidden=false;
+    hero.innerHTML=agriVideoHeroHtml(videos[0]);
+    list.innerHTML=videos.map(item=>agriVideoCardHtml(item)).join('');
+  }catch(error){
+    console.warn('농업 영상 데이터를 불러오지 못했습니다.', error?.message);
+    section.hidden=true;
+  }
+}
+function agriVideoHeroHtml(item){
+  const thumb=agriVideoThumb(item.videoId,item.thumbnailUrl);
+  const overseasNote=String(item.sourceType||'').startsWith('overseas')?'<div class="agri-source-note">해외 영상은 국내 품종, 기후, 작형과 다를 수 있으므로 참고용으로 확인하세요.</div>':'';
+  return `<article class="agri-video-hero">
+    <div class="agri-video-media" role="button" tabindex="0" onclick="playAgriVideo('${escAttr(item.videoId)}','hero')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playAgriVideo('${escAttr(item.videoId)}','hero');}">
+      <img src="${escAttr(thumb)}" alt="${escAttr(item.title)} 썸네일" loading="lazy">
+      <button class="agri-video-play" type="button" aria-label="영상 재생">▶</button>
+    </div>
+    <div class="agri-video-body">
+      <div class="agri-card-title">${escHtml(item.title)}</div>
+      <div class="agri-meta">${escHtml(item.channelName||'공개 채널')}</div>
+      <div class="agri-badges">${agriVideoBadge(item)}${agriTagBadges(item.tags)}</div>
+      <a class="agri-source-link" href="${escAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">원본 영상 보기</a>
+    </div>
+    ${overseasNote}
+  </article>`;
+}
+function agriVideoCardHtml(item){
+  const thumb=agriVideoThumb(item.videoId,item.thumbnailUrl);
+  return `<article class="agri-video-card">
+    <div class="agri-video-media" role="button" tabindex="0" onclick="playAgriVideo('${escAttr(item.videoId)}','hero')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playAgriVideo('${escAttr(item.videoId)}','hero');}">
+      <img src="${escAttr(thumb)}" alt="${escAttr(item.title)} 썸네일" loading="lazy">
+      <button class="agri-video-play" type="button" aria-label="영상 재생">▶</button>
+    </div>
+    <div class="agri-video-body">
+      <div class="agri-card-title">${escHtml(item.title)}</div>
+      <div class="agri-meta">${escHtml(item.channelName||'공개 채널')}</div>
+      <div class="agri-badges">${agriVideoBadge(item)}</div>
+    </div>
+  </article>`;
+}
+function playAgriVideo(videoId,target='hero'){
+  const hero=document.getElementById('agriVideoHero');
+  if(!hero||!videoId)return;
+  const media=hero.querySelector('.agri-video-media');
+  if(!media)return;
+  media.innerHTML=`<iframe src="${escAttr(agriVideoEmbed(videoId))}" title="농업 영상 재생" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+}
+async function loadAgriResearch(){
+  try{
+    const res=await fetch('data/agri-research-trends.json',{cache:'no-store'});
+    if(!res.ok)throw new Error('research data unavailable');
+    const items=await res.json();
+    agriResearchItems=(Array.isArray(items)?items:[]).filter(item=>item.status==='active');
+  }catch(error){
+    console.warn('농업 연구동향 데이터를 불러오지 못했습니다.', error?.message);
+    agriResearchItems=[];
+  }
+  renderAgriResearch();
+}
+function renderAgriResearch(category=agriResearchCategory){
+  agriResearchCategory=category||'전체';
+  const chips=document.getElementById('agriResearchChips');
+  const list=document.getElementById('agriResearchList');
+  if(!chips||!list)return;
+  chips.innerHTML=AGRI_RESEARCH_CATEGORIES.map(cat=>`<button type="button" class="agri-research-chip ${cat===agriResearchCategory?'active':''}" onclick="renderAgriResearch('${escAttr(cat)}')">${escHtml(cat)}</button>`).join('');
+  const filtered=agriResearchItems.filter(item=>agriResearchCategory==='전체'||item.category===agriResearchCategory).slice(0,5);
+  if(!filtered.length){
+    list.innerHTML='<div class="agri-empty">검수 완료된 연구동향은 순차적으로 반영 예정입니다.</div>';
+    return;
+  }
+  list.innerHTML=filtered.map(item=>agriResearchCardHtml(item)).join('');
+}
+function agriResearchCardHtml(item){
+  const audience=(item.audience||item.whoCares||[]).slice(0,4).join(' · ');
+  const crops=(item.relatedCrops||[]).slice(0,4).join(' · ');
+  const detailId=`agri-research-${escAttr(item.id)}`;
+  return `<article class="agri-research-card" id="${detailId}">
+    <div class="agri-badges"><span class="agri-badge">${escHtml(item.category||'연구동향')}</span>${agriTagBadges(item.tags)}</div>
+    <div class="agri-card-title">${escHtml(item.simpleTitle||item.title)}</div>
+    <div class="agri-research-summary">${escHtml(item.summary)}</div>
+    <div class="agri-meta">관심: ${escHtml(audience||'농가 · 연구기관 · 관련 업체')}</div>
+    ${crops?`<div class="agri-meta">관련 작물: ${escHtml(crops)}</div>`:''}
+    <div class="agri-research-detail">
+      <strong>원래 자료명</strong><br>${escHtml(item.title||'공식자료 확인 예정')}<br><br>
+      <strong>왜 흥미로운가</strong><br>${escHtml(item.whyInteresting||'재배와 관리 판단에 참고할 수 있는 연구 흐름입니다.')}<br><br>
+      <strong>공식자료 확인</strong><br>${item.sourceUrl?`<a class="agri-source-link" href="${escAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escHtml(item.sourceName||'공식자료')} 보기</a>`:escHtml(item.sourceName||'공식자료 확인 예정')}
+    </div>
+    <div class="agri-card-actions"><button type="button" onclick="toggleAgriResearchDetail('${detailId}')">자세히 보기</button></div>
+  </article>`;
+}
+function toggleAgriResearchDetail(id){
+  const card=document.getElementById(id);
+  if(!card)return;
+  card.classList.toggle('open');
+  const btn=card.querySelector('.agri-card-actions button');
+  if(btn)btn.textContent=card.classList.contains('open')?'접기':'자세히 보기';
+}
+loadAgriInfoContent();
 prepareQuestionListShell();
 async function initSupabaseApp(){
   const {data:{session}}=await _sb.auth.getSession();
