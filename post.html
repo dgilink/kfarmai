@@ -415,7 +415,7 @@ async function loadPost() {
   try {
     const { data, error } = await sb
       .from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name, slug)')
+      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en')
       .eq('id', postId)
       .single();
     if (error) throw error;
@@ -424,6 +424,7 @@ async function loadPost() {
     fetchProfileMap([data.user_id]).then(profileMap=>renderPost(data,profileMap));
     incrementViewCount(data);
   } catch (err) {
+    if(!document.getElementById('postArea')?.classList.contains('loading'))return;
     document.getElementById('postArea').innerHTML = '<div class="empty">게시글을 찾을 수 없습니다.<br>삭제되었거나 접근 권한이 없을 수 있습니다.</div>';
     document.getElementById('commentList').innerHTML = '<div class="empty">댓글을 표시할 수 없습니다.</div>';
     document.getElementById('relatedList').innerHTML = '<div class="empty">관련 글을 표시할 수 없습니다.</div>';
