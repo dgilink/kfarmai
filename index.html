@@ -373,6 +373,18 @@
     display: flex; align-items: center; gap: 9px;
   }
   .q-meta.wrap { flex-wrap: wrap; row-gap: 5px; }
+  .inline-like-btn {
+    border: 0;
+    background: transparent;
+    color: var(--sub);
+    padding: 0 2px;
+    font: inherit;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .inline-like-btn.on { color: #E11D48; }
   .home-insights {
     display: grid;
     gap: 14px;
@@ -2620,9 +2632,50 @@ async function loadMyCounts(userId){
   loadMyDiagnoses(userId);
 }
 const POST_LIKE_STORAGE_KEY = 'kfarmai_liked_posts';
+const POST_LIKE_COUNT_STORAGE_KEY = 'kfarmai_post_like_counts';
 function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
 function isPostLiked(id){return likedPostIds().has(String(id));}
-function postLikeLabel(post){return `${isPostLiked(post?.id)?'♥':'♡'} ${Number(post?.like_count||0)}`;}
+function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
+function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
+function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
+function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
+function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?Number(post?.like_count||0):saved;}
+function postLikeLabel(post){return `${isPostLiked(post?.id)?'\u2665':'\u2661'} ${displayPostLikeCount(post)}`;}
+function postLikeButton(post){
+  if(!post?.id)return `<span>${postLikeLabel(post)}</span>`;
+  const liked=isPostLiked(post.id);
+  const count=displayPostLikeCount(post);
+  return `<button class="inline-like-btn${liked?' on':''}" type="button" data-post-like="${escAttr(post.id)}" data-count="${count}" onclick="togglePostLike(event,'${escAttr(post.id)}')">${liked?'\u2665':'\u2661'} ${count}</button>`;
+}
+function updatePostLikeButtons(id,liked,count){
+  document.querySelectorAll('[data-post-like]').forEach(btn=>{
+    if(String(btn.dataset.postLike)!==String(id))return;
+    btn.dataset.count=String(count);
+    btn.classList.toggle('on',liked);
+    btn.textContent=`${liked?'\u2665':'\u2661'} ${count}`;
+  });
+}
+async function togglePostLike(event,id){
+  event?.preventDefault();
+  event?.stopPropagation();
+  if(!id)return;
+  const wasLiked=isPostLiked(id);
+  const source=event?.currentTarget;
+  const currentCount=Number(source?.dataset?.count ?? savedPostLikeCount(id) ?? 0);
+  const nextLiked=!wasLiked;
+  const nextCount=Math.max(0,currentCount+(nextLiked?1:-1));
+  setPostLiked(id,nextLiked);
+  setSavedPostLikeCount(id,nextCount);
+  updatePostLikeButtons(id,nextLiked,nextCount);
+  try{
+    if(window._sb){
+      const {error}=await _sb.from('posts').update({like_count:nextCount}).eq('id',id);
+      if(error)throw error;
+    }
+  }catch(error){
+    console.warn('post like persistence failed',error);
+  }
+}
 function openMySubview(id){
   if(!currentUser)return;
   const main=document.getElementById('myMainMenu');
@@ -2651,14 +2704,13 @@ async function loadMyPosts(userId){
         post.channels?.name||category,
         post.region_tag||'',
         `조회 ${Number(post.view_count||0)}`,
-        postLikeLabel(post),
         formatMyDate(post.created_at)
       ].filter(Boolean).map(item=>`<span>${escHtml(item)}</span>`).join('');
       return `<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'">
         <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
         ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
         ${renderPostTags(post.content)}
-        <div class="my-list-meta">${meta}</div>
+        <div class="my-list-meta">${meta}<span>${postLikeButton(post)}</span></div>
         <div class="my-list-actions">
           <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">수정</button>
           <button class="my-list-action danger" type="button" onclick="deleteMyPost(event,'${escAttr(post.id)}')">삭제</button>
@@ -2835,7 +2887,7 @@ function renderFeedCard(feed,post,profileMap={}){
   card.style.cursor='pointer';
   card.onclick=()=>openPostDetail(post);
   const symptom=extractCategoryFromContent(post.content);
-  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||post.channelName||'일반')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeLabel(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
+  card.innerHTML=`<span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||post.channelName||'일반')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta"><span>${escHtml(displayNameForPost(post,profileMap))}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${escHtml(post.region_tag)}</span>`:''}<span>${post.created_at?getTimeAgo(post.created_at):'시연'}</span></div>`;
   feed.appendChild(card);
 }
 function cachePostForDetail(post){
@@ -3235,7 +3287,6 @@ function renderQuestionListCard(post,profileMap={}){
     post.region_tag||'',
     `댓글 ${Number(post.comment_count||0)}`,
     `조회 ${Number(post.view_count||0)}`,
-    post.like_count||isPostLiked(post.id)?postLikeLabel(post):'',
     post.created_at?getTimeAgo(post.created_at):''
   ].filter(Boolean);
   const href=post.id ? `post.html?id=${encodeURIComponent(post.id)}` : safeSearchUrl(post.url||'channel.html');
@@ -3245,7 +3296,7 @@ function renderQuestionListCard(post,profileMap={}){
       <div class="question-list-card-title">${escHtml(post.title||'제목 없음')}</div>
       ${content?`<div class="question-list-preview">${escHtml(content)}</div>`:''}
       ${renderPostTags(post.content,'question-list-tag')}
-      <div class="question-list-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}</div>
+      <div class="question-list-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}<span>${postLikeButton(post)}</span></div>
     </div>
     ${thumb?`<img class="question-list-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}
   </a>`;
@@ -3438,7 +3489,7 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const postUrl=post.id?`post.html?id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=extractCategoryFromContent(post.content);
     const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
-    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeLabel(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(post.channels?.name||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');

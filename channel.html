@@ -44,6 +44,8 @@
   .mini-post { display:block; border:1px solid #EEF2F7; border-radius:12px; padding:10px; background:#FBFCFE; }
   .mini-title { font-size:13px; font-weight:900; line-height:1.35; color:#111827; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .mini-meta { margin-top:6px; display:flex; flex-wrap:wrap; gap:7px; color:#8A8A8A; font-size:11px; font-weight:700; }
+  .inline-like-btn { border:0; background:transparent; color:#8A8A8A; padding:0 2px; font:inherit; font-weight:800; line-height:1; cursor:pointer; white-space:nowrap; }
+  .inline-like-btn.on { color:#E11D48; }
   .mini-empty { color:#6B7280; font-size:12px; line-height:1.5; padding:4px 0; }
   .related-links { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
   .related-link { min-height:38px; display:flex; align-items:center; justify-content:center; text-align:center; border-radius:12px; background:#fff; border:1px solid var(--border); color:#374151; font-size:12px; font-weight:900; padding:8px; }
@@ -351,9 +353,50 @@ const TAG_LIMIT=5;
 const TAG_SUGGESTIONS=['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
 let currentProfileNickname='';
 const POST_LIKE_STORAGE_KEY='kfarmai_liked_posts';
+const POST_LIKE_COUNT_STORAGE_KEY='kfarmai_post_like_counts';
 function likedPostIds(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_STORAGE_KEY)||'[]');return Array.isArray(value)?new Set(value.map(String)):new Set();}catch(_){return new Set();}}
 function isPostLiked(id){return likedPostIds().has(String(id));}
-function postLikeLabel(post){return `${isPostLiked(post?.id)?'♥':'♡'} ${Number(post?.like_count||0)}`;}
+function setPostLiked(id,liked){const ids=likedPostIds();const key=String(id);if(liked)ids.add(key);else ids.delete(key);localStorage.setItem(POST_LIKE_STORAGE_KEY,JSON.stringify([...ids]));}
+function postLikeCounts(){try{const value=JSON.parse(localStorage.getItem(POST_LIKE_COUNT_STORAGE_KEY)||'{}');return value&&typeof value==='object'?value:{};}catch(_){return {};}}
+function savedPostLikeCount(id){const value=postLikeCounts()[String(id)];return Number.isFinite(Number(value))?Number(value):null;}
+function setSavedPostLikeCount(id,count){const counts=postLikeCounts();counts[String(id)]=Math.max(0,Number(count)||0);localStorage.setItem(POST_LIKE_COUNT_STORAGE_KEY,JSON.stringify(counts));}
+function displayPostLikeCount(post){const saved=savedPostLikeCount(post?.id);return saved===null?Number(post?.like_count||0):saved;}
+function postLikeLabel(post){return `${isPostLiked(post?.id)?'\u2665':'\u2661'} ${displayPostLikeCount(post)}`;}
+function postLikeButton(post){
+  if(!post?.id)return `<span>${postLikeLabel(post)}</span>`;
+  const liked=isPostLiked(post.id);
+  const count=displayPostLikeCount(post);
+  return `<button class="inline-like-btn${liked?' on':''}" type="button" data-post-like="${esc(post.id)}" data-count="${count}" onclick="togglePostLike(event,'${esc(post.id)}')">${liked?'\u2665':'\u2661'} ${count}</button>`;
+}
+function updatePostLikeButtons(id,liked,count){
+  document.querySelectorAll('[data-post-like]').forEach(btn=>{
+    if(String(btn.dataset.postLike)!==String(id))return;
+    btn.dataset.count=String(count);
+    btn.classList.toggle('on',liked);
+    btn.textContent=`${liked?'\u2665':'\u2661'} ${count}`;
+  });
+}
+async function togglePostLike(event,id){
+  event?.preventDefault();
+  event?.stopPropagation();
+  if(!id)return;
+  const wasLiked=isPostLiked(id);
+  const source=event?.currentTarget;
+  const currentCount=Number(source?.dataset?.count ?? savedPostLikeCount(id) ?? 0);
+  const nextLiked=!wasLiked;
+  const nextCount=Math.max(0,currentCount+(nextLiked?1:-1));
+  setPostLiked(id,nextLiked);
+  setSavedPostLikeCount(id,nextCount);
+  updatePostLikeButtons(id,nextLiked,nextCount);
+  try{
+    if(sb){
+      const {error}=await sb.from('posts').update({like_count:nextCount}).eq('id',id);
+      if(error)throw error;
+    }
+  }catch(error){
+    console.warn('post like persistence failed',error);
+  }
+}
 
 document.addEventListener('DOMContentLoaded', init);
 async function init(){
@@ -484,7 +527,7 @@ function renderMiniPosts(wrap,posts,profileMap={}){
     wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
     return;
   }
-  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(post.channels?.name||currentChannel?.name||'일반')}</span><span>조회 ${post.view_count||0}</span><span>${postLikeLabel(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
+  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(post.channels?.name||currentChannel?.name||'일반')}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
 async function renderMiniFallback(wrap){
   const threads=await loadDemoThreads();
@@ -547,7 +590,7 @@ function renderPosts(posts,totalCount,profileMap={}){
     card.className='post-card'+(thumbHtml?' has-thumb':'');
     card.style.cursor='pointer';
     card.onclick=()=>{location.href='post.html?id='+encodeURIComponent(post.id);};
-    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(post.channels?.name||CHANNEL_CONFIG[slug]||'일반')}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span><span>${postLikeLabel(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
+    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(post.channels?.name||CHANNEL_CONFIG[slug]||'일반')}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
     list.appendChild(card);
   });
 }
