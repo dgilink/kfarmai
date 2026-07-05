@@ -35,9 +35,6 @@
   .hub-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 2px 8px; }
   .hub-section-title { font-size:14px; font-weight:900; color:#111827; }
   .hub-more { border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; }
-  .quick-topics { display:flex; flex-wrap:wrap; gap:7px; }
-  .quick-topic { min-height:30px; border:1px solid var(--border); border-radius:999px; background:#fff; padding:0 11px; color:#374151; font-size:12px; font-weight:800; cursor:pointer; }
-  .quick-topic:active, .quick-topic:focus { border-color:var(--green); background:#E8F6F0; outline:0; }
   .question-hub { display:grid; gap:12px; }
   .question-block { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:12px; }
   .mini-list { display:grid; gap:8px; }
@@ -47,9 +44,10 @@
   .mini-empty { color:#6B7280; font-size:12px; line-height:1.5; padding:4px 0; }
   .related-links { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
   .related-link { min-height:38px; display:flex; align-items:center; justify-content:center; text-align:center; border-radius:12px; background:#fff; border:1px solid var(--border); color:#374151; font-size:12px; font-weight:900; padding:8px; }
-  .chips, .category-tabs { display:flex; gap:8px; overflow-x:auto; padding:8px 14px 4px; scrollbar-width:none; }
-  .chips::-webkit-scrollbar, .category-tabs::-webkit-scrollbar { display:none; }
-  .chip, .category-tab { flex:0 0 auto; height:34px; padding:0 14px; border:1px solid var(--border); border-radius:999px; background:#fff; color:#555; font-size:13px; font-weight:800; cursor:pointer; }
+  .chips { display:grid; grid-template-columns:repeat(4,minmax(64px,72px)); justify-content:space-between; gap:6px; padding:12px 14px 4px; }
+  .category-tabs { display:none !important; }
+  .chip, .category-tab { min-width:0; height:58px; padding:5px 3px; border:1px solid var(--border); border-radius:10px; background:#fff; color:#333; font-size:10.5px; line-height:1.15; font-weight:850; cursor:pointer; overflow:hidden; text-overflow:ellipsis; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; text-align:center; }
+  .chip-icon { font-size:17px; line-height:1; }
   .chip.active, .category-tab.active { border-color:var(--green); background:rgba(29,158,117,.1); color:var(--green-dark); }
   .status-line { display:flex; justify-content:space-between; padding:8px 16px 6px; color:#777; font-size:12px; font-weight:700; }
   .list { padding:0 14px 18px; }
@@ -155,13 +153,6 @@
     </div>
   </section>
 
-  <section class="hub-section" aria-label="빠른 주제">
-    <div class="hub-section-head">
-      <div class="hub-section-title" id="topicTitle">자주 묻는 증상</div>
-    </div>
-    <div class="quick-topics" id="quickTopics"></div>
-  </section>
-
   <section class="hub-section question-hub" aria-label="채널 질문 모음">
     <article class="question-block">
       <div class="hub-section-head">
@@ -194,17 +185,6 @@
   </section>
 
   <div class="chips" id="channelChips" aria-label="커뮤니티 채널"></div>
-  <div class="category-tabs" id="categoryTabs">
-    <button class="category-tab active" data-category="">전체</button>
-    <button class="category-tab" data-category="식물 병원">식물 병원</button>
-    <button class="category-tab" data-category="식물 질문방">식물 질문방</button>
-    <button class="category-tab" data-category="작물 상담방">작물 상담방</button>
-    <button class="category-tab" data-category="내 식물 자랑">내 식물 자랑</button>
-    <button class="category-tab" data-category="농부 사랑방">농부 사랑방</button>
-    <button class="category-tab" data-category="나눔·직거래">나눔·직거래</button>
-    <button class="category-tab" data-category="원예 클래스">원예 클래스</button>
-    <button class="category-tab" data-category="식집사 모임">식집사 모임</button>
-  </div>
   <div class="status-line"><span id="resultLabel">최신 글</span><span id="resultCount"></span></div>
   <main class="list" id="postList"><div class="loading"><span class="spinner"></span>불러오는 중...</div></main>
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
@@ -276,6 +256,16 @@ const CHANNEL_CONFIG = {
   'plant-share':'나눔·직거래',
   'garden-class':'원예 클래스',
   'plant-meet':'식집사 모임'
+};
+const CHANNEL_ICONS = {
+  'plant-hospital':'🌿',
+  'plant-question':'💬',
+  'crop-consult':'🌾',
+  'plant-brag':'📷',
+  'farmer-lounge':'🏡',
+  'plant-share':'🪴',
+  'garden-class':'✂️',
+  'plant-meet':'🤝'
 };
 const CHANNEL_HUB_DEFAULT = {
   description:'식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.',
@@ -366,7 +356,6 @@ async function init(){
   if(currentUser)hydrateCurrentProfile(currentUser);
   sb.auth.onAuthStateChange((event,session)=>{currentUser=session?.user||null; if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();}});
   await loadChannels();
-  bindCategoryTabs();
   document.getElementById('searchInput').addEventListener('input', debounce(applyKeywordSearch, 300));
   window.addEventListener('scroll', handleScroll, {passive:true});
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){closeWriteModal();closeLoginModal();} });
@@ -406,7 +395,7 @@ function renderChannelSelect(){
 }
 function renderChannelChips(){
   const wrap=document.getElementById('channelChips');
-  wrap.innerHTML='<button class="chip" data-slug="">전체 채널</button>'+channels.map(ch=>`<button class="chip" data-slug="${esc(ch.slug)}">${esc(ch.name||CHANNEL_CONFIG[ch.slug]||'일반')}</button>`).join('');
+  wrap.innerHTML=channels.map(ch=>`<button class="chip" data-slug="${esc(ch.slug)}"><span class="chip-icon">${esc(CHANNEL_ICONS[ch.slug]||'•')}</span><span>${esc(ch.name||CHANNEL_CONFIG[ch.slug]||'일반')}</span></button>`).join('');
   wrap.querySelectorAll('.chip').forEach(btn=>btn.classList.toggle('active',(btn.dataset.slug||'')===(currentChannel?.slug||'')));
   wrap.onclick=e=>{
     const btn=e.target.closest('.chip'); if(!btn)return;
@@ -421,17 +410,16 @@ function renderChannelChips(){
     resetAndLoad();
   };
 }
-function bindCategoryTabs(){
-  document.getElementById('categoryTabs').addEventListener('click',e=>{
-    const btn=e.target.closest('.category-tab'); if(!btn)return;
-    document.querySelectorAll('.category-tab').forEach(tab=>tab.classList.remove('active'));
-    btn.classList.add('active');
-    activeCategory=btn.dataset.category||'';
-    resetAndLoad();
-  });
-}
 function currentHub(){
   return CHANNEL_HUBS[currentChannel?.slug] || CHANNEL_HUB_DEFAULT;
+}
+function postBelongsToCurrentChannel(post){
+  if(!currentChannel)return true;
+  const name=currentChannel.name||CHANNEL_CONFIG[currentChannel.slug]||'';
+  return post.channel_id===currentChannel.id
+    || post.channels?.slug===currentChannel.slug
+    || post.channels?.name===name
+    || String(post.content||'').includes(`[채널: ${name}]`);
 }
 function renderChannelHub(){
   const hub=currentHub();
@@ -440,7 +428,6 @@ function renderChannelHub(){
   document.getElementById('hubDescription').textContent=hub.description;
   const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?channel=${encodeURIComponent(currentChannel.slug)}`:''}`;
   document.getElementById('hubActions').innerHTML=`<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
-  document.getElementById('quickTopics').innerHTML=hub.topics.map(topic=>`<button class="quick-topic" type="button" onclick="searchTopic('${encodeURIComponent(topic)}')">${esc(topic)}</button>`).join('');
   document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');
 }
 function withChannelQuery(url){
@@ -475,12 +462,12 @@ async function loadMiniPosts(targetId,orderColumn){
   if(!wrap||!sb)return;
   wrap.innerHTML='<div class="mini-empty">불러오는 중...</div>';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(3);
-    if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?30:3);
     const {data,error}=await query;
     if(error)throw error;
-    const profileMap=await fetchProfileMap((data||[]).map(post=>post.user_id));
-    renderMiniPosts(wrap,data||[],profileMap);
+    const posts=(data||[]).filter(postBelongsToCurrentChannel).slice(0,3);
+    const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
+    renderMiniPosts(wrap,posts,profileMap);
   }catch(e){
     renderMiniFallback(wrap);
   }
@@ -510,13 +497,15 @@ async function loadPosts(){
   try{
     let query=sb.from('posts').select('id,user_id,channel_id,title,content,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
     query=applyPostFilters(query);
-    query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+PAGE_SIZE-1);
+    const pageSize=currentChannel?80:PAGE_SIZE;
+    query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+pageSize-1);
     const {data,count,error}=await query;
     if(error)throw error;
-    const profileMap=await fetchProfileMap((data||[]).map(post=>post.user_id));
-    renderPosts(data||[],count||0,profileMap);
+    const posts=(data||[]).filter(postBelongsToCurrentChannel);
+    const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
+    renderPosts(posts,currentChannel?posts.length:(count||0),profileMap);
     offset+=(data||[]).length;
-    hasMore=(data||[]).length===PAGE_SIZE;
+    hasMore=(data||[]).length===pageSize;
   }catch(e){
     if(offset===0)await renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
   }finally{
@@ -525,7 +514,6 @@ async function loadPosts(){
   }
 }
 function applyPostFilters(query){
-  if(currentChannel?.id)query=query.eq('channel_id',currentChannel.id);
   if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
   return query;
 }

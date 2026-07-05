@@ -161,9 +161,6 @@ button, .btn, .chip, .tag-chip, .symptom-chip, .nav-item, .kf-nav-item {
 
 /* 탭 */
 .kf-tabs {
-  position: sticky;
-  top: 54px;
-  z-index: 89;
   display: flex; gap: 8px; padding: 12px 16px 8px; overflow-x: auto; scrollbar-width: none;
   background: var(--white);
   border-bottom: 1px solid var(--border);
