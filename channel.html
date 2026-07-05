@@ -519,7 +519,7 @@ function renderMiniPosts(wrap,posts,profileMap={}){
     wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
     return;
   }
-  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayChannelName(post.channels?.slug,currentChannel?.name||post.channels?.name))}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
+  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?id=${encodeURIComponent(post.id)}" onclick="cachePostForDetail(${esc(JSON.stringify(post))})"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayChannelName(post.channels?.slug,currentChannel?.name||post.channels?.name))}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
 async function renderMiniFallback(wrap){
   const filtered=await fallbackThreadsForCurrentChannel(3);
@@ -585,10 +585,14 @@ function renderPosts(posts,totalCount,profileMap={}){
     const card=document.createElement('article');
     card.className='post-card'+(thumbHtml?' has-thumb':'');
     card.style.cursor='pointer';
-    card.onclick=()=>{location.href='post.html?id='+encodeURIComponent(post.id);};
+    card.onclick=()=>{cachePostForDetail(post);location.href='post.html?id='+encodeURIComponent(post.id);};
     card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(displayChannelName(slug,post.channels?.name))}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>댓글 ${commentCount}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
     list.appendChild(card);
   });
+}
+function cachePostForDetail(post){
+  if(!post?.id)return;
+  try{sessionStorage.setItem('kfarmai_post_preview',JSON.stringify({...post,_cachedAt:Date.now()}));}catch(_){}
 }
 async function loadDemoThreads(){
   if(demoThreads)return demoThreads;

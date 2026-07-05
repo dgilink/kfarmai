@@ -2670,7 +2670,7 @@ async function loadMyPosts(userId){
         `조회 ${Number(post.view_count||0)}`,
         formatMyDate(post.created_at)
       ].filter(Boolean).map(item=>`<span>${escHtml(item)}</span>`).join('');
-      return `<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'">
+      return `<div class="my-list-item" onclick="openPostDetail(${escAttr(JSON.stringify(post))})">
         <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
         ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
         ${renderPostTags(post.content)}

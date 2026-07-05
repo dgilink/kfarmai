@@ -260,16 +260,26 @@
     postArea.classList.remove('loading');
     postArea.innerHTML = `<article class="card"><span class="badge">${esc(channel)}</span>${badge}<h1 class="post-title">${esc(title)}</h1><div class="meta">${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>조회 ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(strip(post.content))}</div>${imageHtml}</article>`;
   }
+  try{
+    const cached = JSON.parse(sessionStorage.getItem('kfarmai_post_preview') || 'null');
+    if(String(cached?.id || '') === String(id)){
+      render(cached);
+    }
+  }catch(_){}
   const select = 'id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name,slug)';
   const url = `${apiUrl}/rest/v1/posts?select=${encodeURIComponent(select)}&id=eq.${encodeURIComponent(id)}&limit=1`;
-  fetch(url, {headers:{apikey:apiKey, Authorization:`Bearer ${apiKey}`}})
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 5000);
+  fetch(url, {headers:{apikey:apiKey, Authorization:`Bearer ${apiKey}`}, signal:controller.signal})
     .then(res => res.ok ? res.json() : Promise.reject(new Error(`post ${res.status}`)))
     .then(rows => { if(rows && rows[0]) render(rows[0]); else throw new Error('not found'); })
     .catch(error => {
       console.error('early post render failed', error);
+      if(!postArea.classList.contains('loading')) return;
       postArea.classList.remove('loading');
       postArea.innerHTML = '<div class="empty">게시글을 불러오지 못했습니다.<br>잠시 후 다시 시도해주세요.</div>';
-    });
+    })
+    .finally(()=>clearTimeout(timeout));
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
