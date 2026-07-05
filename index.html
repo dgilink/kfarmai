@@ -3338,7 +3338,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
       .order(orderColumn,{ascending:false})
       .limit(limit);
     if(error)throw error;
-    return data||[];
+    return await attachCommentCounts(data||[]);
   }catch(e){
     try{
       const {data}=await _sb.from('posts')
