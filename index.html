@@ -2751,9 +2751,11 @@ async function fetchMyPosts(userId){
   }
 }
 async function editMyPost(event,id){
-  event?.stopPropagation();
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  console.warn('edit button clicked', {postId:id||null, hasCurrentUser:!!currentUser?.id});
   if(!id)return;
-  location.href=`post.html?v=20260705d&id=${encodeURIComponent(id)}&edit=1`;
+  window.location.assign(`post.html?v=20260705e&id=${encodeURIComponent(id)}&edit=1`);
 }
 async function deleteMyPost(event,id){
   event?.stopPropagation();

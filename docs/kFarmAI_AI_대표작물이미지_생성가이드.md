@@ -86,3 +86,52 @@ AI로 생성한 참고 이미지입니다. 실제 품종, 생육상태, 재배�
 - `representativeImage.url`은 실제 파일이 있을 때만 입력한다.
 - 없는 파일 경로를 미리 넣지 않는다.
 - 공식자료 이미지와 AI 생성 이미지를 같은 영역에서 혼동되게 표시하지 않는다.
+
+## 2026-07-05 시제품 적용 파일
+
+발표 전 시제품 완성도를 위해 현재 저장소에 들어온 AI 생성 이미지를 "AI 참고 이미지"로만 연결한다. 공식사진, 공공기관 사진, 병해충 진단용 근거사진으로 표시하지 않는다.
+
+### 대표 이미지
+
+- `static/crops/rice-ai.png`
+- `static/crops/pepper-ai.png`
+- `static/crops/strawberry-ai.png`
+- `static/crops/apple-ai.png`
+- `static/crops/pear-ai.png`
+- `static/crops/peach-ai.png`
+
+### 23개 대표 작물 콜라주
+
+- `static/crops/crop-representative-grid-23-ai.png`
+
+### 생육단계 묶음 이미지
+
+- `static/crops/stages/crop-growth-stages-core-01-ai.png`: 벼, 고추, 딸기, 사과, 배, 복숭아, 포도, 감귤
+- `static/crops/stages/crop-growth-stages-core-02-ai.png`: 토마토, 수박, 참외, 오이, 가지, 배추, 무, 대파
+- `static/crops/stages/crop-growth-stages-core-03-ai.png`: 마늘, 양파, 콩, 옥수수, 감자, 고구마, 들깨
+
+### 작물별 생육단계 카드
+
+`static/crops/stages/individual/{crop-id}-stages-ai.png` 규칙을 사용한다. 감귤은 `tangerine-stages-ai.png`, 참외는 `melon-stages-ai.png`, 대파는 `greenonion-stages-ai.png`, 고구마는 `sweetpotato-stages-ai.png`로 저장했다.
+
+### 화면 고지 문구
+
+```text
+AI로 생성한 참고 이미지입니다.
+실제 품종, 생육상태, 재배환경은 다를 수 있습니다.
+```
+
+생육단계 이미지에는 아래 문구를 사용한다.
+
+```text
+AI로 생성한 생육단계 참고 이미지입니다.
+작물별 실제 생육은 품종, 지역, 작형에 따라 달라질 수 있습니다.
+```
+
+### 발표 후 보완 TODO
+
+- 상추, 블루베리 개별 대표 이미지와 생육단계 이미지 생성 또는 공식자료 확인
+- 23개 대표 작물 전체의 개별 대표 이미지 보강
+- 공식자료/공식사진은 출처, 공공누리 유형, 사용조건 확인 후 별도 반영
+- PNG 원본 용량이 큰 파일은 WebP 변환 및 썸네일 생성 검토
+- 외부 이미지 hotlink 금지, 허용된 이미지만 저장소 또는 kFarmAI 서버에 저장 후 사용

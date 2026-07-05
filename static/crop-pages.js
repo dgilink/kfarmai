@@ -51,6 +51,59 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     peach: { alt: "복숭아 재배 대표 참고 이미지", file: "peach-ai.png" }
   };
 
+  const growthStageGroupImageTargets = {
+    rice: "crop-growth-stages-core-01-ai.png",
+    pepper: "crop-growth-stages-core-01-ai.png",
+    strawberry: "crop-growth-stages-core-01-ai.png",
+    apple: "crop-growth-stages-core-01-ai.png",
+    pear: "crop-growth-stages-core-01-ai.png",
+    peach: "crop-growth-stages-core-01-ai.png",
+    grape: "crop-growth-stages-core-01-ai.png",
+    citrus: "crop-growth-stages-core-01-ai.png",
+    tomato: "crop-growth-stages-core-02-ai.png",
+    watermelon: "crop-growth-stages-core-02-ai.png",
+    "korean-melon": "crop-growth-stages-core-02-ai.png",
+    cucumber: "crop-growth-stages-core-02-ai.png",
+    eggplant: "crop-growth-stages-core-02-ai.png",
+    cabbage: "crop-growth-stages-core-02-ai.png",
+    radish: "crop-growth-stages-core-02-ai.png",
+    "green-onion": "crop-growth-stages-core-02-ai.png",
+    garlic: "crop-growth-stages-core-03-ai.png",
+    onion: "crop-growth-stages-core-03-ai.png",
+    soybean: "crop-growth-stages-core-03-ai.png",
+    corn: "crop-growth-stages-core-03-ai.png",
+    potato: "crop-growth-stages-core-03-ai.png",
+    "sweet-potato": "crop-growth-stages-core-03-ai.png",
+    perilla: "crop-growth-stages-core-03-ai.png"
+  };
+
+  const growthStageImageTargets = {
+    rice: "rice-stages-ai.png",
+    pepper: "pepper-stages-ai.png",
+    strawberry: "strawberry-stages-ai.png",
+    apple: "apple-stages-ai.png",
+    pear: "pear-stages-ai.png",
+    peach: "peach-stages-ai.png",
+    grape: "grape-stages-ai.png",
+    citrus: "tangerine-stages-ai.png",
+    tomato: "tomato-stages-ai.png",
+    watermelon: "watermelon-stages-ai.png",
+    "korean-melon": "melon-stages-ai.png",
+    cucumber: "cucumber-stages-ai.png",
+    eggplant: "eggplant-stages-ai.png",
+    cabbage: "cabbage-stages-ai.png",
+    radish: "radish-stages-ai.png",
+    "green-onion": "greenonion-stages-ai.png",
+    garlic: "garlic-stages-ai.png",
+    onion: "onion-stages-ai.png",
+    soybean: "soybean-stages-ai.png",
+    corn: "corn-stages-ai.png",
+    potato: "potato-stages-ai.png",
+    "sweet-potato": "sweetpotato-stages-ai.png",
+    perilla: "perilla-stages-ai.png"
+  };
+
+
   const core = cropRows.map(([id, name, categoryKey, icon, aliases, summary, season], index) => {
     const category = categoryLabels[categoryKey] || categoryKey;
     const detail = detailByCategory(categoryKey, name);
@@ -69,6 +122,8 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       officialSources: [],
       officialImages: officialImagePlaceholders(name),
       representativeImage: representativeImageFor(id, name),
+      growthStageGroupImage: growthStageGroupImageFor(id, name),
+      growthStageImage: growthStageImageFor(id, name),
       contentStatus: "official-review-needed",
       officialImageUrl: "", officialImageSource: "", officialImageLicenseNote: "", officialImageStatus: "pending",
       stages: detail.growthStages.map(stage => `${stage.name}: ${stage.points.join(" ")}`),
@@ -101,6 +156,8 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     basicNote: "현재 이 작물은 기본 정보만 제공 중입니다. 공공기관 재배자료와 지역별 재배달력은 순차적으로 보강 예정입니다.",
     officialSources: [], officialImages: officialImagePlaceholders(name), contentStatus: "official-review-needed",
     representativeImage: null,
+    growthStageGroupImage: growthStageGroupImageFor(id, name),
+    growthStageImage: growthStageImageFor(id, name),
     officialImageUrl: "", officialImageSource: "", officialImageLicenseNote: "", officialImageStatus: "pending"
   }));
 
@@ -172,6 +229,31 @@ window.KFARM_CROP_PAGE_DATA = (() => {
       alt: target.alt,
       caption: `AI로 생성한 ${cropName} 재배 참고 이미지입니다.`,
       note: "실제 품종, 생육상태, 재배환경은 다를 수 있습니다."
+    };
+  }
+
+
+  function growthStageGroupImageFor(id, cropName) {
+    const file = growthStageGroupImageTargets[id];
+    if (!file) return null;
+    return {
+      type: "ai-generated",
+      url: `/static/crops/stages/${file}`,
+      alt: `${cropName} \uC0DD\uC721\uB2E8\uACC4 \uBB36\uC74C \uCC38\uACE0 \uC774\uBBF8\uC9C0`,
+      caption: "\u0041\u0049\uB85C \uC0DD\uC131\uD55C \uC0DD\uC721\uB2E8\uACC4 \uCC38\uACE0 \uC774\uBBF8\uC9C0\uC785\uB2C8\uB2E4.",
+      note: "\uC791\uBB3C\uBCC4 \uC2E4\uC81C \uC0DD\uC721\uC740 \uD488\uC885, \uC9C0\uC5ED, \uC791\uD615\uC5D0 \uB530\uB77C \uB2EC\uB77C\uC9C8 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    };
+  }
+
+  function growthStageImageFor(id, cropName) {
+    const file = growthStageImageTargets[id];
+    if (!file) return null;
+    return {
+      type: "ai-generated",
+      url: `/static/crops/stages/individual/${file}`,
+      alt: `${cropName} \uC0DD\uC721\uB2E8\uACC4 \uCC38\uACE0 \uC774\uBBF8\uC9C0`,
+      caption: `\u0041\u0049\uB85C \uC0DD\uC131\uD55C ${cropName} \uC0DD\uC721\uB2E8\uACC4 \uCC38\uACE0 \uC774\uBBF8\uC9C0\uC785\uB2C8\uB2E4.`,
+      note: "\uC2E4\uC81C \uD488\uC885, \uC0DD\uC721\uC0C1\uD0DC, \uC7AC\uBC30\uD658\uACBD\uC740 \uB2E4\uB97C \uC218 \uC788\uC2B5\uB2C8\uB2E4."
     };
   }
 
