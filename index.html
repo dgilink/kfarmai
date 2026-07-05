@@ -902,16 +902,22 @@
     color: var(--green); text-decoration: none; overflow-wrap: anywhere;
   }
   .agri-video-strip {
-    display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 2px;
-    scroll-snap-type: x proximity;
+    display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 6px;
+    scroll-snap-type: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    scrollbar-width: none;
   }
   .agri-video-strip::-webkit-scrollbar { display: none; }
   .agri-video-card {
-    flex: 0 0 190px; scroll-snap-align: start; background: #fff;
+    flex: 0 0 190px; scroll-snap-align: none; background: #fff;
     border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
     box-shadow: 0 3px 10px rgba(15, 23, 42, .05);
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .agri-video-card .agri-video-media { aspect-ratio: 16 / 9; }
+  .agri-video-card .agri-video-media { aspect-ratio: 16 / 9; touch-action: pan-x; }
   .agri-video-card .agri-video-play { width: 38px; height: 38px; font-size: 16px; }
   .agri-video-card .agri-video-body { padding: 9px 10px 10px; }
   .agri-video-card .agri-card-title { font-size: 12.5px; }
@@ -2733,7 +2739,7 @@ function agriVideoHeroHtml(item){
 function agriVideoCardHtml(item){
   const thumb=agriVideoThumb(item.videoId,item.thumbnailUrl);
   return `<article class="agri-video-card">
-    <div class="agri-video-media" role="button" tabindex="0" onclick="playAgriVideo('${escAttr(item.videoId)}','hero')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playAgriVideo('${escAttr(item.videoId)}','hero');}">
+    <div class="agri-video-media" role="button" tabindex="0" data-video-id="${escAttr(item.videoId)}" onpointerdown="agriVideoPointerDown(event)" onpointerup="agriVideoPointerUp(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playAgriVideo('${escAttr(item.videoId)}','hero');}">
       <img src="${escAttr(thumb)}" alt="${escAttr(item.title)} 썸네일" loading="lazy">
       <button class="agri-video-play" type="button" aria-label="영상 재생">▶</button>
     </div>
@@ -2743,6 +2749,20 @@ function agriVideoCardHtml(item){
       <div class="agri-badges">${agriVideoBadge(item)}</div>
     </div>
   </article>`;
+}
+function agriVideoPointerDown(event){
+  const el=event.currentTarget;
+  el.dataset.startX=String(event.clientX||0);
+  el.dataset.startY=String(event.clientY||0);
+}
+function agriVideoPointerUp(event){
+  const el=event.currentTarget;
+  const startX=Number(el.dataset.startX||0);
+  const startY=Number(el.dataset.startY||0);
+  const movedX=Math.abs((event.clientX||0)-startX);
+  const movedY=Math.abs((event.clientY||0)-startY);
+  if(movedX>10||movedY>10)return;
+  playAgriVideo(el.dataset.videoId,'hero');
 }
 function playAgriVideo(videoId,target='hero'){
   const hero=document.getElementById('agriVideoHero');
