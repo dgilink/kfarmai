@@ -915,7 +915,7 @@
     scroll-snap-type: none;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     scrollbar-width: none;
   }
   .agri-video-strip::-webkit-scrollbar { display: none; }
@@ -926,7 +926,7 @@
     user-select: none;
     -webkit-user-select: none;
   }
-  .agri-video-card .agri-video-media { aspect-ratio: 16 / 9; touch-action: pan-x; }
+  .agri-video-card .agri-video-media { aspect-ratio: 16 / 9; touch-action: pan-x pan-y; }
   .agri-video-card .agri-video-play { width: 38px; height: 38px; font-size: 16px; }
   .agri-video-card .agri-video-body { padding: 9px 10px 10px; }
   .agri-video-card .agri-card-title { font-size: 12.5px; }
@@ -2125,10 +2125,10 @@
               <h3>오늘의 농업 영상</h3>
               <p>공식기관과 연구기관의 공개 영상을 임베드 방식으로 제공합니다.</p>
             </div>
-            <a class="agri-section-more" href="agri-videos.html">더보기</a>
+            <a class="agri-section-more" href="agri-videos.html">영상 더보기</a>
           </div>
           <div id="agriVideoHero"></div>
-          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록" ontouchstart="stopNestedSwipe(event)" ontouchmove="stopNestedSwipe(event)" onmousedown="stopNestedSwipe(event)"></div>
+          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록"></div>
           <div class="agri-source-note">kFarmAI는 영상을 저장하거나 재업로드하지 않고, 공식 플랫폼의 임베드 방식으로 제공합니다. 영상의 저작권은 각 제공 기관과 원 게시자에게 있습니다.</div>
         </section>
 
@@ -2138,7 +2138,7 @@
               <h3>최신 농업연구동향</h3>
               <p>농업 연구성과와 기술자료를 쉽게 풀어 정리합니다.</p>
             </div>
-            <a class="agri-section-more" href="agri-research.html">더보기</a>
+            <a class="agri-section-more" href="agri-research.html">연구 더보기</a>
           </div>
           <div class="agri-research-chips" id="agriResearchChips" aria-label="연구동향 카테고리"></div>
           <div class="agri-research-list" id="agriResearchList"></div>
@@ -2448,9 +2448,6 @@
   function isNestedHorizontalScroller(target){
     return !!target?.closest?.('.agri-video-strip, .agri-research-chips');
   }
-  window.stopNestedSwipe = function(event){
-    event.stopPropagation();
-  };
 
   // Touch swipe
   let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false, axis = null, trackingSwipe = false;
