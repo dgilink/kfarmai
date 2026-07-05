@@ -2729,7 +2729,7 @@ async function loadMyPosts(userId){
         ${renderPostTags(post.content)}
         <div class="my-list-meta">${meta}<span>${postLikeButton(post)}</span></div>
         <div class="my-list-actions">
-          <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">수정</button>
+          <a class="my-list-action" href="post.html?v=20260705f&id=${encodeURIComponent(post.id)}&edit=1" onclick="event.stopPropagation()">&#49688;&#51221;</a>
           <button class="my-list-action danger" type="button" onclick="deleteMyPost(event,'${escAttr(post.id)}')">삭제</button>
         </div>
       </div>`;
@@ -2755,7 +2755,7 @@ async function editMyPost(event,id){
   event?.stopPropagation?.();
   console.warn('edit button clicked', {postId:id||null, hasCurrentUser:!!currentUser?.id});
   if(!id)return;
-  window.location.assign(`post.html?v=20260705e&id=${encodeURIComponent(id)}&edit=1`);
+  window.location.assign(`post.html?v=20260705f&id=${encodeURIComponent(id)}&edit=1`);
 }
 async function deleteMyPost(event,id){
   event?.stopPropagation();
