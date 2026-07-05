@@ -2670,7 +2670,7 @@ async function loadMyPosts(userId){
         `조회 ${Number(post.view_count||0)}`,
         formatMyDate(post.created_at)
       ].filter(Boolean).map(item=>`<span>${escHtml(item)}</span>`).join('');
-      return `<div class="my-list-item" onclick="openPostDetail(${escAttr(JSON.stringify(post))})">
+      return `<div class="my-list-item" onclick="location.href='post.html?v=20260705d&id=${encodeURIComponent(post.id)}'">
         <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
         ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
         ${renderPostTags(post.content)}
@@ -2700,7 +2700,7 @@ async function fetchMyPosts(userId){
 async function editMyPost(event,id){
   event?.stopPropagation();
   if(!id)return;
-  location.href=`post.html?v=20260705c&id=${encodeURIComponent(id)}&edit=1`;
+  location.href=`post.html?v=20260705d&id=${encodeURIComponent(id)}&edit=1`;
 }
 async function deleteMyPost(event,id){
   event?.stopPropagation();
@@ -2858,8 +2858,7 @@ function cachePostForDetail(post){
 }
 function openPostDetail(post){
   if(!post?.id)return;
-  cachePostForDetail(post);
-  location.href=`post.html?v=20260705c&id=${encodeURIComponent(post.id)}`;
+  location.href=`post.html?v=20260705d&id=${encodeURIComponent(post.id)}`;
 }
 async function renderFeedFallback(message){
   const feed=document.getElementById('recentFeed');
@@ -3251,8 +3250,8 @@ function renderQuestionListCard(post,profileMap={}){
     `조회 ${Number(post.view_count||0)}`,
     post.created_at?getTimeAgo(post.created_at):''
   ].filter(Boolean);
-  const href=post.id ? `post.html?v=20260705c&id=${encodeURIComponent(post.id)}` : safeSearchUrl(post.url||'channel.html');
-  const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
+  const href=post.id ? `post.html?v=20260705d&id=${encodeURIComponent(post.id)}` : safeSearchUrl(post.url||'channel.html');
+  const clickAttr=post.id?``:'';
   return `<a class="question-list-card${thumb?' has-thumb':''}" href="${href}"${clickAttr}>
     <div>
       <div class="question-list-card-title">${escHtml(post.title||'제목 없음')}</div>
@@ -3448,9 +3447,9 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
   const postHtml=posts.map(post=>{
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
-    const postUrl=post.id?`post.html?v=20260705c&id=${encodeURIComponent(post.id)}`:'channel.html';
+    const postUrl=post.id?`post.html?v=20260705d&id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=post.crop_tag||extractCategoryFromContent(post.content);
-    const clickAttr=post.id?` onclick="cachePostForDetail(${escAttr(JSON.stringify(post))})"`:'';
+    const clickAttr=post.id?``:'';
     return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>댓글 ${post.comment_count||0}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');

@@ -372,9 +372,15 @@ async function safeInit(){
     await init();
   }catch(error){
     console.error('post init failed', error);
-    document.getElementById('postArea').innerHTML = '<div class="empty">게시글을 불러오지 못했습니다.<br>잠시 후 다시 시도해주세요.</div>';
-    document.getElementById('commentList').innerHTML = '<div class="empty">댓글을 불러오지 못했습니다.</div>';
-    document.getElementById('relatedList').innerHTML = '<div class="empty">관련 글을 불러오지 못했습니다.</div>';
+    if(document.getElementById('postArea')?.classList.contains('loading')){
+      document.getElementById('postArea').innerHTML = '<div class="empty">게시글을 불러오지 못했습니다.<br>잠시 후 다시 시도해주세요.</div>';
+    }
+    if(document.getElementById('commentList')?.classList.contains('loading')){
+      document.getElementById('commentList').innerHTML = '<div class="empty">댓글을 불러오지 못했습니다.</div>';
+    }
+    if(document.getElementById('relatedList')?.classList.contains('loading')){
+      document.getElementById('relatedList').innerHTML = '<div class="empty">관련 글을 불러오지 못했습니다.</div>';
+    }
   }
 }
 
@@ -448,7 +454,7 @@ function renderPost(post,profileMap={}) {
 
 async function loadPostFallback(){
   try{
-    const url = `${SUPABASE_URL}/rest/v1/posts?select=id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name,slug)&id=eq.${encodeURIComponent(postId)}&limit=1`;
+    const url = `${SUPABASE_URL}/rest/v1/posts?select=id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en&id=eq.${encodeURIComponent(postId)}&limit=1`;
     const res = await fetch(url, {headers:{apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`}});
     if(!res.ok)throw new Error(`fallback ${res.status}`);
     const rows = await res.json();
@@ -458,6 +464,7 @@ async function loadPostFallback(){
     incrementViewCount(currentPost);
   }catch(error){
     console.error('post fallback failed', error);
+    if(!document.getElementById('postArea')?.classList.contains('loading'))return;
     document.getElementById('postArea').innerHTML = '<div class="empty">게시글을 찾을 수 없습니다.<br>삭제되었거나 접근 권한이 없을 수 있습니다.</div>';
   }
 }
@@ -575,7 +582,7 @@ function renderRelatedPosts(posts) {
   }
   list.innerHTML = posts.map(post => {
     const slug = post.channels?.slug || '';
-    return `<a class="related-card" href="post.html?v=20260705c&id=${encodeURIComponent(post.id)}">
+    return `<a class="related-card" href="post.html?v=20260705d&id=${encodeURIComponent(post.id)}">
       <span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(post.channels?.name || channelName(slug))}</span>
       <div class="related-title">${esc(post.title || '제목 없음')}</div>
       <div class="related-meta">${post.region_tag ? '#' + esc(post.region_tag) + ' · ' : ''}${timeAgo(post.created_at)}</div>
