@@ -239,7 +239,8 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
     touch-action: pan-y;
-    padding: 12px 14px 28px;
+    padding: 12px 14px calc(104px + env(safe-area-inset-bottom));
+    scroll-padding-bottom: calc(104px + env(safe-area-inset-bottom));
   }
   .pages.dragging { transition: none; }
 
