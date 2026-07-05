@@ -98,7 +98,8 @@
   .edit-image-thumb { position:relative; flex:0 0 86px; width:86px; height:72px; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:#F3F4F6; }
   .edit-image-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
   .edit-image-remove { position:absolute; top:4px; right:4px; width:22px; height:22px; border:0; border-radius:50%; background:rgba(17,17,17,.72); color:#fff; font-size:16px; line-height:1; cursor:pointer; }
-  .edit-image-add { width:100%; min-height:40px; border:1.5px dashed var(--border); border-radius:11px; background:#fff; color:var(--green-dark); font-size:13px; font-weight:900; cursor:pointer; }
+  .edit-image-add { width:100%; min-height:40px; border:1.5px dashed var(--border); border-radius:11px; background:#fff; color:var(--green-dark); font-size:13px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .edit-image-input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; overflow:hidden; }
   .edit-help { margin-top:5px; color:#777; font-size:11.5px; line-height:1.45; }
   .edit-modal-actions { display:flex; gap:8px; }
   .edit-submit { flex:1; background:var(--green); border-color:var(--green); color:#fff; height:42px; }
@@ -221,8 +222,8 @@
     <div class="edit-field">
       <div class="edit-label">사진 첨부</div>
       <div class="edit-image-row" id="editImagePreview"></div>
-      <button class="edit-image-add" type="button" onclick="document.getElementById('editPostImages').click()">사진 추가</button>
-      <input type="file" id="editPostImages" accept="image/*" multiple style="display:none" onchange="handleEditPostImages(this)">
+      <label class="edit-image-add" for="editPostImages">사진 추가</label>
+      <input class="edit-image-input" type="file" id="editPostImages" accept="image/*" multiple onchange="handleEditPostImages(this)">
       <div class="edit-help">기존 사진은 유지하거나 삭제할 수 있고, 새 사진을 추가할 수 있습니다. 최대 3장까지 저장합니다.</div>
     </div>
     <div class="edit-modal-actions"><button class="edit-cancel" type="button" onclick="closeEditPostModal()">취소</button><button class="edit-submit" id="editPostSubmit" type="button" onclick="savePostEdit()">저장</button></div>
@@ -565,12 +566,100 @@ function togglePostActionMenu(event){event?.preventDefault?.();event?.stopPropag
 document.addEventListener('click',()=>document.getElementById('postActionMenu')?.classList.remove('open'));
 async function openEditPostModal(event,allowOpenBeforeOwnerCheck=false){event?.preventDefault?.();event?.stopPropagation?.();if(!currentPost)return;await ensureCurrentUser();logPostEditClick(currentPost);if(!allowOpenBeforeOwnerCheck&&!canEditPost(currentPost))return showToast('\uBCF8\uC778 \uAE00\uB9CC \uC218\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.');document.getElementById('editPostCategory').value=currentPost.crop_tag||extractCategoryFromContent(currentPost.content)||'';const regionSelect=document.getElementById('editPostRegion');if(regionSelect)regionSelect.value=currentPost.region_tag||'';document.getElementById('editPostTitle').value=currentPost.title||'';const editContent=document.getElementById('editPostContent');editContent.value=stripCategoryPrefix(currentPost.content||'');autoResizeTextarea(editContent,260);editExistingImages=normalizeImages(currentPost.image_urls);editNewImages=[];renderEditImagePreview();document.getElementById('editPostModal').classList.add('open');requestAnimationFrame(()=>{editContent.focus({preventScroll:true});editContent.setSelectionRange(editContent.value.length,editContent.value.length);});}
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
-function handleEditPostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));const remain=3-editExistingImages.length-editNewImages.length;if(remain<=0){showToast('사진은 최대 3장까지 첨부할 수 있습니다.');input.value='';return;}editNewImages=editNewImages.concat(incoming.slice(0,remain));input.value='';renderEditImagePreview();}
-function removeEditExistingImage(idx){editExistingImages.splice(idx,1);renderEditImagePreview();}
-function removeEditNewImage(idx){editNewImages.splice(idx,1);renderEditImagePreview();}
-function renderEditImagePreview(){const wrap=document.getElementById('editImagePreview');if(!wrap)return;const existing=editExistingImages.map((url,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(url)}" alt="기존 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditExistingImage(${idx})">&times;</button></div>`).join('');const added=editNewImages.map((file,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(URL.createObjectURL(file))}" alt="새 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditNewImage(${idx})">&times;</button></div>`).join('');wrap.innerHTML=existing+added||'<div class="empty" style="padding:12px;width:100%">첨부된 사진이 없습니다.</div>';}
-async function uploadEditPostImages(userId){const urls=[];for(let i=0;i<editNewImages.length;i++){const file=editNewImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
-async function savePostEdit(){const authUser=await ensureCurrentUser();const authUserId=authUser?.id||'';const postUserId=currentPost?.user_id||'';const idsMatch=sameUserId(authUserId,postUserId);console.warn('post edit save clicked',{authUserId,postUserId,idsMatch});if(!authUserId||!currentPost||!idsMatch)return showToast('\uAD8C\uD55C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.');const title=document.getElementById('editPostTitle').value.trim();const content=document.getElementById('editPostContent').value.trim();const category=document.getElementById('editPostCategory').value;const region=document.getElementById('editPostRegion')?.value||'';if(!title||!content)return showToast('\uC81C\uBAA9\uACFC \uB0B4\uC6A9\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.');const btn=document.getElementById('editPostSubmit');btn.disabled=true;const allowedPayloadKeys=['title','content','crop_tag','region_tag','image_urls'];try{const addedUrls=await uploadEditPostImages(authUserId);const image_urls=editExistingImages.concat(addedUrls).slice(0,3);const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);const payload={title,content:contentWithCategory(content,'',author),crop_tag:category||null,region_tag:region||null,image_urls};const payloadKeys=Object.keys(payload);const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));console.warn('post edit payload check',{authUserId,postUserId,idsMatch,payloadKeys,forbiddenPayloadKeys});if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);const updateResult=await sb.from('posts').update(payload,{count:'exact'}).eq('id',postId).eq('user_id',authUserId);if(updateResult.error){console.error('post edit update error',{message:updateResult.error.message,payloadKeys});throw new Error('update failed');}console.warn('post edit update completed',{count:updateResult.count,payloadKeys});const selectResult=await sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en').eq('id',postId).maybeSingle();if(selectResult.error){console.error('post edit select error',{message:selectResult.error.message,payloadKeys});throw new Error('select failed');}if(!selectResult.data){console.error('post edit select empty',{message:'updated post not found',payloadKeys});throw new Error('select empty');}currentPost=selectResult.data;closeEditPostModal();showToast('\uAC8C\uC2DC\uAE00\uC774 \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');await loadPost();}catch(err){console.error('post edit failed',{message:err?.message,payloadKeys:allowedPayloadKeys});showToast('\uAE00 \uC218\uC815\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.');}finally{btn.disabled=false;}}
+function handleEditPostImages(input){
+  const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));
+  const remain=3-editExistingImages.length-editNewImages.length;
+  if(!incoming.length){input.value='';return;}
+  if(remain<=0){
+    showToast('사진은 최대 3장까지 첨부할 수 있습니다. 기존 사진을 삭제한 뒤 추가해주세요.');
+    input.value='';
+    return;
+  }
+  editNewImages=editNewImages.concat(incoming.slice(0,remain));
+  if(incoming.length>remain)showToast(`사진은 최대 3장까지 저장합니다. ${remain}장만 추가했습니다.`);
+  input.value='';
+  renderEditImagePreview();
+}
+function removeEditExistingImage(event,idx){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  editExistingImages.splice(idx,1);
+  renderEditImagePreview();
+}
+function removeEditNewImage(event,idx){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  editNewImages.splice(idx,1);
+  renderEditImagePreview();
+}
+function renderEditImagePreview(){
+  const wrap=document.getElementById('editImagePreview');
+  if(!wrap)return;
+  const existing=editExistingImages.map((url,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(url)}" alt="기존 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditExistingImage(event,${idx})" aria-label="기존 사진 삭제">&times;</button></div>`).join('');
+  const added=editNewImages.map((file,idx)=>`<div class="edit-image-thumb"><img src="${escAttr(URL.createObjectURL(file))}" alt="새 첨부 사진"><button class="edit-image-remove" type="button" onclick="removeEditNewImage(event,${idx})" aria-label="새 사진 삭제">&times;</button></div>`).join('');
+  wrap.innerHTML=existing+added||'<div class="empty" style="padding:12px;width:100%">첨부된 사진이 없습니다.</div>';
+}
+async function uploadEditPostImages(userId){
+  const urls=[];
+  for(let i=0;i<editNewImages.length;i++){
+    const file=editNewImages[i];
+    const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';
+    const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});
+    if(error){
+      console.warn('post image upload failed',{message:error.message});
+      throw error;
+    }
+    const {data}=sb.storage.from('post-images').getPublicUrl(path);
+    if(data?.publicUrl)urls.push(data.publicUrl);
+  }
+  return urls;
+}
+async function savePostEdit(){
+  const authUser=await ensureCurrentUser();
+  const authUserId=authUser?.id||'';
+  const postUserId=currentPost?.user_id||'';
+  const idsMatch=sameUserId(authUserId,postUserId);
+  if(!authUserId||!currentPost||!idsMatch)return showToast('\uAD8C\uD55C\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.');
+  const title=document.getElementById('editPostTitle').value.trim();
+  const content=document.getElementById('editPostContent').value.trim();
+  const category=document.getElementById('editPostCategory').value;
+  const region=document.getElementById('editPostRegion')?.value||'';
+  if(!title||!content)return showToast('\uC81C\uBAA9\uACFC \uB0B4\uC6A9\uC744 \uC785\uB825\uD574\uC8FC\uC138\uC694.');
+  const btn=document.getElementById('editPostSubmit');
+  btn.disabled=true;
+  const allowedPayloadKeys=['title','content','crop_tag','region_tag','image_urls'];
+  try{
+    const addedUrls=await uploadEditPostImages(authUserId);
+    const image_urls=editExistingImages.concat(addedUrls).slice(0,3);
+    const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);
+    const payload={title,content:contentWithCategory(content,'',author),crop_tag:category||null,region_tag:region||null,image_urls};
+    const payloadKeys=Object.keys(payload);
+    const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
+    if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
+    const updateResult=await sb.from('posts').update(payload,{count:'exact'}).eq('id',postId).eq('user_id',authUserId);
+    if(updateResult.error){
+      console.warn('post edit update error',{message:updateResult.error.message,payloadKeys});
+      throw updateResult.error;
+    }
+    const selectResult=await sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en').eq('id',postId).maybeSingle();
+    if(selectResult.error){
+      console.warn('post edit select error',{message:selectResult.error.message,payloadKeys});
+      throw selectResult.error;
+    }
+    if(!selectResult.data)throw new Error('updated post not found');
+    currentPost=selectResult.data;
+    editNewImages=[];
+    closeEditPostModal();
+    showToast('\uAC8C\uC2DC\uAE00\uC774 \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
+    await loadPost();
+  }catch(err){
+    console.warn('post edit failed',{message:err?.message,payloadKeys:allowedPayloadKeys});
+    showToast('\uAE00 \uC218\uC815\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.');
+  }finally{
+    btn.disabled=false;
+  }
+}
 async function deletePost(){if(!currentUser?.id||!currentPost||!sameUserId(currentUser.id,currentPost.user_id))return showToast('권한이 없습니다.');if(!confirm('정말 삭제하시겠습니까?'))return;try{const {data,error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',currentUser.id).select('id');if(error)throw error;if(!data?.length)throw new Error('게시글 삭제 권한이 없거나 이미 삭제된 글입니다.');location.href='channel.html';}catch(err){showToast(err.message||'삭제에 실패했습니다.');}}
 
 

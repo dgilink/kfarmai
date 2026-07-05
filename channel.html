@@ -84,7 +84,8 @@
   @media (max-width:540px) { .fab { right:16px; } }
   .modal-overlay, .my-panel-overlay { position:fixed; inset:0; z-index:100; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.38); }
   .modal-overlay.open, .my-panel-overlay.open { display:flex; }
-  .modal { width:100%; max-width:520px; max-height:88vh; overflow:auto; background:#fff; border-radius:22px 22px 0 0; padding:18px 18px 24px; }
+  .modal { width:100%; max-width:520px; max-height:calc(100dvh - 12px); overflow:auto; overscroll-behavior:contain; background:#fff; border-radius:22px 22px 0 0; padding:18px 18px 24px; scrollbar-width:none; }
+  .modal::-webkit-scrollbar { display:none; }
   .modal-handle { display:block; width:36px; height:4px; border:0; padding:0; border-radius:2px; background:var(--border); margin:0 auto 16px; cursor:pointer; }
   .modal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
   .modal-title { font-size:18px; font-weight:900; }
@@ -105,9 +106,9 @@
   .tag-add-btn { min-width:54px; border:0; border-radius:10px; background:#111827; color:#fff; font-size:12px; font-weight:900; cursor:pointer; }
   .post-tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
   .post-tag { color:var(--green-dark); background:#E8F6F0; border-radius:999px; padding:3px 7px; font-size:11px; font-weight:850; }
-  .submit { width:100%; height:48px; border:0; border-radius:13px; background:var(--green); color:#fff; font-size:15px; font-weight:900; cursor:pointer; margin-top:8px; }
+  .submit { width:100%; height:48px; border:0; border-radius:13px; background:var(--green); color:#fff; font-size:15px; font-weight:900; cursor:pointer; margin-top:8px; position:sticky; bottom:0; z-index:2; box-shadow:0 -8px 18px rgba(255,255,255,.92); }
   .submit:disabled { opacity:.55; cursor:not-allowed; }
-  .image-input { display:none; }
+  .image-input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; overflow:hidden; }
   .image-upload-btn { display:inline-flex; align-items:center; justify-content:center; height:38px; padding:0 13px; border:1.5px solid var(--border); border-radius:10px; background:#fff; color:var(--text); font-size:13px; font-weight:800; cursor:pointer; }
   .image-preview-row { display:flex; gap:8px; overflow-x:auto; padding:2px 0 4px; scrollbar-width:none; }
   .image-thumb { position:relative; flex:0 0 auto; width:72px; height:72px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#F3F4F6; }
@@ -201,7 +202,6 @@
     <button class="modal-handle" type="button" onclick="closeWriteModal()" aria-label="닫기"></button>
     <div class="modal-head"><div class="modal-title">커뮤니티에 질문하기</div><button class="modal-close" type="button" onclick="closeWriteModal()" aria-label="닫기">×</button></div>
     <div class="field"><div class="label">채널 선택</div><select class="select" id="channelSelect"></select></div>
-    <div class="field"><div class="label">지역 선택</div><select class="select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
     <div class="field">
       <div class="label">대표 증상을 선택해주세요</div>
       <select class="select" id="postCategory" onchange="toggleCustomSymptom()">
@@ -211,13 +211,14 @@
     </div>
     <div class="field"><div class="label">제목</div><input class="input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
     <div class="field"><div class="label">내용</div><textarea class="textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
+    <div class="field"><div class="label">지역 선택 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><select class="select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
     <div class="field">
       <div class="label">사진 업로드 <span style="font-weight:600;color:var(--muted)">(선택, 최대 3장)</span></div>
       <label class="image-upload-btn" for="postImages">사진 선택</label>
       <input class="image-input" type="file" id="postImages" accept="image/*" multiple onchange="handlePostImages(this)">
       <div class="image-preview-row" id="postImagePreview"></div>
     </div>
-    <div class="field">
+    <div class="field" hidden>
       <div class="label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(최대 5개)</span></div>
       <div class="tag-chip-row" id="tagSuggestions"></div>
       <div class="tag-input-row"><input class="input" id="tagInput" placeholder="#고추 또는 잎마름" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput()}"><button class="tag-add-btn" type="button" onclick="addTagFromInput()">추가</button></div>
@@ -835,7 +836,7 @@ function selectedSymptom(){const value=document.getElementById('postCategory')?.
 function handlePostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
 function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error)throw error;const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
+async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error){console.warn('post image upload failed',{message:error.message});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
 async function submitPost(){
   const channelSelect=document.getElementById('channelSelect');
   const channelId=channelSelect.value;
@@ -846,19 +847,26 @@ async function submitPost(){
   const region=document.getElementById('regionSelect').value;
   if(!channelId||!category||!title||!content)return showToast('채널, 대표 증상, 제목, 내용을 입력해주세요.');
   const btn=document.getElementById('submitBtn');btn.disabled=true;
+  const allowedPayloadKeys=['user_id','channel_id','title','content','crop_tag','region_tag','image_urls'];
   try{
     const {data:{session}}=await sb.auth.getSession();
-    const userId=session?.user?.id||getLocalUserId();
+    const userId=session?.user?.id;
+    if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openLoginModal();return;}
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const {error}=await sb.from('posts').insert({user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(currentUser)),crop_tag:category||null,region_tag:region||null,image_urls:imageUrls});
+    const payload={user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(currentUser)),crop_tag:category||null,region_tag:region||null,image_urls:imageUrls};
+    const payloadKeys=Object.keys(payload);
+    const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
+    if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
+    const {error}=await sb.from('posts').insert(payload);
+    if(error)console.warn('post insert error',{message:error.message,payloadKeys});
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
     closeWriteModal();
     ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     autoResizeTextarea(document.getElementById('postContent'),240);
     selectedPostImages=[];selectedPostTags=[];renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
-  }catch(err){showToast('등록 실패: '+(err.message||err));}
+  }catch(err){console.warn('post submit failed',{message:err?.message});showToast('질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');}
   finally{btn.disabled=false;}
 }
 function authCallbackUrl(){return 'https://kfarmai.com/auth-callback.html';}
