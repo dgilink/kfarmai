@@ -38,7 +38,7 @@
   .hub-section { margin:14px 14px 0; }
   .hub-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 2px 8px; }
   .hub-section-title { font-size:14px; font-weight:900; color:#111827; }
-  .hub-more { border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; text-decoration:none; }
+  .hub-more { display:inline-flex; align-items:center; min-height:32px; border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; text-decoration:none; touch-action:manipulation; pointer-events:auto; }
   .question-hub { display:grid; gap:12px; }
   .question-block { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:12px; }
   .mini-list { display:grid; gap:8px; }
@@ -171,21 +171,21 @@
     <article class="question-block">
       <div class="hub-section-head">
         <div class="hub-section-title">방금 올라온 질문</div>
-        <a class="hub-more" data-more-sort="latest" href="channel.html?sort=latest">더보기 &gt;</a>
+        <a class="hub-more" data-more-sort="latest" data-more-section="recent" href="channel.html?sort=latest" onclick="goMoreLink(event,this)">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="latestQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
     <article class="question-block">
       <div class="hub-section-head">
         <div class="hub-section-title">많이 보는 질문</div>
-        <a class="hub-more" data-more-sort="popular" href="channel.html?sort=popular">더보기 &gt;</a>
+        <a class="hub-more" data-more-sort="popular" data-more-section="popular" href="channel.html?sort=popular" onclick="goMoreLink(event,this)">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="popularQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
     <article class="question-block">
       <div class="hub-section-head">
         <div class="hub-section-title">나도 같은 증상</div>
-        <a class="hub-more" data-more-sort="symptom" href="channel.html?sort=symptom">더보기 &gt;</a>
+        <a class="hub-more" data-more-sort="symptom" data-more-section="same" href="channel.html?sort=symptom" onclick="goMoreLink(event,this)">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="symptomQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
@@ -345,8 +345,9 @@ const CHANNEL_BADGE_COLORS = {'plant-hospital':'','plant-question':'blue','crop-
 const PAGE_SIZE = 20;
 const params = new URLSearchParams(location.search);
 const slugParam = params.get('slug') || '';
-const sortParam = params.get('sort') || 'latest';
-const isMoreListMode = params.has('sort');
+const sectionParam = params.get('section') || '';
+const sortParam = normalizeMoreSort(params.get('sort') || sectionParam || 'latest');
+const isMoreListMode = params.has('sort') || params.has('section');
 const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
 const DEMO_CASE_WRITE_PRESETS = {
   'tomato-leaf-mold': {
@@ -580,6 +581,17 @@ function renderChannelHub(){
   refreshMoreLinks();
   applyMoreListMode();
 }
+function normalizeMoreSort(value){
+  const key=String(value||'').toLowerCase();
+  if(key==='popular')return 'popular';
+  if(key==='same'||key==='symptom')return 'symptom';
+  return 'latest';
+}
+function moreSectionForSort(sort){
+  if(sort==='popular')return 'popular';
+  if(sort==='symptom')return 'same';
+  return 'recent';
+}
 function currentSortLabel(){
   if(sortParam==='popular')return '많이 보는 질문';
   if(sortParam==='symptom')return '나도 같은 증상';
@@ -593,15 +605,19 @@ function applyMoreListMode(){
   document.querySelector('.fab')?.setAttribute('hidden','');
 }
 function withChannelQuery(url){
-  if(!currentChannel?.slug || !url.startsWith('channel.html'))return url;
+  const channelSlug=currentChannel?.slug || slugParam;
+  if(!channelSlug || !url.startsWith('channel.html'))return url;
   const target=new URL(url, location.href);
-  target.searchParams.set('slug', currentChannel.slug);
+  target.searchParams.set('slug', channelSlug);
   return `channel.html${target.search}${target.hash}`;
 }
 function channelListUrl(sort){
   const target=new URL('channel.html', location.href);
-  if(currentChannel?.slug)target.searchParams.set('slug', currentChannel.slug);
-  target.searchParams.set('sort', sort || 'latest');
+  const channelSlug=currentChannel?.slug || slugParam;
+  if(channelSlug)target.searchParams.set('slug', channelSlug);
+  const safeSort=normalizeMoreSort(sort || 'latest');
+  target.searchParams.set('section', moreSectionForSort(safeSort));
+  target.searchParams.set('sort', safeSort);
   target.hash='postList';
   return `channel.html${target.search}${target.hash}`;
 }
@@ -611,9 +627,17 @@ function channelPostUrl(postId){
 }
 function refreshMoreLinks(){
   document.querySelectorAll('[data-more-sort]').forEach(link=>{
-    const sort=link.dataset.moreSort || 'latest';
+    const sort=normalizeMoreSort(link.dataset.moreSort || link.dataset.moreSection || 'latest');
     link.setAttribute('href', channelListUrl(sort));
   });
+}
+function goMoreLink(event,link){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  const sort=normalizeMoreSort(link?.dataset?.moreSort || link?.dataset?.moreSection || 'latest');
+  const href=channelListUrl(sort);
+  if(link)link.href=href;
+  window.location.assign(href);
 }
 function displayChannelName(slug,name){
   if(slug&&CHANNEL_CONFIG[slug])return CHANNEL_CONFIG[slug];
