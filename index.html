@@ -945,7 +945,7 @@
   .agri-research-chip.active { background: #14532d; color: #fff; border-color: #14532d; }
   .agri-research-list { display: grid; gap: 6px; }
   .agri-research-card {
-    padding: 8px 10px;
+    padding: 7px 9px;
     --research-bg: #ECFDF5;
     --research-border: #BBF7D0;
     --research-color: #166534;
@@ -963,13 +963,23 @@
     color: var(--research-color);
   }
   .agri-research-card .agri-card-title {
-    margin-top: 5px;
-    font-size: 13px;
-    line-height: 1.36;
-    -webkit-line-clamp: 2;
+    margin-top: 0;
+    font-size: 12.5px;
+    line-height: 1.25;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .agri-research-card .agri-date {
+  .agri-research-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     margin-top: 4px;
+  }
+  .agri-research-meta-row .agri-date {
+    margin-top: 0;
     font-size: 10.8px;
     line-height: 1.3;
   }
@@ -981,11 +991,11 @@
     color: #374151; font-size: 12.5px; line-height: 1.6;
   }
   .agri-research-card.open .agri-research-detail { display: block; }
-  .agri-card-actions { margin-top: 5px; display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
+  .agri-card-actions { margin-top: 0; display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
   .agri-card-actions button {
-    height: 26px; border-radius: 9px; border: 1px solid var(--research-border);
-    background: var(--research-bg); color: var(--research-color); font-size: 11px; font-weight: 900;
-    padding: 0 8px; white-space: nowrap;
+    height: 22px; border-radius: 8px; border: 1px solid var(--research-border);
+    background: var(--research-bg); color: var(--research-color); font-size: 10.5px; font-weight: 900;
+    padding: 0 7px; white-space: nowrap;
   }
   .agri-issue-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
   .agri-issue-card { padding: 12px; text-decoration: none; color: inherit; position: relative; }
@@ -2863,11 +2873,15 @@ function agriResearchCardHtml(item){
   const crops=(item.relatedCrops||[]).slice(0,4).join(' · ');
   const detailId=`agri-research-${escAttr(item.id)}`;
   const tone=agriResearchTone(item.category);
+  const badges=`<div class="agri-badges"><span class="agri-badge">${escHtml(item.category||'연구동향')}</span>${agriTagBadges(item.tags)}</div>`;
   return `<article class="agri-research-card ${tone}" id="${detailId}">
-    <div class="agri-badges"><span class="agri-badge">${escHtml(item.category||'연구동향')}</span>${agriTagBadges(item.tags)}</div>
     <div class="agri-card-title">${escHtml(item.simpleTitle||item.title)}</div>
-    <div class="agri-date">배포일: ${escHtml(agriDisplayDate(item.sourcePublishedAt||item.sourceYear,'배포일 확인 중'))}</div>
+    <div class="agri-research-meta-row">
+      <div class="agri-date">배포일: ${escHtml(agriDisplayDate(item.sourcePublishedAt||item.sourceYear,'배포일 확인 중'))}</div>
+      <div class="agri-card-actions"><button type="button" onclick="toggleAgriResearchDetail('${detailId}')">자세히 보기</button></div>
+    </div>
     <div class="agri-research-detail">
+      ${badges}
       <div class="agri-research-summary">${escHtml(item.summary)}</div>
       <div class="agri-meta">관심: ${escHtml(audience||'농가 · 연구기관 · 관련 업체')}</div>
       ${crops?`<div class="agri-meta">관련 작물: ${escHtml(crops)}</div>`:''}
@@ -2876,7 +2890,6 @@ function agriResearchCardHtml(item){
       <strong>왜 흥미로운가</strong><br>${escHtml(item.whyInteresting||'재배와 관리 판단에 참고할 수 있는 연구 흐름입니다.')}<br><br>
       <strong>공식자료 확인</strong><br>${item.sourceUrl?`<a class="agri-source-link" href="${escAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escHtml(item.sourceName||'공식자료')} 보기</a>`:escHtml(item.sourceName||'공식자료 확인 예정')}
     </div>
-    <div class="agri-card-actions"><button type="button" onclick="toggleAgriResearchDetail('${detailId}')">자세히 보기</button></div>
   </article>`;
 }
 function agriResearchTone(category){
