@@ -331,38 +331,73 @@
 .agri-issue-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 6px;
 }
 
 .agri-issue-card {
-  padding: 12px;
+  padding: 7px 9px;
   text-decoration: none;
   color: inherit;
   position: relative;
+  --issue-bg: #ecfdf5;
+  --issue-border: #bbf7d0;
+  --issue-color: #166534;
 }
 
 .agri-issue-card strong {
   display: block;
-  font-size: 13.5px;
-  color: #14532d;
-  margin: 7px 0 5px;
+  margin: 3px 0 0;
+  color: #111827;
+  font-size: 12.5px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.agri-issue-card span {
-  display: block;
+.agri-issue-card .agri-badge {
+  background: var(--issue-bg);
+  border-color: var(--issue-border);
+  color: var(--issue-color);
+}
+
+.agri-issue-card.tone-weather { --issue-bg: #eff6ff; --issue-border: #bfdbfe; --issue-color: #1d4ed8; }
+.agri-issue-card.tone-market { --issue-bg: #fff7ed; --issue-border: #fed7aa; --issue-color: #c2410c; }
+.agri-issue-card.tone-policy { --issue-bg: #f5f3ff; --issue-border: #ddd6fe; --issue-color: #6d28d9; }
+.agri-issue-card.tone-smart { --issue-bg: #ecfeff; --issue-border: #a5f3fc; --issue-color: #0e7490; }
+.agri-issue-card.tone-protection { --issue-bg: #fef2f2; --issue-border: #fecaca; --issue-color: #b91c1c; }
+.agri-issue-card.tone-input { --issue-bg: #f7fee7; --issue-border: #d9f99d; --issue-color: #4d7c0f; }
+.agri-issue-card.tone-livestock { --issue-bg: #fdf2f8; --issue-border: #fbcfe8; --issue-color: #be185d; }
+
+.agri-issue-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.agri-issue-meta span {
+  min-width: 0;
   color: #4b5563;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 10.8px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .agri-issue-card .agri-source-link {
-  margin-top: 7px;
-  height: 26px;
+  flex: 0 0 auto;
+  margin-top: 0;
+  height: 22px;
   align-items: center;
-  padding: 0 9px;
-  border-radius: 999px;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  padding: 0 7px;
+  border-radius: 8px;
+  background: var(--issue-bg);
+  border: 1px solid var(--issue-border);
+  color: var(--issue-color);
+  font-size: 10.5px;
 }
 
 .news-page {

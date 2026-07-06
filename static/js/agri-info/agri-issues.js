@@ -35,13 +35,24 @@
 
   function issueCardHtml(item){
     const utils = u();
-    const tags = (item.tags || []).slice(0, 3).map(tag => `<span class="agri-badge">${utils.escapeHtml(tag)}</span>`).join('');
-    return `<article class="agri-issue-card">
-      <div class="agri-badges"><span class="agri-badge">${utils.escapeHtml(item.category || '기타')}</span>${tags}</div>
+    const tone = issueTone(item.category);
+    return `<article class="agri-issue-card ${tone}">
+      <span class="agri-badge">${utils.escapeHtml(item.category || '기타')}</span>
       <strong>${utils.escapeHtml(item.issueTitle || item.title)}</strong>
-      <span>${utils.escapeHtml(item.sourceName)} · ${utils.escapeHtml(utils.displayDate(item.publishedAt, '발행일 확인 중'))}</span>
-      <a class="agri-source-link" href="${utils.escapeAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">원문 보기</a>
+      <div class="agri-issue-meta"><span>${utils.escapeHtml(item.sourceName)} · ${utils.escapeHtml(utils.displayDate(item.publishedAt, '발행일 확인 중'))}</span><a class="agri-source-link" href="${utils.escapeAttr(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">원문</a></div>
     </article>`;
+  }
+
+  function issueTone(category){
+    const key = String(category || '');
+    if(key.includes('기상'))return 'tone-weather';
+    if(key.includes('가격') || key.includes('유통') || key.includes('시장'))return 'tone-market';
+    if(key.includes('정책') || key.includes('지원'))return 'tone-policy';
+    if(key.includes('스마트'))return 'tone-smart';
+    if(key.includes('병해충') || key.includes('작물보호'))return 'tone-protection';
+    if(key.includes('농자재') || key.includes('비료'))return 'tone-input';
+    if(key.includes('축산'))return 'tone-livestock';
+    return 'tone-smart';
   }
 
   async function loadAgriNewsPage(){
