@@ -3,6 +3,17 @@
 .env.local
 *.env
 
+# Local secrets / API notes
+resend api key.txt
+농진청, 공공데이터, 경매, 농사로등 api.txt
+농촌진흥청_농약안전사용지침  공공데이터포털.txt
+
+# Common local secret memo files
+*api key*.txt
+*API key*.txt
+*secret*.txt
+*.local.txt
+
 # 대용량/임시 파일
 웹앱디자인.png
 logo.png
