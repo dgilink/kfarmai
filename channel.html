@@ -561,18 +561,21 @@ async function loadMiniPosts(targetId,orderColumn){
   if(!wrap||!sb)return;
   wrap.innerHTML='<div class="mini-empty">불러오는 중...</div>';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?30:3);
+    let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?12:3);
+    if(currentChannel?.id&&currentChannel.id!==currentChannel.slug)query=query.eq('channel_id',currentChannel.id);
     const {data,error}=await query;
     if(error)throw error;
-    const posts=await attachCommentCounts((data||[]).filter(postBelongsToCurrentChannel).slice(0,3));
+    const source=currentChannel?.id&&currentChannel.id!==currentChannel.slug?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
+    const posts=await attachCommentCounts(source.slice(0,3));
     const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
     if(!posts.length){
-      await renderMiniFallback(wrap);
+      renderMiniPosts(wrap,posts,profileMap);
       return;
     }
     renderMiniPosts(wrap,posts,profileMap);
   }catch(e){
-    renderMiniFallback(wrap);
+    console.warn('[channel] mini posts load failed',{targetId,orderColumn,channelSlug:currentChannel?.slug||'',message:e?.message});
+    renderMiniPosts(wrap,[],{});
   }
 }
 function renderMiniPosts(wrap,posts,profileMap={}){
@@ -598,12 +601,14 @@ async function loadPosts(){
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
     let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
+    if(currentChannel?.id&&currentChannel.id!==currentChannel.slug)query=query.eq('channel_id',currentChannel.id);
     query=applyPostFilters(query);
     const pageSize=currentChannel?80:PAGE_SIZE;
     query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+pageSize-1);
     const {data,count,error}=await query;
     if(error)throw error;
-    const posts=await attachCommentCounts((data||[]).filter(postBelongsToCurrentChannel));
+    const source=currentChannel?.id&&currentChannel.id!==currentChannel.slug?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
+    const posts=await attachCommentCounts(source);
     const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
     renderPosts(posts,currentChannel?posts.length:(count||0),profileMap);
     offset+=(data||[]).length;
