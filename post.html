@@ -642,7 +642,7 @@ async function uploadEditPostImages(userId){
     }
     const ext=safeImageExt(file);
     const safeName=`${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;
-    const path=`${userId}/${safeName}`;
+    const path=`${userId}/${postId}/${safeName}`;
     const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});
     if(error){
       postEditWarn('storage.upload.failed', {message:error.message, fileCount:editNewImages.length});
@@ -718,15 +718,25 @@ async function deletePost(event){
   document.getElementById('postActionMenu')?.classList.remove('open');
   if(!currentPost)await loadPost();
   const authUser=await ensureCurrentUser();
-  if(!authUser?.id||!currentPost||!sameUserId(authUser.id,currentPost.user_id))return showToast('권한이 없습니다.');
+  const idsMatch=sameUserId(authUser?.id,currentPost?.user_id);
+  if(!authUser?.id||!currentPost||!idsMatch){
+    console.warn('[post delete] blocked', {postId, hasUser:!!authUser?.id, hasPostUser:!!currentPost?.user_id, idsMatch});
+    return showToast('삭제 권한이 없습니다.');
+  }
   if(!confirm('정말 삭제하시겠습니까?'))return;
   try{
     const {data,error}=await sb.from('posts').delete().eq('id',postId).eq('user_id',authUser.id).select('id');
-    if(error)throw error;
-    if(!data?.length)throw new Error('게시글 삭제 권한이 없거나 이미 삭제된 글입니다.');
+    if(error){
+      console.warn('[post delete] failed', {postId, hasUser:!!authUser?.id, idsMatch, message:error.message});
+      throw error;
+    }
+    if(!data?.length){
+      console.warn('[post delete] no rows', {postId, hasUser:!!authUser?.id, idsMatch});
+      throw new Error('no deleted rows');
+    }
     location.href='channel.html';
   }catch(err){
-    showToast(err.message||'삭제에 실패했습니다.');
+    showToast('삭제 권한이 없거나 이미 삭제된 글입니다.');
   }
 }
 
@@ -1070,6 +1080,7 @@ function safeImageExt(file){
 }
 function isEditableImageFile(file){
   if(!file)return false;
+  if(file.size&&file.size>10*1024*1024)return false;
   if(String(file.type||'').startsWith('image/'))return true;
   return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(String(file.name||''));
 }

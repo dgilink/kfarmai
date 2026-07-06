@@ -2935,14 +2935,21 @@ async function deleteMyPost(event,id){
   if(!window._sb||!currentUser||!id)return;
   if(!confirm('이 글을 삭제하시겠습니까?'))return;
   try{
-    const {error}=await _sb.from('posts').delete().eq('id',id).eq('user_id',currentUser.id);
-    if(error)throw error;
+    const {data,error}=await _sb.from('posts').delete().eq('id',id).eq('user_id',currentUser.id).select('id');
+    if(error){
+      console.warn('[my post delete] failed', {postId:id, hasUser:!!currentUser?.id, message:error.message});
+      throw error;
+    }
+    if(!data?.length){
+      console.warn('[my post delete] no rows', {postId:id, hasUser:!!currentUser?.id});
+      throw new Error('no deleted rows');
+    }
     showToast('글이 삭제되었습니다.');
     loadMyCounts(currentUser.id);
     openMySubview('myPostsView');
   }catch(error){
-    console.error('delete post failed', error);
-    showToast('글 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    console.warn('delete post failed', {postId:id, hasUser:!!currentUser?.id, message:error?.message});
+    showToast('삭제 권한이 없거나 이미 삭제된 글입니다.');
   }
 }
 async function loadMyDiagnoses(userId){
@@ -4005,10 +4012,13 @@ let selectedPostTags = [];
 const TAG_LIMIT = 5;
 const TAG_SUGGESTIONS = ['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
-function handlePostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
+function getPostImageExt(file){const ext=String(file?.name||'').split('.').pop()?.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';return ['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext)?ext:'jpg';}
+function isPostImageFile(file){if(!file)return false;if(file.size&&file.size>10*1024*1024)return false;const type=String(file.type||'').toLowerCase();if(type.startsWith('image/'))return true;return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(String(file.name||''));}
+function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
+function handlePostImages(input){const files=Array.from(input.files||[]);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
 function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');if(!wrap)return;wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await window._sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error){console.warn('post image upload failed',{message:error.message});throw error;}const {data}=window._sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
+async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start');const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file');throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await window._sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error){postSubmitWarn('storage.upload.failed',{message:error.message});throw error;}const {data}=window._sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
 function cleanPayload(obj){return Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!==''));}
 function normalizeTag(value){const clean=String(value||'').trim().replace(/^#+/,'').replace(/\s+/g,'').slice(0,12);return clean?`#${clean}`:'';}
 function renderTagSuggestions(){const wrap=document.getElementById('tagSuggestions');if(!wrap)return;wrap.innerHTML=TAG_SUGGESTIONS.map(tag=>`<button class="tag-chip" type="button" onclick="addPostTag('${tag}')">#${tag}</button>`).join('');renderSelectedTags();}
@@ -4027,7 +4037,7 @@ function contentWithCategory(content,category,channelName='',region='',tags=[],a
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }
-function friendlyPostError(err){console.warn('post submit failed',{message:err?.message});return '질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.';}
+function friendlyPostError(err){const message=String(err?.message||'');console.warn('post submit failed',{message});if(message.includes('invalid image file'))return '이미지 파일 형식 또는 용량을 확인해주세요.';if(message.includes('Storage')||message.includes('storage')||message.includes('bucket')||message.includes('row-level security'))return '사진 업로드에 실패했습니다.';if(message.includes('auth')||message.includes('JWT')||message.includes('session'))return '로그인 상태를 다시 확인해주세요.';return '글 등록에 실패했습니다.';}
 async function submitPost(){
   if(!window._sb){showToast('인증 준비 중입니다. 잠시 후 다시 시도해주세요.');return;}
   const channelSelect=document.getElementById('channelSelect');
@@ -4037,20 +4047,21 @@ async function submitPost(){
   const region=document.getElementById('regionSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
-  if(!channelId||!category||!title){showToast('채널, 대표 증상, 제목을 입력해주세요.');return;}
+  if(!channelId||!category||!title||!content){showToast('채널, 대표 증상, 제목, 내용을 입력해주세요.');return;}
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
   const allowedPayloadKeys=['channel_id','title','content','user_id','crop_tag','region_tag','image_urls'];
   try{
     const {data:{session}}=await window._sb.auth.getSession();
     const userId=session?.user?.id;
-    if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openMyPanel();return;}
+    if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openMyPanel();return;}
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(session.user)),user_id:userId,crop_tag:category||undefined,region_tag:region||undefined,image_urls:imageUrls.length?imageUrls:undefined});
+    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(session.user)),user_id:userId,crop_tag:category||undefined,region_tag:region||undefined,image_urls:imageUrls});
     const payloadKeys=Object.keys(payload);
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
+    postSubmitWarn('posts.insert.start',{payloadKeys,imageCount:imageUrls.length,hasUser:!!userId});
     const {error}=await window._sb.from('posts').insert(payload);
     if(error)console.warn('post insert error',{message:error.message,payloadKeys});
     if(error)throw error;

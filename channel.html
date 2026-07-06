@@ -833,10 +833,13 @@ function removePostTag(idx){selectedPostTags.splice(idx,1);renderSelectedTags();
 function renderSelectedTags(){const wrap=document.getElementById('selectedTags');if(!wrap)return;wrap.innerHTML=selectedPostTags.map((tag,idx)=>`<span class="selected-tag">${esc(tag)}<button type="button" onclick="removePostTag(${idx})" aria-label="태그 삭제">×</button></span>`).join('');}
 function toggleCustomSymptom(){const select=document.getElementById('postCategory');document.getElementById('customSymptomWrap')?.classList.toggle('show',select?.value==='기타');}
 function selectedSymptom(){const value=document.getElementById('postCategory')?.value||'';if(value==='기타')return (document.getElementById('customSymptom')?.value||'').trim();return value;}
-function handlePostImages(input){const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
+function getPostImageExt(file){const ext=String(file?.name||'').split('.').pop()?.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';return ['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext)?ext:'jpg';}
+function isPostImageFile(file){if(!file)return false;if(file.size&&file.size>10*1024*1024)return false;const type=String(file.type||'').toLowerCase();if(type.startsWith('image/'))return true;return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(String(file.name||''));}
+function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
+function handlePostImages(input){const files=Array.from(input.files||[]);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
 function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';const path=`${userId}/${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error){console.warn('post image upload failed',{message:error.message});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(path);if(data?.publicUrl)urls.push(data.publicUrl);}return urls;}
+async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start');const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file');throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error){postSubmitWarn('storage.upload.failed',{message:error.message});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
 async function submitPost(){
   const channelSelect=document.getElementById('channelSelect');
   const channelId=channelSelect.value;
@@ -851,13 +854,14 @@ async function submitPost(){
   try{
     const {data:{session}}=await sb.auth.getSession();
     const userId=session?.user?.id;
-    if(!userId){showToast('질문을 등록하려면 로그인이 필요합니다.');openLoginModal();return;}
+    if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openLoginModal();return;}
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const payload={user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(currentUser)),crop_tag:category||null,region_tag:region||null,image_urls:imageUrls};
+    const payload={user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(currentUser||session.user)),crop_tag:category||null,region_tag:region||null,image_urls:imageUrls};
     const payloadKeys=Object.keys(payload);
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
+    postSubmitWarn('posts.insert.start',{payloadKeys,imageCount:imageUrls.length,hasUser:!!userId});
     const {error}=await sb.from('posts').insert(payload);
     if(error)console.warn('post insert error',{message:error.message,payloadKeys});
     if(error)throw error;
@@ -866,7 +870,14 @@ async function submitPost(){
     ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     autoResizeTextarea(document.getElementById('postContent'),240);
     selectedPostImages=[];selectedPostTags=[];renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
-  }catch(err){console.warn('post submit failed',{message:err?.message});showToast('질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');}
+  }catch(err){
+    const message=String(err?.message||'');
+    console.warn('post submit failed',{message});
+    if(message.includes('invalid image file'))showToast('이미지 파일 형식 또는 용량을 확인해주세요.');
+    else if(message.includes('Storage')||message.includes('storage')||message.includes('bucket')||message.includes('row-level security'))showToast('사진 업로드에 실패했습니다.');
+    else if(message.includes('auth')||message.includes('JWT')||message.includes('session'))showToast('로그인 상태를 다시 확인해주세요.');
+    else showToast('글 등록에 실패했습니다.');
+  }
   finally{btn.disabled=false;}
 }
 function authCallbackUrl(){return 'https://kfarmai.com/auth-callback.html';}
