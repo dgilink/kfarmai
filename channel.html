@@ -37,7 +37,7 @@
   .hub-section { margin:14px 14px 0; }
   .hub-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 2px 8px; }
   .hub-section-title { font-size:14px; font-weight:900; color:#111827; }
-  .hub-more { border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; }
+  .hub-more { border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; text-decoration:none; }
   .question-hub { display:grid; gap:12px; }
   .question-block { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:12px; }
   .mini-list { display:grid; gap:8px; }
@@ -57,6 +57,7 @@
   .status-line { display:flex; justify-content:space-between; padding:8px 16px 6px; color:#777; font-size:12px; font-weight:700; }
   .list { padding:0 14px 18px; }
   .post-card, .demo-card { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:13px; padding:12px; margin:8px 0; box-shadow:0 3px 10px rgba(0,0,0,.035); }
+  .post-card, .mini-post { display:block; color:inherit; text-decoration:none; cursor:pointer; }
   .post-card.has-thumb { display:grid; grid-template-columns:1fr 66px; gap:10px; align-items:start; }
   .post-thumb { width:66px; height:66px; object-fit:cover; border-radius:10px; border:1px solid var(--border); background:#F3F4F6; }
   .badge, .category-badge, .demo-notice { display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:7px; font-size:11px; font-weight:900; margin:0 6px 8px 0; }
@@ -163,21 +164,21 @@
     <article class="question-block">
       <div class="hub-section-head">
         <div class="hub-section-title">방금 올라온 질문</div>
-        <button class="hub-more" type="button" onclick="openMore('latest')">더보기 &gt;</button>
+        <a class="hub-more" data-more-sort="latest" href="channel.html?sort=latest">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="latestQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
     <article class="question-block">
       <div class="hub-section-head">
         <div class="hub-section-title">많이 보는 질문</div>
-        <button class="hub-more" type="button" onclick="openMore('popular')">더보기 &gt;</button>
+        <a class="hub-more" data-more-sort="popular" href="channel.html?sort=popular">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="popularQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
     <article class="question-block">
       <div class="hub-section-head">
         <div class="hub-section-title">나도 같은 증상</div>
-        <button class="hub-more" type="button" onclick="openMore('symptom')">더보기 &gt;</button>
+        <a class="hub-more" data-more-sort="symptom" href="channel.html?sort=symptom">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="symptomQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
@@ -506,12 +507,29 @@ function renderChannelHub(){
   const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?channel=${encodeURIComponent(currentChannel.slug)}`:''}`;
   document.getElementById('hubActions').innerHTML=`<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
   document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');
+  refreshMoreLinks();
 }
 function withChannelQuery(url){
   if(!currentChannel?.slug || !url.startsWith('channel.html'))return url;
   const target=new URL(url, location.href);
   target.searchParams.set('slug', currentChannel.slug);
   return `channel.html${target.search}`;
+}
+function channelListUrl(sort){
+  const target=new URL('channel.html', location.href);
+  if(currentChannel?.slug)target.searchParams.set('slug', currentChannel.slug);
+  target.searchParams.set('sort', sort || 'latest');
+  return `channel.html${target.search}`;
+}
+function channelPostUrl(postId){
+  if(!postId)return 'channel.html';
+  return `post.html?id=${encodeURIComponent(postId)}`;
+}
+function refreshMoreLinks(){
+  document.querySelectorAll('[data-more-sort]').forEach(link=>{
+    const sort=link.dataset.moreSort || 'latest';
+    link.setAttribute('href', channelListUrl(sort));
+  });
 }
 function displayChannelName(slug,name){
   if(slug&&CHANNEL_CONFIG[slug])return CHANNEL_CONFIG[slug];
@@ -527,10 +545,7 @@ function searchTopic(encodedTopic){
   resetAndLoad();
 }
 function openMore(sort){
-  const target=new URL('channel.html', location.href);
-  if(currentChannel?.slug)target.searchParams.set('slug', currentChannel.slug);
-  target.searchParams.set('sort', sort);
-  location.href=`channel.html${target.search}`;
+  location.href=channelListUrl(sort);
 }
 async function loadHubQuestionSections(){
   await Promise.all([
@@ -563,7 +578,7 @@ function renderMiniPosts(wrap,posts,profileMap={}){
     wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
     return;
   }
-  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="post.html?v=20260705d&id=${encodeURIComponent(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayChannelName(post.channels?.slug,currentChannel?.name||post.channels?.name))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
+  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="${channelPostUrl(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayChannelName(post.channels?.slug,currentChannel?.name||post.channels?.name))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
 async function renderMiniFallback(wrap){
   const filtered=await fallbackThreadsForCurrentChannel(3);
@@ -625,10 +640,10 @@ function renderPosts(posts,totalCount,profileMap={}){
     const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
     const category=post.crop_tag||extractCategoryFromContent(post.content);
     const preview=stripPostPrefixes(post.content||'');
-    const card=document.createElement('article');
+    const card=document.createElement('a');
     card.className='post-card'+(thumbHtml?' has-thumb':'');
-    card.style.cursor='pointer';
-    card.onclick=()=>{location.href='post.html?v=20260705d&id='+encodeURIComponent(post.id);};
+    card.href=channelPostUrl(post.id);
+    card.addEventListener('click',()=>cachePostForDetail(post));
     card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(displayChannelName(slug,post.channels?.name))}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
     list.appendChild(card);
   });
