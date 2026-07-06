@@ -1183,6 +1183,13 @@
   .modal-textarea { min-height: 96px; max-height: 220px; line-height: 1.55; resize: none; overflow-y: auto; word-break: keep-all; overflow-wrap: break-word; }
   .symptom-extra { display:none; margin-top:8px; }
   .symptom-extra.show { display:block; }
+  .topic-chip-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+  .topic-chip {
+    min-height:32px; border:1px solid #D7EBDD; border-radius:999px; padding:6px 11px;
+    background:#F8FCFA; color:#374151; font-size:12.5px; font-weight:850; cursor:pointer;
+    word-break:keep-all; white-space:nowrap;
+  }
+  .topic-chip.selected { background:#E8F6F0; border-color:var(--green); color:var(--green-dark); }
   .tag-chip-row { display:flex; flex-wrap:wrap; gap:7px; }
   .tag-chip, .selected-tag {
     min-height:30px; border:1px solid #D7EBDD; border-radius:999px; padding:6px 10px;
@@ -4122,6 +4129,27 @@ function renderTopicOptions(select,config,active=''){
   const options=['',...(config?.options||CHANNEL_TOPIC_CONFIG.default.options)];
   select.innerHTML=options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||`${config.label} 선택`)}</option>`).join('');
 }
+function renderTopicChips(config,active=''){
+  let wrap=document.getElementById('postTopicChips');
+  const select=document.getElementById('postCategory');
+  const field=select?.closest('.modal-field');
+  if(field&&!wrap){
+    wrap=document.createElement('div');
+    wrap.id='postTopicChips';
+    wrap.className='topic-chip-row';
+    select.insertAdjacentElement('afterend',wrap);
+  }
+  if(!wrap)return;
+  wrap.innerHTML=(config?.options||[]).map(value=>`<button type="button" class="topic-chip ${String(value)===String(active||'')?'selected':''}" data-value="${escAttr(value)}">${escHtml(value)}</button>`).join('');
+}
+function selectPostTopic(event,value){
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  const select=document.getElementById('postCategory');
+  if(select)select.value=value||'';
+  renderTopicChips(getChannelTopicConfigById(document.getElementById('channelSelect')?.value||''),value||'');
+  toggleCustomSymptom();
+}
 function applyWriteTopicConfig(active=''){
   const channelId=document.getElementById('channelSelect')?.value||'';
   const config=getChannelTopicConfigById(channelId);
@@ -4139,6 +4167,14 @@ function applyWriteTopicConfig(active=''){
   if(helper)helper.textContent=config.helper;
   const current=active||select?.value||'';
   renderTopicOptions(select,config,(config.options||[]).includes(current)?current:'');
+  select.style.display='none';
+  renderTopicChips(config,(config.options||[]).includes(current)?current:'');
+  const chipWrap=document.getElementById('postTopicChips');
+  if(chipWrap)chipWrap.onclick=event=>{
+    const button=event.target.closest('.topic-chip');
+    if(!button)return;
+    selectPostTopic(event,button.dataset.value||'');
+  };
   const custom=document.getElementById('customSymptom');
   if(custom)custom.placeholder=`${config.label} 직접 입력`;
   toggleCustomSymptom();
