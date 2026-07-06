@@ -1,0 +1,93 @@
+[
+  {
+    "id": "news-20260703-rain-heat-crop-risk",
+    "title": "올 장마철엔 폭우와 폭염이 번갈아 나타나는 양상도 더 뚜렷해질 것으로 보인다",
+    "issueTitle": "장마·폭염 교차 시기 농작물 관리 이슈",
+    "sourceName": "농민신문",
+    "sourceUrl": "https://www.nongsaro.go.kr/portal/ps/psx/psxs/newsMainView.ps?menuId=PS65437&newsSeqNo=141652",
+    "publishedAt": "2026-07-03",
+    "category": "기상·재배",
+    "tags": ["장마", "폭염", "배수", "농작물관리"],
+    "status": "active",
+    "summaryByKfarmai": "장마와 고온이 이어지는 시기에는 지역별 강수, 배수 상태, 고온 스트레스를 함께 확인할 필요가 있습니다. 자세한 내용은 원문에서 확인하세요.",
+    "note": "농사로 농업뉴스 원문 링크 확인"
+  },
+  {
+    "id": "news-20260305-online-wholesale-market",
+    "title": "[도매의 진화] 농산물 유통의 진화, 새벽 경매에서 온라인 거래로",
+    "issueTitle": "농산물 유통 구조의 온라인 전환 이슈",
+    "sourceName": "뉴스핌",
+    "sourceUrl": "https://www.newspim.com/news/view/20260305001313",
+    "publishedAt": "2026-03-05",
+    "category": "가격·유통",
+    "tags": ["온라인도매시장", "유통", "농산물시장"],
+    "status": "active",
+    "summaryByKfarmai": "온라인 도매시장과 유통 단계 변화는 산지 출하, 가격 흐름, 유통비용 이해에 참고할 만한 이슈입니다. 기사 내용은 원문에서 확인하세요.",
+    "note": "언론사 원문 링크 확인"
+  },
+  {
+    "id": "news-20251229-agri-policy-issues",
+    "title": "[새해 농업계 이슈] 경제 불안정 속 기본소득 추진·농산물 유통개혁 나서",
+    "issueTitle": "농업 정책과 유통개혁 흐름",
+    "sourceName": "농민신문",
+    "sourceUrl": "https://www.nongmin.com/article/20251229500596",
+    "publishedAt": "2025-12-29",
+    "category": "정책·지원사업",
+    "tags": ["농업정책", "유통개혁", "지원사업"],
+    "status": "active",
+    "summaryByKfarmai": "농업 정책, 소득 안정, 유통 구조 변화는 농가와 관련 업체가 함께 확인할 흐름입니다. 구체적인 정책 내용은 원문을 확인하세요.",
+    "note": "언론사 원문 링크 확인"
+  },
+  {
+    "id": "news-20260417-fertilizer-cost-material",
+    "title": "농자재 가격 급등 전망, 깊어지는 농가 우려",
+    "issueTitle": "비료·농자재 가격 부담 이슈",
+    "sourceName": "한국농정신문",
+    "sourceUrl": "https://www.ikpnews.net/news/articleView.html?idxno=70060",
+    "publishedAt": "2026-04-17",
+    "category": "농자재·비료",
+    "tags": ["비료", "농자재", "영농비"],
+    "status": "active",
+    "summaryByKfarmai": "비료와 농자재 가격 흐름은 재배비용과 작물 관리 계획에 영향을 줄 수 있어 관련 공공지원과 공식정보를 함께 확인할 필요가 있습니다.",
+    "note": "언론사 원문 링크 확인"
+  },
+  {
+    "id": "news-202601-agri-food-distribution-outlook",
+    "title": "기후·인력·소비, 농식품 유통 2026년 삼중 압박 경고",
+    "issueTitle": "기후·인력·소비 변화와 농식품 유통 전망",
+    "sourceName": "한국농업신문",
+    "sourceUrl": "https://www.newsfarm.co.kr/news/articleView.html?idxno=100244",
+    "publishedAt": "2026-01-30",
+    "category": "수출·시장",
+    "tags": ["농식품유통", "기후변화", "소비"],
+    "status": "active",
+    "summaryByKfarmai": "기후, 인력, 소비 변화는 생산과 유통 판단에 함께 영향을 줄 수 있습니다. 세부 전망은 원문에서 확인하세요.",
+    "note": "언론사 원문 링크 확인"
+  },
+  {
+    "id": "news-pending-local-agri-center-weather",
+    "title": "지역 농업기술센터 장마철 작물관리 안내 후보",
+    "issueTitle": "지역별 장마철 작물관리 안내",
+    "sourceName": "",
+    "sourceUrl": "",
+    "publishedAt": "",
+    "category": "지역농업",
+    "tags": ["지역농업", "장마", "농업기술센터"],
+    "status": "pending",
+    "summaryByKfarmai": "지역별 공식자료 원문 링크를 확인한 뒤 권역별 참고 이슈로 전환할 예정입니다.",
+    "note": "시군 농업기술센터 공식 링크 확인 필요"
+  },
+  {
+    "id": "news-pending-smartfarm-policy",
+    "title": "스마트농업 정책·교육 보도 후보",
+    "issueTitle": "스마트농업 교육과 정책 지원 흐름",
+    "sourceName": "",
+    "sourceUrl": "",
+    "publishedAt": "",
+    "category": "스마트농업",
+    "tags": ["스마트농업", "교육", "정책"],
+    "status": "pending",
+    "summaryByKfarmai": "공식 보도자료 또는 언론사 원문 링크를 확인한 뒤 active 전환합니다.",
+    "note": "출처 확인 필요"
+  }
+]
