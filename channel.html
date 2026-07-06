@@ -37,12 +37,29 @@
   .identity-actions a.secondary { background:#111827; color:#fff; border-color:#111827; }
   .hub-section { margin:14px 14px 0; }
   .hub-section-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 2px 8px; }
-  .hub-section-title { font-size:14px; font-weight:900; color:#111827; }
+  .hub-section-title { display:flex; align-items:center; gap:7px; font-size:14px; font-weight:850; color:#111827; letter-spacing:0; }
+  .hub-section-icon { width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; border-radius:999px; font-size:13px; line-height:1; background:#F3F4F6; }
   .hub-more { display:inline-flex; align-items:center; min-height:32px; border:0; background:transparent; color:var(--green-dark); font-size:12px; font-weight:900; padding:4px 0; cursor:pointer; text-decoration:none; touch-action:manipulation; pointer-events:auto; }
   .question-hub { display:grid; gap:12px; }
-  .question-block { background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:14px; padding:12px; }
+  .question-block { position:relative; overflow:hidden; background:#fff; border:1px solid rgba(0,0,0,.06); border-radius:16px; padding:13px; box-shadow:0 8px 20px rgba(15,23,42,.04); }
+  .question-block::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:rgba(29,158,117,.28); }
+  .question-block--recent { background:#EFF6FF; border-color:#BFDBFE; }
+  .question-block--recent::before { background:#60A5FA; }
+  .question-block--recent .hub-section-title,
+  .question-block--recent .hub-more { color:#2563EB; }
+  .question-block--recent .hub-section-icon { background:#DBEAFE; color:#2563EB; }
+  .question-block--popular { background:#FFF7ED; border-color:#FED7AA; }
+  .question-block--popular::before { background:#FB923C; }
+  .question-block--popular .hub-section-title,
+  .question-block--popular .hub-more { color:#EA580C; }
+  .question-block--popular .hub-section-icon { background:#FFEDD5; color:#EA580C; }
+  .question-block--same { background:#F0FDF4; border-color:#BBF7D0; }
+  .question-block--same::before { background:#4ADE80; }
+  .question-block--same .hub-section-title,
+  .question-block--same .hub-more { color:#16A34A; }
+  .question-block--same .hub-section-icon { background:#DCFCE7; color:#16A34A; }
   .mini-list { display:grid; gap:8px; }
-  .mini-post { display:block; border:1px solid #EEF2F7; border-radius:12px; padding:10px; background:#FBFCFE; }
+  .mini-post { display:block; border:1px solid rgba(226,232,240,.9); border-radius:12px; padding:10px; background:rgba(255,255,255,.86); }
   .mini-title { font-size:13px; font-weight:900; line-height:1.35; color:#111827; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .mini-meta { margin-top:6px; display:flex; flex-wrap:wrap; gap:7px; color:#8A8A8A; font-size:11px; font-weight:700; }
   .inline-like-btn { border:0; background:transparent; color:#8A8A8A; padding:0 2px; font:inherit; font-weight:800; line-height:1; cursor:pointer; white-space:nowrap; }
@@ -168,23 +185,23 @@
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
 
   <section class="hub-section question-hub" aria-label="채널 질문 모음">
-    <article class="question-block">
+    <article class="question-block question-block--recent">
       <div class="hub-section-head">
-        <div class="hub-section-title">방금 올라온 질문</div>
+        <div class="hub-section-title"><span class="hub-section-icon" aria-hidden="true">✨</span>방금 올라온 질문</div>
         <a class="hub-more" data-more-sort="latest" data-more-section="recent" href="channel.html?sort=latest" onclick="goMoreLink(event,this)">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="latestQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
-    <article class="question-block">
+    <article class="question-block question-block--popular">
       <div class="hub-section-head">
-        <div class="hub-section-title">많이 보는 질문</div>
+        <div class="hub-section-title"><span class="hub-section-icon" aria-hidden="true">🔥</span>많이 보는 질문</div>
         <a class="hub-more" data-more-sort="popular" data-more-section="popular" href="channel.html?sort=popular" onclick="goMoreLink(event,this)">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="popularQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
-    <article class="question-block">
+    <article class="question-block question-block--same">
       <div class="hub-section-head">
-        <div class="hub-section-title">나도 같은 증상</div>
+        <div class="hub-section-title"><span class="hub-section-icon" aria-hidden="true">🌿</span>나도 같은 증상</div>
         <a class="hub-more" data-more-sort="symptom" data-more-section="same" href="channel.html?sort=symptom" onclick="goMoreLink(event,this)">더보기 &gt;</a>
       </div>
       <div class="mini-list" id="symptomQuestions"><div class="mini-empty">불러오는 중...</div></div>
