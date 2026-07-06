@@ -595,6 +595,11 @@ function closeEditPostModal(){document.getElementById('editPostModal').classList
 function handleEditPostImages(input){
   const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));
   const remain=3-editExistingImages.length-editNewImages.length;
+  const rejected=(input.files||[]).length-incoming.length;
+  if(rejected>0){
+    postEditWarn('file.validation', {fileCount:input.files?.length||0, rejectedCount:rejected});
+    showToast('이미지 형식을 확인해주세요.');
+  }
   if(!incoming.length){input.value='';return;}
   if(remain<=0){
     showToast('사진은 최대 3장까지 첨부할 수 있습니다. 기존 사진을 삭제한 뒤 추가해주세요.');
@@ -627,18 +632,30 @@ function renderEditImagePreview(){
 }
 async function uploadEditPostImages(userId){
   const urls=[];
+  if(!editNewImages.length)return urls;
+  postEditWarn('storage.upload.start', {fileCount:editNewImages.length});
   for(let i=0;i<editNewImages.length;i++){
     const file=editNewImages[i];
-    const ext=(file.name.split('.').pop()||'jpg').replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';
-    const path=`${userId}/${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;
-    const {error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});
+    if(!file?.type?.startsWith('image/')){
+      postEditWarn('storage.upload.invalid_file', {fileCount:editNewImages.length});
+      throw new Error('invalid image file');
+    }
+    const ext=safeImageExt(file);
+    const safeName=`${Date.now()}-${i}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const path=`${userId}/${postId}/${safeName}`;
+    const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});
     if(error){
-      console.warn('post image upload failed',{message:error.message});
+      postEditWarn('storage.upload.failed', {message:error.message, fileCount:editNewImages.length});
       throw error;
     }
-    const {data}=sb.storage.from('post-images').getPublicUrl(path);
-    if(data?.publicUrl)urls.push(data.publicUrl);
+    const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path || path);
+    if(!data?.publicUrl){
+      postEditWarn('storage.public_url.failed', {fileCount:editNewImages.length});
+      throw new Error('public image url unavailable');
+    }
+    urls.push(data.publicUrl);
   }
+  postEditWarn('storage.upload.done', {fileCount:editNewImages.length, uploadedCount:urls.length});
   return urls;
 }
 async function savePostEdit(){
@@ -655,22 +672,28 @@ async function savePostEdit(){
   const btn=document.getElementById('editPostSubmit');
   btn.disabled=true;
   const allowedPayloadKeys=['title','content','crop_tag','region_tag','image_urls'];
+  let payloadKeys=allowedPayloadKeys;
   try{
     const addedUrls=await uploadEditPostImages(authUserId);
-    const image_urls=editExistingImages.concat(addedUrls).slice(0,3);
+    const image_urls=normalizeImages(editExistingImages).concat(normalizeImages(addedUrls)).slice(0,3);
     const author=extractAuthorNicknameFromContent(currentPost.content)||displayNameForRecord(currentPost);
     const payload={title,content:contentWithCategory(content,'',author),crop_tag:category||null,region_tag:region||null,image_urls};
-    const payloadKeys=Object.keys(payload);
+    payloadKeys=Object.keys(payload);
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
+    postEditWarn('posts.update.start', {payloadKeys, imageCount:image_urls.length});
     const updateResult=await sb.from('posts').update(payload,{count:'exact'}).eq('id',postId).eq('user_id',authUserId);
     if(updateResult.error){
-      console.warn('post edit update error',{message:updateResult.error.message,payloadKeys});
+      postEditWarn('posts.update.failed', {message:updateResult.error.message, payloadKeys, imageCount:image_urls.length});
       throw updateResult.error;
+    }
+    if(updateResult.count===0){
+      postEditWarn('posts.update.no_rows', {payloadKeys, imageCount:image_urls.length});
+      throw new Error('no post rows updated');
     }
     const selectResult=await sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en').eq('id',postId).maybeSingle();
     if(selectResult.error){
-      console.warn('post edit select error',{message:selectResult.error.message,payloadKeys});
+      postEditWarn('posts.select.failed', {message:selectResult.error.message, payloadKeys, imageCount:image_urls.length});
       throw selectResult.error;
     }
     if(!selectResult.data)throw new Error('updated post not found');
@@ -678,10 +701,14 @@ async function savePostEdit(){
     editNewImages=[];
     closeEditPostModal();
     showToast('\uAC8C\uC2DC\uAE00\uC774 \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
+    renderPost(currentPost,{});
     await loadPost();
   }catch(err){
-    console.warn('post edit failed',{message:err?.message,payloadKeys:allowedPayloadKeys});
-    showToast('\uAE00 \uC218\uC815\uC5D0 \uC2E4\uD328\uD588\uC2B5\uB2C8\uB2E4.');
+    postEditWarn('save.failed', {message:err?.message, payloadKeys});
+    const message=String(err?.message||'');
+    if(message.includes('invalid image file'))showToast('이미지 형식을 확인해주세요.');
+    else if(message.includes('Storage')||message.includes('storage')||message.includes('bucket')||message.includes('row-level security'))showToast('사진 업로드에 실패했습니다.');
+    else showToast('글 저장에 실패했습니다.');
   }finally{
     btn.disabled=false;
   }
@@ -1024,6 +1051,23 @@ function normalizeImages(value) {
     }
   }
   return [];
+}
+function postEditWarn(step, extra={}){
+  console.warn('[post edit]', {
+    step,
+    postId: postId || currentPost?.id || null,
+    hasCurrentUser: !!currentUser?.id,
+    hasPostUser: !!currentPost?.user_id,
+    idsMatch: sameUserId(currentUser?.id, currentPost?.user_id),
+    ...extra
+  });
+}
+function safeImageExt(file){
+  const raw = String(file?.name || '').split('.').pop() || '';
+  const ext = raw.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  if(['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext))return ext;
+  const typeExt = String(file?.type || '').split('/').pop()?.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  return typeExt || 'jpg';
 }
 function extractCategoryFromContent(content){
   const match=String(content||'').match(/^\[(?:대표 증상|카테고리):\s*([^\]]+)\]/m);
