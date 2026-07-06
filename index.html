@@ -1181,6 +1181,7 @@
   }
   .modal-select:focus, .modal-input:focus, .modal-textarea:focus { border-color: var(--green); }
   .modal-textarea { min-height: 96px; max-height: 220px; line-height: 1.55; resize: none; overflow-y: auto; word-break: keep-all; overflow-wrap: break-word; }
+  .field-error { margin-top:6px; color:#DC2626; font-size:11.5px; font-weight:800; line-height:1.35; word-break:keep-all; }
   .symptom-extra { display:none; margin-top:8px; }
   .symptom-extra.show { display:block; }
   .topic-chip-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
@@ -1205,8 +1206,8 @@
   .post-tag, .question-list-tag { color:var(--green-dark); background:#E8F6F0; border-radius:999px; padding:3px 7px; font-size:11px; font-weight:850; }
   .modal-submit {
     width: 100%; padding: 14px; background: var(--green); color: #fff; border: 0; border-radius: 12px;
-    font-size: 15px; font-weight: 800; cursor: pointer; position: sticky; bottom: 0; z-index: 2;
-    box-shadow: 0 -8px 18px rgba(255,255,255,.92);
+    font-size: 15px; font-weight: 800; cursor: pointer; position: sticky; bottom: max(0px, env(safe-area-inset-bottom)); z-index: 2;
+    box-shadow: 0 -10px 20px rgba(255,255,255,.95); margin-top: 10px;
   }
   .demo-modal { max-height: 88vh; overflow-y: auto; }
   .demo-case-badge { display:inline-flex; align-items:center; min-height:24px; padding:4px 9px; border-radius:999px; background:#E8F6F0; color:var(--green-dark); font-size:11px; font-weight:900; margin-bottom:10px; }
@@ -4227,6 +4228,25 @@ function removePostTag(idx){selectedPostTags.splice(idx,1);renderSelectedTags();
 function renderSelectedTags(){const wrap=document.getElementById('selectedTags');if(!wrap)return;wrap.innerHTML=selectedPostTags.map((tag,idx)=>`<span class="selected-tag">${escHtml(tag)}<button type="button" onclick="removePostTag(${idx})" aria-label="태그 삭제">×</button></span>`).join('');}
 function toggleCustomSymptom(){const select=document.getElementById('postCategory');document.getElementById('customSymptomWrap')?.classList.toggle('show',select?.value==='기타');}
 function selectedSymptom(){const value=document.getElementById('postCategory')?.value||'';if(value==='기타')return (document.getElementById('customSymptom')?.value||'').trim();return value;}
+function clearPostValidationErrors(){
+  document.querySelectorAll('#writeModal .field-error').forEach(el=>el.remove());
+}
+function showPostFieldError(fieldId,message){
+  const field=document.getElementById(fieldId)?.closest('.modal-field');
+  if(!field)return;
+  const error=document.createElement('div');
+  error.className='field-error';
+  error.textContent=message;
+  field.appendChild(error);
+}
+function validatePostForm({channelId,category,title,content}){
+  clearPostValidationErrors();
+  if(!channelId){showPostFieldError('channelSelect','채널을 선택해주세요.');showToast('채널을 선택해주세요.');return false;}
+  if(!category){showPostFieldError('postCategory',`${getChannelTopicConfigById(channelId).label}을 선택해주세요.`);showToast(`${getChannelTopicConfigById(channelId).label}을 선택해주세요.`);return false;}
+  if(!title){showPostFieldError('postTitle','제목을 입력해주세요.');showToast('제목을 입력해주세요.');return false;}
+  if(!content){showPostFieldError('postContent','내용을 입력해주세요.');showToast('내용을 입력해주세요.');return false;}
+  return true;
+}
 function contentWithCategory(content,category,channelName='',region='',tags=[],authorName=''){
   const clean=String(content||'').trim();
   const prefix=[
@@ -4255,7 +4275,7 @@ async function submitPost(){
   const region=document.getElementById('regionSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
-  if(!channelId||!category||!title||!content){showToast(`채널, ${getChannelTopicConfigById(channelId).label}, 제목, 내용을 입력해주세요.`);return;}
+  if(!validatePostForm({channelId,category,title,content}))return;
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
   const allowedPayloadKeys=['channel_id','title','content','user_id','crop_tag','region_tag','image_urls'];
@@ -4274,6 +4294,7 @@ async function submitPost(){
     if(error)console.warn('post insert error',{message:error.message,payloadKeys});
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
+    clearPostValidationErrors();
     closeModal();
     ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     window.autoResizeTextarea?.(document.getElementById('postContent'),220);
@@ -4290,8 +4311,8 @@ async function submitPost(){
 }
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
-function openModal(channelId){const modal=document.getElementById('writeModal');const channelSelect=document.getElementById('channelSelect');if(channelId&&channelSelect)channelSelect.value=channelId;if(channelSelect)channelSelect.onchange=()=>applyWriteTopicConfig();renderTagSuggestions();applyWriteTopicConfig();window.autoResizeTextarea?.(document.getElementById('postContent'),220);document.body.classList.add('is-composing');modal.classList.add('open');const sheet=modal.querySelector('.modal');if(sheet)sheet.scrollTop=0;lockBodyScroll();}
-function closeModal(){document.getElementById('writeModal')?.classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();}
+function openModal(channelId){const modal=document.getElementById('writeModal');const channelSelect=document.getElementById('channelSelect');if(channelId&&channelSelect)channelSelect.value=channelId;if(channelSelect)channelSelect.onchange=()=>applyWriteTopicConfig();clearPostValidationErrors();renderTagSuggestions();applyWriteTopicConfig();window.autoResizeTextarea?.(document.getElementById('postContent'),220);document.body.classList.add('is-composing');modal.classList.add('open');const sheet=modal.querySelector('.modal');if(sheet)sheet.scrollTop=0;lockBodyScroll();}
+function closeModal(){document.getElementById('writeModal')?.classList.remove('open');clearPostValidationErrors();document.body.classList.remove('is-composing');unlockBodyScroll();}
 function openNicknameModal(){beginNicknameEdit();}
 function closeNicknameModal(){cancelNicknameEdit();}
 function beginNicknameEdit(){
