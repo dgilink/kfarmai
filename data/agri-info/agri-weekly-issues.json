@@ -1,0 +1,23 @@
+[
+  {
+    "id": "weather-check",
+    "title": "날씨 확인",
+    "summary": "지역별 기온, 강수, 바람 상태를 농업날씨에서 함께 확인해보세요.",
+    "href": "agri-weather.html",
+    "status": "active"
+  },
+  {
+    "id": "crop-flow",
+    "title": "재배 흐름",
+    "summary": "재배가이드에서 작물별 관리 포인트와 생육단계를 확인할 수 있습니다.",
+    "href": "crop-guide.html",
+    "status": "active"
+  },
+  {
+    "id": "official-sources",
+    "title": "공식자료",
+    "summary": "농촌진흥청, 농사로, 공공데이터 자료는 출처 확인 후 순차적으로 연결합니다.",
+    "href": "",
+    "status": "active"
+  }
+]
