@@ -593,7 +593,7 @@ async function openEditPostModal(event,allowOpenBeforeOwnerCheck=false){
 }
 function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
 function handleEditPostImages(input){
-  const incoming=Array.from(input.files||[]).filter(file=>file.type.startsWith('image/'));
+  const incoming=Array.from(input.files||[]).filter(isEditableImageFile);
   const remain=3-editExistingImages.length-editNewImages.length;
   const rejected=(input.files||[]).length-incoming.length;
   if(rejected>0){
@@ -636,13 +636,13 @@ async function uploadEditPostImages(userId){
   postEditWarn('storage.upload.start', {fileCount:editNewImages.length});
   for(let i=0;i<editNewImages.length;i++){
     const file=editNewImages[i];
-    if(!file?.type?.startsWith('image/')){
+    if(!isEditableImageFile(file)){
       postEditWarn('storage.upload.invalid_file', {fileCount:editNewImages.length});
       throw new Error('invalid image file');
     }
     const ext=safeImageExt(file);
-    const safeName=`${Date.now()}-${i}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const path=`${userId}/${postId}/${safeName}`;
+    const safeName=`${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const path=`${userId}/${safeName}`;
     const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});
     if(error){
       postEditWarn('storage.upload.failed', {message:error.message, fileCount:editNewImages.length});
@@ -682,22 +682,21 @@ async function savePostEdit(){
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
     postEditWarn('posts.update.start', {payloadKeys, imageCount:image_urls.length});
-    const updateResult=await sb.from('posts').update(payload,{count:'exact'}).eq('id',postId).eq('user_id',authUserId);
-    if(updateResult.error){
-      postEditWarn('posts.update.failed', {message:updateResult.error.message, payloadKeys, imageCount:image_urls.length});
-      throw updateResult.error;
+    const {data,error}=await sb.from('posts')
+      .update(payload)
+      .eq('id',postId)
+      .eq('user_id',authUserId)
+      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en')
+      .single();
+    if(error){
+      postEditWarn('posts.update.failed', {message:error.message, payloadKeys, imageCount:image_urls.length});
+      throw error;
     }
-    if(updateResult.count===0){
+    if(!data){
       postEditWarn('posts.update.no_rows', {payloadKeys, imageCount:image_urls.length});
-      throw new Error('no post rows updated');
+      throw new Error('updated post not found');
     }
-    const selectResult=await sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en').eq('id',postId).maybeSingle();
-    if(selectResult.error){
-      postEditWarn('posts.select.failed', {message:selectResult.error.message, payloadKeys, imageCount:image_urls.length});
-      throw selectResult.error;
-    }
-    if(!selectResult.data)throw new Error('updated post not found');
-    currentPost=selectResult.data;
+    currentPost=data;
     editNewImages=[];
     closeEditPostModal();
     showToast('\uAC8C\uC2DC\uAE00\uC774 \uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
@@ -1068,6 +1067,11 @@ function safeImageExt(file){
   if(['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext))return ext;
   const typeExt = String(file?.type || '').split('/').pop()?.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
   return typeExt || 'jpg';
+}
+function isEditableImageFile(file){
+  if(!file)return false;
+  if(String(file.type||'').startsWith('image/'))return true;
+  return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(String(file.name||''));
 }
 function extractCategoryFromContent(content){
   const match=String(content||'').match(/^\[(?:대표 증상|카테고리):\s*([^\]]+)\]/m);
