@@ -324,6 +324,7 @@ const PAGE_SIZE = 20;
 const params = new URLSearchParams(location.search);
 const slugParam = params.get('slug') || '';
 const sortParam = params.get('sort') || 'latest';
+const isMoreListMode = params.has('sort');
 const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
 const DEMO_CASE_WRITE_PRESETS = {
   'tomato-leaf-mold': {
@@ -510,18 +511,31 @@ function renderChannelHub(){
   document.getElementById('hubActions').innerHTML=`<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
   document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');
   refreshMoreLinks();
+  applyMoreListMode();
+}
+function currentSortLabel(){
+  if(sortParam==='popular')return '많이 보는 질문';
+  if(sortParam==='symptom')return '나도 같은 증상';
+  return '방금 올라온 질문';
+}
+function applyMoreListMode(){
+  if(!isMoreListMode)return;
+  document.querySelector('.identity')?.setAttribute('hidden','');
+  document.querySelector('.question-hub')?.setAttribute('hidden','');
+  document.querySelector('section[aria-label="관련 정보"]')?.setAttribute('hidden','');
 }
 function withChannelQuery(url){
   if(!currentChannel?.slug || !url.startsWith('channel.html'))return url;
   const target=new URL(url, location.href);
   target.searchParams.set('slug', currentChannel.slug);
-  return `channel.html${target.search}`;
+  return `channel.html${target.search}${target.hash}`;
 }
 function channelListUrl(sort){
   const target=new URL('channel.html', location.href);
   if(currentChannel?.slug)target.searchParams.set('slug', currentChannel.slug);
   target.searchParams.set('sort', sort || 'latest');
-  return `channel.html${target.search}`;
+  target.hash='postList';
+  return `channel.html${target.search}${target.hash}`;
 }
 function channelPostUrl(postId){
   if(!postId)return 'channel.html';
@@ -628,6 +642,7 @@ function listSortColumn(){return sortParam==='popular'||sortParam==='symptom'?'v
 function renderPosts(posts,totalCount,profileMap={}){
   const list=document.getElementById('postList');
   posts=activeCategory?posts.filter(post=>extractCategoryFromContent(post.content)===activeCategory):posts;
+  if(isMoreListMode)document.getElementById('resultLabel').textContent=`${currentChannel?.name||'전체 채널'} · ${currentSortLabel()}`;
   document.getElementById('resultLabel').textContent=currentChannel?.name||activeCategory||'최신 글';
   document.getElementById('resultCount').textContent=`${activeCategory?posts.length:totalCount}개`;
   if(offset===0)list.innerHTML='';
