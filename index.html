@@ -3682,7 +3682,7 @@ async function renderQuestionListView(sort='latest'){
   if(sortLabel)sortLabel.textContent=labels.label;
   if(actions){
     actions.hidden=false;
-    actions.innerHTML=`<button class="primary" type="button" onclick="openModal()">질문하기</button><a href="diagnosis.html${keyword?`?q=${encodeURIComponent(keyword)}`:''}">AI 참고 진단</a>`;
+    actions.innerHTML=`<a class="primary" href="channel.html${keyword?`?q=${encodeURIComponent(keyword)}`:''}">관련 질문 보기</a><a href="diagnosis.html${keyword?`?q=${encodeURIComponent(keyword)}`:''}">AI 참고 진단</a>`;
   }
   if(!list)return;
   list.innerHTML='<div class="question-list-empty">질문 목록을 불러오는 중입니다.</div>';
@@ -3805,7 +3805,7 @@ function renderNoSearchResults(kw){
     검색 결과가 없습니다. 아래 경로로 다음 확인을 이어갈 수 있습니다.
     <div class="empty-actions">
       <a class="primary" href="diagnosis.html?q=${q}">AI 참고 진단으로 확인하기</a>
-      <button type="button" onclick="openModal()">커뮤니티에 질문하기</button>
+      <a href="channel.html?q=${q}">관련 질문 보기</a>
       <a href="public-data.html?q=${q}">공공정보 확인하기</a>
     </div>
   </div>`;
@@ -4074,7 +4074,7 @@ function openDiagnosisDemoCase(caseId){
     <div class="demo-safe">${escHtml(DIAGNOSIS_DEMO_SAFE_TEXT)}</div>
     <div class="demo-case-actions">
       <a href="public-data.html">공공데이터 확인</a>
-      <a href="channel.html?write=1&case=${encodeURIComponent(caseId)}">질문하기</a>
+      <a href="channel.html">관련 질문 보기</a>
       <a href="agri_map.html">농약사 찾기</a>
       <a href="diagnosis-cases.html">전체보기</a>
     </div>`;

@@ -83,6 +83,7 @@
   .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(29,158,117,.18); border-top-color:var(--green); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
   @keyframes spin { to { transform:rotate(360deg); } }
   .fab { position:fixed; right:calc(50% - 246px); bottom:22px; bottom:calc(22px + env(safe-area-inset-bottom)); z-index:45; height:48px; padding:0 18px; border:0; border-radius:999px; background:var(--green); color:#fff; font-size:15px; font-weight:900; box-shadow:0 10px 24px rgba(29,158,117,.34); cursor:pointer; }
+  body.is-composing .fab { display:none !important; }
   @media (max-width:540px) { .fab { right:16px; } }
   .modal-overlay, .my-panel-overlay { position:fixed; inset:0; z-index:100; display:none; align-items:flex-end; justify-content:center; background:rgba(0,0,0,.38); }
   .modal-overlay.open, .my-panel-overlay.open { display:flex; }
@@ -589,6 +590,7 @@ function applyMoreListMode(){
   document.querySelector('.identity')?.setAttribute('hidden','');
   document.querySelector('.question-hub')?.setAttribute('hidden','');
   document.querySelector('section[aria-label="관련 정보"]')?.setAttribute('hidden','');
+  document.querySelector('.fab')?.setAttribute('hidden','');
 }
 function withChannelQuery(url){
   if(!currentChannel?.slug || !url.startsWith('channel.html'))return url;
@@ -795,30 +797,17 @@ async function renderDemoThreads(message){
       <div class="meta"><span>#${esc(item.region)}</span><span>시연</span><span>공공정보 연결</span></div>
       <div class="label-row">${(item.labels||[]).map(label=>`<span class="status-badge">${esc(label)}</span>`).join('')}</div>
       <div class="ai-summary"><strong>AI 참고 요약</strong><br>${esc(item.aiSummary)}</div>
-      <div class="demo-actions"><a href="diagnosis.html">AI 참고 진단</a><a href="diagnosis-cases.html">비슷한 사례 보기</a><a href="public-data.html">공공데이터 확인</a><button type="button" onclick="openWriteFlow()">질문하기</button></div>
+      <div class="demo-actions"><a href="diagnosis.html">AI 참고 진단</a><a href="diagnosis-cases.html">비슷한 사례 보기</a><a href="public-data.html">공공데이터 확인</a></div>
     </article>`).join('');
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
-async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();applyWriteTopicConfig();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
-function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');unlockBodyScroll();}
+async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();applyWriteTopicConfig();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.body.classList.add('is-composing');document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
+function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();}
 function applyDemoWriteQuery(){
-  if(didApplyDemoWritePreset || params.get('write')!=='1')return;
-  const preset=DEMO_CASE_WRITE_PRESETS[params.get('case')||''];
-  if(!preset)return;
-  didApplyDemoWritePreset=true;
-  openWriteFlow(preset);
+  return;
 }
 function applyPendingQuestionQuery(){
-  if(didApplyDemoWritePreset || params.get('write')!=='1' || params.get('source')!=='ai-reference-diagnosis')return;
-  let pending=null;
-  try{
-    pending=JSON.parse(localStorage.getItem(PENDING_QUESTION_KEY)||'null');
-  }catch(e){
-    pending=null;
-  }
-  if(!pending || pending.source!=='ai-reference-diagnosis')return;
-  didApplyDemoWritePreset=true;
-  openWriteFlow(makePendingQuestionPreset(pending));
+  return;
 }
 function makePendingQuestionPreset(pending){
   const crop=String(pending.crop||'작물·식물');
