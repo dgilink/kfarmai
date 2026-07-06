@@ -276,6 +276,25 @@ const CHANNEL_ICONS = {
   'garden-class':'✂️',
   'plant-meet':'🤝'
 };
+const CHANNEL_TOPIC_CONFIG = {
+  default:{label:'글 주제',helper:'글의 성격에 맞는 주제를 선택해주세요.',options:['질문','정보공유','일상','후기','기타']},
+  problem:{label:'대표증상',helper:'가장 가까운 증상을 선택해주세요.',options:['잎마름','잎노랑','잎말림','시들음','벌레','곰팡이','줄기무름','열매이상','생육불량','물관리','분갈이','기타']},
+  plant_showcase:{label:'자랑 유형',helper:'자랑하고 싶은 식물의 모습을 골라주세요.',options:['새잎','꽃핌','열매','폭풍성장','분갈이 성공','회복 성공','희귀식물','오늘의 화분','기타']},
+  farmer_lounge:{label:'이야기 주제',helper:'나누고 싶은 이야기에 가까운 주제를 선택해주세요.',options:['농사일상','농사고민','농번기 이야기','농촌생활','장비·작업','날씨이야기','정보공유','잡담','기타']},
+  market_share:{label:'거래 유형',helper:'나눔, 판매, 교환 등 글의 성격을 선택해주세요.',options:['나눔','판매','교환','구합니다','농산물','모종·씨앗','화분·자재','지역거래','기타']},
+  gardening_class:{label:'수업·정보 유형',helper:'원예 정보나 클래스 성격을 선택해주세요.',options:['초보가이드','분갈이','물주기','가지치기','번식·삽목','흙·상토','병해충기초','실습후기','기타']},
+  plant_people:{label:'모임 주제',helper:'식집사들과 나누고 싶은 주제를 선택해주세요.',options:['반려식물','실내식물','플랜테리어','물주기루틴','식물친구','식물사진','질문나눔','오프모임','기타']}
+};
+const CHANNEL_TOPIC_SLUG_MAP = {
+  'plant-hospital':'problem',
+  'plant-question':'problem',
+  'crop-consult':'problem',
+  'plant-brag':'plant_showcase',
+  'farmer-lounge':'farmer_lounge',
+  'plant-share':'market_share',
+  'garden-class':'gardening_class',
+  'plant-meet':'plant_people'
+};
 const CHANNEL_HUB_DEFAULT = {
   description:'식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.',
   topics:['잎이 말라요','잎이 노랗게 변해요','물을 줘도 시들어요','벌레가 보여요','사진으로 물어보기','글로 질문하기'],
@@ -463,6 +482,49 @@ function mergeDefaultChannels(data){
     return {...saved, slug:ch.slug, name:ch.name};
   });
 }
+function channelTopicKeyByName(name=''){
+  const value=String(name||'');
+  if(value.includes('자랑'))return 'plant_showcase';
+  if(value.includes('사랑방'))return 'farmer_lounge';
+  if(value.includes('나눔')||value.includes('직거래'))return 'market_share';
+  if(value.includes('클래스'))return 'gardening_class';
+  if(value.includes('식집사')||value.includes('모임'))return 'plant_people';
+  if(value.includes('질문')||value.includes('상담')||value.includes('병원')||value.includes('증상'))return 'problem';
+  return 'default';
+}
+function selectedWriteChannel(){
+  const id=document.getElementById('channelSelect')?.value||'';
+  return channels.find(ch=>String(ch.id)===String(id))||null;
+}
+function getChannelTopicConfig(channel){
+  const key=CHANNEL_TOPIC_SLUG_MAP[channel?.slug||'']||channelTopicKeyByName(channel?.name||'');
+  return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
+}
+function renderTopicOptions(select,config,active=''){
+  if(!select)return;
+  const options=['',...(config?.options||CHANNEL_TOPIC_CONFIG.default.options)];
+  select.innerHTML=options.map(value=>`<option value="${esc(value)}" ${String(value)===String(active||'')?'selected':''}>${esc(value||`${config.label} 선택`)}</option>`).join('');
+}
+function applyWriteTopicConfig(active=''){
+  const config=getChannelTopicConfig(selectedWriteChannel());
+  const select=document.getElementById('postCategory');
+  const field=select?.closest('.field');
+  const label=field?.querySelector('.label');
+  if(label)label.textContent=config.label;
+  let helper=document.getElementById('postTopicHelper');
+  if(field&&!helper){
+    helper=document.createElement('div');
+    helper.id='postTopicHelper';
+    helper.className='image-file-info';
+    field.insertBefore(helper,select);
+  }
+  if(helper)helper.textContent=config.helper;
+  const current=active||select?.value||'';
+  renderTopicOptions(select,config,(config.options||[]).includes(current)?current:'');
+  const custom=document.getElementById('customSymptom');
+  if(custom)custom.placeholder=`${config.label} 직접 입력`;
+  toggleCustomSymptom();
+}
 function renderChannelSelect(){
   const select=document.getElementById('channelSelect');
   select.innerHTML='<option value="">채널을 선택하세요</option>';
@@ -473,6 +535,8 @@ function renderChannelSelect(){
     if(currentChannel&&ch.id===currentChannel.id)opt.selected=true;
     select.appendChild(opt);
   });
+  select.onchange=()=>applyWriteTopicConfig();
+  applyWriteTopicConfig();
 }
 function renderChannelChips(){
   const wrap=document.getElementById('channelChips');
@@ -727,7 +791,7 @@ async function renderDemoThreads(message){
     </article>`).join('');
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
-async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();toggleCustomSymptom();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
+async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();applyWriteTopicConfig();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
 function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');unlockBodyScroll();}
 function applyDemoWriteQuery(){
   if(didApplyDemoWritePreset || params.get('write')!=='1')return;
@@ -783,6 +847,7 @@ function fillWritePreset(preset){
   const channelSelect=document.getElementById('channelSelect');
   const categorySelect=document.getElementById('postCategory');
   if(channelSelect&&channel)channelSelect.value=channel.id;
+  applyWriteTopicConfig();
   setSelectValueOrText(categorySelect,preset.category);
   const title=document.getElementById('postTitle');
   const content=document.getElementById('postContent');
@@ -924,7 +989,7 @@ async function submitPost(){
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
   const region=document.getElementById('regionSelect').value;
-  if(!channelId||!category||!title||!content)return showToast('채널, 대표 증상, 제목, 내용을 입력해주세요.');
+  if(!channelId||!category||!title||!content)return showToast(`채널, ${getChannelTopicConfig(selectedWriteChannel()).label}, 제목, 내용을 입력해주세요.`);
   const btn=document.getElementById('submitBtn');btn.disabled=true;
   const allowedPayloadKeys=['user_id','channel_id','title','content','crop_tag','region_tag','image_urls'];
   try{

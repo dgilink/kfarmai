@@ -2851,6 +2851,16 @@ function myPostSymptomOptions(active=''){
   const options=['','잎마름','잎노랑','잎말림','시들음','벌레','곰팡이','줄기무름','열매이상','생육불량','물관리','분갈이','기타'];
   return options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||'대표 증상 선택')}</option>`).join('');
 }
+function myPostTopicConfig(post){
+  const key=CHANNEL_TOPIC_ID_MAP[String(post?.channel_id||'')]||channelTopicKeyByName(post?.channels?.name||post?.content||'');
+  return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
+}
+function myPostTopicOptions(post,active=''){
+  const config=myPostTopicConfig(post);
+  const values=['',...(config.options||[])];
+  if(active&&!values.includes(active))values.push(active);
+  return values.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||`${config.label} 선택`)}</option>`).join('');
+}
 function myPostRegionOptions(active=''){
   const options=['','서울특별시','부산광역시','대구광역시','인천광역시','광주광역시','대전광역시','울산광역시','세종특별자치시','경기도','강원특별자치도','충청북도','충청남도','전북특별자치도','전라남도','경상북도','경상남도','제주특별자치도','기타'];
   return options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||'지역 미선택')}</option>`).join('');
@@ -2861,7 +2871,7 @@ function renderMyPostEditForm(post){
   const imageHtml=images.length?`<div class="my-post-edit-images">${images.map(url=>`<img src="${escAttr(url)}" alt="기존 첨부 이미지" loading="lazy">`).join('')}</div>`:'<div class="my-post-edit-help">기존 첨부 사진이 없습니다.</div>';
   return `<div class="my-post-edit-form" onclick="event.stopPropagation()">
     <label><div class="my-post-edit-label">제목</div><input class="my-post-edit-input" id="myEditTitle-${escAttr(post.id)}" value="${escAttr(post.title||'')}" autocomplete="off"></label>
-    <label><div class="my-post-edit-label">대표 증상</div><select class="my-post-edit-select" id="myEditCrop-${escAttr(post.id)}">${myPostSymptomOptions(post.crop_tag||extractCategoryFromContent(post.content)||'')}</select></label>
+    <label><div class="my-post-edit-label">${escHtml(myPostTopicConfig(post).label)}</div><select class="my-post-edit-select" id="myEditCrop-${escAttr(post.id)}">${myPostTopicOptions(post,post.crop_tag||extractCategoryFromContent(post.content)||'')}</select></label>
     <label><div class="my-post-edit-label">지역</div><select class="my-post-edit-select" id="myEditRegion-${escAttr(post.id)}">${myPostRegionOptions(post.region_tag||'')}</select></label>
     <label><div class="my-post-edit-label">내용</div><textarea class="my-post-edit-textarea" id="myEditContent-${escAttr(post.id)}">${escHtml(body)}</textarea></label>
     <div><div class="my-post-edit-label">기존 이미지</div>${imageHtml}<div class="my-post-edit-help">이번 수정에서는 기존 이미지를 유지합니다. 사진 추가/삭제는 게시글 상세 수정 화면에서 별도로 처리할 수 있습니다.</div></div>
@@ -4012,7 +4022,72 @@ function closeDiagnosisDemoCase(){document.getElementById('diagnosisDemoModal')?
 let selectedPostImages = [];
 let selectedPostTags = [];
 const TAG_LIMIT = 5;
+const CHANNEL_TOPIC_CONFIG = {
+  default:{label:'글 주제',helper:'글의 성격에 맞는 주제를 선택해주세요.',options:['질문','정보공유','일상','후기','기타']},
+  problem:{label:'대표증상',helper:'가장 가까운 증상을 선택해주세요.',options:['잎마름','잎노랑','잎말림','시들음','벌레','곰팡이','줄기무름','열매이상','생육불량','물관리','분갈이','기타']},
+  plant_showcase:{label:'자랑 유형',helper:'자랑하고 싶은 식물의 모습을 골라주세요.',options:['새잎','꽃핌','열매','폭풍성장','분갈이 성공','회복 성공','희귀식물','오늘의 화분','기타']},
+  farmer_lounge:{label:'이야기 주제',helper:'나누고 싶은 이야기에 가까운 주제를 선택해주세요.',options:['농사일상','농사고민','농번기 이야기','농촌생활','장비·작업','날씨이야기','정보공유','잡담','기타']},
+  market_share:{label:'거래 유형',helper:'나눔, 판매, 교환 등 글의 성격을 선택해주세요.',options:['나눔','판매','교환','구합니다','농산물','모종·씨앗','화분·자재','지역거래','기타']},
+  gardening_class:{label:'수업·정보 유형',helper:'원예 정보나 클래스 성격을 선택해주세요.',options:['초보가이드','분갈이','물주기','가지치기','번식·삽목','흙·상토','병해충기초','실습후기','기타']},
+  plant_people:{label:'모임 주제',helper:'식집사들과 나누고 싶은 주제를 선택해주세요.',options:['반려식물','실내식물','플랜테리어','물주기루틴','식물친구','식물사진','질문나눔','오프모임','기타']},
+  agri_inputs:{label:'관심 자재',helper:'궁금한 농자재 종류를 선택해주세요.',options:['상토','비료','퇴비','농약안전정보','종자·모종','농기계','관수자재','시설자재','기타']},
+  local_info:{label:'정보 유형',helper:'공유하려는 정보 유형을 선택해주세요.',options:['지역소식','지원사업','교육·행사','농업뉴스','시세흐름','기술정보','정책정보','기타']}
+};
+const CHANNEL_TOPIC_ID_MAP = {
+  'd88ba519-68fd-488f-8311-e316838ac4cf':'problem',
+  'c7315bd6-eb60-484c-9c07-6def8f93ddc1':'problem',
+  'f586c6a8-882a-45d0-89e6-6d20fd9675de':'problem',
+  '9191bf52-84b6-42ca-b2c7-c886bde5d450':'plant_showcase',
+  '364c2c71-c313-47fc-a986-3124393bf381':'farmer_lounge',
+  '4619a407-a214-4555-8e63-06fa96ed87a2':'market_share',
+  'a6095ae4-1d7e-4671-a6b1-4277d343e586':'gardening_class',
+  'ae71a389-0723-4e76-b421-789a1474fd49':'plant_people'
+};
 const TAG_SUGGESTIONS = ['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
+function channelTopicKeyByName(name=''){
+  const value=String(name||'');
+  if(value.includes('자랑'))return 'plant_showcase';
+  if(value.includes('사랑방'))return 'farmer_lounge';
+  if(value.includes('나눔')||value.includes('직거래'))return 'market_share';
+  if(value.includes('클래스'))return 'gardening_class';
+  if(value.includes('식집사')||value.includes('모임'))return 'plant_people';
+  if(value.includes('농자재'))return 'agri_inputs';
+  if(value.includes('지역')||value.includes('정보'))return 'local_info';
+  if(value.includes('질문')||value.includes('상담')||value.includes('병원')||value.includes('증상'))return 'problem';
+  return 'default';
+}
+function getChannelTopicConfigById(channelId){
+  const select=document.getElementById('channelSelect');
+  const selectedName=select?.selectedOptions?.[0]?.textContent||'';
+  const key=CHANNEL_TOPIC_ID_MAP[String(channelId||'')]||channelTopicKeyByName(selectedName);
+  return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
+}
+function renderTopicOptions(select,config,active=''){
+  if(!select)return;
+  const options=['',...(config?.options||CHANNEL_TOPIC_CONFIG.default.options)];
+  select.innerHTML=options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||`${config.label} 선택`)}</option>`).join('');
+}
+function applyWriteTopicConfig(active=''){
+  const channelId=document.getElementById('channelSelect')?.value||'';
+  const config=getChannelTopicConfigById(channelId);
+  const select=document.getElementById('postCategory');
+  const field=select?.closest('.modal-field');
+  const label=field?.querySelector('.modal-label');
+  if(label)label.textContent=config.label;
+  let helper=document.getElementById('postTopicHelper');
+  if(field&&!helper){
+    helper=document.createElement('div');
+    helper.id='postTopicHelper';
+    helper.className='image-file-info';
+    field.insertBefore(helper,select);
+  }
+  if(helper)helper.textContent=config.helper;
+  const current=active||select?.value||'';
+  renderTopicOptions(select,config,(config.options||[]).includes(current)?current:'');
+  const custom=document.getElementById('customSymptom');
+  if(custom)custom.placeholder=`${config.label} 직접 입력`;
+  toggleCustomSymptom();
+}
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
 function getPostImageExt(file){const ext=String(file?.name||'').split('.').pop()?.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';return ['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext)?ext:'jpg';}
 function isPostImageFile(file){if(!file)return false;if(file.size&&file.size>10*1024*1024)return false;const type=String(file.type||'').toLowerCase();if(type.startsWith('image/'))return true;return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(String(file.name||''));}
@@ -4089,7 +4164,7 @@ async function submitPost(){
   const region=document.getElementById('regionSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
-  if(!channelId||!category||!title||!content){showToast('채널, 대표 증상, 제목, 내용을 입력해주세요.');return;}
+  if(!channelId||!category||!title||!content){showToast(`채널, ${getChannelTopicConfigById(channelId).label}, 제목, 내용을 입력해주세요.`);return;}
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
   const allowedPayloadKeys=['channel_id','title','content','user_id','crop_tag','region_tag','image_urls'];
@@ -4124,7 +4199,7 @@ async function submitPost(){
 }
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
-function openModal(channelId){const modal=document.getElementById('writeModal');if(channelId)document.getElementById('channelSelect').value=channelId;renderTagSuggestions();toggleCustomSymptom();window.autoResizeTextarea?.(document.getElementById('postContent'),220);modal.classList.add('open');const sheet=modal.querySelector('.modal');if(sheet)sheet.scrollTop=0;lockBodyScroll();}
+function openModal(channelId){const modal=document.getElementById('writeModal');const channelSelect=document.getElementById('channelSelect');if(channelId&&channelSelect)channelSelect.value=channelId;if(channelSelect)channelSelect.onchange=()=>applyWriteTopicConfig();renderTagSuggestions();applyWriteTopicConfig();window.autoResizeTextarea?.(document.getElementById('postContent'),220);modal.classList.add('open');const sheet=modal.querySelector('.modal');if(sheet)sheet.scrollTop=0;lockBodyScroll();}
 function closeModal(){document.getElementById('writeModal')?.classList.remove('open');unlockBodyScroll();}
 function openNicknameModal(){beginNicknameEdit();}
 function closeNicknameModal(){cancelNicknameEdit();}
