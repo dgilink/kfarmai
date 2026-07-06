@@ -101,6 +101,7 @@
   .edit-image-add { width:100%; min-height:40px; border:1.5px dashed var(--border); border-radius:11px; background:#fff; color:var(--green-dark); font-size:13px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .edit-image-input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; overflow:hidden; }
   .edit-help { margin-top:5px; color:#777; font-size:11.5px; line-height:1.45; }
+  .edit-image-info { margin-top:6px; color:#6B7280; font-size:12px; line-height:1.5; word-break:keep-all; overflow-wrap:break-word; }
   .edit-modal-actions { display:flex; gap:8px; }
   .edit-submit { flex:1; background:var(--green); border-color:var(--green); color:#fff; height:42px; }
   .edit-cancel { flex:1; height:42px; }
@@ -224,6 +225,7 @@
       <div class="edit-image-row" id="editImagePreview"></div>
       <label class="edit-image-add" for="editPostImages">사진 추가</label>
       <input class="edit-image-input" type="file" id="editPostImages" accept="image/*" multiple onchange="handleEditPostImages(this)">
+      <div class="edit-image-info" id="editImageInfo"></div>
       <div class="edit-help">기존 사진은 유지하거나 삭제할 수 있고, 새 사진을 추가할 수 있습니다. 최대 3장까지 저장합니다.</div>
     </div>
     <div class="edit-modal-actions"><button class="edit-cancel" type="button" onclick="closeEditPostModal()">취소</button><button class="edit-submit" id="editPostSubmit" type="button" onclick="savePostEdit()">저장</button></div>
@@ -591,7 +593,7 @@ async function openEditPostModal(event,allowOpenBeforeOwnerCheck=false){
   document.getElementById('editPostModal').classList.add('open');
   requestAnimationFrame(()=>{editContent.focus({preventScroll:true});editContent.setSelectionRange(editContent.value.length,editContent.value.length);});
 }
-function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');}
+function closeEditPostModal(){document.getElementById('editPostModal').classList.remove('open');renderEditImageInfo([]);}
 function handleEditPostImages(input){
   const incoming=Array.from(input.files||[]).filter(isEditableImageFile);
   const remain=3-editExistingImages.length-editNewImages.length;
@@ -633,19 +635,19 @@ function renderEditImagePreview(){
 async function uploadEditPostImages(userId){
   const urls=[];
   if(!editNewImages.length)return urls;
-  postEditWarn('storage.upload.start', {fileCount:editNewImages.length});
+  postEditWarn('storage.upload.start', {fileCount:editNewImages.length, files:editImageLogPayload(editNewImages)});
   for(let i=0;i<editNewImages.length;i++){
     const file=editNewImages[i];
     if(!isEditableImageFile(file)){
-      postEditWarn('storage.upload.invalid_file', {fileCount:editNewImages.length});
+      postEditWarn('storage.upload.invalid_file', {fileCount:editNewImages.length, files:editImageLogPayload([file])});
       throw new Error('invalid image file');
     }
     const ext=safeImageExt(file);
     const safeName=`${Date.now()}_edit_${i}_${Math.random().toString(36).slice(2)}.${ext}`;
     const path=`${userId}/${postId}/${safeName}`;
-    const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});
+    const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:safeEditableImageContentType(file)});
     if(error){
-      postEditWarn('storage.upload.failed', {message:error.message, fileCount:editNewImages.length});
+      postEditWarn('storage.upload.failed', {message:error.message, fileCount:editNewImages.length, files:editImageLogPayload([file])});
       throw error;
     }
     const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path || path);
@@ -704,6 +706,8 @@ async function savePostEdit(){
     await loadPost();
   }catch(err){
     postEditWarn('save.failed', {message:err?.message, payloadKeys});
+    showToast(classifyPostEditUploadError(err));
+    return;
     const message=String(err?.message||'');
     if(message.includes('invalid image file'))showToast('이미지 형식을 확인해주세요.');
     else if(message.includes('Storage')||message.includes('storage')||message.includes('bucket')||message.includes('row-level security'))showToast('사진 업로드에 실패했습니다.');
@@ -1083,6 +1087,63 @@ function isEditableImageFile(file){
   if(file.size&&file.size>10*1024*1024)return false;
   if(String(file.type||'').startsWith('image/'))return true;
   return /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(String(file.name||''));
+}
+const EDIT_IMAGE_MAX_BYTES=10*1024*1024;
+function editImageMeta(file){
+  const ext=String(file?.name||'').split('.').pop()?.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'';
+  const type=String(file?.type||'').toLowerCase();
+  const sizeBytes=Number(file?.size||0);
+  const isHeic=ext==='heic'||ext==='heif'||type.includes('heic')||type.includes('heif');
+  const validExt=['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext);
+  return {ext:ext||'unknown',type,hasType:!!type,sizeMb:Math.round(sizeBytes/1024/102.4)/10,isHeic,tooLarge:sizeBytes>EDIT_IMAGE_MAX_BYTES,validExt,isImageType:type.startsWith('image/')};
+}
+function editImageLogPayload(files){return Array.from(files||[]).map(file=>{const meta=editImageMeta(file);return {ext:meta.ext,sizeMb:meta.sizeMb,hasType:meta.hasType,type:meta.type||'',isHeic:meta.isHeic,tooLarge:meta.tooLarge};});}
+function safeEditableImageContentType(file){const meta=editImageMeta(file);if(meta.type&&meta.type.startsWith('image/'))return meta.type;if(meta.isHeic)return 'image/heic';return 'image/jpeg';}
+function isEditableImageFile(file){if(!file)return false;const meta=editImageMeta(file);if(meta.tooLarge)return false;if(meta.isImageType)return true;return meta.validExt;}
+function renderEditImageInfo(files){
+  const box=document.getElementById('editImageInfo');
+  if(!box)return;
+  const list=Array.from(files||[]);
+  if(!list.length){box.textContent='';return;}
+  const metas=list.map(editImageMeta);
+  const exts=[...new Set(metas.map(meta=>meta.ext))].join(', ');
+  const totalMb=Math.round(metas.reduce((sum,meta)=>sum+meta.sizeMb,0)*10)/10;
+  const notes=[];
+  if(metas.some(meta=>meta.isHeic))notes.push('아이폰 고효율 사진 형식입니다. 실패하면 스크린샷 또는 JPG 사진으로 다시 시도해주세요.');
+  if(metas.some(meta=>meta.tooLarge))notes.push('사진 용량이 너무 큽니다. 10MB 이하 사진을 선택해주세요.');
+  if(metas.some(meta=>!meta.hasType))notes.push('사진 형식을 확장자로 확인했습니다. 업로드가 실패하면 Safari에서 직접 다시 시도해주세요.');
+  notes.push('카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.');
+  box.textContent=`선택한 사진: ${list.length}장 · 파일 형식: ${exts} · 용량: ${totalMb}MB ${notes.join(' ')}`;
+}
+function handleEditPostImages(input){
+  const files=Array.from(input.files||[]);
+  postEditWarn('file.selected', {fileCount:files.length, files:editImageLogPayload(files)});
+  renderEditImageInfo(files);
+  const incoming=files.filter(isEditableImageFile);
+  const remain=3-editExistingImages.length-editNewImages.length;
+  const rejected=files.length-incoming.length;
+  if(rejected>0){
+    postEditWarn('file.validation', {fileCount:files.length, rejectedCount:rejected, files:editImageLogPayload(files)});
+    showToast('이미지 파일 형식 또는 용량을 확인해주세요.');
+  }
+  if(!incoming.length){input.value='';return;}
+  if(remain<=0){
+    showToast('사진은 최대 3장까지 첨부할 수 있습니다. 기존 사진을 삭제한 뒤 추가해주세요.');
+    input.value='';
+    return;
+  }
+  editNewImages=editNewImages.concat(incoming.slice(0,remain));
+  if(incoming.length>remain)showToast(`사진은 최대 3장까지 저장합니다. ${remain}장만 추가했습니다.`);
+  input.value='';
+  renderEditImageInfo(editNewImages);
+  renderEditImagePreview();
+}
+function classifyPostEditUploadError(err){
+  const message=String(err?.message||'').toLowerCase();
+  if(message.includes('invalid image file')||message.includes('mime')||message.includes('type')||message.includes('size'))return '이미지 파일 형식 또는 용량을 확인해주세요. 카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.';
+  if(message.includes('network')||message.includes('failed to fetch')||message.includes('timeout'))return '네트워크 상태를 확인한 뒤 다시 시도해주세요.';
+  if(message.includes('storage')||message.includes('bucket')||message.includes('row-level security')||message.includes('permission')||message.includes('policy'))return '사진 업로드 권한 또는 저장소 설정을 확인해야 합니다.';
+  return '글 저장에 실패했습니다. 사진 첨부가 있다면 Safari에서 직접 열고 다시 시도해주세요.';
 }
 function extractCategoryFromContent(content){
   const match=String(content||'').match(/^\[(?:대표 증상|카테고리):\s*([^\]]+)\]/m);

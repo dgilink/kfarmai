@@ -112,6 +112,7 @@
   .image-input { position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; overflow:hidden; }
   .image-upload-btn { display:inline-flex; align-items:center; justify-content:center; height:38px; padding:0 13px; border:1.5px solid var(--border); border-radius:10px; background:#fff; color:var(--text); font-size:13px; font-weight:800; cursor:pointer; }
   .image-preview-row { display:flex; gap:8px; overflow-x:auto; padding:2px 0 4px; scrollbar-width:none; }
+  .image-file-info { margin-top:6px; color:#6B7280; font-size:12px; line-height:1.5; word-break:keep-all; overflow-wrap:break-word; }
   .image-thumb { position:relative; flex:0 0 auto; width:72px; height:72px; border-radius:12px; overflow:hidden; border:1px solid var(--border); background:#F3F4F6; }
   .image-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
   .image-remove { position:absolute; top:4px; right:4px; width:22px; height:22px; border:0; border-radius:50%; background:rgba(0,0,0,.62); color:#fff; font-size:14px; font-weight:900; cursor:pointer; line-height:22px; }
@@ -217,6 +218,7 @@
       <div class="label">사진 업로드 <span style="font-weight:600;color:var(--muted)">(선택, 최대 3장)</span></div>
       <label class="image-upload-btn" for="postImages">사진 선택</label>
       <input class="image-input" type="file" id="postImages" accept="image/*" multiple onchange="handlePostImages(this)">
+      <div class="image-file-info" id="postImageInfo"></div>
       <div class="image-preview-row" id="postImagePreview"></div>
     </div>
     <div class="field" hidden>
@@ -854,7 +856,46 @@ function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCo
 function handlePostImages(input){const files=Array.from(input.files||[]);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImagePreview();}
 function renderPostImagePreview(){const wrap=document.getElementById('postImagePreview');wrap.innerHTML='';selectedPostImages.forEach((file,idx)=>{const item=document.createElement('div');item.className='image-thumb';const url=URL.createObjectURL(file);item.innerHTML=`<img src="${url}" alt="첨부 이미지"><button class="image-remove" type="button" onclick="removePostImage(${idx})">&times;</button>`;wrap.appendChild(item);});}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start');const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file');throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:file.type||'image/jpeg'});if(error){postSubmitWarn('storage.upload.failed',{message:error.message});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
+const POST_IMAGE_MAX_BYTES=10*1024*1024;
+function postImageMeta(file){
+  const ext=String(file?.name||'').split('.').pop()?.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'';
+  const type=String(file?.type||'').toLowerCase();
+  const sizeBytes=Number(file?.size||0);
+  const isHeic=ext==='heic'||ext==='heif'||type.includes('heic')||type.includes('heif');
+  const validExt=['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext);
+  return {ext:ext||'unknown',type,hasType:!!type,sizeMb:Math.round(sizeBytes/1024/102.4)/10,isHeic,tooLarge:sizeBytes>POST_IMAGE_MAX_BYTES,validExt,isImageType:type.startsWith('image/')};
+}
+function postImageLogPayload(files){return Array.from(files||[]).map(file=>{const meta=postImageMeta(file);return {ext:meta.ext,sizeMb:meta.sizeMb,hasType:meta.hasType,type:meta.type||'',isHeic:meta.isHeic,tooLarge:meta.tooLarge};});}
+function getPostImageExt(file){const meta=postImageMeta(file);return ['jpg','jpeg','png','webp','gif','heic','heif'].includes(meta.ext)?meta.ext:'jpg';}
+function safePostImageContentType(file){const meta=postImageMeta(file);if(meta.type&&meta.type.startsWith('image/'))return meta.type;if(meta.isHeic)return 'image/heic';return 'image/jpeg';}
+function isPostImageFile(file){if(!file)return false;const meta=postImageMeta(file);if(meta.tooLarge)return false;if(meta.isImageType)return true;return meta.validExt;}
+function renderPostImageInfo(files,targetId='postImageInfo'){
+  const box=document.getElementById(targetId);
+  if(!box)return;
+  const list=Array.from(files||[]);
+  if(!list.length){box.textContent='';return;}
+  const metas=list.map(postImageMeta);
+  const exts=[...new Set(metas.map(meta=>meta.ext))].join(', ');
+  const totalMb=Math.round(metas.reduce((sum,meta)=>sum+meta.sizeMb,0)*10)/10;
+  const notes=[];
+  if(metas.some(meta=>meta.isHeic))notes.push('아이폰 고효율 사진 형식입니다. 실패하면 스크린샷 또는 JPG 사진으로 다시 시도해주세요.');
+  if(metas.some(meta=>meta.tooLarge))notes.push('사진 용량이 너무 큽니다. 10MB 이하 사진을 선택해주세요.');
+  if(metas.some(meta=>!meta.hasType))notes.push('사진 형식을 확장자로 확인했습니다. 업로드가 실패하면 Safari에서 직접 다시 시도해주세요.');
+  notes.push('카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.');
+  box.textContent=`선택한 사진: ${list.length}장 · 파일 형식: ${exts} · 용량: ${totalMb}MB ${notes.join(' ')}`;
+}
+function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
+function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
+function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
+async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(file)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([file])});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
+function classifyPostUploadError(err){
+  const message=String(err?.message||'').toLowerCase();
+  if(message.includes('invalid image file')||message.includes('mime')||message.includes('type')||message.includes('size'))return '이미지 파일 형식 또는 용량을 확인해주세요. 카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.';
+  if(message.includes('network')||message.includes('failed to fetch')||message.includes('timeout'))return '네트워크 상태를 확인한 뒤 다시 시도해주세요. 카카오톡 안에서 열린 화면이면 Safari에서 직접 열어보세요.';
+  if(message.includes('storage')||message.includes('bucket')||message.includes('row-level security')||message.includes('permission')||message.includes('policy'))return '사진 업로드 권한 또는 저장소 설정을 확인해야 합니다.';
+  if(message.includes('auth')||message.includes('jwt')||message.includes('session'))return '로그인 상태를 다시 확인해주세요.';
+  return '사진 업로드 또는 글 저장에 실패했습니다. Safari에서 직접 열고 다시 시도해주세요.';
+}
 async function submitPost(){
   const channelSelect=document.getElementById('channelSelect');
   const channelId=channelSelect.value;
@@ -884,10 +925,12 @@ async function submitPost(){
     closeWriteModal();
     ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     autoResizeTextarea(document.getElementById('postContent'),240);
-    selectedPostImages=[];selectedPostTags=[];renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
+    selectedPostImages=[];selectedPostTags=[];renderPostImageInfo([]);renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
   }catch(err){
     const message=String(err?.message||'');
     console.warn('post submit failed',{message});
+    showToast(classifyPostUploadError(err));
+    return;
     if(message.includes('invalid image file'))showToast('이미지 파일 형식 또는 용량을 확인해주세요.');
     else if(message.includes('Storage')||message.includes('storage')||message.includes('bucket')||message.includes('row-level security'))showToast('사진 업로드에 실패했습니다.');
     else if(message.includes('auth')||message.includes('JWT')||message.includes('session'))showToast('로그인 상태를 다시 확인해주세요.');
