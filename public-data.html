@@ -461,6 +461,39 @@
       gap: 6px;
     }
 
+    .report-result-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .report-result-item {
+      padding: 9px 10px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      color: #243447;
+      font-size: 12.5px;
+      line-height: 1.45;
+      word-break: keep-all;
+    }
+
+    .report-result-item strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #123524;
+      font-size: 12.5px;
+      font-weight: 850;
+    }
+
+    .report-source-line {
+      display: block;
+      margin-top: 8px;
+      color: #526176;
+      font-size: 12px;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
     .candidate-chip,
     .source-chip {
       display: inline-flex;
@@ -514,6 +547,51 @@
       border: 1px solid #fed7aa;
       color: #7c3f09;
       font-weight: 800;
+    }
+
+    .official-reference-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .official-reference-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #dbe5ee;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .official-reference-card strong {
+      display: block;
+      color: #173b29;
+      font-size: 13px;
+      line-height: 1.28;
+      font-weight: 850;
+      word-break: keep-all;
+    }
+
+    .official-reference-card span {
+      display: block;
+      margin-top: 3px;
+      color: #526176;
+      font-size: 11.5px;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
+    .official-reference-card em {
+      color: #2563eb;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 850;
+      white-space: nowrap;
     }
 
     .detail-toggle-button {
@@ -1488,6 +1566,110 @@
       return `${crop} · ${symptom}`;
     }
 
+    function getReportKey(result) {
+      const crop = normalizeText(result.normalizedCrop || result.crop);
+      const symptom = normalizeText(result.normalizedSymptom || result.symptom);
+      return `${crop}|${symptom}`;
+    }
+
+    const OFFICIAL_REFERENCE_LINKS = {
+      '고추|잎말림': [
+        {
+          title: '고추 잎 말림 현장기술지원',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=237680&menuId=PS00077',
+          note: '고추 육묘 중 잎 말림 사례와 현장 확인 내용을 공식 원문에서 확인합니다.'
+        },
+        {
+          title: '고추 이상증상 현장기술지원',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=262387&menuId=PS00077',
+          note: '잎 뒤틀림·말림 등 이상증상 현장 사례를 공식 원문에서 확인합니다.'
+        }
+      ],
+      '토마토|반점': [
+        {
+          title: '토마토반점위조바이러스 정보',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00004471',
+          note: '토마토 반점 관련 병해 정보와 사진정보를 공식 원문에서 확인합니다.'
+        },
+        {
+          title: '토마토 반점위조바이러스 현장 사례',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=210752&menuId=PS00077',
+          note: '토마토 반점·잎 위축 현장 사례를 공식 원문에서 확인합니다.'
+        }
+      ],
+      '딸기|잿빛곰팡이': [
+        {
+          title: '딸기 잿빛곰팡이병 문의 사례',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentSub.ps?cntntsNo=251183&menuId=PS00078&totalSearchYn=Y',
+          note: '딸기 잿빛곰팡이병 발생 조건과 증상 설명을 공식 원문에서 확인합니다.'
+        },
+        {
+          title: '딸기 주요 곰팡이병 기술자료',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psv/psvr/psvre/curationDtl.ps?menuId=PS03352&srchCurationNo=2118',
+          note: '딸기 곰팡이성 병해 관련 기술자료를 공식 원문에서 확인합니다.'
+        }
+      ],
+      '벼|도열병': [
+        {
+          title: '도열병 사진정보',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00001336',
+          note: '도열병 병징과 사진정보를 공식 원문에서 확인합니다.'
+        },
+        {
+          title: '벼 잎도열병 정보',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00004234',
+          note: '벼 잎도열병 발생환경과 증상 설명을 공식 원문에서 확인합니다.'
+        }
+      ]
+    };
+
+    function getNongsaroSearchUrl(result) {
+      const query = [result.normalizedCrop || result.crop, result.normalizedSymptom || result.symptom].filter(Boolean).join(' ');
+      return `https://www.nongsaro.go.kr/portal/search/nongsaroSearch.ps?categoryName=SCH01&menuId=PS00007&option=0&sortOrdr=01&searchWord=${encodeURIComponent(query || '작물 병해충')}`;
+    }
+
+    function getOfficialReferenceLinks(result) {
+      const curated = OFFICIAL_REFERENCE_LINKS[getReportKey(result)] || [];
+      if (curated.length) return curated;
+      return [
+        {
+          title: `${getReportTitle(result)} 공식자료 검색`,
+          source: '농사로',
+          url: getNongsaroSearchUrl(result),
+          note: '대표 홈페이지가 아니라 농사로 공식 검색 결과에서 관련 사진·사례·기술자료를 확인합니다.'
+        }
+      ];
+    }
+
+    function getMatchFindings(sources) {
+      const sourceKeys = new Set(sources.map((source) => source.sourceKey));
+      const findings = [];
+      if (sourceKeys.has('ncpms')) {
+        findings.push({ title: '병해충 기준', text: 'AI 후보와 연결되는 병해충·발생환경 확인 항목이 있습니다.' });
+      }
+      if (sourceKeys.has('psis')) {
+        findings.push({ title: '안전사용기준 기준', text: '농약 사용 판단 전 등록작물·대상 병해충·안전사용기준 확인이 필요합니다.' });
+      }
+      if (sourceKeys.has('agriWeather')) {
+        findings.push({ title: '기상조건 기준', text: '고온·건조·강수·습도 등 재배환경 확인 항목이 연결됩니다.' });
+      }
+      if (sourceKeys.has('cropGuide') || sourceKeys.has('nongsaro')) {
+        findings.push({ title: '재배정보 기준', text: '생육단계·물관리·통풍·관리포인트 확인 항목이 연결됩니다.' });
+      }
+      if (sourceKeys.has('localAgency')) {
+        findings.push({ title: '추가 검증 기준', text: '피해가 이어지면 사진과 발생환경을 정리해 관계기관 확인을 권장합니다.' });
+      }
+      return findings.slice(0, 4);
+    }
+
     function renderCandidateChips(result) {
       const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
       const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
@@ -1506,6 +1688,40 @@
           ? `<a class="source-chip" ${attrs}>${escapeHtml(label)}</a>`
           : `<span class="source-chip is-guidance">${escapeHtml(label)}</span>`;
       }).join('');
+    }
+
+    function renderMatchFindings(sources) {
+      const findings = getMatchFindings(sources);
+      if (!findings.length) {
+        return '<div class="report-result-item"><strong>기본 확인</strong>입력한 작물·증상 기준으로 공식자료 확인 경로를 정리했습니다.</div>';
+      }
+      return findings.map((item) => `
+        <div class="report-result-item">
+          <strong>${escapeHtml(item.title)}</strong>
+          ${escapeHtml(item.text)}
+        </div>
+      `).join('');
+    }
+
+    function renderSourceLine(sources) {
+      const labels = sources.map((source) => source.shortName || source.sourceName).filter(Boolean);
+      return labels.length ? labels.join(' · ') : '농사로 · NCPMS · 농약안전정보 · kFarmAI 참고 화면';
+    }
+
+    function renderOfficialReferences(result) {
+      return `
+        <div class="official-reference-list">
+          ${getOfficialReferenceLinks(result).map((item) => `
+            <a class="official-reference-card" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
+              <div>
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.note)}</span>
+              </div>
+              <em>${escapeHtml(item.source)} ›</em>
+            </a>
+          `).join('')}
+        </div>
+      `;
     }
 
     function renderSourceDetails(sources) {
@@ -1550,44 +1766,50 @@
       );
       const caution = getReportValue(
         result.caution,
-        '이 결과는 참고자료입니다. 최종 판단은 공식자료와 전문가 확인이 필요합니다.'
+        '이 결과는 참고자료입니다. 공식자료와 전문가 확인을 함께 참고하세요.'
       );
       return `
         <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
           <article class="match-summary-card">
-            <div class="report-kicker">공공데이터 매칭 보고서</div>
+            <div class="report-kicker">공공데이터 매칭보고</div>
 
             <div class="report-title-row">
               <div>
                 <h3 class="report-title">${escapeHtml(getReportTitle(result))}</h3>
-                <p class="report-subtitle">AI 참고 후보를 공공데이터 출처와 연결해 확인 항목을 정리했습니다.</p>
+                <p class="report-subtitle">AI 참고 후보와 공공데이터 기준 확인 항목을 연결했습니다.</p>
               </div>
             </div>
 
             <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
 
             <div class="report-block">
-              <h2>AI 참고 후보</h2>
+              <h2>AI 참고 진단 결과</h2>
               <div class="candidate-chip-list">${renderCandidateChips(result)}</div>
             </div>
 
             <div class="report-block">
-              <h2>우선 확인할 출처</h2>
-              <div class="source-chip-list">${renderSourceChips(result)}</div>
+              <h2>공공데이터 매칭결과</h2>
+              <div class="report-result-list">${renderMatchFindings(sources)}</div>
             </div>
 
+            <span class="report-source-line">출처: ${escapeHtml(renderSourceLine(sources))}</span>
             <div class="report-summary-line">${escapeHtml(mainSummary)}</div>
             <div class="report-next-step">${escapeHtml(nextStep)}</div>
-            <button class="detail-toggle-button" type="button" onclick="scrollReportDetail()">출처별 자세히 보기</button>
+            <button class="detail-toggle-button" type="button" onclick="scrollReportDetail()">공식 사례 보기</button>
           </article>
 
           <section class="match-detail-panel" id="reportDetailPanel">
-            <h2>출처별 확인한 점</h2>
-            ${renderSourceDetails(sources)}
+            <h2>공식 유사사진·사례 확인</h2>
+            ${renderOfficialReferences(result)}
 
             <div class="report-extra-check">
-              <h2>추가 검증</h2>
+              <h2>요약보고 · 제안방향</h2>
               <p>${escapeHtml(nextStep)}</p>
+            </div>
+
+            <div class="report-extra-check">
+              <h2>kFarmAI에서 이어서 확인</h2>
+              <p>비슷한 질문은 커뮤니티에서 확인하고, 농업날씨·재배가이드·농자재/지역정보를 함께 참고하세요.</p>
             </div>
 
             <div class="report-caution">

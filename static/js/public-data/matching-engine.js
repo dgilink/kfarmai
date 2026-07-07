@@ -400,7 +400,7 @@
       mainSummary: '입력한 작물·증상에 대한 전용 매칭 사례는 아직 준비 중입니다. 다만 공공데이터 출처 기준으로 확인할 수 있는 항목을 정리했습니다.',
       matchedSources: buildMatchedSources(diagnosis || {}, fallbackRule),
       nextStep: '증상이 계속되거나 피해가 확산되면 사진과 발생환경을 가지고 관계기관 확인을 권장합니다.',
-      caution: '이 결과는 참고자료입니다. 최종 판단은 공식자료와 전문가 확인이 필요합니다.'
+      caution: '이 결과는 참고자료입니다. 공식자료와 전문가 확인을 함께 참고하세요.'
     });
   }
 
@@ -415,7 +415,7 @@
       mainSummary: caseRule.mainSummary,
       matchedSources: buildMatchedSources(safeDiagnosis, caseRule),
       nextStep: '증상이 계속되거나 피해가 확산되면 사진과 발생환경을 가지고 관계기관 확인을 권장합니다.',
-      caution: '이 결과는 참고자료입니다. 최종 판단은 공식자료와 전문가 확인이 필요합니다.',
+      caution: '이 결과는 참고자료입니다. 공식자료와 전문가 확인을 함께 참고하세요.',
       caseId: caseRule.id
     });
   }
