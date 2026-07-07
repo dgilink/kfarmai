@@ -1,0 +1,2935 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>공공데이터 확인 | kFarmAI</title>
+  <style>
+    :root {
+      --green: #128a43;
+      --green-dark: #0f6f36;
+      --green-soft: #eaf7ef;
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+      --amber: #b45309;
+      --amber-soft: #fff7ed;
+      --slate: #1f2937;
+      --muted: #64748b;
+      --line: #d9e4dc;
+      --bg: #f5f8f4;
+      --card: #ffffff;
+      --danger: #b91c1c;
+      --navy: #15364a;
+      --section-title-size: 18px;
+      --block-title-size: 13px;
+      --card-title-size: 13.5px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(189, 232, 202, .45), transparent 36%),
+        linear-gradient(180deg, #edf7ef 0%, #dfeee5 100%);
+      color: var(--slate);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-break: strict;
+    }
+
+    p,
+    span,
+    strong,
+    label,
+    h1,
+    h2,
+    h3 {
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-break: strict;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #fbfdf9;
+      box-shadow: 0 20px 48px rgba(15, 47, 34, 0.14);
+    }
+
+    @media (min-width: 431px) {
+      .page {
+        border-left: 1px solid rgba(15, 47, 34, 0.08);
+        border-right: 1px solid rgba(15, 47, 34, 0.08);
+      }
+    }
+
+    .hero {
+      padding: 10px 12px 8px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 0;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 120px;
+      height: auto;
+      display: block;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(18, 138, 67, 0.2);
+      color: var(--green-dark);
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .hero h1,
+    .hero p {
+      display: none;
+    }
+
+    .content {
+      padding: 10px 12px 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      margin-top: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--card);
+      box-shadow: 0 5px 14px rgba(15, 23, 42, 0.035);
+    }
+
+    .section--guide {
+      order: 1;
+      margin-top: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #ffffff;
+      border-color: rgba(18, 138, 67, 0.14);
+    }
+
+    .section--match {
+      order: 2;
+      padding: 0;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .section--match .section-head {
+      display: none;
+    }
+
+    .section--match .section-title {
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .section--match .section-subtitle {
+      display: none;
+    }
+
+    .section--examples {
+      order: 5;
+      margin-top: 8px;
+      padding: 0 2px;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    .section--examples .section-head {
+      margin-bottom: 6px;
+    }
+
+    .section--examples .section-title {
+      font-size: var(--section-title-size);
+      color: #14532d;
+    }
+
+    .section--examples .section-title::before {
+      min-width: 34px;
+      height: 22px;
+      font-size: 10.5px;
+      background: rgba(22, 163, 74, 0.1);
+    }
+
+    .section--examples .section-subtitle {
+      display: none;
+    }
+
+    .section--official {
+      order: 4;
+      background: #ffffff;
+      border-color: #dfe8e2;
+    }
+
+    .section--official .section-head {
+      margin-bottom: 8px;
+    }
+
+    .section--official .section-subtitle {
+      display: none;
+    }
+
+    .section--tool {
+      order: 3;
+      background: #f8fafc;
+      border-color: #d9e2ea;
+      display: none;
+    }
+
+    .section--local {
+      order: 6;
+      background: #f7fdf9;
+      border-color: #cfeadb;
+    }
+
+    .section--safety {
+      order: 6;
+      background: #fff8ed;
+      border-color: #fed7aa;
+      text-align: center;
+    }
+
+    .section--safety .section-head {
+      justify-content: center;
+      margin-bottom: 7px;
+    }
+
+    .section--safety .section-title {
+      justify-content: center;
+      font-size: var(--section-title-size);
+    }
+
+    .guide-visual {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    .section:first-child {
+      margin-top: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .section-head > div {
+      width: 100%;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: var(--section-title-size);
+      line-height: 1.28;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .section-title::before {
+      display: none;
+    }
+
+    .section-subtitle {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.38;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .guide-card {
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      align-items: start;
+      gap: 7px;
+      min-height: 0;
+      padding: 9px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(18, 138, 67, 0.13);
+    }
+
+    .guide-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      margin-bottom: 0;
+      border-radius: 999px;
+      background: #e6f6ec;
+      color: var(--green-dark);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .guide-card strong {
+      display: block;
+      color: #183b29;
+      font-size: 12.3px;
+      line-height: 1.28;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .guide-card span {
+      display: block;
+      color: #5f7568;
+      font-size: 11.2px;
+      line-height: 1.34;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .summary-card {
+      padding: 10px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ecfdf5 0%, #eff6ff 100%);
+      border: 1px solid rgba(37, 99, 235, 0.14);
+    }
+
+    .summary-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .summary-item {
+      min-width: 0;
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(37, 99, 235, 0.08);
+    }
+
+    .summary-label {
+      display: inline;
+      margin-right: 3px;
+      margin-bottom: 0;
+      color: #62766a;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+
+    .summary-value {
+      display: inline;
+      color: #173f2a;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .match-title {
+      margin-top: 10px;
+      font-size: 16px;
+      line-height: 1.32;
+      color: #123524;
+      font-weight: 850;
+    }
+
+    .match-note {
+      margin-top: 5px;
+      color: #405f51;
+      font-size: 12.5px;
+      line-height: 1.42;
+    }
+
+    .match-report-shell {
+      display: grid;
+      gap: 12px;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .match-summary-card {
+      width: 100%;
+      max-width: none;
+      padding: 12px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 34%),
+        linear-gradient(135deg, #ffffff 0%, #eef7ff 52%, #ecfdf5 100%);
+      border: 1px solid rgba(37, 99, 235, 0.22);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .report-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 0 7px;
+      padding: 12px 10px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #0f3d2e 0%, #14532d 44%, #1d4ed8 100%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 8px 18px rgba(15, 47, 34, 0.16);
+      text-align: center;
+    }
+
+    .report-title {
+      color: #ffffff;
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 950;
+      letter-spacing: 0;
+      max-width: 100%;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+      text-align: center;
+    }
+
+    .report-context-line {
+      margin-top: 5px;
+      color: #dbeafe;
+      font-size: 12.5px;
+      line-height: 1.35;
+      font-weight: 900;
+      text-align: center;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .report-subtitle {
+      margin-top: 4px;
+      color: #516170;
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+
+    .report-photo-thumb {
+      flex: 0 0 52px;
+      width: 52px;
+      height: 52px;
+      border-radius: 13px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.72);
+      background: #e2e8f0;
+    }
+
+    .report-status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      color: #92400e;
+      font-size: 11.5px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .report-block {
+      margin-top: 8px;
+    }
+
+    .report-block h2,
+    .match-detail-panel h2 {
+      margin-bottom: 5px;
+      color: #183b29;
+      font-size: var(--block-title-size);
+      line-height: 1.3;
+      font-weight: 950;
+    }
+
+    .candidate-chip-list,
+    .source-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .report-result-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .report-result-item {
+      display: grid;
+      grid-template-columns: 36px minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+      min-height: 64px;
+      padding: 10px 9px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1.5px solid rgba(148, 163, 184, 0.2);
+      color: #162033;
+      font-size: 11.4px;
+      line-height: 1.32;
+      font-weight: 800;
+      word-break: keep-all;
+      max-width: 100%;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      box-shadow: 0 5px 12px rgba(15, 23, 42, 0.04);
+    }
+
+    .report-result-item.is-pest { background: #e8f8ef; border-color: #8fd4ab; }
+    .report-result-item.is-safety { background: #f0f9df; border-color: #b7d978; }
+    .report-result-item.is-weather { background: #e7f4ff; border-color: #88c7ef; }
+    .report-result-item.is-guide { background: #fff5c8; border-color: #e8c45a; }
+    .report-result-item.is-local { background: #fff0e3; border-color: #e8a77e; }
+
+    .result-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.06);
+      font-size: 19px;
+      line-height: 1;
+      align-self: center;
+    }
+
+    .report-result-item strong {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      margin-bottom: 4px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      color: #0f2f22;
+      font-size: 11.5px;
+      font-weight: 950;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .report-result-desc {
+      display: block;
+      color: #1f2937;
+      font-size: 11.2px;
+      font-weight: 850;
+    }
+
+    .report-source-line {
+      display: block;
+      margin-top: 5px;
+      color: #526176;
+      font-size: 11px;
+      line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .candidate-chip,
+    .source-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 10.8px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .candidate-chip {
+      background: #e9f8ef;
+      border: 1px solid #c2ead0;
+      color: #116735;
+    }
+
+    .source-chip {
+      background: #eaf2ff;
+      border: 1px solid #c8dcff;
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+
+    .source-chip.is-guidance {
+      background: #f1f5f9;
+      border-color: #dbe3ea;
+      color: #526176;
+    }
+
+    .report-summary-line,
+    .report-next-step {
+      margin-top: 7px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      font-size: 11.8px;
+      line-height: 1.34;
+    }
+
+    .report-summary-line {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+      color: #233447;
+      font-weight: 750;
+    }
+
+    .report-next-step {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #7c3f09;
+      font-weight: 800;
+    }
+
+    .official-reference-list {
+      display: grid;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .official-reference-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 7px;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ffffff 0%, #eef6ff 100%);
+      border: 1px solid #bfdbfe;
+      text-decoration: none;
+      color: inherit;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .official-reference-card strong {
+      display: block;
+      color: #12315f;
+      font-size: 12.6px;
+      line-height: 1.28;
+      font-weight: 900;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .official-reference-card em {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: #1d4ed8;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-style: normal;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .report-actions {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .report-download-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 38px;
+      border: 0;
+      border-radius: 14px;
+      background: #14532d;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 950;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 8px 16px rgba(20, 83, 45, 0.18);
+    }
+
+    .report-download-btn:active {
+      transform: translateY(1px);
+      background: #0f3d2e;
+    }
+
+    .report-print-footer {
+      margin-top: 9px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px dashed rgba(20, 83, 45, 0.24);
+      color: #334155;
+      font-size: 10.8px;
+      line-height: 1.45;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .report-print-footer strong {
+      color: #14532d;
+      font-weight: 950;
+    }
+
+    .print-report-document {
+      display: none;
+    }
+
+    @media (max-width: 374px) {
+      .report-result-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .section--match {
+        padding: 0;
+      }
+
+      .match-report-shell {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .match-summary-card {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 16px 12px;
+      }
+
+      .report-result-item,
+      .official-reference-card {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 7mm;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+
+      html,
+      body {
+        background: #ffffff !important;
+        width: 210mm;
+        min-height: 297mm;
+        overflow: visible !important;
+      }
+
+      .page {
+        max-width: none;
+        min-height: auto;
+        box-shadow: none;
+        border: 0;
+      }
+
+      .hero,
+      .section--guide,
+      .section--examples,
+      .section--official,
+      .section--tool,
+      .section--safety,
+      .return-area,
+      .report-download-btn {
+        display: none !important;
+      }
+
+      .content,
+      .section--match,
+      .match-report-shell {
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .content {
+        display: block !important;
+      }
+
+      .match-summary-card {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        min-height: calc(297mm - 14mm);
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 20px !important;
+        background:
+          linear-gradient(180deg, #f8fafc 0%, #ffffff 22%, #ffffff 100%) !important;
+        padding: 10mm 11mm !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .report-title-row {
+        margin-bottom: 8.5mm !important;
+        padding: 11.5mm 9mm !important;
+        border-radius: 18px !important;
+        background: linear-gradient(135deg, #0f3d2e 0%, #14532d 45%, #1d4ed8 100%) !important;
+        color: #ffffff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .report-title {
+        font-size: 26pt !important;
+        line-height: 1.18 !important;
+        color: #ffffff !important;
+      }
+
+      .report-context-line {
+        margin-top: 3.4mm !important;
+        color: #dbeafe !important;
+        font-size: 13pt !important;
+        line-height: 1.35 !important;
+      }
+
+      .report-status-badge {
+        display: flex !important;
+        width: fit-content;
+        min-height: 9mm !important;
+        margin: -4mm auto 6mm !important;
+        padding: 0 6mm !important;
+        background: #fef3c7 !important;
+        border: 1px solid #f59e0b !important;
+        color: #92400e !important;
+        font-size: 12pt !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .report-block {
+        margin-top: 7mm !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .report-block h2 {
+        margin-bottom: 4mm !important;
+        color: #0f3d2e !important;
+        font-size: 15.5pt !important;
+        line-height: 1.28 !important;
+        text-align: center;
+      }
+
+      .candidate-chip-list {
+        justify-content: center;
+        gap: 3mm !important;
+      }
+
+      .candidate-chip {
+        min-height: 9.5mm !important;
+        padding: 0 5mm !important;
+        font-size: 11.5pt !important;
+        background: #e9f8ef !important;
+        border: 1px solid #9fd9b2 !important;
+        color: #116735 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .report-result-list {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+        gap: 6.5mm !important;
+      }
+
+      .report-result-item {
+        display: grid !important;
+        grid-template-columns: 21mm minmax(0, 1fr) !important;
+        gap: 5.5mm !important;
+        align-items: center !important;
+        width: 100% !important;
+        min-height: 32mm;
+        padding: 6.4mm 7mm !important;
+        border-radius: 16px !important;
+        font-size: 14pt !important;
+        line-height: 1.7 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .result-icon {
+        width: 21mm !important;
+        height: 21mm !important;
+        font-size: 27pt !important;
+        align-self: center !important;
+      }
+
+      .report-result-item strong {
+        padding: 2mm 4.2mm !important;
+        margin-bottom: 3.4mm !important;
+        font-size: 14pt !important;
+        line-height: 1.38 !important;
+      }
+
+      .report-result-desc {
+        font-size: 13.2pt !important;
+        line-height: 1.75 !important;
+      }
+
+      .official-reference-list {
+        gap: 3mm !important;
+        margin-top: 3mm !important;
+      }
+
+      .official-reference-card {
+        grid-template-columns: minmax(0, 1fr) 22mm !important;
+        min-height: 13.5mm !important;
+        padding: 4mm 5mm !important;
+        border-radius: 12px !important;
+        background: #eef6ff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        break-inside: avoid;
+      }
+
+      .official-reference-card strong {
+        font-size: 11.5pt !important;
+        line-height: 1.35 !important;
+      }
+
+      .official-reference-card em {
+        min-height: 8.8mm !important;
+        padding: 0 3.5mm !important;
+        font-size: 10.3pt !important;
+      }
+
+      .report-print-footer {
+        margin-top: auto !important;
+        padding: 5mm !important;
+        border-radius: 12px !important;
+        background: #f8fafc !important;
+        border: 1px dashed #94a3b8 !important;
+        color: #334155 !important;
+        font-size: 10.5pt !important;
+        line-height: 1.55 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      a[href]::after {
+        content: "";
+      }
+    }
+
+    @media print {
+      .match-summary-card {
+        display: none !important;
+      }
+
+      .print-report-document {
+        display: flex !important;
+        flex-direction: column;
+        width: 100% !important;
+        min-height: calc(297mm - 14mm);
+        padding: 10mm;
+        border: 1.2px solid #cbd5e1;
+        border-radius: 18px;
+        background: #ffffff;
+        color: #0f172a;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8mm;
+        align-items: start;
+        padding: 9mm;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #0f3d2e 0%, #14532d 46%, #1d4ed8 100%);
+        color: #ffffff;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-kicker {
+        margin-bottom: 3mm;
+        font-size: 10.5pt;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        color: #dbeafe;
+      }
+
+      .print-report-title {
+        margin: 0;
+        font-size: 27pt;
+        line-height: 1.18;
+        font-weight: 950;
+      }
+
+      .print-report-meta {
+        display: grid;
+        gap: 2mm;
+        min-width: 38mm;
+        text-align: right;
+        font-size: 10.5pt;
+        line-height: 1.35;
+        color: #e0f2fe;
+      }
+
+      .print-report-status {
+        width: fit-content;
+        margin: 6mm auto 0;
+        padding: 2.4mm 6mm;
+        border-radius: 999px;
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        color: #92400e;
+        font-size: 12.5pt;
+        font-weight: 950;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-section {
+        margin-top: 7mm;
+      }
+
+      .print-report-section-title {
+        margin: 0 0 4mm;
+        color: #0f3d2e;
+        font-size: 16pt;
+        line-height: 1.3;
+        font-weight: 950;
+        text-align: center;
+      }
+
+      .print-candidate-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3mm;
+      }
+
+      .print-candidate-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 10mm;
+        padding: 0 5mm;
+        border-radius: 999px;
+        background: #e9f8ef;
+        border: 1px solid #9fd9b2;
+        color: #116735;
+        font-size: 12pt;
+        font-weight: 900;
+        white-space: nowrap;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-match-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6.5mm;
+      }
+
+      .print-match-row {
+        display: grid;
+        grid-template-columns: 22mm minmax(0, 1fr);
+        gap: 6mm;
+        align-items: center;
+        min-height: 33mm;
+        padding: 6mm 7mm;
+        border-radius: 17px;
+        border: 1.5px solid #cbd5e1;
+        background: #f8fafc;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-match-row.is-pest { background: #e8f8ef; border-color: #8fd4ab; }
+      .print-match-row.is-safety { background: #f0f9df; border-color: #b7d978; }
+      .print-match-row.is-weather { background: #e7f4ff; border-color: #88c7ef; }
+      .print-match-row.is-guide { background: #fff5c8; border-color: #e8c45a; }
+      .print-match-row.is-local { background: #fff0e3; border-color: #e8a77e; }
+
+      .print-match-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22mm;
+        height: 22mm;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        font-size: 29pt;
+      }
+
+      .print-match-label {
+        display: inline-flex;
+        width: fit-content;
+        margin-bottom: 3.5mm;
+        padding: 2mm 4.5mm;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        color: #0f2f22;
+        font-size: 15pt;
+        line-height: 1.35;
+        font-weight: 950;
+      }
+
+      .print-match-desc {
+        color: #1f2937;
+        font-size: 14pt;
+        line-height: 1.75;
+        font-weight: 850;
+      }
+
+      .print-reference-list {
+        display: grid;
+        gap: 3mm;
+      }
+
+      .print-reference-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4mm;
+        align-items: center;
+        min-height: 13mm;
+        padding: 4mm 5mm;
+        border-radius: 12px;
+        background: #eef6ff;
+        border: 1px solid #bfdbfe;
+        color: #12315f;
+        font-size: 12pt;
+        line-height: 1.4;
+        font-weight: 900;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-reference-source {
+        color: #1d4ed8;
+        font-size: 10.5pt;
+        white-space: nowrap;
+      }
+
+      .print-report-footer {
+        margin-top: auto;
+        padding: 5mm;
+        border-radius: 13px;
+        background: #f8fafc;
+        border: 1px dashed #94a3b8;
+        color: #334155;
+        font-size: 10.5pt;
+        line-height: 1.58;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-footer strong {
+        color: #14532d;
+        font-weight: 950;
+      }
+    }
+
+    .detail-toggle-button {
+      width: 100%;
+      min-height: 42px;
+      margin-top: 13px;
+      border: 0;
+      border-radius: 14px;
+      background: #15364a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 950;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .match-detail-panel {
+      padding: 14px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .source-detail-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .source-detail-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+
+    .source-detail-card strong {
+      display: block;
+      color: #123524;
+      font-size: 12.8px;
+      line-height: 1.28;
+      font-weight: 950;
+    }
+
+    .source-detail-card span {
+      display: block;
+      margin-top: 2px;
+      color: #52635a;
+      font-size: 11.8px;
+      line-height: 1.35;
+    }
+
+    .source-detail-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(37, 99, 235, 0.18);
+      color: #1d4ed8;
+      font-size: 11.5px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .source-detail-link.is-guidance {
+      color: #64748b;
+      border-color: rgba(100, 116, 139, 0.18);
+      background: #f8fafc;
+    }
+
+    .report-extra-check,
+    .report-caution {
+      margin-top: 10px;
+      padding: 11px 12px;
+      border-radius: 15px;
+      font-size: 12.8px;
+      line-height: 1.5;
+    }
+
+    .report-extra-check {
+      background: #f1f8ff;
+      border: 1px solid #cfe7ff;
+      color: #25445f;
+    }
+
+    .report-caution {
+      background: #fff8ed;
+      border: 1px solid #fed7aa;
+      color: #6f430f;
+    }
+
+    .empty-state {
+      padding: 12px;
+      border-radius: 14px;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      color: #536579;
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    .check-card {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 1px solid #dbe8df;
+    }
+
+    .check-no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #e6f4eb;
+      color: var(--green-dark);
+      font-size: 11.5px;
+      font-weight: 850;
+    }
+
+    .check-card h3 {
+      color: #153925;
+      font-size: 13.5px;
+      line-height: 1.3;
+      margin-bottom: 3px;
+    }
+
+    .check-card p {
+      color: #5a6d62;
+      font-size: 12px;
+      line-height: 1.38;
+    }
+
+    .source-name {
+      display: block;
+      margin-top: 6px;
+      color: #728177;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 0 11px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      background: var(--green);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      touch-action: manipulation;
+    }
+
+    .btn.secondary {
+      color: var(--green-dark);
+      background: #ffffff;
+      border-color: rgba(18, 138, 67, 0.24);
+    }
+
+    .btn.blue {
+      background: var(--blue);
+    }
+
+    .btn.amber {
+      background: var(--amber);
+    }
+
+    .example-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      overflow-x: visible;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .example-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(18, 138, 67, 0.22);
+      background: #ffffff;
+      color: #18452d;
+      font-size: 12.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .official-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .official-card {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) 12px;
+      gap: 9px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #f6faf8;
+      border: 1px solid #dcebe2;
+      color: inherit;
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+      touch-action: manipulation;
+    }
+
+    .official-card:active {
+      transform: scale(0.992);
+    }
+
+    .official-card__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 5px 12px rgba(15, 23, 42, 0.06);
+      line-height: 1;
+    }
+
+    .official-card__icon svg {
+      width: 27px;
+      height: 27px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.15;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .official-card__body {
+      min-width: 0;
+    }
+
+    .official-card h3 {
+      display: flex;
+      align-items: center;
+      color: #173b29;
+      font-size: var(--card-title-size);
+      line-height: 1.24;
+      margin-bottom: 6px;
+      white-space: normal;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      letter-spacing: 0;
+    }
+
+    .official-card__chevron {
+      justify-self: end;
+      align-self: center;
+      color: #274236;
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .official-card--ncpms {
+      background: #eefaf3;
+      border-color: #bfe8cf;
+      color: #118047;
+    }
+
+    .official-card--ncpms .official-card__icon {
+      background: linear-gradient(145deg, #d9f7e5 0%, #ffffff 100%);
+    }
+
+    .official-card--psis {
+      background: #f5fbef;
+      border-color: #d8edbd;
+      color: #5a8f21;
+    }
+
+    .official-card--psis .official-card__icon {
+      background: linear-gradient(145deg, #e7f7d4 0%, #ffffff 100%);
+    }
+
+    .official-card--nongsaro {
+      background: #fbfcf1;
+      border-color: #e4edc0;
+      color: #6f7f1d;
+    }
+
+    .official-card--nongsaro .official-card__icon {
+      background: linear-gradient(145deg, #eef5c6 0%, #ffffff 100%);
+    }
+
+    .official-card--agriWeather {
+      background: #eff8ff;
+      border-color: #bddff8;
+      color: #2272a6;
+    }
+
+    .official-card--agriWeather .official-card__icon {
+      background: linear-gradient(145deg, #d8efff 0%, #ffffff 100%);
+    }
+
+    .official-card--cropGuide {
+      background: #fffbea;
+      border-color: #f1dda0;
+      color: #9b7415;
+    }
+
+    .official-card--cropGuide .official-card__icon {
+      background: linear-gradient(145deg, #fff0b8 0%, #ffffff 100%);
+    }
+
+    .official-card--cropCalendar {
+      background: #fff4eb;
+      border-color: #f2c3a5;
+      color: #b65a22;
+    }
+
+    .official-card--cropCalendar .official-card__icon {
+      background: linear-gradient(145deg, #ffe0c9 0%, #ffffff 100%);
+    }
+
+    .official-card--localInfo {
+      background: #f6faf8;
+      border-color: #d8e7df;
+    }
+
+    .official-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 0;
+      grid-column: 1;
+    }
+
+    .official-tag {
+      display: inline-flex;
+      align-items: center;
+      height: 21px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #dff2e7;
+      color: #184235;
+      font-size: 10.8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .official-card--ncpms .official-tag {
+      background: #ccefdc;
+      color: #0d6d3b;
+    }
+
+    .official-card--psis .official-tag {
+      background: #e0f1c7;
+      color: #4f7419;
+    }
+
+    .official-card--nongsaro .official-tag {
+      background: #e8edbc;
+      color: #66721a;
+    }
+
+    .official-card--agriWeather .official-tag {
+      background: #d4eafb;
+      color: #1d638f;
+    }
+
+    .official-card--cropGuide .official-tag {
+      background: #f4e2a5;
+      color: #86630f;
+    }
+
+    .official-card--cropCalendar .official-tag {
+      background: #f6d1ba;
+      color: #9a4a18;
+    }
+
+    .tool-form {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 1fr;
+    }
+
+    .tool-form > .btn {
+      grid-column: 1 / -1;
+      width: 100%;
+      border-radius: 13px;
+    }
+
+    .tool-result-card {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f7fbff 0%, #ecfdf5 100%);
+      border: 1px solid rgba(37, 99, 235, 0.16);
+    }
+
+    .tool-result-card.is-visible {
+      display: block;
+    }
+
+    .tool-result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .tool-result-title {
+      color: #0f2f22;
+      font-size: var(--card-title-size);
+      line-height: 1.25;
+      font-weight: 950;
+      word-break: keep-all;
+    }
+
+    .tool-result-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      font-size: 10.5px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tool-result-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .tool-result-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: #e9f8ef;
+      border: 1px solid #c2ead0;
+      color: #116735;
+      font-size: 10.5px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tool-result-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 38px;
+      border-radius: 13px;
+      background: #15364a;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 950;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .field {
+      display: grid;
+      gap: 4px;
+    }
+
+    .field label {
+      color: #2a4a38;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .field input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #cedbd1;
+      border-radius: 12px;
+      background: #ffffff;
+      padding: 0 12px;
+      color: #1f2937;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: rgba(18, 138, 67, 0.62);
+      box-shadow: 0 0 0 3px rgba(18, 138, 67, 0.11);
+    }
+
+    .form-error {
+      grid-column: 1 / -1;
+      min-height: 18px;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .notice {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--amber-soft);
+      border: 1px solid #fed7aa;
+      color: #7c3f08;
+      font-size: 12.2px;
+      line-height: 1.45;
+    }
+
+    .notice.green {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #14532d;
+    }
+
+    .return-area {
+      order: 8;
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+
+    .return-area .btn {
+      flex: 1;
+      min-height: 40px;
+    }
+
+    @media (max-width: 380px) {
+      .hero h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <div class="topbar">
+        <a class="brand" href="index.html" aria-label="kFarmAI 홈">
+          <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" />
+        </a>
+        <a class="home-link" href="index.html">홈</a>
+      </div>
+      <h1>공공데이터 확인</h1>
+      <p>
+        AI 참고 진단 결과를 공공정보로 교차 확인하세요.
+        작물명과 증상을 입력하면 확인할 공식정보를 정리해드립니다.
+      </p>
+    </header>
+
+    <div class="content">
+      <section class="section section--guide" aria-label="공공데이터 확인 안내 이미지">
+        <img class="guide-visual" src="/static/public-data/ai-public-data-guide.png" alt="AI 참고 진단을 공공데이터로 다시 확인하는 안내 이미지" />
+      </section>
+
+      <section class="section section--match" id="matchResult" aria-label="공공데이터 매칭보고">
+        <div id="matchContent" class="empty-state">
+          직접 작물명과 증상을 입력하면 관련 공공정보 확인 경로를 정리해드립니다.
+        </div>
+      </section>
+
+      <section class="section section--examples" aria-labelledby="exampleTitle">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="exampleTitle" data-icon="예시">바로 확인 예시</h2>
+            <p class="section-subtitle">현재 서비스 가능한 공공정보 매칭 사례입니다.</p>
+          </div>
+        </div>
+        <div class="example-chips" id="exampleChips" aria-label="공공정보 확인 예시"></div>
+      </section>
+
+      <section class="section section--official" id="ncpms" aria-labelledby="officialTitle">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="officialTitle" data-icon="공식">공식자료 바로가기</h2>
+            <p class="section-subtitle">공식 시스템과 kFarmAI 참고 화면을 빠르게 확인하세요.</p>
+          </div>
+        </div>
+        <div class="official-grid" id="officialInfoGrid"></div>
+      </section>
+
+      <section class="section section--tool" aria-labelledby="toolTitle">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="toolTitle" data-icon="입력">직접 확인하기</h2>
+            <p class="section-subtitle">전용 사례가 없으면 기본 공식정보 확인 경로를 제공합니다.</p>
+          </div>
+        </div>
+        <form class="tool-form" id="publicDataForm" novalidate>
+          <div class="field">
+            <label for="cropInput">작물명</label>
+            <input id="cropInput" name="crop" type="text" autocomplete="off" placeholder="예: 고추" />
+          </div>
+          <div class="field">
+            <label for="symptomInput">증상 키워드</label>
+            <input id="symptomInput" name="symptom" type="text" autocomplete="off" placeholder="예: 잎말림" />
+          </div>
+          <div class="field">
+            <label for="regionInput">지역</label>
+            <input id="regionInput" name="region" type="text" autocomplete="off" placeholder="선택 입력: 충청권" />
+          </div>
+          <div class="field">
+            <label for="typeInput">재배유형</label>
+            <input id="typeInput" name="type" type="text" autocomplete="off" placeholder="선택 입력: 노지·텃밭" />
+          </div>
+          <div class="form-error" id="formError" aria-live="polite"></div>
+          <button class="btn" type="submit">공공정보로 확인</button>
+        </form>
+        <div class="tool-result-card" id="toolResultCard" aria-live="polite"></div>
+      </section>
+
+      <section class="section section--safety" aria-labelledby="safetyTitle">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title" id="safetyTitle" data-icon="주의">확인 전 주의사항</h2>
+          </div>
+        </div>
+        <div class="notice">
+          AI 참고 진단과 공공정보 확인 결과는 참고자료입니다.
+          농약 사용 전 제품 라벨과 안전사용기준을 확인하고, 판단이 어렵다면 공식 상담창구에 문의하세요.
+        </div>
+      </section>
+
+      <div class="return-area">
+        <a class="btn secondary" href="diagnosis.html">AI 참고 진단으로 돌아가기</a>
+        <a class="btn" href="index.html">홈으로</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="static/js/public-data/public-data-sources.js"></script>
+  <script src="static/js/public-data/matching-engine.js"></script>
+  <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
+  <script>
+    const PUBLIC_DATA_LINKS = {
+      ncpms: {
+        name: 'NCPMS 국가농작물병해충관리시스템',
+        url: 'https://ncpms.rda.go.kr/',
+        description: '작물별 병해충 정보와 발생환경을 확인하는 공식 시스템입니다.',
+        external: true
+      },
+      psis: {
+        name: '농약안전정보시스템',
+        url: 'https://psis.rda.go.kr/',
+        description: '농약 등록정보, 안전사용기준, 제품 라벨을 확인할 수 있습니다.',
+        external: true
+      },
+      nongsaro: {
+        name: '농사로',
+        url: 'https://www.nongsaro.go.kr/',
+        description: '농촌진흥청 농업기술포털에서 작목별 재배기술을 확인합니다.',
+        external: true
+      },
+      agriWeather: {
+        name: 'kFarmAI 농업날씨',
+        url: 'agri-weather.html',
+        description: '기온, 강수, 습도, 풍속 등 재배환경을 참고합니다.',
+        external: false
+      },
+      cropGuide: {
+        name: 'kFarmAI 재배가이드',
+        url: 'crop-guide.html',
+        description: '작물별 재배 흐름과 관리 포인트를 참고합니다.',
+        external: false
+      },
+      cropCalendar: {
+        name: 'kFarmAI 재배달력',
+        url: 'crop-calendar.html',
+        description: '월별 재배 일정과 작업 흐름을 참고합니다.',
+        external: false
+      },
+      localInfo: {
+        name: '지역 농업기관·농자재 정보',
+        url: 'mfg.html',
+        description: '지역 기관, 제조사, 농자재 확인 경로를 참고합니다.',
+        external: false
+      }
+    };
+
+    const PUBLIC_DATA_MATCH_CASES = [
+      {
+        id: 'pepper-leaf-curl',
+        crop: '고추',
+        symptom: '잎말림',
+        aliases: ['고추 잎말림', '고추 잎 말림', '고추 잎이 말림', '고추 잎 오그라듦', '잎말림', '잎말림 증상'],
+        title: '고추 잎말림 공공정보 확인',
+        aiHint: '고추 잎말림은 바이러스성 증상, 해충 피해, 고온·건조 등 생리장해 가능성을 함께 확인해야 합니다.',
+        priorityChecks: [
+          {
+            type: 'pest',
+            label: 'NCPMS 병해충 정보 확인',
+            summary: '고추 관련 병해충 정보와 발생환경을 먼저 확인합니다. 결과는 참고자료이며 병명을 단정하지 않습니다.',
+            linkKey: 'ncpms',
+            queryText: '고추 잎말림'
+          },
+          {
+            type: 'pesticideSafety',
+            label: '농약안전사용기준 확인',
+            summary: '농약 사용 전 등록 작물, 대상 병해충, 사용시기, 희석배수, 안전사용기준과 제품 라벨을 확인해야 합니다.',
+            linkKey: 'psis',
+            queryText: '고추'
+          },
+          {
+            type: 'weather',
+            label: '농업날씨 확인',
+            summary: '고온, 건조, 강풍, 과습 여부는 잎말림 원인 후보를 살펴볼 때 참고할 수 있습니다.',
+            linkKey: 'agriWeather',
+            queryText: '고추'
+          },
+          {
+            type: 'local',
+            label: '지역기관 확인',
+            summary: '공공정보만으로 판단이 어렵다면 가까운 농업기술센터나 공식 상담창구에 사진과 증상을 함께 문의하세요.',
+            linkKey: 'localInfo',
+            queryText: '고추 잎말림'
+          }
+        ]
+      },
+      {
+        id: 'tomato-spots',
+        crop: '토마토',
+        symptom: '반점',
+        aliases: ['토마토 반점', '토마토 잎 반점', '토마토 갈색점', '반점', '잎 반점'],
+        title: '토마토 반점 공공정보 확인',
+        aiHint: '토마토 반점은 병해, 과습, 환경 스트레스 등 여러 원인을 함께 확인하는 것이 좋습니다.',
+        priorityChecks: [
+          {
+            type: 'pest',
+            label: 'NCPMS 병해충 정보 확인',
+            summary: '토마토 관련 병해충 정보와 증상 설명을 확인합니다.',
+            linkKey: 'ncpms',
+            queryText: '토마토 반점'
+          },
+          {
+            type: 'pesticideSafety',
+            label: '농약안전사용기준 확인',
+            summary: '작물보호제를 사용하기 전 토마토에 등록된 약제인지, 대상 병해충과 안전사용기준이 맞는지 확인해야 합니다.',
+            linkKey: 'psis',
+            queryText: '토마토'
+          },
+          {
+            type: 'weather',
+            label: '농업날씨 확인',
+            summary: '습도, 강수, 환기 조건은 반점성 증상의 발생환경을 살펴볼 때 참고할 수 있습니다.',
+            linkKey: 'agriWeather',
+            queryText: '토마토'
+          }
+        ]
+      },
+      {
+        id: 'strawberry-gray-mold',
+        crop: '딸기',
+        symptom: '잿빛곰팡이',
+        aliases: ['딸기 잿빛곰팡이', '딸기 곰팡이', '잿빛곰팡이', '곰팡이', '딸기 꽃곰팡이'],
+        title: '딸기 잿빛곰팡이 공공정보 확인',
+        aiHint: '딸기 곰팡이성 증상은 습도, 환기, 병해 정보와 안전사용기준을 함께 확인해야 합니다.',
+        priorityChecks: [
+          {
+            type: 'pest',
+            label: 'NCPMS 병해충 정보 확인',
+            summary: '딸기 관련 병해 정보와 발생환경을 확인합니다.',
+            linkKey: 'ncpms',
+            queryText: '딸기 잿빛곰팡이'
+          },
+          {
+            type: 'weather',
+            label: '농업날씨 확인',
+            summary: '습도와 환기 조건은 곰팡이성 증상의 발생환경을 살펴볼 때 참고할 수 있습니다.',
+            linkKey: 'agriWeather',
+            queryText: '딸기'
+          },
+          {
+            type: 'pesticideSafety',
+            label: '농약안전사용기준 확인',
+            summary: '농약 사용 전 딸기에 등록된 약제인지, 대상 병해충과 안전사용기준을 확인해야 합니다.',
+            linkKey: 'psis',
+            queryText: '딸기'
+          }
+        ]
+      },
+      {
+        id: 'rice-blast',
+        crop: '벼',
+        symptom: '도열병',
+        aliases: ['벼 도열병', '도열병', '잎도열', '이삭도열', '벼 병해'],
+        title: '벼 도열병 공공정보 확인',
+        aiHint: '벼 도열병 의심 증상은 병해 정보, 발생환경, 지역 기상조건을 함께 확인해야 합니다.',
+        priorityChecks: [
+          {
+            type: 'pest',
+            label: 'NCPMS 병해충 정보 확인',
+            summary: '벼 도열병 관련 병해 정보와 발생환경을 확인합니다.',
+            linkKey: 'ncpms',
+            queryText: '벼 도열병'
+          },
+          {
+            type: 'weather',
+            label: '농업날씨 확인',
+            summary: '강수, 습도, 기온 등 기상조건은 병해 발생환경을 이해하는 데 참고할 수 있습니다.',
+            linkKey: 'agriWeather',
+            queryText: '벼'
+          },
+          {
+            type: 'cropGuide',
+            label: '재배가이드 확인',
+            summary: '벼 생육단계와 재배관리 정보를 함께 확인합니다.',
+            linkKey: 'cropGuide',
+            queryText: '벼'
+          },
+          {
+            type: 'local',
+            label: '지역기관 확인',
+            summary: '지역별 상황은 가까운 농업기술센터 또는 공식 상담창구에서 확인하세요.',
+            linkKey: 'localInfo',
+            queryText: '벼 도열병'
+          }
+        ]
+      }
+    ];
+
+    const FALLBACK_CHECKS = [
+      {
+        type: 'pest',
+        label: 'NCPMS 병해충 정보 확인',
+        summary: '작물별 병해충 정보와 발생환경을 공식 시스템에서 확인합니다.',
+        linkKey: 'ncpms',
+        queryText: ''
+      },
+      {
+        type: 'pesticideSafety',
+        label: '농약안전사용기준 확인',
+        summary: '농약 사용 전 등록 작물, 대상 병해충, 사용시기, 희석배수, 안전사용기준과 제품 라벨을 확인해야 합니다.',
+        linkKey: 'psis',
+        queryText: ''
+      },
+      {
+        type: 'weather',
+        label: '농업날씨 확인',
+        summary: '기온, 강수, 습도, 풍속 등 재배환경을 함께 확인합니다.',
+        linkKey: 'agriWeather',
+        queryText: ''
+      },
+      {
+        type: 'local',
+        label: '지역기관 확인',
+        summary: '공공정보만으로 판단이 어려우면 지역 농업기관 또는 공식 상담창구를 확인하세요.',
+        linkKey: 'localInfo',
+        queryText: ''
+      }
+    ];
+
+    const LINK_BUTTON_TEXT = {
+      ncpms: 'NCPMS',
+      psis: '안전정보',
+      nongsaro: '농사로',
+      agriWeather: '농업날씨',
+      cropGuide: '재배가이드',
+      cropCalendar: '재배달력',
+      localInfo: '지역정보'
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function normalizeText(value) {
+      return String(value || '').replace(/\s+/g, '').toLowerCase();
+    }
+
+    function createUrl(linkKey, context = {}) {
+      const link = PUBLIC_DATA_LINKS[linkKey];
+      if (!link) return '#';
+      if (link.external) return link.url;
+
+      const params = new URLSearchParams();
+      if (context.crop) params.set('crop', context.crop);
+      if (context.symptom) params.set('symptom', context.symptom);
+      if (context.region) params.set('region', context.region);
+      if (context.cultivationType) params.set('type', context.cultivationType);
+      const query = params.toString();
+      return query ? `${link.url}?${query}` : link.url;
+    }
+
+    function linkAttrs(linkKey, context) {
+      const link = PUBLIC_DATA_LINKS[linkKey];
+      const href = escapeHtml(createUrl(linkKey, context));
+      if (!link?.external) {
+        return `href="${href}"`;
+      }
+      return `href="${href}" target="_blank" rel="noopener noreferrer"`;
+    }
+
+    function sourceLinkAttrs(source) {
+      if (!source?.sourceUrl || source.type === 'guidance') {
+        return '';
+      }
+      const href = escapeHtml(source.sourceUrl);
+      if (source.type === 'external') {
+        return `href="${href}" target="_blank" rel="noopener noreferrer"`;
+      }
+      return `href="${href}"`;
+    }
+
+    function getSampleDiagnosisForContext(context) {
+      const engine = window.KFPublicDataMatchingEngine;
+      if (!engine?.sampleDiagnoses) return null;
+      const crop = engine.normalizeCrop(context.crop);
+      const symptom = engine.normalizeSymptom(context.symptom);
+      const sampleEntries = Object.values(engine.sampleDiagnoses);
+      return sampleEntries.find((sample) => {
+        return engine.normalizeCrop(sample.crop) === crop && engine.normalizeSymptom(sample.symptom) === symptom;
+      }) || null;
+    }
+
+    function buildDiagnosisForEngine(context) {
+      const sample = getSampleDiagnosisForContext(context);
+      return {
+        ...(sample || {}),
+        crop: context.crop || sample?.crop || '',
+        symptom: context.symptom || sample?.symptom || '',
+        region: context.region || sample?.region || '',
+        cultivationType: context.cultivationType || sample?.cultivationType || '',
+        aiCandidates: context.aiCandidates || context.causeCandidates || sample?.aiCandidates || [],
+        imageUrl: context.imageUrl || context.image_url || context.photoUrl || context.thumbnailUrl || sample?.imageUrl || ''
+      };
+    }
+
+    function findPublicDataMatch({ crop, symptom }) {
+      const cropKey = normalizeText(crop);
+      const symptomKey = normalizeText(symptom);
+      const combined = normalizeText(`${crop || ''}${symptom || ''}`);
+
+      if (!cropKey && !symptomKey) return null;
+
+      return PUBLIC_DATA_MATCH_CASES.find((item) => {
+        return normalizeText(item.crop) === cropKey && normalizeText(item.symptom) === symptomKey;
+      }) || PUBLIC_DATA_MATCH_CASES.find((item) => {
+        return item.aliases.some((alias) => {
+          const aliasKey = normalizeText(alias);
+          return aliasKey && (combined.includes(aliasKey) || aliasKey.includes(combined));
+        });
+      }) || PUBLIC_DATA_MATCH_CASES.find((item) => {
+        return cropKey && symptomKey && normalizeText(item.crop).includes(cropKey) && normalizeText(item.symptom).includes(symptomKey);
+      }) || PUBLIC_DATA_MATCH_CASES.find((item) => {
+        return symptomKey && item.aliases.some((alias) => normalizeText(alias).includes(symptomKey));
+      }) || null;
+    }
+
+    function buildFallbackMatch(context) {
+      const label = [context.crop, context.symptom].filter(Boolean).join(' ');
+      return {
+        id: 'fallback',
+        crop: context.crop || '입력 작물',
+        symptom: context.symptom || '입력 증상',
+        title: label ? `${label} 공공정보 확인` : '기본 공공정보 확인',
+        aiHint: '입력한 작물·증상에 대한 전용 매칭 사례는 아직 준비 중입니다. 아래 공식정보를 기준으로 교차 확인하세요.',
+        priorityChecks: FALLBACK_CHECKS
+      };
+    }
+
+    function renderPriorityChecks(checks, context) {
+      return `
+        <div class="check-list">
+          ${checks.map((check, index) => {
+            const link = PUBLIC_DATA_LINKS[check.linkKey];
+            const linkContext = { ...context, queryText: check.queryText };
+            return `
+              <article class="check-card">
+                <span class="check-no">${index + 1}</span>
+                <div>
+                  <h3>${escapeHtml(check.label)}</h3>
+                  <p>${escapeHtml(check.summary)}</p>
+                  <span class="source-name">공식 출처: ${escapeHtml(link?.name || '공식정보')}</span>
+                  <div class="actions">
+                    <a class="btn ${check.linkKey === 'psis' ? 'amber' : check.linkKey === 'ncpms' ? 'blue' : ''}" ${linkAttrs(check.linkKey, linkContext)}>
+                      ${escapeHtml(LINK_BUTTON_TEXT[check.linkKey] || '확인')}
+                    </a>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function getReportValue(value, fallback) {
+      const text = String(value ?? '').trim();
+      return text || fallback;
+    }
+
+    function compactText(value, fallback, maxLength = 18) {
+      const text = getReportValue(value, fallback).replace(/\s+/g, ' ');
+      return text.length > maxLength ? `${text.slice(0, maxLength).trim()}...` : text;
+    }
+
+    function getFirstImageUrl(value) {
+      if (Array.isArray(value)) return value.find(Boolean) || '';
+      if (!value) return '';
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) return parsed.find(Boolean) || '';
+        } catch (_) {
+          return value;
+        }
+      }
+      return '';
+    }
+
+    function getReportImageUrl(result) {
+      return getFirstImageUrl(
+        result.imageUrl || result.image_url || result.photoUrl || result.photo_url || result.thumbnailUrl
+        || result.imageUrls || result.image_urls || result.images
+        || result.diagnosis?.imageUrl || result.diagnosis?.image_url || result.diagnosis?.photoUrl
+        || result.diagnosis?.imageUrls || result.diagnosis?.image_urls || result.diagnosis?.images
+      );
+    }
+
+    function getReportTitle() {
+      return '공공데이터 매칭보고';
+    }
+
+    function getReportKey(result) {
+      const crop = normalizeText(result.normalizedCrop || result.crop);
+      const symptom = normalizeText(result.normalizedSymptom || result.symptom);
+      return `${crop}|${symptom}`;
+    }
+
+    function getReportContextLine(result) {
+      const crop = String(result.normalizedCrop || result.crop || '').trim();
+      const symptom = String(result.normalizedSymptom || result.symptom || '').trim();
+      const blocked = new Set(['미입력', '미선택', '미확인 작물', '미확인 증상', '증상 미확인']);
+      return [crop, symptom].filter((value) => value && !blocked.has(value)).join(' · ');
+    }
+
+    const OFFICIAL_REFERENCE_LINKS = {
+      '고추|잎말림': [
+        {
+          title: '사진 있는 공식자료: 고추 잎말림',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=237680&menuId=PS00077',
+          note: '잎말림 사진과 현장 확인 내용을 공식 원문에서 바로 확인합니다.'
+        },
+        {
+          title: '고추 이상증상 공식 사례',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=262387&menuId=PS00077',
+          note: '잎 뒤틀림·말림 등 이상증상 현장 사례를 확인합니다.'
+        }
+      ],
+      '고추|탄저병': [
+        {
+          title: '사진 있는 공식자료: 고추 탄저병',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00000195',
+          note: '고추 탄저병의 발생환경, 증상설명, 사진정보를 농사로 공식 원문에서 확인합니다.'
+        },
+        {
+          title: '고추 탄저병 기술자료',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psv/psvr/psvre/curationDtl.ps?menuId=PS03352&srchCurationNo=1879&totalSearchYn=Y',
+          note: '고추 탄저병 관련 현장 기술자료를 확인합니다.'
+        }
+      ],
+      '콩|탄저병': [
+        {
+          title: '사진 있는 공식자료: 콩 탄저병',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psv/psvr/psvre/curationDtl.ps?menuId=PS03352&srchCurationNo=1910',
+          note: '콩 꼬투리 탄저병 증상과 병해충 관리 내용을 농사로 공식 원문에서 확인합니다.'
+        },
+        {
+          title: '콩 병해충 관리 기술자료',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psv/psvr/psvre/curationDtl.ps?menuId=PS03352&srchCurationNo=1987&totalSearchYn=Y',
+          note: '콩 생육 중기 병해충 관리 자료에서 탄저병 관련 확인 항목을 봅니다.'
+        }
+      ],
+      '토마토|반점': [
+        {
+          title: '사진 있는 공식자료: 토마토 반점',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00004471',
+          note: '토마토반점위조바이러스 사진정보를 공식 원문에서 바로 확인합니다.'
+        },
+        {
+          title: '토마토 반점 현장 사례',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=210752&menuId=PS00077',
+          note: '반점과 잎 위축 현장 사례를 확인합니다.'
+        }
+      ],
+      '딸기|잿빛곰팡이': [
+        {
+          title: '사진 있는 공식자료: 딸기 잿빛곰팡이',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00000440',
+          note: '딸기 잿빛곰팡이병 사진정보를 공식 원문에서 바로 확인합니다.'
+        },
+        {
+          title: '딸기 주요 곰팡이병 기술자료',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psv/psvr/psvre/curationDtl.ps?menuId=PS03352&srchCurationNo=2118',
+          note: '딸기 곰팡이성 병해 기술자료를 확인합니다.'
+        }
+      ],
+      '벼|도열병': [
+        {
+          title: '사진 있는 공식자료: 벼 도열병',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/pss/pssa/sicknsSearchDtl.ps?menuId=PS00202&pageIndex=1&pageSize=10&sicknsCode=D00001336',
+          note: '도열병 병징과 사진정보를 공식 원문에서 바로 확인합니다.'
+        },
+        {
+          title: '벼 병해 사진 기술자료',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/ps/psv/psvr/psvre/curationDtl.ps?menuId=PS03352&srchCurationNo=1783',
+          note: '여름철 벼 병해 사진과 확인 포인트를 확인합니다.'
+        }
+      ]
+    };
+
+    const OFFICIAL_REFERENCE_CASE_KEYS = {
+      'pepper-anthracnose': '고추|탄저병',
+      'soybean-anthracnose': '콩|탄저병',
+      'pepper-leaf-curl': '고추|잎말림',
+      'tomato-spot': '토마토|반점',
+      'strawberry-gray-mold': '딸기|잿빛곰팡이',
+      'rice-blast': '벼|도열병'
+    };
+
+    function getNongsaroSearchUrl(result) {
+      const query = [result.normalizedCrop || result.crop, result.normalizedSymptom || result.symptom].filter(Boolean).join(' ');
+      return `https://www.google.com/search?q=${encodeURIComponent(`site:nongsaro.go.kr ${query || '작물 병해충'}`)}`;
+    }
+
+    function getOfficialReferenceLinks(result) {
+      const caseKey = OFFICIAL_REFERENCE_CASE_KEYS[result.caseId];
+      const curated = OFFICIAL_REFERENCE_LINKS[caseKey] || OFFICIAL_REFERENCE_LINKS[getReportKey(result)] || [];
+      if (curated.length) return curated;
+      return [
+        {
+          title: `${getReportTitle(result)} 공식자료 검색`,
+          source: '농사로 공식자료',
+          url: getNongsaroSearchUrl(result),
+          note: '농사로 내부 검색 오류를 피하기 위해 농사로 공식 페이지로 제한해 검색합니다.'
+        }
+      ];
+    }
+
+    function getShortReferenceTitle(title) {
+      return String(title || '공식자료')
+        .replace(/^사진 있는 공식자료:\s*/, '')
+        .replace(/\s*공식자료\s*$/, '')
+        .trim() || '공식자료';
+    }
+
+    function getMatchFindings(sources) {
+      const sourceKeys = new Set(sources.map((source) => source.sourceKey));
+      const findings = [];
+      if (sourceKeys.has('ncpms')) {
+        findings.push({ tone: 'pest', icon: '🔎', title: '병해충 확인', text: '발생환경·증상 사진' });
+      }
+      if (sourceKeys.has('psis')) {
+        findings.push({ tone: 'safety', icon: '🛡️', title: '안전기준 확인', text: '등록작물·라벨' });
+      }
+      if (sourceKeys.has('agriWeather')) {
+        findings.push({ tone: 'weather', icon: '☀️', title: '날씨 확인', text: '기온·습도·강수' });
+      }
+      if (sourceKeys.has('cropGuide') || sourceKeys.has('nongsaro')) {
+        findings.push({ tone: 'guide', icon: '📘', title: '재배관리 확인', text: '생육단계·관리포인트' });
+      }
+      if (sourceKeys.has('localAgency')) {
+        findings.push({ tone: 'local', icon: '🏢', title: '추가확인', text: '사진·발생환경 상담' });
+      }
+      return findings.slice(0, 4);
+    }
+
+    function renderCandidateChips(result) {
+      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
+      const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
+      return chips.slice(0, 5).map((label) => `<span class="candidate-chip">${escapeHtml(label)}</span>`).join('');
+    }
+
+    function renderSourceChips(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      if (!sources.length) {
+        return '<span class="source-chip is-guidance">기본 공공정보</span>';
+      }
+      return sources.slice(0, 5).map((source) => {
+        const attrs = sourceLinkAttrs(source);
+        const label = source.shortName || source.sourceName || '공식자료';
+        return attrs
+          ? `<a class="source-chip" ${attrs}>${escapeHtml(label)}</a>`
+          : `<span class="source-chip is-guidance">${escapeHtml(label)}</span>`;
+      }).join('');
+    }
+
+    function renderMatchFindings(sources) {
+      const findings = getMatchFindings(sources);
+      if (!findings.length) {
+        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📘</span><div><strong>[기본 확인]</strong><span class="report-result-desc">공식자료 경로 정리</span></div></div>';
+      }
+      return findings.map((item) => `
+        <div class="report-result-item is-${escapeHtml(item.tone || 'guide')}">
+          <span class="result-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
+          <div>
+            <strong>[${escapeHtml(item.title)}]</strong>
+            <span class="report-result-desc">${escapeHtml(item.text)}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderReportFooter(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      const labels = renderSourceLine(sources);
+      return `
+        <div class="report-print-footer">
+          <strong>출처</strong> ${escapeHtml(labels)}<br>
+          <strong>제공</strong> kfarmai.com<br>
+          이 보고서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 기사·공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
+        </div>
+      `;
+    }
+
+    function renderPrintCandidateChips(result) {
+      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
+      const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
+      return chips.slice(0, 5).map((label) => `<span class="print-candidate-chip">${escapeHtml(label)}</span>`).join('');
+    }
+
+    function renderPrintMatchRows(sources) {
+      const findings = getMatchFindings(sources);
+      const items = findings.length ? findings : [{ tone: 'guide', icon: '📘', title: '기본 확인', text: '공식자료 경로 정리' }];
+      return items.map((item) => `
+        <div class="print-match-row is-${escapeHtml(item.tone || 'guide')}">
+          <span class="print-match-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
+          <div>
+            <div class="print-match-label">[${escapeHtml(item.title)}]</div>
+            <div class="print-match-desc">${escapeHtml(item.text)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPrintReferences(result) {
+      return getOfficialReferenceLinks(result).slice(0, 2).map((item) => `
+        <div class="print-reference-row">
+          <span>${escapeHtml(getShortReferenceTitle(item.title))}</span>
+          <span class="print-reference-source">${escapeHtml(item.source || '공식자료')}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderPrintReportDocument(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      const rawStatus = getReportValue(result.matchStatus, '공공데이터 확인 항목');
+      const matchStatus = rawStatus === '일반 확인 항목 안내' ? '공공데이터 확인 항목' : rawStatus;
+      const contextLine = getReportContextLine(result) || '작물·증상 확인 중';
+      const createdAt = new Date().toLocaleDateString('ko-KR');
+      return `
+        <article class="print-report-document" aria-label="인쇄용 공공데이터 매칭 보고서">
+          <header class="print-report-head">
+            <div>
+              <div class="print-report-kicker">kFarmAI 공공데이터 매칭 보고서</div>
+              <h1 class="print-report-title">${escapeHtml(contextLine)}</h1>
+            </div>
+            <div class="print-report-meta">
+              <span>생성일 ${escapeHtml(createdAt)}</span>
+              <span>kfarmai.com</span>
+              <span>참고자료</span>
+            </div>
+          </header>
+
+          <div class="print-report-status">${escapeHtml(matchStatus)}</div>
+
+          <section class="print-report-section">
+            <h2 class="print-report-section-title">원인 후보</h2>
+            <div class="print-candidate-list">${renderPrintCandidateChips(result)}</div>
+          </section>
+
+          <section class="print-report-section">
+            <h2 class="print-report-section-title">공공데이터 매칭 핵심</h2>
+            <div class="print-match-list">${renderPrintMatchRows(sources)}</div>
+          </section>
+
+          <section class="print-report-section">
+            <h2 class="print-report-section-title">공식자료 바로가기</h2>
+            <div class="print-reference-list">${renderPrintReferences(result)}</div>
+          </section>
+
+          <footer class="print-report-footer">
+            <strong>출처</strong> ${escapeHtml(renderSourceLine(sources))}<br>
+            <strong>제공</strong> kfarmai.com<br>
+            본 문서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
+          </footer>
+        </article>
+      `;
+    }
+
+    function printPublicDataReport() {
+      window.print();
+    }
+
+    function renderSourceLine(sources) {
+      const labels = sources.map((source) => source.shortName || source.sourceName).filter(Boolean);
+      return labels.length ? labels.join(' · ') : '농사로 · NCPMS · 농약안전정보 · kFarmAI 참고 화면';
+    }
+
+    function renderOfficialReferences(result) {
+      return `
+        <div class="official-reference-list">
+          ${getOfficialReferenceLinks(result).map((item) => `
+            <a class="official-reference-card" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
+              <div>
+                <strong>${escapeHtml(getShortReferenceTitle(item.title))}</strong>
+              </div>
+              <em>보기 ›</em>
+            </a>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function renderToolResultCard(result) {
+      const card = $('#toolResultCard');
+      if (!card || !result) return;
+      const links = getOfficialReferenceLinks(result);
+      const primary = links[0] || {};
+      const isRepresentative = Boolean(result.caseId);
+      const tags = (Array.isArray(result.aiCandidateLabels) && result.aiCandidateLabels.length
+        ? result.aiCandidateLabels
+        : ['공식자료 확인']
+      ).slice(0, 3);
+      const href = primary.url || getNongsaroSearchUrl(result);
+      const label = isRepresentative ? '사진 있는 공식자료 보기' : '기본 공식자료 검색';
+      const contextLine = getReportContextLine(result);
+      card.className = 'tool-result-card is-visible';
+      card.innerHTML = `
+        <div class="tool-result-head">
+          <strong class="tool-result-title">${escapeHtml(contextLine || '확인 결과')}</strong>
+          <span class="tool-result-status">${escapeHtml(result.matchStatus || '일반 확인 항목 안내')}</span>
+        </div>
+        <div class="tool-result-tags">
+          ${tags.map((tag) => `<span class="tool-result-tag">${escapeHtml(tag)}</span>`).join('')}
+        </div>
+        <a class="tool-result-link" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a>
+      `;
+    }
+
+    function renderReportThumb(result) {
+      const imageUrl = getReportImageUrl(result);
+      if (!imageUrl) return '';
+      return `<img class="report-photo-thumb" src="${escapeHtml(imageUrl)}" alt="업로드 사진 미리보기" loading="lazy" />`;
+    }
+
+    function renderSourceDetails(sources) {
+      if (!sources.length) {
+        return '<div class="empty-state">연결할 공공데이터 출처를 찾지 못했습니다. 기본 공공정보를 확인하세요.</div>';
+      }
+      return `
+        <div class="source-detail-list">
+          ${sources.map((source) => {
+            const attrs = sourceLinkAttrs(source);
+            const action = attrs
+              ? `<a class="source-detail-link" ${attrs}>${escapeHtml(source.shortName || '보기')}</a>`
+              : '<span class="source-detail-link is-guidance">안내</span>';
+            return `
+              <article class="source-detail-card">
+                <div>
+                  <strong>${escapeHtml(source.shortName || source.sourceName)}</strong>
+                  <span>${escapeHtml(source.checkedPoint)}</span>
+                </div>
+                ${action}
+              </article>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderMatchingReport(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      const rawStatus = getReportValue(result.matchStatus, '공공데이터 확인 항목');
+      const matchStatus = rawStatus === '일반 확인 항목 안내' ? '공공데이터 확인 항목' : rawStatus;
+      const contextLine = getReportContextLine(result);
+      return `
+        <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
+          <article class="match-summary-card">
+            <div class="report-title-row">
+              <div>
+                <h3 class="report-title">${escapeHtml(getReportTitle(result))}</h3>
+                ${contextLine ? `<div class="report-context-line">${escapeHtml(contextLine)}</div>` : ''}
+              </div>
+              ${renderReportThumb(result)}
+            </div>
+
+            <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
+
+            <div class="report-block">
+              <h2>원인 후보</h2>
+              <div class="candidate-chip-list">${renderCandidateChips(result)}</div>
+            </div>
+
+            <div class="report-block">
+              <h2>공공데이터 매칭 핵심</h2>
+              <div class="report-result-list">${renderMatchFindings(sources)}</div>
+            </div>
+
+            <div class="report-block">
+              <h2>바로 확인 링크</h2>
+              ${renderOfficialReferences(result)}
+            </div>
+
+            <div class="report-actions">
+              <button class="report-download-btn" type="button" onclick="printPublicDataReport()">PDF로 저장</button>
+            </div>
+
+            ${renderReportFooter(result)}
+          </article>
+          ${renderPrintReportDocument(result)}
+        </section>
+      `;
+    }
+
+    function renderMatch(context, options = {}) {
+      const hasInput = Boolean(context.crop || context.symptom || context.region || context.cultivationType);
+      if (!hasInput && !options.force) {
+        $('#matchContent').className = 'empty-state';
+        $('#matchContent').textContent = '직접 작물명과 증상을 입력하면 관련 공공정보 확인 경로를 정리해드립니다.';
+        return;
+      }
+
+      const engine = window.KFPublicDataMatchingEngine;
+      if (!engine?.matchDiagnosisToPublicData) {
+        const match = findPublicDataMatch(context) || buildFallbackMatch(context);
+        $('#matchContent').className = '';
+        $('#matchContent').innerHTML = `
+          <div class="summary-card">
+            <h3 class="match-title">${escapeHtml(match.title)}</h3>
+            <p class="match-note">${escapeHtml(match.aiHint)}</p>
+          </div>
+          ${renderPriorityChecks(match.priorityChecks, context)}
+        `;
+        return;
+      }
+
+      const matchPayload = createMatchResult(context);
+      const diagnosis = matchPayload.diagnosis;
+      const result = matchPayload.result;
+      window.KFDiagnosisPublicDataBridge?.savePublicDataReport?.(result, diagnosis);
+      $('#matchContent').className = '';
+      $('#matchContent').innerHTML = renderMatchingReport(result);
+    }
+
+    function renderExamples() {
+      $('#exampleChips').innerHTML = PUBLIC_DATA_MATCH_CASES.map((item) => `
+        <button class="chip" type="button" data-match-id="${escapeHtml(item.id)}">
+          ${escapeHtml(item.crop)} + ${escapeHtml(item.symptom)}
+        </button>
+      `).join('');
+
+      $('#exampleChips').addEventListener('click', (event) => {
+        const button = event.target.closest('[data-match-id]');
+        if (!button) return;
+        const item = PUBLIC_DATA_MATCH_CASES.find((match) => match.id === button.dataset.matchId);
+        if (!item) return;
+        const context = {
+          crop: item.crop,
+          symptom: item.symptom,
+          region: $('#regionInput').value.trim(),
+          cultivationType: $('#typeInput').value.trim()
+        };
+        fillInputs(context);
+        renderMatch(context, { force: true });
+        const params = new URLSearchParams();
+        params.set('crop', context.crop);
+        params.set('symptom', context.symptom);
+        if (context.region) params.set('region', context.region);
+        if (context.cultivationType) params.set('type', context.cultivationType);
+        history.replaceState(null, '', `public-data.html?${params.toString()}#matchResult`);
+        $('#matchResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    }
+
+    function renderOfficialInfo() {
+      const groups = [
+        { key: 'ncpms', tags: ['병해충', 'NCPMS', '작물'] },
+        { key: 'psis', tags: ['안전', '등록정보', '라벨'] },
+        { key: 'nongsaro', tags: ['농사로', '기술정보', '작목'] },
+        { key: 'agriWeather', tags: ['날씨', '강수', '습도'] },
+        { key: 'cropGuide', tags: ['재배', '관리', '작물'] },
+        { key: 'cropCalendar', tags: ['월별', '시기', '준비'] }
+      ];
+
+      $('#officialInfoGrid').innerHTML = groups.map(({ key, tags }) => {
+        const item = PUBLIC_DATA_LINKS[key];
+        return `
+          <a class="official-card official-card--${escapeHtml(key)}" ${linkAttrs(key, getCurrentInputContext())}>
+            <div class="official-card__icon" aria-hidden="true">${officialIcon(key)}</div>
+            <div class="official-card__body">
+              <h3>${escapeHtml(item.name)}</h3>
+              <div class="official-tags">
+                ${tags.map((tag) => `<span class="official-tag">${escapeHtml(tag)}</span>`).join('')}
+              </div>
+            </div>
+            <span class="official-card__chevron" aria-hidden="true">›</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    function officialIcon(key) {
+      const icons = {
+        ncpms: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M12 3l7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3z"/><path d="M12 3l7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3z"/><path fill="currentColor" fill-opacity=".22" stroke="none" d="M8.5 13.5c3.7.1 6.1-1.8 7-5.5-3.9.2-6.2 2-7 5.5z"/><path d="M8.5 13.5c3.7.1 6.1-1.8 7-5.5-3.9.2-6.2 2-7 5.5z"/><path d="M8.5 13.5c1.5.8 3 .9 4.5.2"/></svg>',
+        psis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6"/><path fill="currentColor" fill-opacity=".14" stroke="none" d="M10 8l-4.3 8.2A3.2 3.2 0 0 0 8.5 21h7a3.2 3.2 0 0 0 2.8-4.8L14 8H10z"/><path d="M10 3v5l-4.3 8.2A3.2 3.2 0 0 0 8.5 21h7a3.2 3.2 0 0 0 2.8-4.8L14 8V3"/><path d="M8 16h8"/><path d="M10 13h4"/></svg>',
+        nongsaro: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-opacity=".13" stroke="none" d="M5 5.5c4.2-.1 7 1.7 7 5.5v8H7a3 3 0 0 1-3-3V6.5c0-.6.4-1 1-1z"/><path d="M5 5.5c4.2-.1 7 1.7 7 5.5v8"/><path d="M19 6c-4.5.1-7 2.1-7 6"/><path d="M6 18h12"/><path d="M7 11c2.1 0 3.6.7 5 2"/><path d="M17 11c-2.1.2-3.6.9-5 2"/></svg>',
+        agriWeather: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="17" cy="7" r="3" fill="currentColor" fill-opacity=".16" stroke="none"/><path fill="currentColor" fill-opacity=".12" stroke="none" d="M17 18a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.8A3.4 3.4 0 0 0 7 18h10z"/><path d="M17 18a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.8A3.4 3.4 0 0 0 7 18h10z"/><path d="M8 21l1-1.5"/><path d="M13 21l1-1.5"/><path d="M18 21l1-1.5"/></svg>',
+        cropGuide: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-opacity=".13" stroke="none" d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5z"/><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5z"/><path d="M8 8h6"/><path d="M8 11h5"/><path fill="currentColor" fill-opacity=".2" stroke="none" d="M12 16c2.7-.1 4.5-1.4 5.2-4-2.9.1-4.6 1.4-5.2 4z"/><path d="M12 16c2.7-.1 4.5-1.4 5.2-4-2.9.1-4.6 1.4-5.2 4z"/></svg>',
+        cropCalendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" fill="currentColor" fill-opacity=".12" stroke="none"/><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/><path d="M8 14h.1"/><path d="M12 14h.1"/><path d="M16 14h.1"/><path d="M8 17h.1"/><path d="M12 17h.1"/></svg>'
+      };
+      return icons[key] || '•';
+    }
+
+    function getCurrentInputContext() {
+      return {
+        crop: $('#cropInput')?.value.trim() || '',
+        symptom: $('#symptomInput')?.value.trim() || '',
+        region: $('#regionInput')?.value.trim() || '',
+        cultivationType: $('#typeInput')?.value.trim() || ''
+      };
+    }
+
+    function fillInputs(context) {
+      $('#cropInput').value = context.crop || '';
+      $('#symptomInput').value = context.symptom || '';
+      $('#regionInput').value = context.region || '';
+      $('#typeInput').value = context.cultivationType || '';
+      $('#formError').textContent = '';
+      renderOfficialInfo();
+    }
+
+    function getQueryContext() {
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('q') || '';
+      return {
+        crop: params.get('crop') || '',
+        symptom: params.get('symptom') || params.get('symptoms') || q,
+        region: params.get('region') || '',
+        cultivationType: params.get('cultivationType') || params.get('type') || ''
+      };
+    }
+
+    function readDiagnosisContext() {
+      const keys = ['kfarmai:lastDiagnosis', 'kfarmai:lastAiDiagnosis'];
+      for (const key of keys) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) continue;
+          const data = JSON.parse(raw);
+          const symptoms = Array.isArray(data.symptoms) ? data.symptoms.find(Boolean) : data.symptom;
+          return {
+            crop: data.crop || data.cropName || data.plant || '',
+            symptom: symptoms || data.mainSymptom || '',
+            region: data.region || '',
+            cultivationType: data.cultivationType || data.type || '',
+            aiCandidates: Array.isArray(data.aiCandidates) ? data.aiCandidates : (Array.isArray(data.causeCandidates) ? data.causeCandidates : []),
+            imageUrl: getFirstImageUrl(data.imageUrl || data.image_url || data.photoUrl || data.thumbnailUrl || data.imageUrls || data.image_urls || data.images)
+          };
+        } catch (error) {
+          console.warn('[kFarmAI] lastDiagnosis parse failed', error);
+        }
+      }
+      return { crop: '', symptom: '', region: '', cultivationType: '' };
+    }
+
+    function getFallbackDiagnosisForReport() {
+      const engine = window.KFPublicDataMatchingEngine;
+      return engine?.sampleDiagnoses?.pepperLeafCurl || {
+        crop: '미확인 작물',
+        symptom: '미확인 증상',
+        aiCandidates: [
+          { name: '원인 후보', category: 'unknown', keywords: [] },
+          { name: '환경 요인', category: 'environment', keywords: [] },
+          { name: '재배관리 요인', category: 'management', keywords: [] }
+        ]
+      };
+    }
+
+    function getLastDiagnosisForReport() {
+      const storedContext = readDiagnosisContext();
+      if (storedContext.crop || storedContext.symptom || storedContext.region || storedContext.cultivationType) {
+        return storedContext;
+      }
+      return getFallbackDiagnosisForReport();
+    }
+
+    function createMatchResult(context) {
+      const engine = window.KFPublicDataMatchingEngine;
+      if (!engine?.matchDiagnosisToPublicData) return null;
+      const diagnosis = buildDiagnosisForEngine(context || getFallbackDiagnosisForReport());
+      return {
+        diagnosis,
+        result: engine.matchDiagnosisToPublicData(diagnosis)
+      };
+    }
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      const context = getCurrentInputContext();
+      if (!context.crop) {
+        $('#formError').textContent = '작물명을 입력해주세요.';
+        $('#cropInput').focus();
+        return;
+      }
+      if (!context.symptom) {
+        $('#formError').textContent = '증상 키워드를 입력해주세요.';
+        $('#symptomInput').focus();
+        return;
+      }
+      $('#formError').textContent = '';
+      renderMatch(context, { force: true });
+      const matchPayload = createMatchResult(context);
+      renderToolResultCard(matchPayload?.result);
+      renderOfficialInfo();
+      $('#matchResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function init() {
+      renderExamples();
+      renderOfficialInfo();
+      $('#publicDataForm').addEventListener('submit', handleSubmit);
+
+      const queryContext = getQueryContext();
+      const hasQuery = Boolean(queryContext.crop || queryContext.symptom || queryContext.region || queryContext.cultivationType);
+      const storedContext = getLastDiagnosisForReport();
+      const storedMatchesQuery = hasQuery
+        && (!queryContext.crop || !storedContext.crop || normalizeText(queryContext.crop) === normalizeText(storedContext.crop))
+        && (!queryContext.symptom || !storedContext.symptom || normalizeText(queryContext.symptom) === normalizeText(storedContext.symptom));
+      const context = hasQuery ? {
+        ...storedContext,
+        ...queryContext,
+        aiCandidates: storedMatchesQuery ? (storedContext.aiCandidates || []) : []
+      } : storedContext;
+      const hasContext = Boolean(context.crop || context.symptom || context.region || context.cultivationType || context.aiCandidates);
+      if (hasContext) {
+        fillInputs(context);
+        renderMatch(context, { force: true });
+      } else {
+        renderMatch(context);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
