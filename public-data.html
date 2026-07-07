@@ -2520,8 +2520,6 @@
 
     function renderPrintReportDocument(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
-      const rawStatus = getReportValue(result.matchStatus, '공공데이터 확인 항목');
-      const matchStatus = rawStatus === '일반 확인 항목 안내' ? '공공데이터 확인 항목' : rawStatus;
       const contextLine = getReportContextLine(result) || '작물·증상 확인 중';
       const createdAt = new Date().toLocaleDateString('ko-KR');
       return `
@@ -2537,8 +2535,6 @@
               <span>참고자료</span>
             </div>
           </header>
-
-          <div class="print-report-status">${escapeHtml(matchStatus)}</div>
 
           <section class="print-report-section">
             <div class="print-match-list">${renderPrintMatchRows(sources)}</div>
@@ -2641,8 +2637,6 @@
 
     function renderMatchingReport(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
-      const rawStatus = getReportValue(result.matchStatus, '공공데이터 확인 항목');
-      const matchStatus = rawStatus === '일반 확인 항목 안내' ? '공공데이터 확인 항목' : rawStatus;
       const contextLine = getReportContextLine(result);
       return `
         <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
@@ -2654,8 +2648,6 @@
               </div>
               ${renderReportThumb(result)}
             </div>
-
-            <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
 
             <div class="report-block">
               <div class="report-result-list">${renderMatchFindings(sources)}</div>
