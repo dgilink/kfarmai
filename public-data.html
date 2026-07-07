@@ -159,8 +159,10 @@
 
     .section--match {
       order: 2;
-      background: #f3f9ff;
-      border-color: rgba(37, 99, 235, 0.18);
+      padding: 0;
+      background: transparent;
+      border-color: transparent;
+      box-shadow: none;
     }
 
     .section--match .section-head {
@@ -425,9 +427,10 @@
     .report-title-row {
       display: flex;
       align-items: flex-start;
-      justify-content: space-between;
+      justify-content: center;
       gap: 8px;
-      margin-top: 7px;
+      margin-top: 0;
+      text-align: center;
     }
 
     .report-title {
@@ -440,6 +443,7 @@
       white-space: normal;
       word-break: keep-all;
       overflow-wrap: anywhere;
+      text-align: center;
     }
 
     .report-subtitle {
@@ -668,7 +672,7 @@
       }
 
       .section--match {
-        padding: 8px;
+        padding: 0;
       }
 
       .match-report-shell {
