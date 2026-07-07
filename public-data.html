@@ -22,7 +22,9 @@
       --navy: #15364a;
     }
 
-    * {
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
     }
 
@@ -403,9 +405,14 @@
     .match-report-shell {
       display: grid;
       gap: 12px;
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     .match-summary-card {
+      width: 100%;
+      max-width: none;
       padding: 13px;
       border-radius: 22px;
       background:
@@ -413,6 +420,7 @@
         linear-gradient(135deg, #f7fbff 0%, #ecfdf5 100%);
       border: 1px solid rgba(37, 99, 235, 0.16);
       box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
     }
 
     .report-kicker {
@@ -442,6 +450,10 @@
       line-height: 1.25;
       font-weight: 850;
       letter-spacing: 0;
+      max-width: 100%;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
     }
 
     .report-subtitle {
@@ -516,6 +528,9 @@
       font-size: 11px;
       line-height: 1.28;
       word-break: keep-all;
+      max-width: 100%;
+      overflow: hidden;
+      overflow-wrap: anywhere;
     }
 
     .report-result-item.is-pest { background: #eefaf3; border-color: #bfe8cf; }
@@ -626,6 +641,8 @@
       border: 1px solid #bfdbfe;
       text-decoration: none;
       color: inherit;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     .official-reference-card strong {
@@ -635,6 +652,7 @@
       line-height: 1.28;
       font-weight: 900;
       word-break: keep-all;
+      overflow-wrap: anywhere;
     }
 
     .official-reference-card span {
@@ -644,6 +662,7 @@
       font-size: 10.8px;
       line-height: 1.28;
       word-break: keep-all;
+      overflow-wrap: anywhere;
     }
 
     .official-reference-card em {
@@ -663,6 +682,38 @@
     @media (max-width: 374px) {
       .report-result-list {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .section--match {
+        padding: 8px;
+      }
+
+      .match-report-shell {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .match-summary-card {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 16px 12px;
+      }
+
+      .report-result-item,
+      .official-reference-card {
+        width: 100%;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
       }
     }
 
