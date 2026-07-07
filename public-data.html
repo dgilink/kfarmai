@@ -267,14 +267,20 @@
     .section-head {
       display: flex;
       align-items: flex-start;
-      justify-content: space-between;
+      justify-content: center;
       gap: 10px;
       margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .section-head > div {
+      width: 100%;
     }
 
     .section-title {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       font-size: 18px;
       line-height: 1.28;
@@ -1235,7 +1241,7 @@
       <section class="section section--official" id="ncpms" aria-labelledby="officialTitle">
         <div class="section-head">
           <div>
-            <h2 class="section-title" id="officialTitle" data-icon="공식">공공데이터 확인</h2>
+            <h2 class="section-title" id="officialTitle" data-icon="공식">공식자료 바로가기</h2>
             <p class="section-subtitle">공식 시스템과 kFarmAI 참고 화면을 빠르게 확인하세요.</p>
           </div>
         </div>
@@ -1245,7 +1251,7 @@
       <section class="section section--tool" aria-labelledby="toolTitle">
         <div class="section-head">
           <div>
-            <h2 class="section-title" id="toolTitle" data-icon="입력">작물·증상으로 공공정보 확인</h2>
+            <h2 class="section-title" id="toolTitle" data-icon="입력">직접 확인하기</h2>
             <p class="section-subtitle">전용 사례가 없으면 기본 공식정보 확인 경로를 제공합니다.</p>
           </div>
         </div>
