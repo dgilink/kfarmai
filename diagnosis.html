@@ -1396,6 +1396,51 @@ function normalizeDiagnosisResult(result) {
   };
 }
 
+function buildFallbackDiagnosisResult(context = {}) {
+  const crop = context.crop || '미선택';
+  const symptom = context.symptom || context.userText || context.description || '증상 미확인';
+  const hasImage = Boolean(context.imageAttached);
+  return {
+    mode: 'AI 참고 진단',
+    crop,
+    symptoms: [symptom].filter(Boolean),
+    symptom,
+    summary: hasImage
+      ? '사진과 입력 정보를 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.'
+      : '입력한 증상 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.',
+    causeCandidates: [
+      { label: '원인 후보', name: '원인 후보', category: 'unknown', confidence: 'low', strength: '낮음', reason: '추가 확인이 필요합니다.' },
+      { label: '환경 요인', name: '환경 요인', category: 'environment', confidence: 'low', strength: '낮음', reason: '최근 기온·습도·관수 상태를 함께 확인하세요.' },
+      { label: '재배관리 요인', name: '재배관리 요인', category: 'management', confidence: 'low', strength: '낮음', reason: '물관리, 통풍, 생육단계를 함께 확인하세요.' }
+    ],
+    aiCandidates: [
+      { label: '원인 후보', category: 'unknown', confidence: 'low' },
+      { label: '환경 요인', category: 'environment', confidence: 'low' },
+      { label: '재배관리 요인', category: 'management', confidence: 'low' }
+    ],
+    checkPoints: ['사진의 증상 부위 확인', '최근 물관리와 온습도 확인', '공식자료에서 유사 증상 확인'],
+    publicDataNeeds: ['병해충 정보', '농업날씨', '재배가이드'],
+    source: hasImage ? 'image-ai' : 'text-ai',
+    createdAt: new Date().toISOString(),
+    safetyNotice: '이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 공식자료와 전문가 확인을 함께 참고하세요.',
+    urgent: false
+  };
+}
+
+function parseDiagnosisJson(raw) {
+  const clean = String(raw || '').replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  try {
+    return JSON.parse(clean);
+  } catch (_) {
+    const start = clean.indexOf('{');
+    const end = clean.lastIndexOf('}');
+    if (start >= 0 && end > start) {
+      return JSON.parse(clean.slice(start, end + 1));
+    }
+    throw new Error('PARSE_ERROR');
+  }
+}
+
 function normalizeTag(value) {
   return String(value || '').toLowerCase().replace(/\s+/g, '');
 }
@@ -1651,7 +1696,7 @@ function buildPublicDataDiagnosis(result) {
   return bridge.buildStructuredDiagnosis({
     result,
     inputContext,
-    source: 'diagnosis-page'
+    source: capturedFile ? 'image-ai' : 'diagnosis-page'
   });
 }
 
@@ -1731,27 +1776,32 @@ async function startDiagnosis() {
 
     let result;
     try {
-      const clean = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-      result = JSON.parse(clean);
+      result = parseDiagnosisJson(raw);
     } catch {
-      throw new Error('PARSE_ERROR');
+      result = buildFallbackDiagnosisResult({
+        crop,
+        symptom,
+        cultivationType: env,
+        imageAttached: Boolean(capturedFile),
+        userText: raw
+      });
+      console.warn('[kFarmAI] diagnosis JSON parse failed');
     }
 
     lastResult = result;
     showResult(result);
 
   } catch (err) {
-    setLoading(false);
-    showFallbackResult();
-    if (err.message === 'PARSE_ERROR') {
-      showToast('AI 참고 진단 결과를 불러오지 못했습니다. 다시 시도해주세요');
-    } else if (err.message.startsWith('API_')) {
-      showToast('서버 오류가 발생했습니다 (' + err.message.replace('API_', '') + ')');
-    } else if (err.name === 'TypeError') {
-      showToast('네트워크 연결을 확인해주세요');
-    } else {
-      showToast('AI 참고 진단에 실패했습니다. 다시 시도해주세요');
-    }
+    const fallbackResult = buildFallbackDiagnosisResult({
+      crop,
+      symptom,
+      cultivationType: env,
+      imageAttached: Boolean(capturedFile)
+    });
+    console.warn('[kFarmAI] diagnosis request failed', err);
+    lastResult = fallbackResult;
+    showResult(fallbackResult);
+    showToast('공공정보 확인용 기본 결과를 만들었습니다.');
   }
 }
 

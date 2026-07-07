@@ -2522,7 +2522,7 @@ function buildHomePublicDataDiagnosis(resultData, context = {}) {
   return bridge.buildStructuredDiagnosis({
     result: resultData || {},
     inputContext: context,
-    source: 'home-ai-tab'
+    source: context.imageAttached ? 'image-ai' : 'home-ai-tab'
   });
 }
 
@@ -2541,6 +2541,28 @@ function openHomePublicDataReport() {
     return;
   }
   location.href = 'public-data.html';
+}
+
+function buildHomeFallbackDiagnosisData(context = {}) {
+  const symptom = context.symptom || '증상 미확인';
+  const hasImage = Boolean(context.imageAttached);
+  return {
+    crop: context.crop || '미선택',
+    symptom,
+    summary: hasImage
+      ? '사진과 입력 정보를 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.'
+      : '입력한 증상 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.',
+    causes: ['원인 후보', '환경 요인', '재배관리 요인'],
+    management: ['증상 부위 사진 확인', '최근 물관리와 온습도 확인', '공식자료에서 유사 증상 확인'],
+    materials: ['병해충 정보', '농업날씨', '재배가이드'],
+    aiCandidates: [
+      { label: '원인 후보', category: 'unknown', confidence: 'low' },
+      { label: '환경 요인', category: 'environment', confidence: 'low' },
+      { label: '재배관리 요인', category: 'management', confidence: 'low' }
+    ],
+    source: hasImage ? 'image-ai' : 'text-ai',
+    createdAt: new Date().toISOString()
+  };
 }
 
 async function runDiagnosis() {
@@ -2587,7 +2609,17 @@ async function runDiagnosis() {
     renderDiagResult(data, resultWrap, structuredDiagnosis);
     saveDiagnosisHistory(detail || symptom, data);
   } catch (err) {
-    resultWrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-body" style="color:#DC2626">진단에 실패했습니다.<br>${err.message || '잠시 후 다시 시도해주세요.'}</div></div>`;
+    const diagnosisContext = {
+      crop,
+      symptom,
+      region,
+      cultivationType: env,
+      imageAttached: Boolean(diagImageBase64)
+    };
+    const fallbackData = buildHomeFallbackDiagnosisData(diagnosisContext);
+    console.warn('[kFarmAI] diagnosis request failed', err);
+    const structuredDiagnosis = saveHomePublicDataDiagnosis(fallbackData, diagnosisContext);
+    renderDiagResult(fallbackData, resultWrap, structuredDiagnosis);
   } finally {
     loading.classList.remove('show');
     btn.textContent = 'AI 참고 진단 시작';

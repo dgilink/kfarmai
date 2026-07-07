@@ -54,8 +54,10 @@
     if (!candidate) return null;
     if (typeof candidate === 'string') {
       return {
+        label: cleanText(candidate),
         name: cleanText(candidate),
         category: inferCategory(candidate),
+        confidence: 'low',
         keywords: keywordList(candidate),
         reason: ''
       };
@@ -69,12 +71,22 @@
       .concat([name, reason])
       .filter(Boolean);
     return {
+      label: name,
       name: name,
       category: candidate.category || inferCategory(keywordSource.join(' ')),
+      confidence: candidate.confidence || candidate.strength || 'low',
       keywords: unique(keywordSource.flatMap(keywordList)).slice(0, 8),
       reason: reason,
       matchTargets: asArray(candidate.matchTargets)
     };
+  }
+
+  function defaultCandidates() {
+    return [
+      { label: '원인 후보', name: '원인 후보', category: 'unknown', confidence: 'low', keywords: ['원인', '후보'], reason: '' },
+      { label: '환경 요인', name: '환경 요인', category: 'environment', confidence: 'low', keywords: ['환경', '요인'], reason: '' },
+      { label: '재배관리 요인', name: '재배관리 요인', category: 'management', confidence: 'low', keywords: ['재배관리', '관리'], reason: '' }
+    ];
   }
 
   function keywordList(value) {
@@ -155,6 +167,7 @@
     var result = options.result || {};
     var inputContext = options.inputContext || {};
     var candidates = normalizeCandidates(result);
+    if (!candidates.length) candidates = defaultCandidates();
     var crop = firstText(inputContext.crop, result.crop, result.cropName, result.plant);
     var symptom = inferSymptom(result, inputContext);
     var summary = inferSummary(result, candidates);
@@ -168,11 +181,11 @@
     return {
       diagnosisId: diagnosisId,
       createdAt: result.createdAt || nowIso(),
-      source: options.source || 'ai-reference-diagnosis',
+      source: options.source || (inputContext.imageAttached ? 'image-ai' : 'ai-reference-diagnosis'),
       inputType: inputContext.imageAttached ? 'image_text' : 'text',
-      crop: crop || '미입력',
+      crop: crop || '미선택',
       cropCandidates: unique(asArray(result.cropCandidates).concat([crop]).filter(Boolean)),
-      symptom: symptom || '미입력',
+      symptom: symptom || firstText(result.userText, result.description, result.summary) || '증상 미확인',
       symptomKeywords: unique(asArray(result.symptomKeywords).concat(keywordList(symptom))).slice(0, 8),
       region: firstText(inputContext.region, result.region),
       cultivationType: firstText(inputContext.cultivationType, inputContext.env, result.cultivationType, result.type),

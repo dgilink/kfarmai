@@ -1677,7 +1677,7 @@
         symptom: context.symptom || sample?.symptom || '',
         region: context.region || sample?.region || '',
         cultivationType: context.cultivationType || sample?.cultivationType || '',
-        aiCandidates: context.aiCandidates || sample?.aiCandidates || [],
+        aiCandidates: context.aiCandidates || context.causeCandidates || sample?.aiCandidates || [],
         imageUrl: context.imageUrl || context.image_url || context.photoUrl || context.thumbnailUrl || sample?.imageUrl || ''
       };
     }
@@ -2176,11 +2176,11 @@
             symptom: symptoms || data.mainSymptom || '',
             region: data.region || '',
             cultivationType: data.cultivationType || data.type || '',
-            aiCandidates: Array.isArray(data.aiCandidates) ? data.aiCandidates : [],
+            aiCandidates: Array.isArray(data.aiCandidates) ? data.aiCandidates : (Array.isArray(data.causeCandidates) ? data.causeCandidates : []),
             imageUrl: getFirstImageUrl(data.imageUrl || data.image_url || data.photoUrl || data.thumbnailUrl || data.imageUrls || data.image_urls || data.images)
           };
         } catch (error) {
-          console.warn('[public-data] ignored broken diagnosis context', { key });
+          console.warn('[kFarmAI] lastDiagnosis parse failed', error);
         }
       }
       return { crop: '', symptom: '', region: '', cultivationType: '' };

@@ -293,7 +293,7 @@
 
   function getCandidateLabels(diagnosis) {
     return getCandidates(diagnosis).map(function (candidate) {
-      return cleanText(candidate && candidate.name);
+      return cleanText(candidate && (candidate.name || candidate.label));
     }).filter(Boolean);
   }
 
@@ -303,7 +303,7 @@
       if (Array.isArray(candidate && candidate.keywords)) {
         keywords = keywords.concat(candidate.keywords);
       }
-      if (candidate && candidate.name) keywords.push(candidate.name);
+      if (candidate && (candidate.name || candidate.label)) keywords.push(candidate.name || candidate.label);
       if (candidate && candidate.category) keywords.push(candidate.category);
     });
     return uniqueList(keywords);
