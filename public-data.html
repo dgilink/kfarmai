@@ -2453,23 +2453,35 @@
         .trim() || '공식자료';
     }
 
-    function getMatchFindings(sources) {
+    function isDirectPublicDataMatch(result) {
+      return result && result.matchStatus === '공공데이터 관련 항목 매칭됨';
+    }
+
+    function getMatchFindings(sources, result) {
+      if (!isDirectPublicDataMatch(result)) {
+        return [{
+          tone: 'guide',
+          icon: '📎',
+          title: '전용 매칭 없음',
+          text: 'AI 결과와 바로 연결된 공공자료 사례는 준비 중입니다'
+        }];
+      }
       const sourceKeys = new Set(sources.map((source) => source.sourceKey));
       const findings = [];
       if (sourceKeys.has('ncpms')) {
-        findings.push({ tone: 'pest', icon: '🔎', title: '병해충 확인', text: '발생환경·증상 사진' });
+        findings.push({ tone: 'pest', icon: '🔎', title: 'NCPMS 공공자료', text: 'AI 증상과 유사한 병해충·발생환경 항목' });
       }
       if (sourceKeys.has('psis')) {
-        findings.push({ tone: 'safety', icon: '🛡️', title: '안전기준 확인', text: '등록작물·라벨' });
+        findings.push({ tone: 'safety', icon: '🛡️', title: '농약안전정보', text: '작물·대상 병해충·제품 라벨 기준 확인' });
       }
       if (sourceKeys.has('agriWeather')) {
-        findings.push({ tone: 'weather', icon: '☀️', title: '날씨 확인', text: '기온·습도·강수' });
+        findings.push({ tone: 'weather', icon: '☀️', title: '농업날씨 자료', text: 'AI 원인 후보와 연결되는 기상 조건' });
       }
       if (sourceKeys.has('cropGuide') || sourceKeys.has('nongsaro')) {
-        findings.push({ tone: 'guide', icon: '📘', title: '재배관리 확인', text: '생육단계·관리포인트' });
+        findings.push({ tone: 'guide', icon: '📘', title: '재배 공공자료', text: '농사로·재배가이드 관리 포인트 확인' });
       }
       if (sourceKeys.has('localAgency')) {
-        findings.push({ tone: 'local', icon: '🏢', title: '추가확인', text: '사진·발생환경 상담' });
+        findings.push({ tone: 'local', icon: '🏢', title: '관계기관 확인', text: '사진·발생환경을 가지고 추가 검증 권장' });
       }
       return findings.slice(0, 4);
     }
@@ -2488,10 +2500,10 @@
       }).join('');
     }
 
-    function renderMatchFindings(sources) {
-      const findings = getMatchFindings(sources);
+    function renderMatchFindings(sources, result) {
+      const findings = getMatchFindings(sources, result);
       if (!findings.length) {
-        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📘</span><div><strong>[기본 확인]</strong><span class="report-result-desc">공식자료 경로 정리</span></div></div>';
+        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📎</span><div><strong>[전용 매칭 없음]</strong><span class="report-result-desc">공식자료 직접 확인 경로만 제공합니다</span></div></div>';
       }
       return findings.map((item) => `
         <div class="report-result-item is-${escapeHtml(item.tone || 'guide')}">
@@ -2516,9 +2528,9 @@
       `;
     }
 
-    function renderPrintMatchRows(sources) {
-      const findings = getMatchFindings(sources);
-      const items = findings.length ? findings : [{ tone: 'guide', icon: '📘', title: '기본 확인', text: '공식자료 경로 정리' }];
+    function renderPrintMatchRows(sources, result) {
+      const findings = getMatchFindings(sources, result);
+      const items = findings.length ? findings : [{ tone: 'guide', icon: '📎', title: '전용 매칭 없음', text: '공식자료 직접 확인 경로만 제공합니다' }];
       return items.map((item) => `
         <div class="print-match-row is-${escapeHtml(item.tone || 'guide')}">
           <span class="print-match-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
@@ -2558,7 +2570,7 @@
           </header>
 
           <section class="print-report-section">
-            <div class="print-match-list">${renderPrintMatchRows(sources)}</div>
+            <div class="print-match-list">${renderPrintMatchRows(sources, result)}</div>
           </section>
 
           <section class="print-report-section">
@@ -2646,7 +2658,7 @@
               <article class="source-detail-card">
                 <div>
                   <strong>${escapeHtml(source.shortName || source.sourceName)}</strong>
-                  <span>${escapeHtml(source.checkedPoint)}</span>
+                  <span>${escapeHtml(source.resultText || source.checkedPoint)}</span>
                 </div>
                 ${action}
               </article>
@@ -2671,7 +2683,7 @@
             </div>
 
             <div class="report-block">
-              <div class="report-result-list">${renderMatchFindings(sources)}</div>
+              <div class="report-result-list">${renderMatchFindings(sources, result)}</div>
             </div>
 
             <div class="report-block">
