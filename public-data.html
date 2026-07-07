@@ -227,9 +227,8 @@
     .guide-visual {
       display: block;
       width: 100%;
-      aspect-ratio: 16 / 9;
-      max-height: 260px;
-      object-fit: cover;
+      height: auto;
+      object-fit: contain;
       border-radius: 16px;
     }
 
@@ -533,11 +532,11 @@
 
     .official-card {
       display: grid;
-      grid-template-columns: 48px minmax(0, 1fr) 18px;
-      gap: 10px;
+      grid-template-columns: 54px minmax(0, 1fr) 18px;
+      gap: 11px;
       align-items: center;
-      padding: 11px 12px;
-      border-radius: 14px;
+      padding: 13px 14px;
+      border-radius: 18px;
       background: #f6faf8;
       border: 1px solid #dcebe2;
       color: inherit;
@@ -553,13 +552,23 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(255, 255, 255, 0.76);
       border: 1px solid rgba(15, 23, 42, 0.05);
-      font-size: 23px;
       line-height: 1;
+    }
+
+    .official-card__icon svg {
+      width: 28px;
+      height: 28px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .official-card__body {
@@ -570,7 +579,7 @@
       display: flex;
       align-items: center;
       color: #173b29;
-      font-size: 14.3px;
+      font-size: 14.8px;
       line-height: 1.28;
       margin-bottom: 2px;
       white-space: nowrap;
@@ -579,8 +588,8 @@
     }
 
     .official-card p {
-      color: #40564a;
-      font-size: 12.2px;
+      color: #334155;
+      font-size: 12.4px;
       line-height: 1.32;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -591,40 +600,46 @@
     .official-card__chevron {
       justify-self: end;
       align-self: center;
-      color: #365141;
-      font-size: 25px;
+      color: #274236;
+      font-size: 27px;
       line-height: 1;
       font-weight: 700;
     }
 
     .official-card--ncpms {
-      background: #f3fbf6;
-      border-color: #ccebd9;
+      background: #eefaf3;
+      border-color: #bfe8cf;
+      color: #118047;
     }
 
     .official-card--psis {
-      background: #f6fbf1;
-      border-color: #d8ecc9;
+      background: #f5fbef;
+      border-color: #d8edbd;
+      color: #5a8f21;
     }
 
     .official-card--nongsaro {
-      background: #f8fbf4;
-      border-color: #dfeccf;
+      background: #fbfcf1;
+      border-color: #e4edc0;
+      color: #6f7f1d;
     }
 
     .official-card--agriWeather {
-      background: #f2f8ff;
-      border-color: #d5e8fb;
+      background: #eff8ff;
+      border-color: #bddff8;
+      color: #2272a6;
     }
 
     .official-card--cropGuide {
-      background: #fffcef;
-      border-color: #f0e7b8;
+      background: #fffbea;
+      border-color: #f1dda0;
+      color: #9b7415;
     }
 
     .official-card--cropCalendar {
-      background: #fff7ed;
-      border-color: #f3d7b7;
+      background: #fff4eb;
+      border-color: #f2c3a5;
+      color: #b65a22;
     }
 
     .official-card--localInfo {
@@ -646,8 +661,8 @@
       height: 22px;
       padding: 0 8px;
       border-radius: 999px;
-      background: #dff2e7;
-      color: #126038;
+      background: rgba(255, 255, 255, 0.72);
+      color: #184235;
       font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
@@ -1269,12 +1284,12 @@
 
     function officialIcon(key) {
       const icons = {
-        ncpms: '🌿',
-        psis: '🛡',
-        nongsaro: '🌱',
-        agriWeather: '☁',
-        cropGuide: '📘',
-        cropCalendar: '📅'
+        ncpms: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3z"/><path d="M8.5 13.5c3.7.1 6.1-1.8 7-5.5-3.9.2-6.2 2-7 5.5z"/><path d="M8.5 13.5c1.5.8 3 .9 4.5.2"/></svg>',
+        psis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v5l-4.3 8.2A3.2 3.2 0 0 0 8.5 21h7a3.2 3.2 0 0 0 2.8-4.8L14 8V3"/><path d="M8 16h8"/><path d="M10 13h4"/></svg>',
+        nongsaro: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5c4.2-.1 7 1.7 7 5.5v8"/><path d="M19 6c-4.5.1-7 2.1-7 6"/><path d="M6 18h12"/><path d="M7 11c2.1 0 3.6.7 5 2"/><path d="M17 11c-2.1.2-3.6.9-5 2"/></svg>',
+        agriWeather: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.8A3.4 3.4 0 0 0 7 18h10z"/><path d="M8 21l1-1.5"/><path d="M13 21l1-1.5"/><path d="M18 21l1-1.5"/></svg>',
+        cropGuide: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5z"/><path d="M8 8h6"/><path d="M8 11h5"/><path d="M12 16c2.7-.1 4.5-1.4 5.2-4-2.9.1-4.6 1.4-5.2 4z"/></svg>',
+        cropCalendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/><path d="M8 14h.1"/><path d="M12 14h.1"/><path d="M16 14h.1"/><path d="M8 17h.1"/><path d="M12 17h.1"/></svg>'
       };
       return icons[key] || '•';
     }
