@@ -232,27 +232,6 @@
       border-radius: 16px;
     }
 
-    .guide-caption {
-      padding: 10px 12px 12px;
-      text-align: center;
-      background: #ffffff;
-    }
-
-    .guide-caption strong {
-      display: block;
-      color: #123524;
-      font-size: 14.5px;
-      line-height: 1.3;
-      margin-bottom: 3px;
-    }
-
-    .guide-caption span {
-      display: block;
-      color: #647466;
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
     .section:first-child {
       margin-top: 0;
     }
@@ -532,10 +511,10 @@
 
     .official-card {
       display: grid;
-      grid-template-columns: 54px minmax(0, 1fr) 18px;
-      gap: 11px;
+      grid-template-columns: 52px minmax(0, 1fr) 12px;
+      gap: 10px;
       align-items: center;
-      padding: 13px 14px;
+      padding: 12px 12px;
       border-radius: 18px;
       background: #f6faf8;
       border: 1px solid #dcebe2;
@@ -552,21 +531,22 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 54px;
-      height: 54px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.76);
-      border: 1px solid rgba(15, 23, 42, 0.05);
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 5px 12px rgba(15, 23, 42, 0.06);
       line-height: 1;
     }
 
     .official-card__icon svg {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       display: block;
       stroke: currentColor;
       fill: none;
-      stroke-width: 2.2;
+      stroke-width: 2.15;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -579,17 +559,20 @@
       display: flex;
       align-items: center;
       color: #173b29;
-      font-size: 14.8px;
-      line-height: 1.28;
+      font-size: 13.7px;
+      line-height: 1.24;
       margin-bottom: 2px;
-      white-space: nowrap;
+      white-space: normal;
       overflow: hidden;
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      letter-spacing: 0;
     }
 
     .official-card p {
       color: #334155;
-      font-size: 12.4px;
+      font-size: 12.1px;
       line-height: 1.32;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -601,7 +584,7 @@
       justify-self: end;
       align-self: center;
       color: #274236;
-      font-size: 27px;
+      font-size: 24px;
       line-height: 1;
       font-weight: 700;
     }
@@ -612,10 +595,18 @@
       color: #118047;
     }
 
+    .official-card--ncpms .official-card__icon {
+      background: linear-gradient(145deg, #d9f7e5 0%, #ffffff 100%);
+    }
+
     .official-card--psis {
       background: #f5fbef;
       border-color: #d8edbd;
       color: #5a8f21;
+    }
+
+    .official-card--psis .official-card__icon {
+      background: linear-gradient(145deg, #e7f7d4 0%, #ffffff 100%);
     }
 
     .official-card--nongsaro {
@@ -624,10 +615,18 @@
       color: #6f7f1d;
     }
 
+    .official-card--nongsaro .official-card__icon {
+      background: linear-gradient(145deg, #eef5c6 0%, #ffffff 100%);
+    }
+
     .official-card--agriWeather {
       background: #eff8ff;
       border-color: #bddff8;
       color: #2272a6;
+    }
+
+    .official-card--agriWeather .official-card__icon {
+      background: linear-gradient(145deg, #d8efff 0%, #ffffff 100%);
     }
 
     .official-card--cropGuide {
@@ -636,10 +635,18 @@
       color: #9b7415;
     }
 
+    .official-card--cropGuide .official-card__icon {
+      background: linear-gradient(145deg, #fff0b8 0%, #ffffff 100%);
+    }
+
     .official-card--cropCalendar {
       background: #fff4eb;
       border-color: #f2c3a5;
       color: #b65a22;
+    }
+
+    .official-card--cropCalendar .official-card__icon {
+      background: linear-gradient(145deg, #ffe0c9 0%, #ffffff 100%);
     }
 
     .official-card--localInfo {
@@ -661,11 +668,41 @@
       height: 22px;
       padding: 0 8px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.72);
+      background: #dff2e7;
       color: #184235;
       font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
+    }
+
+    .official-card--ncpms .official-tag {
+      background: #ccefdc;
+      color: #0d6d3b;
+    }
+
+    .official-card--psis .official-tag {
+      background: #e0f1c7;
+      color: #4f7419;
+    }
+
+    .official-card--nongsaro .official-tag {
+      background: #e8edbc;
+      color: #66721a;
+    }
+
+    .official-card--agriWeather .official-tag {
+      background: #d4eafb;
+      color: #1d638f;
+    }
+
+    .official-card--cropGuide .official-tag {
+      background: #f4e2a5;
+      color: #86630f;
+    }
+
+    .official-card--cropCalendar .official-tag {
+      background: #f6d1ba;
+      color: #9a4a18;
     }
 
     .tool-form {
@@ -768,12 +805,8 @@
     </header>
 
     <div class="content">
-      <section class="section section--guide" aria-labelledby="guideTitle">
+      <section class="section section--guide" aria-label="공공데이터 확인 안내 이미지">
         <img class="guide-visual" src="/static/public-data/ai-public-data-guide.png" alt="AI 참고 진단을 공공데이터로 다시 확인하는 안내 이미지" />
-        <div class="guide-caption">
-          <strong id="guideTitle">AI 진단을 공공데이터로 검증</strong>
-          <span>원인 후보를 병해충 정보, 안전정보, 날씨, 재배자료와 함께 확인합니다.</span>
-        </div>
       </section>
 
       <section class="section section--match" id="matchResult" aria-labelledby="matchTitle">
@@ -1284,12 +1317,12 @@
 
     function officialIcon(key) {
       const icons = {
-        ncpms: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3z"/><path d="M8.5 13.5c3.7.1 6.1-1.8 7-5.5-3.9.2-6.2 2-7 5.5z"/><path d="M8.5 13.5c1.5.8 3 .9 4.5.2"/></svg>',
-        psis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6"/><path d="M10 3v5l-4.3 8.2A3.2 3.2 0 0 0 8.5 21h7a3.2 3.2 0 0 0 2.8-4.8L14 8V3"/><path d="M8 16h8"/><path d="M10 13h4"/></svg>',
-        nongsaro: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5c4.2-.1 7 1.7 7 5.5v8"/><path d="M19 6c-4.5.1-7 2.1-7 6"/><path d="M6 18h12"/><path d="M7 11c2.1 0 3.6.7 5 2"/><path d="M17 11c-2.1.2-3.6.9-5 2"/></svg>',
-        agriWeather: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 18a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.8A3.4 3.4 0 0 0 7 18h10z"/><path d="M8 21l1-1.5"/><path d="M13 21l1-1.5"/><path d="M18 21l1-1.5"/></svg>',
-        cropGuide: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5z"/><path d="M8 8h6"/><path d="M8 11h5"/><path d="M12 16c2.7-.1 4.5-1.4 5.2-4-2.9.1-4.6 1.4-5.2 4z"/></svg>',
-        cropCalendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/><path d="M8 14h.1"/><path d="M12 14h.1"/><path d="M16 14h.1"/><path d="M8 17h.1"/><path d="M12 17h.1"/></svg>'
+        ncpms: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-opacity=".14" stroke="none" d="M12 3l7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3z"/><path d="M12 3l7 3v5c0 4.6-2.8 8-7 10-4.2-2-7-5.4-7-10V6l7-3z"/><path fill="currentColor" fill-opacity=".22" stroke="none" d="M8.5 13.5c3.7.1 6.1-1.8 7-5.5-3.9.2-6.2 2-7 5.5z"/><path d="M8.5 13.5c3.7.1 6.1-1.8 7-5.5-3.9.2-6.2 2-7 5.5z"/><path d="M8.5 13.5c1.5.8 3 .9 4.5.2"/></svg>',
+        psis: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6"/><path fill="currentColor" fill-opacity=".14" stroke="none" d="M10 8l-4.3 8.2A3.2 3.2 0 0 0 8.5 21h7a3.2 3.2 0 0 0 2.8-4.8L14 8H10z"/><path d="M10 3v5l-4.3 8.2A3.2 3.2 0 0 0 8.5 21h7a3.2 3.2 0 0 0 2.8-4.8L14 8V3"/><path d="M8 16h8"/><path d="M10 13h4"/></svg>',
+        nongsaro: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-opacity=".13" stroke="none" d="M5 5.5c4.2-.1 7 1.7 7 5.5v8H7a3 3 0 0 1-3-3V6.5c0-.6.4-1 1-1z"/><path d="M5 5.5c4.2-.1 7 1.7 7 5.5v8"/><path d="M19 6c-4.5.1-7 2.1-7 6"/><path d="M6 18h12"/><path d="M7 11c2.1 0 3.6.7 5 2"/><path d="M17 11c-2.1.2-3.6.9-5 2"/></svg>',
+        agriWeather: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="17" cy="7" r="3" fill="currentColor" fill-opacity=".16" stroke="none"/><path fill="currentColor" fill-opacity=".12" stroke="none" d="M17 18a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.8A3.4 3.4 0 0 0 7 18h10z"/><path d="M17 18a4 4 0 0 0 0-8 5.5 5.5 0 0 0-10.6 1.8A3.4 3.4 0 0 0 7 18h10z"/><path d="M8 21l1-1.5"/><path d="M13 21l1-1.5"/><path d="M18 21l1-1.5"/></svg>',
+        cropGuide: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" fill-opacity=".13" stroke="none" d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5z"/><path d="M5 4.5h10a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3V4.5z"/><path d="M8 8h6"/><path d="M8 11h5"/><path fill="currentColor" fill-opacity=".2" stroke="none" d="M12 16c2.7-.1 4.5-1.4 5.2-4-2.9.1-4.6 1.4-5.2 4z"/><path d="M12 16c2.7-.1 4.5-1.4 5.2-4-2.9.1-4.6 1.4-5.2 4z"/></svg>',
+        cropCalendar: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2" fill="currentColor" fill-opacity=".12" stroke="none"/><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M4 10h16"/><path d="M8 14h.1"/><path d="M12 14h.1"/><path d="M16 14h.1"/><path d="M8 17h.1"/><path d="M12 17h.1"/></svg>'
       };
       return icons[key] || '•';
     }
