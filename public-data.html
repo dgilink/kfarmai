@@ -146,13 +146,13 @@
     }
 
     .section--match {
-      order: 5;
+      order: 2;
       background: #f3f9ff;
       border-color: rgba(37, 99, 235, 0.18);
     }
 
     .section--examples {
-      order: 4;
+      order: 5;
       margin-top: 8px;
       padding: 0 2px;
       background: transparent;
@@ -181,7 +181,7 @@
     }
 
     .section--official {
-      order: 2;
+      order: 3;
       background: #ffffff;
       border-color: #dfe8e2;
     }
@@ -195,7 +195,7 @@
     }
 
     .section--tool {
-      order: 3;
+      order: 4;
       background: #f8fafc;
       border-color: #d9e2ea;
     }
@@ -374,15 +374,22 @@
       line-height: 1.42;
     }
 
-    .report-card {
-      padding: 14px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #f7fbff 0%, #ecfdf5 100%);
-      border: 1px solid rgba(37, 99, 235, 0.15);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    .match-report-shell {
+      display: grid;
+      gap: 12px;
     }
 
-    .report-eyebrow {
+    .match-summary-card {
+      padding: 18px;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 34%),
+        linear-gradient(135deg, #f7fbff 0%, #ecfdf5 100%);
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+    }
+
+    .report-kicker {
       display: inline-flex;
       align-items: center;
       min-height: 24px;
@@ -391,92 +398,170 @@
       background: rgba(37, 99, 235, 0.1);
       color: #1d4ed8;
       font-size: 11px;
-      font-weight: 850;
+      font-weight: 900;
       white-space: nowrap;
     }
 
-    .report-title {
-      margin-top: 8px;
-      color: #0f2f22;
-      font-size: 20px;
-      line-height: 1.25;
-      font-weight: 900;
-    }
-
-    .report-status {
-      margin-top: 5px;
-      color: #1d4ed8;
-      font-size: 13px;
-      font-weight: 850;
-      line-height: 1.35;
-    }
-
-    .report-meta {
+    .report-title-row {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
       margin-top: 10px;
     }
 
-    .report-chip {
+    .report-title {
+      color: #0f2f22;
+      font-size: 25px;
+      line-height: 1.16;
+      font-weight: 950;
+      letter-spacing: -0.3px;
+    }
+
+    .report-subtitle {
+      margin-top: 5px;
+      color: #516170;
+      font-size: 12.5px;
+      line-height: 1.42;
+    }
+
+    .report-status-badge {
       display: inline-flex;
       align-items: center;
-      min-height: 26px;
-      padding: 0 9px;
+      min-height: 28px;
+      max-width: 100%;
+      margin-top: 11px;
+      padding: 0 10px;
       border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid rgba(18, 138, 67, 0.14);
-      color: #174c2d;
-      font-size: 11.5px;
-      font-weight: 800;
-      white-space: nowrap;
+      background: #dbeafe;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
     }
 
     .report-block {
-      margin-top: 12px;
-      padding-top: 11px;
-      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      margin-top: 13px;
     }
 
-    .report-block h3 {
+    .report-block h2,
+    .match-detail-panel h2 {
+      margin-bottom: 7px;
       color: #183b29;
       font-size: 13px;
       line-height: 1.3;
+      font-weight: 950;
+    }
+
+    .candidate-chip-list,
+    .source-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .candidate-chip,
+    .source-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
       font-weight: 900;
-      margin-bottom: 6px;
+      white-space: nowrap;
     }
 
-    .report-summary {
-      color: #334155;
+    .candidate-chip {
+      background: #e9f8ef;
+      border: 1px solid #c2ead0;
+      color: #116735;
+    }
+
+    .source-chip {
+      background: #eaf2ff;
+      border: 1px solid #c8dcff;
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+
+    .source-chip.is-guidance {
+      background: #f1f5f9;
+      border-color: #dbe3ea;
+      color: #526176;
+    }
+
+    .report-summary-line,
+    .report-next-step {
+      margin-top: 13px;
+      padding: 12px;
+      border-radius: 15px;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
-    .report-source-list {
+    .report-summary-line {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+      color: #233447;
+      font-weight: 750;
+    }
+
+    .report-next-step {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #7c3f09;
+      font-weight: 800;
+    }
+
+    .detail-toggle-button {
+      width: 100%;
+      min-height: 42px;
+      margin-top: 13px;
+      border: 0;
+      border-radius: 14px;
+      background: #15364a;
+      color: #ffffff;
+      font-size: 13.5px;
+      font-weight: 950;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .match-detail-panel {
+      padding: 14px;
+      border-radius: 18px;
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .source-detail-list {
       display: grid;
       gap: 7px;
     }
 
-    .report-source {
+    .source-detail-card {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 8px;
       align-items: center;
       padding: 10px;
       border-radius: 14px;
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(15, 23, 42, 0.07);
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
     }
 
-    .report-source strong {
+    .source-detail-card strong {
       display: block;
       color: #123524;
       font-size: 12.8px;
       line-height: 1.28;
-      font-weight: 900;
+      font-weight: 950;
     }
 
-    .report-source span {
+    .source-detail-card span {
       display: block;
       margin-top: 2px;
       color: #52635a;
@@ -484,7 +569,7 @@
       line-height: 1.35;
     }
 
-    .report-source-link {
+    .source-detail-link {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -495,14 +580,35 @@
       border: 1px solid rgba(37, 99, 235, 0.18);
       color: #1d4ed8;
       font-size: 11.5px;
-      font-weight: 850;
+      font-weight: 900;
       white-space: nowrap;
     }
 
-    .report-source-link.is-guidance {
+    .source-detail-link.is-guidance {
       color: #64748b;
       border-color: rgba(100, 116, 139, 0.18);
       background: #f8fafc;
+    }
+
+    .report-extra-check,
+    .report-caution {
+      margin-top: 10px;
+      padding: 11px 12px;
+      border-radius: 15px;
+      font-size: 12.8px;
+      line-height: 1.5;
+    }
+
+    .report-extra-check {
+      background: #f1f8ff;
+      border: 1px solid #cfe7ff;
+      color: #25445f;
+    }
+
+    .report-caution {
+      background: #fff8ed;
+      border: 1px solid #fed7aa;
+      color: #6f430f;
     }
 
     .empty-state {
@@ -1371,26 +1477,50 @@
       `;
     }
 
-    function renderReportChips(result) {
-      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
-      const chips = candidates.length ? candidates : ['입력값 기준 확인'];
-      return chips.map((label) => `<span class="report-chip">${escapeHtml(label)}</span>`).join('');
+    function getReportValue(value, fallback) {
+      const text = String(value ?? '').trim();
+      return text || fallback;
     }
 
-    function renderReportSources(result) {
+    function getReportTitle(result) {
+      const crop = getReportValue(result.normalizedCrop || result.crop, '미확인 작물');
+      const symptom = getReportValue(result.normalizedSymptom || result.symptom, '미확인 증상');
+      return `${crop} · ${symptom}`;
+    }
+
+    function renderCandidateChips(result) {
+      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
+      const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
+      return chips.slice(0, 5).map((label) => `<span class="candidate-chip">${escapeHtml(label)}</span>`).join('');
+    }
+
+    function renderSourceChips(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      if (!sources.length) {
+        return '<span class="source-chip is-guidance">기본 공공정보</span>';
+      }
+      return sources.slice(0, 5).map((source) => {
+        const attrs = sourceLinkAttrs(source);
+        const label = source.shortName || source.sourceName || '공식자료';
+        return attrs
+          ? `<a class="source-chip" ${attrs}>${escapeHtml(label)}</a>`
+          : `<span class="source-chip is-guidance">${escapeHtml(label)}</span>`;
+      }).join('');
+    }
+
+    function renderSourceDetails(sources) {
       if (!sources.length) {
         return '<div class="empty-state">연결할 공공데이터 출처를 찾지 못했습니다. 기본 공공정보를 확인하세요.</div>';
       }
       return `
-        <div class="report-source-list">
+        <div class="source-detail-list">
           ${sources.map((source) => {
             const attrs = sourceLinkAttrs(source);
             const action = attrs
-              ? `<a class="report-source-link" ${attrs}>${escapeHtml(source.shortName || '확인')}</a>`
-              : '<span class="report-source-link is-guidance">안내</span>';
+              ? `<a class="source-detail-link" ${attrs}>${escapeHtml(source.shortName || '보기')}</a>`
+              : '<span class="source-detail-link is-guidance">안내</span>';
             return `
-              <article class="report-source">
+              <article class="source-detail-card">
                 <div>
                   <strong>${escapeHtml(source.shortName || source.sourceName)}</strong>
                   <span>${escapeHtml(source.checkedPoint)}</span>
@@ -1403,36 +1533,69 @@
       `;
     }
 
+    function scrollReportDetail() {
+      document.getElementById('reportDetailPanel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     function renderMatchingReport(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      const matchStatus = getReportValue(result.matchStatus, '일반 확인 항목 안내');
+      const mainSummary = getReportValue(
+        result.mainSummary,
+        '다만 공공데이터 출처 기준으로 확인할 수 있는 항목을 정리했습니다.'
+      );
+      const nextStep = getReportValue(
+        result.nextStep,
+        '증상 사진, 발생 시기, 재배환경을 정리해 공식자료 또는 관계기관으로 추가 확인하세요.'
+      );
+      const caution = getReportValue(
+        result.caution,
+        '이 결과는 참고자료입니다. 최종 판단은 공식자료와 전문가 확인이 필요합니다.'
+      );
       return `
-        <article class="report-card" aria-label="공공데이터 매칭 보고서">
-          <span class="report-eyebrow">공공데이터 매칭 보고서</span>
-          <h3 class="report-title">${escapeHtml(result.normalizedCrop || result.crop)} · ${escapeHtml(result.normalizedSymptom || result.symptom)}</h3>
-          <p class="report-status">${escapeHtml(result.matchStatus)}</p>
-          <div class="report-meta" aria-label="AI 참고 진단 후보">
-            ${renderReportChips(result)}
-          </div>
+        <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
+          <article class="match-summary-card">
+            <div class="report-kicker">공공데이터 매칭 보고서</div>
 
-          <div class="report-block">
-            <h3>매칭 결과</h3>
-            <p class="report-summary">${escapeHtml(result.mainSummary)}</p>
-          </div>
+            <div class="report-title-row">
+              <div>
+                <h3 class="report-title">${escapeHtml(getReportTitle(result))}</h3>
+                <p class="report-subtitle">AI 참고 후보를 공공데이터 출처와 연결해 확인 항목을 정리했습니다.</p>
+              </div>
+            </div>
 
-          <div class="report-block">
-            <h3>출처별 확인한 점</h3>
-            ${renderReportSources(result)}
-          </div>
+            <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
 
-          <div class="report-block">
-            <h3>추가 검증</h3>
-            <p class="report-summary">${escapeHtml(result.nextStep)}</p>
-          </div>
+            <div class="report-block">
+              <h2>AI 참고 후보</h2>
+              <div class="candidate-chip-list">${renderCandidateChips(result)}</div>
+            </div>
 
-          <div class="report-block">
-            <h3>주의</h3>
-            <p class="report-summary">${escapeHtml(result.caution)}</p>
-          </div>
-        </article>
+            <div class="report-block">
+              <h2>우선 확인할 출처</h2>
+              <div class="source-chip-list">${renderSourceChips(result)}</div>
+            </div>
+
+            <div class="report-summary-line">${escapeHtml(mainSummary)}</div>
+            <div class="report-next-step">${escapeHtml(nextStep)}</div>
+            <button class="detail-toggle-button" type="button" onclick="scrollReportDetail()">출처별 자세히 보기</button>
+          </article>
+
+          <section class="match-detail-panel" id="reportDetailPanel">
+            <h2>출처별 확인한 점</h2>
+            ${renderSourceDetails(sources)}
+
+            <div class="report-extra-check">
+              <h2>추가 검증</h2>
+              <p>${escapeHtml(nextStep)}</p>
+            </div>
+
+            <div class="report-caution">
+              <h2>주의</h2>
+              <p>${escapeHtml(caution)}</p>
+            </div>
+          </section>
+        </section>
       `;
     }
 
@@ -1458,8 +1621,9 @@
         return;
       }
 
-      const diagnosis = buildDiagnosisForEngine(context);
-      const result = engine.matchDiagnosisToPublicData(diagnosis);
+      const matchPayload = createMatchResult(context);
+      const diagnosis = matchPayload.diagnosis;
+      const result = matchPayload.result;
       window.KFDiagnosisPublicDataBridge?.savePublicDataReport?.(result, diagnosis);
       $('#matchContent').className = '';
       $('#matchContent').innerHTML = renderMatchingReport(result);
@@ -1585,6 +1749,37 @@
       return { crop: '', symptom: '', region: '', cultivationType: '' };
     }
 
+    function getFallbackDiagnosisForReport() {
+      const engine = window.KFPublicDataMatchingEngine;
+      return engine?.sampleDiagnoses?.pepperLeafCurl || {
+        crop: '미확인 작물',
+        symptom: '미확인 증상',
+        aiCandidates: [
+          { name: '원인 후보', category: 'unknown', keywords: [] },
+          { name: '환경 요인', category: 'environment', keywords: [] },
+          { name: '재배관리 요인', category: 'management', keywords: [] }
+        ]
+      };
+    }
+
+    function getLastDiagnosisForReport() {
+      const storedContext = readDiagnosisContext();
+      if (storedContext.crop || storedContext.symptom || storedContext.region || storedContext.cultivationType) {
+        return storedContext;
+      }
+      return getFallbackDiagnosisForReport();
+    }
+
+    function createMatchResult(context) {
+      const engine = window.KFPublicDataMatchingEngine;
+      if (!engine?.matchDiagnosisToPublicData) return null;
+      const diagnosis = buildDiagnosisForEngine(context || getFallbackDiagnosisForReport());
+      return {
+        diagnosis,
+        result: engine.matchDiagnosisToPublicData(diagnosis)
+      };
+    }
+
     function handleSubmit(event) {
       event.preventDefault();
       const context = getCurrentInputContext();
@@ -1611,7 +1806,7 @@
 
       const queryContext = getQueryContext();
       const hasQuery = Boolean(queryContext.crop || queryContext.symptom || queryContext.region || queryContext.cultivationType);
-      const storedContext = readDiagnosisContext();
+      const storedContext = getLastDiagnosisForReport();
       const storedMatchesQuery = hasQuery
         && (!queryContext.crop || !storedContext.crop || normalizeText(queryContext.crop) === normalizeText(storedContext.crop))
         && (!queryContext.symptom || !storedContext.symptom || normalizeText(queryContext.symptom) === normalizeText(storedContext.symptom));
@@ -1620,7 +1815,7 @@
         ...queryContext,
         aiCandidates: storedMatchesQuery ? (storedContext.aiCandidates || []) : []
       } : storedContext;
-      const hasContext = Boolean(context.crop || context.symptom || context.region || context.cultivationType);
+      const hasContext = Boolean(context.crop || context.symptom || context.region || context.cultivationType || context.aiCandidates);
       if (hasContext) {
         fillInputs(context);
         renderMatch(context, { force: true });
