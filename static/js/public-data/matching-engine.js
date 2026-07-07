@@ -52,7 +52,14 @@
       aliases: ['고추 탄저병', '탄저병', '탄저', '과실 반점', '열매 반점'],
       aiCandidateHints: ['탄저병 가능성', '병해 가능성', '강우·습도 영향'],
       mainSummary: 'AI 후보 중 탄저병·병해·강우와 습도 영향 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
-      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency'],
+      sourceEvidence: {
+        ncpms: 'NCPMS 고추 탄저병 자료 기준으로 과실·잎 병반과 발생환경을 AI 결과와 대조합니다.',
+        psis: '농약안전정보에서 고추·탄저병 등록 여부와 제품 라벨 기준을 별도로 확인해야 합니다.',
+        agriWeather: '탄저병은 비·습도 같은 다습 조건과 함께 확인할 필요가 있습니다.',
+        cropGuide: '재배자료 기준으로 병든 부위 정리, 통풍, 과습 관리 포인트를 확인합니다.',
+        localAgency: '사진, 발생 시기, 최근 강우·습도 정보를 정리해 관계기관 확인을 권장합니다.'
+      }
     },
     {
       id: 'tomato-spot',
@@ -61,7 +68,14 @@
       aliases: ['토마토 반점', '잎 반점', '갈색 반점'],
       aiCandidateHints: ['곰팡이성 병 가능성', '세균성 병 가능성', '고온다습 환경 영향'],
       mainSummary: 'AI 후보 중 곰팡이성 병·세균성 병·고온다습 환경 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
-      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency'],
+      sourceEvidence: {
+        ncpms: 'NCPMS 토마토 병해 자료 기준으로 반점성 병해와 증상 설명을 대조합니다.',
+        psis: '농약안전정보에서 토마토 등록작물·대상 병해충·라벨 기준을 확인해야 합니다.',
+        agriWeather: '반점성 병해 후보는 습도, 강수, 고온다습 조건과 함께 확인합니다.',
+        cropGuide: '재배자료 기준으로 통풍, 잎 관리, 시설 내 습도 관리 포인트를 확인합니다.',
+        localAgency: '반점 색과 번짐 정도, 잎 뒷면 사진을 정리해 관계기관 확인을 권장합니다.'
+      }
     },
     {
       id: 'strawberry-gray-mold',
@@ -70,7 +84,14 @@
       aliases: ['딸기 잿빛곰팡이', '회색 곰팡이', '과실 물러짐'],
       aiCandidateHints: ['곰팡이성 병 가능성', '과습·통풍 부족 가능성', '시설 내 습도 영향'],
       mainSummary: 'AI 후보 중 곰팡이성 병·과습·통풍 부족 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
-      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency'],
+      sourceEvidence: {
+        ncpms: 'NCPMS 딸기 병해 자료 기준으로 잿빛곰팡이 증상과 발생환경을 대조합니다.',
+        psis: '농약안전정보에서 딸기 등록작물·대상 병해충·라벨 기준을 확인해야 합니다.',
+        agriWeather: '잿빛곰팡이 후보는 시설 내 습도와 강수·환기 조건을 함께 확인합니다.',
+        cropGuide: '재배자료 기준으로 과습, 통풍, 꽃·과실 주변 관리 포인트를 확인합니다.',
+        localAgency: '곰팡이 발생 부위와 시설 습도 정보를 정리해 관계기관 확인을 권장합니다.'
+      }
     },
     {
       id: 'rice-blast',
@@ -79,7 +100,14 @@
       aliases: ['벼 도열병', '잎도열', '목도열'],
       aiCandidateHints: ['병해 가능성', '고습 환경 영향', '생육단계 영향'],
       mainSummary: 'AI 후보 중 병해·고습 환경·생육단계 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
-      sources: ['ncpms', 'psis', 'agriWeather', 'nongsaro', 'localAgency']
+      sources: ['ncpms', 'psis', 'agriWeather', 'nongsaro', 'localAgency'],
+      sourceEvidence: {
+        ncpms: 'NCPMS 벼 도열병 자료 기준으로 병반 형태와 발생환경을 AI 결과와 대조합니다.',
+        psis: '농약안전정보에서 벼 등록작물·대상 병해충·라벨 기준을 확인해야 합니다.',
+        agriWeather: '도열병 후보는 강수, 습도, 기온 같은 고습 조건과 함께 확인합니다.',
+        nongsaro: '농사로 재배기술 자료 기준으로 생육단계와 논 관리 포인트를 확인합니다.',
+        localAgency: '잎 병반 사진, 생육단계, 최근 강우 정보를 정리해 관계기관 확인을 권장합니다.'
+      }
     },
     {
       id: 'pepper-powdery-mildew',
@@ -160,7 +188,14 @@
       aliases: ['콩 탄저병', '대두 탄저병', '콩깍지 탄저병', '꼬투리 탄저병', '콩 병반', '콩깍지 병반'],
       aiCandidateHints: ['탄저병 가능성', '반점병 가능성', '고온다습 환경'],
       mainSummary: 'AI 후보 중 탄저병·반점성 병해·고온다습 환경 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
-      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency'],
+      sourceEvidence: {
+        ncpms: 'NCPMS 콩 병해 자료 기준으로 꼬투리 병반과 탄저병 유사 항목을 대조합니다.',
+        psis: '농약안전정보에서 콩 등록작물·대상 병해충·라벨 기준을 확인해야 합니다.',
+        agriWeather: '콩 탄저병 후보는 고온다습, 강우, 습도 조건과 함께 확인합니다.',
+        cropGuide: '재배자료 기준으로 병든 잔재물 정리, 통풍, 과습 관리 포인트를 확인합니다.',
+        localAgency: '꼬투리 병반 사진과 발생환경을 정리해 관계기관 확인을 권장합니다.'
+      }
     }
   ];
 
@@ -475,6 +510,7 @@
 
   function buildMatchedSources(diagnosis, caseRule) {
     var sourceKeys = caseRule && Array.isArray(caseRule.sources) ? caseRule.sources : DEFAULT_SOURCE_ORDER;
+    var sourceEvidence = caseRule && caseRule.sourceEvidence ? caseRule.sourceEvidence : {};
     return uniqueList(sourceKeys).map(function (sourceKey) {
       var source = SOURCE_MAP[sourceKey];
       if (!source) return null;
@@ -484,7 +520,7 @@
         shortName: source.shortName,
         checkedPoint: source.checkedPoint,
         matchedKeywords: getMatchedKeywords(diagnosis, sourceKey),
-        resultText: RESULT_TEXTS[sourceKey] || '출처 기준으로 함께 확인할 수 있는 항목입니다.',
+        resultText: sourceEvidence[sourceKey] || RESULT_TEXTS[sourceKey] || '출처 기준으로 함께 확인할 수 있는 항목입니다.',
         sourceUrl: source.sourceUrl,
         type: source.type
       };

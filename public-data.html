@@ -527,8 +527,8 @@
 
     .report-result-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 7px;
+      grid-template-columns: 1fr;
+      gap: 8px;
     }
 
     .report-result-item {
@@ -536,7 +536,7 @@
       grid-template-columns: 36px minmax(0, 1fr);
       gap: 8px;
       align-items: center;
-      min-height: 64px;
+      min-height: 58px;
       padding: 10px 9px;
       border-radius: 13px;
       background: rgba(255, 255, 255, 0.78);
@@ -590,8 +590,9 @@
     .report-result-desc {
       display: block;
       color: #1f2937;
-      font-size: 11.2px;
+      font-size: 12.2px;
       font-weight: 850;
+      line-height: 1.45;
     }
 
     .report-source-line {
@@ -2466,22 +2467,31 @@
           text: 'AI 결과와 바로 연결된 공공자료 사례는 준비 중입니다'
         }];
       }
+      const sourceByKey = sources.reduce((map, source) => {
+        if (source && source.sourceKey) map[source.sourceKey] = source;
+        return map;
+      }, {});
+      const sourceText = (sourceKey, fallback) => {
+        const source = sourceByKey[sourceKey];
+        return source && source.resultText ? source.resultText : fallback;
+      };
       const sourceKeys = new Set(sources.map((source) => source.sourceKey));
       const findings = [];
       if (sourceKeys.has('ncpms')) {
-        findings.push({ tone: 'pest', icon: '🔎', title: 'NCPMS 공공자료', text: 'AI 증상과 유사한 병해충·발생환경 항목' });
+        findings.push({ tone: 'pest', icon: '🔎', title: 'NCPMS 공공자료', text: sourceText('ncpms', 'AI 증상과 유사한 병해충·발생환경 항목') });
       }
       if (sourceKeys.has('psis')) {
-        findings.push({ tone: 'safety', icon: '🛡️', title: '농약안전정보', text: '작물·대상 병해충·제품 라벨 기준 확인' });
+        findings.push({ tone: 'safety', icon: '🛡️', title: '농약안전정보', text: sourceText('psis', '작물·대상 병해충·제품 라벨 기준 확인') });
       }
       if (sourceKeys.has('agriWeather')) {
-        findings.push({ tone: 'weather', icon: '☀️', title: '농업날씨 자료', text: 'AI 원인 후보와 연결되는 기상 조건' });
+        findings.push({ tone: 'weather', icon: '☀️', title: '농업날씨 자료', text: sourceText('agriWeather', 'AI 원인 후보와 연결되는 기상 조건') });
       }
       if (sourceKeys.has('cropGuide') || sourceKeys.has('nongsaro')) {
-        findings.push({ tone: 'guide', icon: '📘', title: '재배 공공자료', text: '농사로·재배가이드 관리 포인트 확인' });
+        const guideKey = sourceKeys.has('cropGuide') ? 'cropGuide' : 'nongsaro';
+        findings.push({ tone: 'guide', icon: '📘', title: '재배 공공자료', text: sourceText(guideKey, '농사로·재배가이드 관리 포인트 확인') });
       }
       if (sourceKeys.has('localAgency')) {
-        findings.push({ tone: 'local', icon: '🏢', title: '관계기관 확인', text: '사진·발생환경을 가지고 추가 검증 권장' });
+        findings.push({ tone: 'local', icon: '🏢', title: '관계기관 확인', text: sourceText('localAgency', '사진·발생환경을 가지고 추가 검증 권장') });
       }
       return findings.slice(0, 4);
     }
