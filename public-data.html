@@ -1054,7 +1054,7 @@
 
       .print-report-title {
         margin: 0;
-        font-size: 27pt;
+        font-size: 23pt;
         line-height: 1.18;
         font-weight: 950;
       }
@@ -1123,7 +1123,7 @@
       .print-match-list {
         display: flex;
         flex-direction: column;
-        gap: 6.5mm;
+        gap: 5mm;
       }
 
       .print-match-row {
@@ -1131,8 +1131,8 @@
         grid-template-columns: 22mm minmax(0, 1fr);
         gap: 6mm;
         align-items: center;
-        min-height: 33mm;
-        padding: 6mm 7mm;
+        min-height: 29mm;
+        padding: 5mm 6mm;
         border-radius: 17px;
         border: 1.5px solid #cbd5e1;
         background: #f8fafc;
@@ -1150,11 +1150,11 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 22mm;
-        height: 22mm;
+        width: 19mm;
+        height: 19mm;
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.82);
-        font-size: 29pt;
+        font-size: 25pt;
       }
 
       .print-match-label {
@@ -2297,6 +2297,21 @@
       return '공공데이터 매칭보고';
     }
 
+    function cleanReportField(value) {
+      return String(value || '')
+        .replace(/\s+/g, ' ')
+        .replace(/^작물명\s*[:：]\s*/i, '')
+        .replace(/^작물\s*[:：]\s*/i, '')
+        .replace(/^증상\s*[:：]\s*/i, '')
+        .replace(/^증상\s*키워드\s*[:：]\s*/i, '')
+        .trim();
+    }
+
+    function isBlockedReportValue(value) {
+      return new Set(['미입력', '미선택', '미확인 작물', '미확인 증상', '증상 미확인', '작물·증상 확인 중'])
+        .has(String(value || '').trim());
+    }
+
     function getReportKey(result) {
       const crop = normalizeText(result.normalizedCrop || result.crop);
       const symptom = normalizeText(result.normalizedSymptom || result.symptom);
@@ -2304,10 +2319,16 @@
     }
 
     function getReportContextLine(result) {
-      const crop = String(result.normalizedCrop || result.crop || '').trim();
-      const symptom = String(result.normalizedSymptom || result.symptom || '').trim();
-      const blocked = new Set(['미입력', '미선택', '미확인 작물', '미확인 증상', '증상 미확인']);
-      return [crop, symptom].filter((value) => value && !blocked.has(value)).join(' · ');
+      const crop = cleanReportField(result.normalizedCrop || result.crop || '');
+      let symptom = cleanReportField(result.normalizedSymptom || result.symptom || '');
+      if (crop && symptom && normalizeText(symptom).includes(normalizeText(crop))) {
+        symptom = cleanReportField(symptom.replace(crop, ''));
+      }
+      if (normalizeText(crop) && normalizeText(crop) === normalizeText(symptom)) symptom = '';
+      const parts = [];
+      if (crop && !isBlockedReportValue(crop)) parts.push(`작물명: ${crop}`);
+      if (symptom && !isBlockedReportValue(symptom)) parts.push(`증상: ${symptom}`);
+      return parts.join(' · ');
     }
 
     const OFFICIAL_REFERENCE_LINKS = {
