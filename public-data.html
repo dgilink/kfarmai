@@ -82,7 +82,7 @@
 
     .hero {
       padding: 10px 12px 8px;
-      background: linear-gradient(180deg, #ffffff 0%, #eef9f3 100%);
+      background: #ffffff;
       border-bottom: 1px solid var(--line);
     }
 
@@ -164,8 +164,7 @@
     }
 
     .section--match .section-head {
-      justify-content: center;
-      margin-bottom: 6px;
+      display: none;
     }
 
     .section--match .section-title {
@@ -423,19 +422,6 @@
       overflow: hidden;
     }
 
-    .report-kicker {
-      display: inline-flex;
-      align-items: center;
-      min-height: 22px;
-      padding: 0 8px;
-      border-radius: 999px;
-      background: rgba(37, 99, 235, 0.1);
-      color: #1d4ed8;
-      font-size: 10.5px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
     .report-title-row {
       display: flex;
       align-items: flex-start;
@@ -635,7 +621,7 @@
       grid-template-columns: minmax(0, 1fr) auto;
       gap: 7px;
       align-items: center;
-      padding: 9px 10px;
+      padding: 8px 10px;
       border-radius: 14px;
       background: linear-gradient(135deg, #ffffff 0%, #eef6ff 100%);
       border: 1px solid #bfdbfe;
@@ -648,19 +634,9 @@
     .official-reference-card strong {
       display: block;
       color: #12315f;
-      font-size: 12.3px;
+      font-size: 12.6px;
       line-height: 1.28;
       font-weight: 900;
-      word-break: keep-all;
-      overflow-wrap: anywhere;
-    }
-
-    .official-reference-card span {
-      display: block;
-      margin-top: 2px;
-      color: #3f5065;
-      font-size: 10.8px;
-      line-height: 1.28;
       word-break: keep-all;
       overflow-wrap: anywhere;
     }
@@ -1236,13 +1212,7 @@
         <img class="guide-visual" src="/static/public-data/ai-public-data-guide.png" alt="AI 참고 진단을 공공데이터로 다시 확인하는 안내 이미지" />
       </section>
 
-      <section class="section section--match" id="matchResult" aria-labelledby="matchTitle">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title" id="matchTitle" data-icon="결과">공공정보 교차 확인 결과</h2>
-            <p class="section-subtitle">입력한 작물·증상 기준으로 먼저 확인할 공식정보를 정리합니다.</p>
-          </div>
-        </div>
+      <section class="section section--match" id="matchResult" aria-label="공공데이터 매칭보고">
         <div id="matchContent" class="empty-state">
           직접 작물명과 증상을 입력하면 관련 공공정보 확인 경로를 정리해드립니다.
         </div>
@@ -1799,6 +1769,13 @@
       ];
     }
 
+    function getShortReferenceTitle(title) {
+      return String(title || '공식자료')
+        .replace(/^사진 있는 공식자료:\s*/, '')
+        .replace(/\s*공식자료\s*$/, '')
+        .trim() || '공식자료';
+    }
+
     function getMatchFindings(sources) {
       const sourceKeys = new Set(sources.map((source) => source.sourceKey));
       const findings = [];
@@ -1867,10 +1844,9 @@
           ${getOfficialReferenceLinks(result).map((item) => `
             <a class="official-reference-card" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
               <div>
-                <strong>${escapeHtml(item.title)}</strong>
-                <span>${escapeHtml(item.note)}</span>
+                <strong>${escapeHtml(getShortReferenceTitle(item.title))}</strong>
               </div>
-              <em>${escapeHtml(item.source)} ›</em>
+              <em>보기 ›</em>
             </a>
           `).join('')}
         </div>
@@ -1914,8 +1890,6 @@
       return `
         <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
           <article class="match-summary-card">
-            <div class="report-kicker">공공데이터 매칭보고</div>
-
             <div class="report-title-row">
               <div>
                 <h3 class="report-title">${escapeHtml(getReportTitle(result))}</h3>
