@@ -15,7 +15,13 @@
     '탄저병': ['탄저병', '고추 탄저병', '탄저', '과실 반점', '열매 반점'],
     '반점': ['반점', '잎 반점', '갈색 반점', '검은 반점', '얼룩'],
     '잿빛곰팡이': ['잿빛곰팡이', '회색 곰팡이', '곰팡이', '과실 물러짐'],
-    '도열병': ['도열병', '잎도열', '목도열', '벼 반점']
+    '도열병': ['도열병', '잎도열', '목도열', '벼 반점'],
+    '흰가루병': ['흰가루병', '흰 가루', '하얀 가루', '백분', '가루 증상'],
+    '노균병': ['노균병', '노균', '잎 뒷면 곰팡이', '잎 뒷면 병반'],
+    '역병': ['역병', '줄기 썩음', '뿌리 썩음', '시들음 역병'],
+    '끝마름': ['끝마름', '잎끝 마름', '잎 끝 마름', 'tipburn', '칼슘 부족'],
+    '잎곰팡이병': ['잎곰팡이병', '잎 곰팡이', '토마토 잎곰팡이', '잎 뒷면 곰팡이'],
+    '흰잎마름병': ['흰잎마름병', '잎마름병', '벼 잎마름', '잎 끝 마름']
   };
 
   var CATEGORY_TARGETS = {
@@ -73,6 +79,78 @@
       aiCandidateHints: ['병해 가능성', '고습 환경 영향', '생육단계 영향'],
       mainSummary: 'AI 후보 중 병해·고습 환경·생육단계 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
       sources: ['ncpms', 'psis', 'agriWeather', 'nongsaro', 'localAgency']
+    },
+    {
+      id: 'pepper-powdery-mildew',
+      crop: '고추',
+      symptom: '흰가루병',
+      aliases: ['고추 흰가루병', '흰 가루', '하얀 가루', '백분'],
+      aiCandidateHints: ['곰팡이성 병 가능성', '통풍 부족 가능성', '습도 영향'],
+      mainSummary: 'AI 후보 중 흰가루병·통풍·습도 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'pepper-blight',
+      crop: '고추',
+      symptom: '역병',
+      aliases: ['고추 역병', '줄기 썩음', '뿌리 썩음', '시들음'],
+      aiCandidateHints: ['병해 가능성', '과습 가능성', '배수 문제'],
+      mainSummary: 'AI 후보 중 역병·과습·배수 관련 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'tomato-leaf-mold',
+      crop: '토마토',
+      symptom: '잎곰팡이병',
+      aliases: ['토마토 잎곰팡이병', '토마토 잎 곰팡이', '잎 뒷면 곰팡이'],
+      aiCandidateHints: ['곰팡이성 병 가능성', '고습 환경 영향', '통풍 부족 가능성'],
+      mainSummary: 'AI 후보 중 잎곰팡이병·고습·통풍 부족 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'cucumber-downy-mildew',
+      crop: '오이',
+      symptom: '노균병',
+      aliases: ['오이 노균병', '노균', '잎 뒷면 곰팡이', '오이 잎 반점'],
+      aiCandidateHints: ['곰팡이성 병 가능성', '과습 가능성', '통풍 부족 가능성'],
+      mainSummary: 'AI 후보 중 노균병·과습·통풍 부족 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'lettuce-tipburn',
+      crop: '상추',
+      symptom: '끝마름',
+      aliases: ['상추 끝마름', '잎끝 마름', '잎 끝 마름', '칼슘 부족'],
+      aiCandidateHints: ['양분 관리 가능성', '수분 스트레스 가능성', '고온 영향'],
+      mainSummary: 'AI 후보 중 끝마름·수분 스트레스·양분 관리 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['agriWeather', 'cropGuide', 'nongsaro', 'localAgency']
+    },
+    {
+      id: 'strawberry-powdery-mildew',
+      crop: '딸기',
+      symptom: '흰가루병',
+      aliases: ['딸기 흰가루병', '딸기 흰 가루', '하얀 가루'],
+      aiCandidateHints: ['곰팡이성 병 가능성', '시설 내 습도 영향', '통풍 부족 가능성'],
+      mainSummary: 'AI 후보 중 흰가루병·시설 습도·통풍 조건은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'rice-bacterial-leaf-blight',
+      crop: '벼',
+      symptom: '흰잎마름병',
+      aliases: ['벼 흰잎마름병', '흰잎마름', '벼 잎마름', '잎 끝 마름'],
+      aiCandidateHints: ['병해 가능성', '강우 영향', '생육단계 영향'],
+      mainSummary: 'AI 후보 중 흰잎마름병·강우·생육단계 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'nongsaro', 'localAgency']
+    },
+    {
+      id: 'potato-late-blight',
+      crop: '감자',
+      symptom: '역병',
+      aliases: ['감자 역병', '감자 잎 반점', '감자 줄기 썩음'],
+      aiCandidateHints: ['병해 가능성', '저온다습 영향', '강우 영향'],
+      mainSummary: 'AI 후보 중 역병·저온다습·강우 영향 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
     }
   ];
 
@@ -325,6 +403,8 @@
     var candidateText = getCandidateKeywords(diagnosis).join(' ');
     var combined = normalizeForCompare([diagnosis && diagnosis.crop, diagnosis && diagnosis.symptom, candidateText].filter(Boolean).join(' '));
     var rawSymptom = normalizeForCompare(diagnosis && diagnosis.symptom);
+    var bestRule = null;
+    var bestScore = 0;
 
     for (var i = 0; i < MATCH_CASES.length; i += 1) {
       var rule = MATCH_CASES[i];
@@ -333,16 +413,37 @@
       }
 
       var cropMatches = normalizedCrop === rule.crop;
+      var score = 0;
+      if (cropMatches) score += 40;
+      if (normalizedSymptom === rule.symptom) score += 35;
+      if (combined.indexOf(normalizeForCompare(rule.crop)) >= 0) score += 20;
+      if (combined.indexOf(normalizeForCompare(rule.symptom)) >= 0) score += 25;
+
       var aliasMatches = rule.aliases.some(function (alias) {
         var normalizedAlias = normalizeForCompare(alias);
-        return normalizedAlias === combined
-          || (cropMatches && normalizedAlias === rawSymptom)
-          || (cropMatches && combined.indexOf(normalizedAlias) >= 0);
+        var exactAlias = normalizedAlias === combined || normalizedAlias === rawSymptom;
+        var containsAlias = normalizedAlias && combined.indexOf(normalizedAlias) >= 0;
+        if (exactAlias) score += cropMatches ? 45 : 30;
+        if (containsAlias) score += cropMatches ? 35 : 20;
+        return exactAlias || containsAlias;
       });
 
-      if (aliasMatches) return rule;
+      if (Array.isArray(rule.aiCandidateHints)) {
+        rule.aiCandidateHints.forEach(function (hint) {
+          var normalizedHint = normalizeForCompare(hint);
+          if (normalizedHint && combined.indexOf(normalizedHint) >= 0) score += 15;
+        });
+      }
+
+      if (aliasMatches && cropMatches) score += 15;
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestRule = rule;
+      }
     }
-    return null;
+
+    return bestScore >= 60 ? bestRule : null;
   }
 
   function getMatchedKeywords(diagnosis, sourceKey) {
