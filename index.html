@@ -877,7 +877,7 @@
   .symptom-textarea:focus { border-color: var(--green); }
   .diag-start-btn { width: 100%; height: 46px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; opacity: .4; transition: opacity .2s; }
   .diag-start-btn:not([disabled]) { opacity: 1; }
-  .diag-public-data-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; margin-top: 10px; margin-bottom: 16px; border-radius: 14px; background: #6D28D9; color: #fff; font-size: 15px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 22px rgba(109,40,217,.18); touch-action: manipulation; }
+  .diag-public-data-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; margin-top: 10px; margin-bottom: 16px; border: 0; border-radius: 14px; background: #6D28D9; color: #fff; font-size: 15px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 22px rgba(109,40,217,.18); touch-action: manipulation; cursor: pointer; }
   .diag-public-data-btn:active { transform: translateY(1px); background: #5B21B6; }
   .diag-result-wrap { margin-top: 4px; }
   .diag-loading { text-align: center; padding: 24px 0; display: none; }
@@ -2337,6 +2337,7 @@
 <script src="static/js/agri-info/agri-research-trends.js?v=20260706-news2"></script>
 <script src="static/js/agri-info/agri-issues.js?v=20260706-news2"></script>
 <script src="static/js/agri-info/agri-info.js?v=20260706-news2"></script>
+<script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <script>
 (function(){
   const pages = document.getElementById('pages');
@@ -2504,6 +2505,35 @@ function updateDiagBtn() {
   if (btn) btn.disabled = !(symptom || diagImageBase64);
 }
 
+let latestPublicDataDiagnosis = null;
+
+function buildHomePublicDataDiagnosis(resultData, context = {}) {
+  const bridge = window.KFDiagnosisPublicDataBridge;
+  if (!bridge?.buildStructuredDiagnosis) return null;
+  return bridge.buildStructuredDiagnosis({
+    result: resultData || {},
+    inputContext: context,
+    source: 'home-ai-tab'
+  });
+}
+
+function saveHomePublicDataDiagnosis(resultData, context = {}) {
+  const bridge = window.KFDiagnosisPublicDataBridge;
+  const diagnosis = buildHomePublicDataDiagnosis(resultData, context);
+  latestPublicDataDiagnosis = diagnosis;
+  if (diagnosis && bridge?.saveLastDiagnosis) bridge.saveLastDiagnosis(diagnosis);
+  return diagnosis;
+}
+
+function openHomePublicDataReport() {
+  const bridge = window.KFDiagnosisPublicDataBridge;
+  if (bridge?.goToPublicDataReport) {
+    bridge.goToPublicDataReport(latestPublicDataDiagnosis || bridge.getLastDiagnosis?.());
+    return;
+  }
+  location.href = 'public-data.html';
+}
+
 async function runDiagnosis() {
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
   const crop = (document.getElementById('diagCrop')?.value || '').trim();
@@ -2537,7 +2567,15 @@ async function runDiagnosis() {
     });
     if (!res.ok) throw new Error('서버 오류 ' + res.status);
     const data = await res.json();
-    renderDiagResult(data, resultWrap);
+    const diagnosisContext = {
+      crop,
+      symptom,
+      region,
+      cultivationType: env,
+      imageAttached: Boolean(diagImageBase64)
+    };
+    const structuredDiagnosis = saveHomePublicDataDiagnosis(data, diagnosisContext);
+    renderDiagResult(data, resultWrap, structuredDiagnosis);
     saveDiagnosisHistory(detail || symptom, data);
   } catch (err) {
     resultWrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-body" style="color:#DC2626">진단에 실패했습니다.<br>${err.message || '잠시 후 다시 시도해주세요.'}</div></div>`;
@@ -2549,7 +2587,7 @@ async function runDiagnosis() {
   }
 }
 
-function renderDiagResult(data, wrap) {
+function renderDiagResult(data, wrap, structuredDiagnosis) {
   const sections = [
     { key: 'summary',    label: '문제 요약' },
     { key: 'causes',     label: '원인 후보' },
@@ -2568,6 +2606,9 @@ function renderDiagResult(data, wrap) {
     html = `<div class="diag-result-card"><div class="diag-rc-body">${renderMarkdown(String(raw))}</div></div>`;
   }
   html += `<div class="diag-disclaimer">※ 이 결과는 AI 참고 진단이며 확정 안내가 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>`;
+  if (structuredDiagnosis) {
+    html += `<button class="diag-public-data-btn" type="button" onclick="openHomePublicDataReport()">공공데이터 보고서 보기</button>`;
+  }
   html += `<button class="diag-map-btn" onclick="location.href='agri_map.html'">📍 가까운 농약사 문의하기</button>`;
   wrap.innerHTML = html;
 }
@@ -2808,9 +2849,11 @@ async function loadMyCounts(userId){
   }
   try{
     const {count:diagnosisCount} = await _sb.from('diagnoses').select('id',{count:'exact',head:true}).eq('user_id',userId);
-    document.getElementById('myDiagnosisCount').textContent=diagnosisCount ?? 0;
+    const reportCount=window.KFDiagnosisPublicDataBridge?.getPublicDataReports?.().length || 0;
+    document.getElementById('myDiagnosisCount').textContent=(diagnosisCount ?? 0)+reportCount;
   }catch(e){
-    document.getElementById('myDiagnosisCount').textContent='0';
+    const reportCount=window.KFDiagnosisPublicDataBridge?.getPublicDataReports?.().length || 0;
+    document.getElementById('myDiagnosisCount').textContent=String(reportCount);
   }
   loadMyPosts(userId);
   loadMyDiagnoses(userId);
@@ -3163,6 +3206,109 @@ function formatDiagnosisResult(result){
   }
   return `<pre>${escHtml(result||'저장된 결과 내용이 없습니다.')}</pre>`;
 }
+function getMyPublicDataReports(){
+  return window.KFDiagnosisPublicDataBridge?.getPublicDataReports?.() || [];
+}
+
+function renderMyPublicDataReportItem(report){
+  const title=[report.crop,report.symptom].filter(Boolean).join(' · ')||'공공데이터 매칭 보고서';
+  const preview=String(report.mainSummary||report.matchStatus||'공공데이터 기준 확인 항목을 정리했습니다.').replace(/\s+/g,' ').slice(0,90);
+  return `<div class="my-list-item" role="button" tabindex="0" onclick="openMyPublicDataReport('${escAttr(report.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMyPublicDataReport('${escAttr(report.id)}');}">
+    <div class="my-list-item-top">
+      <span class="my-list-badge">공공데이터</span>
+      <div class="my-list-actions">
+        <button class="my-list-action danger" type="button" onclick="deleteMyPublicDataReport(event,'${escAttr(report.id)}')">삭제</button>
+      </div>
+    </div>
+    <div class="my-list-title">${escHtml(title)}</div>
+    ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
+    <div class="my-list-date">${formatMyDate(report.createdAt)}</div>
+  </div>`;
+}
+
+function renderMyDiagnosisList(){
+  const list=document.getElementById('myDiagList');
+  if(!list)return;
+  const reports=getMyPublicDataReports();
+  if(!myDiagnosisRecords.length&&!reports.length){
+    list.innerHTML='<div class="my-list-empty">아직 진단 기록이 없습니다.</div>';
+    return;
+  }
+  const diagnosisHtml=myDiagnosisRecords.map(item=>{
+    const symptom=item.symptom||'증상 입력 없음';
+    const title=symptom.length>34?`${symptom.slice(0,34)}...`:symptom;
+    const preview=diagnosisPreviewText(item.result);
+    return `<div class="my-list-item" role="button" tabindex="0" onclick="openMyDiagnosisDetail('${escAttr(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMyDiagnosisDetail('${escAttr(item.id)}');}">
+      <div class="my-list-item-top">
+        <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+        <div class="my-list-actions">
+          <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
+        </div>
+      </div>
+      <div class="my-list-title">${escHtml(title)}</div>
+      ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
+      <div class="my-list-date">${formatMyDate(item.created_at)}</div>
+    </div>`;
+  }).join('');
+  const reportHtml=reports.length?`<div class="my-list-meta" style="margin:10px 0 2px">공공데이터 매칭 보고서</div>${reports.map(renderMyPublicDataReportItem).join('')}`:'';
+  list.innerHTML=diagnosisHtml+reportHtml;
+}
+
+function buildStructuredDiagnosisFromRecord(item){
+  const bridge=window.KFDiagnosisPublicDataBridge;
+  if(!bridge?.buildStructuredDiagnosis)return null;
+  let result=item?.result||{};
+  try{result=typeof result==='string'?JSON.parse(result):result;}catch(_){}
+  return bridge.buildStructuredDiagnosis({
+    result:result||{},
+    inputContext:{crop:item?.crop||'',symptom:item?.symptom||''},
+    source:'my-diagnosis-record'
+  });
+}
+
+function openMyDiagnosisDetail(id){
+  const list=document.getElementById('myDiagList');
+  const item=myDiagnosisRecords.find(row=>String(row.id)===String(id));
+  if(!list||!item)return;
+  list.innerHTML=`<div class="diagnosis-detail-card">
+    <div class="diagnosis-detail-head">
+      <div>
+        <div class="diagnosis-detail-title">${escHtml(item.crop||'AI 참고 진단 기록')}</div>
+        <div class="diagnosis-detail-meta">${escHtml(formatMyDate(item.created_at))}</div>
+      </div>
+      <button class="my-list-action" type="button" onclick="renderMyDiagnosisList()">목록</button>
+    </div>
+    <div class="diagnosis-detail-body"><strong>입력한 증상</strong><br>${escDiagPlain(item.symptom||'입력 내용 없음')}</div>
+    <div class="diagnosis-detail-body"><strong>AI 참고 진단 결과</strong><br>${formatDiagnosisResult(item.result)}</div>
+    <div class="diag-disclaimer">이 내용은 AI 참고 진단 기록입니다. 실제 관리 전에는 공공정보와 재배 환경을 함께 확인해주세요.</div>
+    <div class="diagnosis-detail-actions">
+      <button class="my-list-action" type="button" onclick="openPublicDataFromMyDiagnosis('${escAttr(item.id)}')">공공데이터 보고서</button>
+      <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
+    </div>
+  </div>`;
+}
+
+function openPublicDataFromMyDiagnosis(id){
+  const bridge=window.KFDiagnosisPublicDataBridge;
+  const item=myDiagnosisRecords.find(row=>String(row.id)===String(id));
+  if(!bridge||!item)return;
+  const diagnosis=buildStructuredDiagnosisFromRecord(item);
+  bridge.goToPublicDataReport(diagnosis);
+}
+
+function openMyPublicDataReport(id){
+  const bridge=window.KFDiagnosisPublicDataBridge;
+  const report=getMyPublicDataReports().find(row=>String(row.id)===String(id));
+  if(!bridge||!report)return;
+  bridge.goToPublicDataReport(report.diagnosis||{crop:report.crop,symptom:report.symptom});
+}
+
+function deleteMyPublicDataReport(event,id){
+  event?.stopPropagation();
+  window.KFDiagnosisPublicDataBridge?.deletePublicDataReport?.(id);
+  renderMyDiagnosisList();
+}
+
 async function saveDiagnosisHistory(symptomText, resultData){
   if(!window._sb)return;
   try{

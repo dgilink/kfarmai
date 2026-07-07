@@ -1011,6 +1011,7 @@
 
   <script src="static/js/public-data/public-data-sources.js"></script>
   <script src="static/js/public-data/matching-engine.js"></script>
+  <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
   <script>
     const PUBLIC_DATA_LINKS = {
       ncpms: {
@@ -1459,6 +1460,7 @@
 
       const diagnosis = buildDiagnosisForEngine(context);
       const result = engine.matchDiagnosisToPublicData(diagnosis);
+      window.KFDiagnosisPublicDataBridge?.savePublicDataReport?.(result, diagnosis);
       $('#matchContent').className = '';
       $('#matchContent').innerHTML = renderMatchingReport(result);
     }
@@ -1609,7 +1611,15 @@
 
       const queryContext = getQueryContext();
       const hasQuery = Boolean(queryContext.crop || queryContext.symptom || queryContext.region || queryContext.cultivationType);
-      const context = hasQuery ? queryContext : readDiagnosisContext();
+      const storedContext = readDiagnosisContext();
+      const storedMatchesQuery = hasQuery
+        && (!queryContext.crop || !storedContext.crop || normalizeText(queryContext.crop) === normalizeText(storedContext.crop))
+        && (!queryContext.symptom || !storedContext.symptom || normalizeText(queryContext.symptom) === normalizeText(storedContext.symptom));
+      const context = hasQuery ? {
+        ...storedContext,
+        ...queryContext,
+        aiCandidates: storedMatchesQuery ? (storedContext.aiCandidates || []) : []
+      } : storedContext;
       const hasContext = Boolean(context.crop || context.symptom || context.region || context.cultivationType);
       if (hasContext) {
         fillInputs(context);

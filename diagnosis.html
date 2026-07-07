@@ -15,6 +15,7 @@
 <meta name="description" content="kFarmAI AI 참고 진단 — 사진과 증상으로 원인 후보, 확인 포인트, 공공정보 확인 항목을 정리합니다.">
 <meta name="theme-color" content="#0B1410">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -659,7 +660,7 @@
   .diag-result-card td, .result-card td { padding:8px; border-bottom:1px solid #E0E0E0; }
   .diag-result-card strong, .result-card strong { color:#1B5E20; font-weight:500; }
   .diag-result-card hr, .result-card hr { border:none; border-top:1px solid #E0E0E0; margin:14px 0; }
-  .result-actions { display: flex; gap: 8px; margin-top: 16px; }
+  .result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   .btn-retry {
     flex: 1; border: 1px solid rgba(182,255,60,.4); color: var(--lime); background: transparent;
     border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700;
@@ -1057,6 +1058,7 @@ const SYSTEM_PROMPT = `당신은 농업·식물 문제를 정리하는 AI 참고
 
 let capturedFile = null;
 let lastResult   = null;
+let lastPublicDataDiagnosis = null;
 
 let _tt;
 function showToast(msg) {
@@ -1621,6 +1623,42 @@ function renderCauseCandidates(items) {
   }).join('');
 }
 
+function buildPublicDataDiagnosis(result) {
+  const bridge = window.KFDiagnosisPublicDataBridge;
+  if (!bridge?.buildStructuredDiagnosis) return null;
+  const inputContext = {
+    crop: document.getElementById('cropInput')?.value.trim() || '',
+    symptom: symptomEl?.value.trim() || '',
+    cultivationType: document.getElementById('envInput')?.value.trim() || '',
+    imageAttached: Boolean(capturedFile)
+  };
+  return bridge.buildStructuredDiagnosis({
+    result,
+    inputContext,
+    source: 'diagnosis-page'
+  });
+}
+
+function savePublicDataDiagnosis(result) {
+  const bridge = window.KFDiagnosisPublicDataBridge;
+  const diagnosis = buildPublicDataDiagnosis(result);
+  lastPublicDataDiagnosis = diagnosis;
+  if (diagnosis && bridge?.saveLastDiagnosis) {
+    bridge.saveLastDiagnosis(diagnosis);
+  }
+  return diagnosis;
+}
+
+function openPublicDataReport() {
+  const bridge = window.KFDiagnosisPublicDataBridge;
+  const diagnosis = lastPublicDataDiagnosis || savePublicDataDiagnosis(lastResult || {});
+  if (bridge?.goToPublicDataReport) {
+    bridge.goToPublicDataReport(diagnosis);
+    return;
+  }
+  location.href = 'public-data.html';
+}
+
 async function startDiagnosis() {
   const symptom = symptomEl.value.trim();
   const crop = document.getElementById('cropInput')?.value.trim() || '';
@@ -1747,6 +1785,8 @@ function showResult(result) {
   rv.style.display = 'block';
 
   const safeResult = normalizeDiagnosisResult(result || {});
+  lastResult = safeResult;
+  savePublicDataDiagnosis(safeResult);
   const confMap = { '높음': 'high', '중간': 'mid', '보통': 'mid', '낮음': 'low' };
   const confClass = confMap[safeResult.strength] || 'mid';
   const urgentBadge = safeResult.urgent ? '<div class="result-badge urgent">주의 필요</div>' : '';
@@ -1780,6 +1820,7 @@ function showResult(result) {
       ${renderCommunityConnect(safeResult)}
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
+        <button class="btn-share" onclick="openPublicDataReport()">공공데이터 보고서 보기</button>
         <button class="btn-share" onclick="shareToCommunity()">커뮤니티에 질문하기</button>
       </div>
     </div>`;
@@ -1793,6 +1834,7 @@ function renderMarkdown(text) {
 function resetDiagnosis() {
   capturedFile = null;
   lastResult   = null;
+  lastPublicDataDiagnosis = null;
 
   setStep(1);
   setLoading(false);
