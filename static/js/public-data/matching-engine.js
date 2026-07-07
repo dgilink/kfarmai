@@ -12,6 +12,7 @@
 
   var SYMPTOM_ALIASES = {
     '잎말림': ['잎말림', '잎이 말림', '잎 오그라듦', '신엽 말림', '잎이 쪼그라듦', '오그라듦'],
+    '탄저병': ['탄저병', '고추 탄저병', '탄저', '과실 반점', '열매 반점'],
     '반점': ['반점', '잎 반점', '갈색 반점', '검은 반점', '얼룩'],
     '잿빛곰팡이': ['잿빛곰팡이', '회색 곰팡이', '곰팡이', '과실 물러짐'],
     '도열병': ['도열병', '잎도열', '목도열', '벼 반점']
@@ -35,6 +36,15 @@
       aliases: ['고추 잎말림', '잎말림', '잎 오그라듦'],
       aiCandidateHints: ['해충 피해 가능성', '바이러스성 증상 가능성', '고온·건조 스트레스'],
       mainSummary: 'AI 후보 중 해충·바이러스·환경 스트레스 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'pepper-anthracnose',
+      crop: '고추',
+      symptom: '탄저병',
+      aliases: ['고추 탄저병', '탄저병', '탄저', '과실 반점', '열매 반점'],
+      aiCandidateHints: ['탄저병 가능성', '병해 가능성', '강우·습도 영향'],
+      mainSummary: 'AI 후보 중 탄저병·병해·강우와 습도 영향 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
       sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
     },
     {
@@ -312,7 +322,8 @@
   function findCaseMatch(diagnosis) {
     var normalizedCrop = normalizeCrop(diagnosis && diagnosis.crop);
     var normalizedSymptom = normalizeSymptom(diagnosis && diagnosis.symptom);
-    var combined = normalizeForCompare([diagnosis && diagnosis.crop, diagnosis && diagnosis.symptom].filter(Boolean).join(' '));
+    var candidateText = getCandidateKeywords(diagnosis).join(' ');
+    var combined = normalizeForCompare([diagnosis && diagnosis.crop, diagnosis && diagnosis.symptom, candidateText].filter(Boolean).join(' '));
     var rawSymptom = normalizeForCompare(diagnosis && diagnosis.symptom);
 
     for (var i = 0; i < MATCH_CASES.length; i += 1) {
@@ -324,7 +335,9 @@
       var cropMatches = normalizedCrop === rule.crop;
       var aliasMatches = rule.aliases.some(function (alias) {
         var normalizedAlias = normalizeForCompare(alias);
-        return normalizedAlias === combined || (cropMatches && normalizedAlias === rawSymptom);
+        return normalizedAlias === combined
+          || (cropMatches && normalizedAlias === rawSymptom)
+          || (cropMatches && combined.indexOf(normalizedAlias) >= 0);
       });
 
       if (aliasMatches) return rule;
@@ -431,6 +444,16 @@
         { name: '해충 피해 가능성', category: 'pest', keywords: ['진딧물', '총채벌레'] },
         { name: '바이러스성 증상 가능성', category: 'disease', keywords: ['바이러스', '모자이크'] },
         { name: '고온·건조 스트레스', category: 'environment', keywords: ['고온', '건조'] }
+      ]
+    },
+    pepperAnthracnose: {
+      crop: '고추',
+      symptom: '탄저병',
+      cultivationType: '노지',
+      aiCandidates: [
+        { name: '탄저병 가능성', category: 'disease', keywords: ['탄저병', '병해', '과실 반점'] },
+        { name: '강우·습도 영향', category: 'environment', keywords: ['강우', '습도', '다습'] },
+        { name: '재배관리 확인', category: 'management', keywords: ['관리', '수확기'] }
       ]
     },
     tomatoSpot: {

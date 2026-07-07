@@ -455,6 +455,17 @@
       text-align: center;
     }
 
+    .report-context-line {
+      margin-top: 5px;
+      color: #31523f;
+      font-size: 12.5px;
+      line-height: 1.35;
+      font-weight: 850;
+      text-align: center;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
     .report-subtitle {
       margin-top: 4px;
       color: #516170;
@@ -1784,6 +1795,13 @@
       return `${crop}|${symptom}`;
     }
 
+    function getReportContextLine(result) {
+      const crop = String(result.normalizedCrop || result.crop || '').trim();
+      const symptom = String(result.normalizedSymptom || result.symptom || '').trim();
+      const blocked = new Set(['미입력', '미선택', '미확인 작물', '미확인 증상', '증상 미확인']);
+      return [crop, symptom].filter((value) => value && !blocked.has(value)).join(' · ');
+    }
+
     const OFFICIAL_REFERENCE_LINKS = {
       '고추|잎말림': [
         {
@@ -1797,6 +1815,20 @@
           source: '농사로',
           url: 'https://www.nongsaro.go.kr/portal/ps/psz/psza/contentNsSub.ps?cntntsNo=262387&menuId=PS00077',
           note: '잎 뒤틀림·말림 등 이상증상 현장 사례를 확인합니다.'
+        }
+      ],
+      '고추|탄저병': [
+        {
+          title: '사진 있는 공식자료: 고추 탄저병',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/search/nongsaroSearch.ps?categoryName=SCH01&menuId=PS00007&option=0&sortOrdr=01&searchWord=%EA%B3%A0%EC%B6%94%20%ED%83%84%EC%A0%80%EB%B3%91',
+          note: '고추 탄저병 관련 사진·사례·기술자료를 농사로 공식 검색에서 확인합니다.'
+        },
+        {
+          title: '고추 병해충 공식 검색',
+          source: '농사로',
+          url: 'https://www.nongsaro.go.kr/portal/search/nongsaroSearch.ps?categoryName=SCH01&menuId=PS00007&option=0&sortOrdr=01&searchWord=%EA%B3%A0%EC%B6%94%20%EB%B3%91%ED%95%B4%EC%B6%A9',
+          note: '고추 병해충 관련 공식자료 검색 결과를 확인합니다.'
         }
       ],
       '토마토|반점': [
@@ -1843,13 +1875,22 @@
       ]
     };
 
+    const OFFICIAL_REFERENCE_CASE_KEYS = {
+      'pepper-anthracnose': '고추|탄저병',
+      'pepper-leaf-curl': '고추|잎말림',
+      'tomato-spot': '토마토|반점',
+      'strawberry-gray-mold': '딸기|잿빛곰팡이',
+      'rice-blast': '벼|도열병'
+    };
+
     function getNongsaroSearchUrl(result) {
       const query = [result.normalizedCrop || result.crop, result.normalizedSymptom || result.symptom].filter(Boolean).join(' ');
       return `https://www.nongsaro.go.kr/portal/search/nongsaroSearch.ps?categoryName=SCH01&menuId=PS00007&option=0&sortOrdr=01&searchWord=${encodeURIComponent(query || '작물 병해충')}`;
     }
 
     function getOfficialReferenceLinks(result) {
-      const curated = OFFICIAL_REFERENCE_LINKS[getReportKey(result)] || [];
+      const caseKey = OFFICIAL_REFERENCE_CASE_KEYS[result.caseId];
+      const curated = OFFICIAL_REFERENCE_LINKS[caseKey] || OFFICIAL_REFERENCE_LINKS[getReportKey(result)] || [];
       if (curated.length) return curated;
       return [
         {
@@ -1957,10 +1998,11 @@
       ).slice(0, 3);
       const href = primary.url || getNongsaroSearchUrl(result);
       const label = isRepresentative ? '사진 있는 공식자료 보기' : '기본 공식자료 검색';
+      const contextLine = getReportContextLine(result);
       card.className = 'tool-result-card is-visible';
       card.innerHTML = `
         <div class="tool-result-head">
-          <strong class="tool-result-title">확인 결과</strong>
+          <strong class="tool-result-title">${escapeHtml(contextLine || '확인 결과')}</strong>
           <span class="tool-result-status">${escapeHtml(result.matchStatus || '일반 확인 항목 안내')}</span>
         </div>
         <div class="tool-result-tags">
@@ -2004,12 +2046,14 @@
     function renderMatchingReport(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
       const matchStatus = getReportValue(result.matchStatus, '일반 확인 항목 안내');
+      const contextLine = getReportContextLine(result);
       return `
         <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
           <article class="match-summary-card">
             <div class="report-title-row">
               <div>
                 <h3 class="report-title">${escapeHtml(getReportTitle(result))}</h3>
+                ${contextLine ? `<div class="report-context-line">${escapeHtml(contextLine)}</div>` : ''}
               </div>
               ${renderReportThumb(result)}
             </div>
