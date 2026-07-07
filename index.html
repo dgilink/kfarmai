@@ -75,7 +75,9 @@
   html, body {
     height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", "Noto Sans KR", "Pretendard", sans-serif;
-    background: #0a0a0a;
+    background:
+      radial-gradient(circle at top, rgba(189, 232, 202, .48), transparent 36%),
+      linear-gradient(180deg, #edf7ef 0%, #dfeee5 100%);
     color: var(--text);
     -webkit-font-smoothing: antialiased;
     word-break: keep-all;
@@ -84,14 +86,21 @@
   body { display: flex; justify-content: center; align-items: flex-start; min-height: 100dvh; }
 
   .phone {
-    width: 100%; max-width: 480px;
+    width: 100%; max-width: 430px;
     height: 100dvh; max-height: 920px;
     background: var(--bg);
     position: relative; overflow: hidden;
     display: flex; flex-direction: column;
   }
-  @media (min-width: 520px) {
-    .phone { border-radius: 36px; height: 92vh; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  @media (min-width: 431px) {
+    .phone {
+      border-radius: 28px;
+      height: min(100dvh, 920px);
+      min-height: 100dvh;
+      border-left: 1px solid rgba(15, 47, 34, .08);
+      border-right: 1px solid rgba(15, 47, 34, .08);
+      box-shadow: 0 24px 56px rgba(15, 47, 34, .18);
+    }
   }
 
   /* ===== Header (fixed) ===== */
@@ -745,7 +754,7 @@
   /* FAB */
   .fab {
     position: fixed;
-    right: max(14px, calc((100vw - 480px) / 2 + 14px));
+    right: max(14px, calc((100vw - 430px) / 2 + 14px));
     bottom: calc(18px + env(safe-area-inset-bottom));
     display: inline-flex; align-items: center; gap: 5px;
     background: #111; color: #fff;
@@ -758,10 +767,10 @@
   }
   body.my-panel-active .fab,
   body.is-composing .fab { display:none !important; }
-  @media (min-width: 520px) {
+  @media (min-width: 431px) {
     .fab {
-      right: calc(50% - 226px);
-      bottom: calc(4vh + 18px);
+      right: calc(50% - 201px);
+      bottom: calc(18px + env(safe-area-inset-bottom));
     }
   }
 
@@ -1162,7 +1171,7 @@
   .modal-overlay.open { display: flex; }
   .modal {
     width: 100%;
-    max-width: 480px;
+    max-width: 430px;
     margin: 0 auto;
     background: #fff;
     border-radius: 20px 20px 0 0;
