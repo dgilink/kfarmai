@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>공공정보 확인 | kFarmAI</title>
+  <title>공공데이터 확인 | kFarmAI</title>
   <style>
     :root {
       --green: #128a43;
@@ -146,20 +146,20 @@
     }
 
     .section--guide {
-      order: 5;
-      margin-top: 12px;
-      background: #f4fbf7;
+      order: 1;
+      margin-top: 0;
+      background: #f3fbf6;
       border-color: rgba(18, 138, 67, 0.16);
     }
 
     .section--match {
-      order: 3;
+      order: 4;
       background: #f3f9ff;
       border-color: rgba(37, 99, 235, 0.18);
     }
 
     .section--examples {
-      order: 2;
+      order: 3;
       margin-top: 8px;
       padding: 0 2px;
       background: transparent;
@@ -188,13 +188,13 @@
     }
 
     .section--official {
-      order: 4;
+      order: 5;
       background: #ffffff;
       border-color: #dfe8e2;
     }
 
     .section--tool {
-      order: 1;
+      order: 2;
       background: #f8fafc;
       border-color: #d9e2ea;
     }
@@ -246,18 +246,18 @@
 
     .guide-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
     }
 
     .guide-card {
       display: grid;
-      grid-template-columns: 28px minmax(0, 1fr);
+      grid-template-columns: 24px minmax(0, 1fr);
       align-items: start;
-      gap: 8px;
+      gap: 7px;
       min-height: 0;
-      padding: 8px 10px;
-      border-radius: 13px;
+      padding: 9px;
+      border-radius: 12px;
       background: rgba(255, 255, 255, 0.82);
       border: 1px solid rgba(18, 138, 67, 0.13);
     }
@@ -266,23 +266,26 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
       padding: 0;
       margin-bottom: 0;
       border-radius: 999px;
       background: #e6f6ec;
       color: var(--green-dark);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
     }
 
     .guide-card strong {
       display: block;
       color: #183b29;
-      font-size: 12.5px;
+      font-size: 12.3px;
       line-height: 1.28;
       margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .guide-card span {
@@ -290,6 +293,10 @@
       color: #5f7568;
       font-size: 11.2px;
       line-height: 1.34;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .summary-card {
@@ -478,16 +485,16 @@
 
     .official-grid {
       display: grid;
-      gap: 8px;
+      gap: 7px;
     }
 
     .official-card {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 7px 10px;
+      gap: 5px 10px;
       align-items: start;
-      padding: 13px 14px;
-      border-radius: 15px;
+      padding: 11px 12px;
+      border-radius: 14px;
       background: #f6faf8;
       border: 1px solid #dcebe2;
     }
@@ -496,18 +503,18 @@
       display: flex;
       align-items: center;
       color: #173b29;
-      font-size: 15px;
+      font-size: 14.3px;
       line-height: 1.28;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .official-card p {
-      color: #5c7065;
-      font-size: 12.6px;
-      line-height: 1.38;
+      color: #40564a;
+      font-size: 12.2px;
+      line-height: 1.32;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -522,10 +529,10 @@
     }
 
     .official-card .btn {
-      min-width: 68px;
-      min-height: 34px;
-      padding: 0 10px;
-      border-radius: 12px;
+      min-width: 64px;
+      min-height: 32px;
+      padding: 0 9px;
+      border-radius: 11px;
       font-size: 12px;
     }
 
@@ -568,19 +575,19 @@
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
-      margin-top: 7px;
+      margin-top: 5px;
       grid-column: 1;
     }
 
     .official-tag {
       display: inline-flex;
       align-items: center;
-      height: 24px;
-      padding: 0 7px;
+      height: 22px;
+      padding: 0 8px;
       border-radius: 999px;
-      background: #eef7f1;
-      color: #287246;
-      font-size: 11.3px;
+      background: #dff2e7;
+      color: #126038;
+      font-size: 11px;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -677,7 +684,7 @@
         </a>
         <a class="home-link" href="index.html">홈</a>
       </div>
-      <h1>공공정보 확인</h1>
+      <h1>공공데이터 확인</h1>
       <p>
         AI 참고 진단 결과를 공공정보로 교차 확인하세요.
         작물명과 증상을 입력하면 확인할 공식정보를 정리해드립니다.
@@ -741,8 +748,8 @@
       <section class="section section--official" id="ncpms" aria-labelledby="officialTitle">
         <div class="section-head">
           <div>
-            <h2 class="section-title" id="officialTitle" data-icon="공식">확인해야 할 공식정보</h2>
-            <p class="section-subtitle">외부 공식 시스템과 kFarmAI 내부 참고 화면을 연결합니다.</p>
+            <h2 class="section-title" id="officialTitle" data-icon="공식">공공데이터 확인</h2>
+            <p class="section-subtitle">공식 시스템과 kFarmAI 참고 화면을 빠르게 확인하세요.</p>
           </div>
         </div>
         <div class="official-grid" id="officialInfoGrid"></div>
@@ -813,19 +820,19 @@
       ncpms: {
         name: 'NCPMS 국가농작물병해충관리시스템',
         url: 'https://ncpms.rda.go.kr/',
-        description: '작물별 병해충 정보와 발생환경을 확인할 수 있는 공식 시스템입니다.',
+        description: '작물별 병해충 정보와 발생환경을 확인하는 공식 시스템입니다.',
         external: true
       },
       psis: {
         name: '농약안전정보시스템',
         url: 'https://psis.rda.go.kr/',
-        description: '농약 등록정보, 안전사용기준, 제품 라벨 확인에 필요한 공식 시스템입니다.',
+        description: '농약 등록정보, 안전사용기준, 제품 라벨을 확인할 수 있습니다.',
         external: true
       },
       nongsaro: {
         name: '농사로',
         url: 'https://www.nongsaro.go.kr/',
-        description: '농촌진흥청 농업기술포털로 작목별 재배기술과 농작업 정보를 확인할 수 있습니다.',
+        description: '농촌진흥청 농업기술포털에서 작목별 재배기술을 확인합니다.',
         external: true
       },
       agriWeather: {
@@ -843,13 +850,13 @@
       cropCalendar: {
         name: 'kFarmAI 재배달력',
         url: 'crop-calendar.html',
-        description: '월별 재배 흐름과 시기별 관리 포인트를 참고합니다.',
+        description: '월별 재배 일정과 작업 흐름을 참고합니다.',
         external: false
       },
       localInfo: {
         name: '지역 농업기관·농자재 정보',
         url: 'mfg.html',
-        description: '지역 판매점, 제조사, 관련기관 정보를 확인합니다.',
+        description: '지역 기관, 제조사, 농자재 확인 경로를 참고합니다.',
         external: false
       }
     };
