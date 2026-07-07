@@ -3096,7 +3096,7 @@ async function loadMyDiagnoses(userId){
       const title=symptom.length>20?`${symptom.slice(0,20)}...`:symptom;
       return `<div class="my-list-item">
         <div class="my-list-item-top">
-          <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+          <span class="my-list-badge">${escHtml(item.crop||'AI 참고')}</span>
           <div class="my-list-actions">
             <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
           </div>
@@ -3152,7 +3152,7 @@ function renderMyDiagnosisList(){
     const preview=diagnosisPreviewText(item.result);
     return `<div class="my-list-item" role="button" tabindex="0" onclick="openMyDiagnosisDetail('${escAttr(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMyDiagnosisDetail('${escAttr(item.id)}');}">
       <div class="my-list-item-top">
-        <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+        <span class="my-list-badge">${escHtml(item.crop||'AI 참고')}</span>
         <div class="my-list-actions">
           <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
         </div>
@@ -3220,7 +3220,7 @@ function getMyPublicDataReports(){
 }
 
 function renderMyPublicDataReportItem(report){
-  const title=[report.crop,report.symptom].filter(Boolean).join(' · ')||'공공데이터 매칭 보고서';
+  const title='공공데이터 매칭 보고서';
   const preview=String(report.mainSummary||report.matchStatus||'공공데이터 기준 확인 항목을 정리했습니다.').replace(/\s+/g,' ').slice(0,90);
   return `<div class="my-list-item" role="button" tabindex="0" onclick="openMyPublicDataReport('${escAttr(report.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMyPublicDataReport('${escAttr(report.id)}');}">
     <div class="my-list-item-top">
@@ -3249,7 +3249,7 @@ function renderMyDiagnosisList(){
     const preview=diagnosisPreviewText(item.result);
     return `<div class="my-list-item" role="button" tabindex="0" onclick="openMyDiagnosisDetail('${escAttr(item.id)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openMyDiagnosisDetail('${escAttr(item.id)}');}">
       <div class="my-list-item-top">
-        <span class="my-list-badge">${escHtml(item.crop||'미선택')}</span>
+        <span class="my-list-badge">${escHtml(item.crop||'AI 참고')}</span>
         <div class="my-list-actions">
           <button class="my-list-action danger" type="button" onclick="deleteMyDiagnosis(event,'${escAttr(item.id)}')">삭제</button>
         </div>
@@ -3323,8 +3323,8 @@ async function saveDiagnosisHistory(symptomText, resultData){
   try{
     const {data:{session}}=await _sb.auth.getSession();
     if(!session?.user?.id)return;
-    const selectedCrop='미선택';
-    const crop=selectedCrop || '미선택';
+    const selectedCrop='';
+    const crop=selectedCrop || '';
     const symptom=symptomText || '';
     const diagResult=typeof resultData==='string'?resultData:JSON.stringify(resultData);
     console.log('진단 저장 시도', {crop, symptom});
