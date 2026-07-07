@@ -66,6 +66,162 @@
     }
   ];
 
+  var SUPPLEMENTAL_CROPS = [
+    { id: 'cucumber', name: '오이', aliases: ['오이', '백다다기오이', '취청오이', 'cucumber'] },
+    { id: 'eggplant', name: '가지', aliases: ['가지', 'eggplant'] },
+    { id: 'lettuce', name: '상추', aliases: ['상추', '청상추', '적상추', 'lettuce'] },
+    { id: 'cabbage', name: '배추', aliases: ['배추', '김장배추', 'napa cabbage'] },
+    { id: 'radish', name: '무', aliases: ['무', '무우', 'radish'] },
+    { id: 'green-onion', name: '파', aliases: ['파', '대파', '쪽파', 'green onion'] },
+    { id: 'onion', name: '양파', aliases: ['양파', 'onion'] },
+    { id: 'garlic', name: '마늘', aliases: ['마늘', 'garlic'] },
+    { id: 'potato', name: '감자', aliases: ['감자', 'potato'] },
+    { id: 'sweet-potato', name: '고구마', aliases: ['고구마', 'sweet potato'] },
+    { id: 'soybean', name: '콩', aliases: ['콩', '대두', 'soybean'] },
+    { id: 'corn', name: '옥수수', aliases: ['옥수수', 'corn'] },
+    { id: 'watermelon', name: '수박', aliases: ['수박', 'watermelon'] },
+    { id: 'oriental-melon', name: '참외', aliases: ['참외', 'oriental melon'] },
+    { id: 'melon', name: '멜론', aliases: ['멜론', 'melon'] },
+    { id: 'pumpkin', name: '호박', aliases: ['호박', '애호박', '단호박', 'pumpkin'] },
+    { id: 'apple', name: '사과', aliases: ['사과', 'apple'] },
+    { id: 'pear', name: '배', aliases: ['배', 'pear'] },
+    { id: 'peach', name: '복숭아', aliases: ['복숭아', 'peach'] },
+    { id: 'grape', name: '포도', aliases: ['포도', 'grape'] },
+    { id: 'citrus', name: '감귤', aliases: ['감귤', '귤', 'citrus'] },
+    { id: 'blueberry', name: '블루베리', aliases: ['블루베리', 'blueberry'] },
+    { id: 'rose', name: '장미', aliases: ['장미', 'rose'] },
+    { id: 'chrysanthemum', name: '국화', aliases: ['국화', 'chrysanthemum'] },
+    { id: 'monstera', name: '몬스테라', aliases: ['몬스테라', 'monstera'] },
+    { id: 'pothos', name: '스킨답서스', aliases: ['스킨답서스', '포토스', 'pothos'] },
+    { id: 'basil', name: '바질', aliases: ['바질', 'basil'] },
+    { id: 'rosemary', name: '로즈마리', aliases: ['로즈마리', 'rosemary'] },
+    { id: 'spinach', name: '시금치', aliases: ['시금치', 'spinach'] },
+    { id: 'perilla', name: '깻잎', aliases: ['깻잎', '들깨', 'perilla'] },
+    { id: 'sesame', name: '참깨', aliases: ['참깨', 'sesame'] },
+    { id: 'carrot', name: '당근', aliases: ['당근', 'carrot'] },
+    { id: 'broccoli', name: '브로콜리', aliases: ['브로콜리', 'broccoli'] },
+    { id: 'cauliflower', name: '콜리플라워', aliases: ['콜리플라워', 'cauliflower'] },
+    { id: 'chive', name: '부추', aliases: ['부추', 'chive'] },
+    { id: 'ginger', name: '생강', aliases: ['생강', 'ginger'] },
+    { id: 'taro', name: '토란', aliases: ['토란', 'taro'] },
+    { id: 'yam', name: '마', aliases: ['마', '산약', 'yam'] },
+    { id: 'peanut', name: '땅콩', aliases: ['땅콩', 'peanut'] },
+    { id: 'adzuki', name: '팥', aliases: ['팥', 'adzuki bean'] },
+    { id: 'barley', name: '보리', aliases: ['보리', 'barley'] },
+    { id: 'wheat', name: '밀', aliases: ['밀', 'wheat'] },
+    { id: 'oat', name: '귀리', aliases: ['귀리', 'oat'] },
+    { id: 'kiwi', name: '키위', aliases: ['키위', '참다래', 'kiwi'] },
+    { id: 'plum', name: '자두', aliases: ['자두', 'plum'] },
+    { id: 'persimmon', name: '감', aliases: ['감', '단감', 'persimmon'] },
+    { id: 'jujube', name: '대추', aliases: ['대추', 'jujube'] },
+    { id: 'chestnut', name: '밤', aliases: ['밤', 'chestnut'] },
+    { id: 'fig', name: '무화과', aliases: ['무화과', 'fig'] },
+    { id: 'raspberry', name: '복분자', aliases: ['복분자', '산딸기', 'raspberry'] },
+    { id: 'paprika', name: '파프리카', aliases: ['파프리카', '피망', 'paprika', 'bell pepper'] },
+    { id: 'celery', name: '셀러리', aliases: ['셀러리', 'celery'] },
+    { id: 'parsley', name: '파슬리', aliases: ['파슬리', 'parsley'] },
+    { id: 'mint', name: '민트', aliases: ['민트', 'mint'] },
+    { id: 'lavender', name: '라벤더', aliases: ['라벤더', 'lavender'] },
+    { id: 'orchid', name: '난', aliases: ['난', '서양란', '동양란', 'orchid'] },
+    { id: 'succulent', name: '다육식물', aliases: ['다육식물', '다육이', 'succulent'] },
+    { id: 'ficus', name: '고무나무', aliases: ['고무나무', 'ficus'] },
+    { id: 'areca-palm', name: '아레카야자', aliases: ['아레카야자', 'areca palm'] },
+    { id: 'hydrangea', name: '수국', aliases: ['수국', 'hydrangea'] },
+    { id: 'marigold', name: '금잔화', aliases: ['금잔화', '메리골드', 'marigold'] },
+    { id: 'zucchini', name: '주키니', aliases: ['주키니', 'zucchini'] }
+  ];
+
+  var SUPPLEMENTAL_SYMPTOM_RULES = [
+    {
+      id: 'leaf-dry',
+      symptom: '잎마름',
+      aliases: ['잎마름', '잎 끝 마름', '잎끝마름', '마름', '갈변'],
+      aiCandidateHints: ['수분 스트레스 가능성', '고온·건조 영향', '양분 불균형 가능성'],
+      mainSummary: '잎마름 증상은 수분 스트레스, 고온·건조, 양분 불균형 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['agriWeather', 'cropGuide', 'nongsaro', 'localAgency']
+    },
+    {
+      id: 'leaf-yellow',
+      symptom: '잎노랑',
+      aliases: ['잎노랑', '잎 노랑', '노란잎', '황화', '잎이 노래짐', '잎이 노랗게 변함'],
+      aiCandidateHints: ['양분 부족 가능성', '과습·배수 문제 가능성', '생육환경 영향'],
+      mainSummary: '잎노랑 증상은 양분, 물관리, 생육환경 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['cropGuide', 'nongsaro', 'agriWeather', 'localAgency']
+    },
+    {
+      id: 'spots',
+      symptom: '반점',
+      aliases: ['반점', '잎 반점', '갈색 반점', '검은 반점', '얼룩', '점무늬'],
+      aiCandidateHints: ['병해 가능성', '과습 환경 영향', '환경 스트레스 가능성'],
+      mainSummary: '반점 증상은 병해, 과습 환경, 재배환경 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'wilting',
+      symptom: '시듦',
+      aliases: ['시듦', '시들음', '축 처짐', '처짐', '위조', '잎 처짐'],
+      aiCandidateHints: ['물관리 문제 가능성', '뿌리 스트레스 가능성', '병해 가능성'],
+      mainSummary: '시듦 증상은 물관리, 뿌리 스트레스, 병해 관련 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['agriWeather', 'cropGuide', 'ncpms', 'localAgency']
+    },
+    {
+      id: 'growth-poor',
+      symptom: '생육부진',
+      aliases: ['생육부진', '성장 느림', '잘 안 큼', '왜화', '크지 않음'],
+      aiCandidateHints: ['생육환경 영향', '양분 관리 가능성', '재배관리 문제 가능성'],
+      mainSummary: '생육부진은 생육단계, 양분 관리, 재배환경 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['cropGuide', 'nongsaro', 'agriWeather', 'localAgency']
+    },
+    {
+      id: 'mold',
+      symptom: '곰팡이',
+      aliases: ['곰팡이', '흰 곰팡이', '회색 곰팡이', '균사', '부패', '물러짐'],
+      aiCandidateHints: ['곰팡이성 병 가능성', '과습 가능성', '통풍 부족 가능성'],
+      mainSummary: '곰팡이 증상은 병해, 과습, 통풍 조건 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'pest-damage',
+      symptom: '해충피해',
+      aliases: ['해충피해', '벌레', '진딧물', '총채벌레', '응애', '갉아먹음', '흡즙 피해'],
+      aiCandidateHints: ['해충 피해 가능성', '흡즙성 해충 가능성', '잎 피해 확인 필요'],
+      mainSummary: '해충피해 의심 증상은 병해충 정보, 대상 병해충, 안전사용기준 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'leaf-curl',
+      symptom: '잎말림',
+      aliases: ['잎말림', '잎 말림', '잎이 말림', '잎 오그라듦', '신엽 말림', '오그라듦'],
+      aiCandidateHints: ['해충 피해 가능성', '바이러스성 증상 가능성', '고온·건조 스트레스 가능성'],
+      mainSummary: '잎말림 증상은 해충, 바이러스성 증상, 고온·건조 스트레스 항목을 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    }
+  ];
+
+  function buildSupplementalMatchCases() {
+    var cases = [];
+    SUPPLEMENTAL_CROPS.forEach(function (crop) {
+      SUPPLEMENTAL_SYMPTOM_RULES.forEach(function (rule) {
+        cases.push({
+          id: crop.id + '-' + rule.id,
+          crop: crop.name,
+          symptom: rule.symptom,
+          aliases: crop.aliases.reduce(function (aliases, cropAlias) {
+            return aliases.concat(rule.aliases.map(function (symptomAlias) {
+              return cropAlias + ' ' + symptomAlias;
+            }));
+          }, rule.aliases.slice()),
+          aiCandidateHints: rule.aiCandidateHints.slice(),
+          mainSummary: crop.name + ' ' + rule.symptom + '은 ' + rule.mainSummary,
+          sources: rule.sources.slice()
+        });
+      });
+    });
+    return cases;
+  }
+
+  MATCH_CASES = MATCH_CASES.concat(buildSupplementalMatchCases()).slice(0, 500);
+
   var RESULT_TEXTS = {
     ncpms: 'AI 후보 중 병해충·해충 관련 항목은 NCPMS 병해충 정보와 연결됩니다.',
     psis: '농약 사용 판단은 AI 결과가 아니라 공식 안전사용기준과 제품 라벨 확인이 필요합니다.',
@@ -325,6 +481,7 @@
     buildMatchedSources: buildMatchedSources,
     buildFallbackMatch: buildFallbackMatch,
     matchDiagnosisToPublicData: matchDiagnosisToPublicData,
+    matchCaseCount: MATCH_CASES.length,
     sampleDiagnoses: sampleDiagnoses
   };
 }());
