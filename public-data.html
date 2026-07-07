@@ -151,6 +151,22 @@
       border-color: rgba(37, 99, 235, 0.18);
     }
 
+    .section--match .section-head {
+      justify-content: center;
+      margin-bottom: 6px;
+    }
+
+    .section--match .section-title {
+      justify-content: center;
+      width: 100%;
+      text-align: center;
+      font-size: 17px;
+    }
+
+    .section--match .section-subtitle {
+      display: none;
+    }
+
     .section--examples {
       order: 5;
       margin-top: 8px;
@@ -380,24 +396,24 @@
     }
 
     .match-summary-card {
-      padding: 18px;
+      padding: 13px;
       border-radius: 22px;
       background:
         radial-gradient(circle at top right, rgba(37, 99, 235, 0.12), transparent 34%),
         linear-gradient(135deg, #f7fbff 0%, #ecfdf5 100%);
       border: 1px solid rgba(37, 99, 235, 0.16);
-      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
     }
 
     .report-kicker {
       display: inline-flex;
       align-items: center;
-      min-height: 24px;
-      padding: 0 9px;
+      min-height: 22px;
+      padding: 0 8px;
       border-radius: 999px;
       background: rgba(37, 99, 235, 0.1);
       color: #1d4ed8;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 900;
       white-space: nowrap;
     }
@@ -406,48 +422,58 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 8px;
+      margin-top: 7px;
     }
 
     .report-title {
       color: #0f2f22;
-      font-size: 21px;
-      line-height: 1.22;
+      font-size: 17px;
+      line-height: 1.25;
       font-weight: 850;
       letter-spacing: 0;
     }
 
     .report-subtitle {
-      margin-top: 5px;
+      margin-top: 4px;
       color: #516170;
-      font-size: 12.5px;
-      line-height: 1.42;
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+
+    .report-photo-thumb {
+      flex: 0 0 52px;
+      width: 52px;
+      height: 52px;
+      border-radius: 13px;
+      object-fit: cover;
+      border: 1px solid rgba(15, 47, 34, 0.12);
+      background: #e2e8f0;
     }
 
     .report-status-badge {
       display: inline-flex;
       align-items: center;
-      min-height: 28px;
+      min-height: 23px;
       max-width: 100%;
-      margin-top: 11px;
-      padding: 0 10px;
+      margin-top: 7px;
+      padding: 0 9px;
       border-radius: 999px;
       background: #dbeafe;
       border: 1px solid #bfdbfe;
       color: #1d4ed8;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 900;
       line-height: 1.2;
     }
 
     .report-block {
-      margin-top: 13px;
+      margin-top: 8px;
     }
 
     .report-block h2,
     .match-detail-panel h2 {
-      margin-bottom: 7px;
+      margin-bottom: 5px;
       color: #183b29;
       font-size: 13px;
       line-height: 1.3;
@@ -458,38 +484,38 @@
     .source-chip-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      gap: 4px;
     }
 
     .report-result-list {
       display: grid;
-      gap: 7px;
+      gap: 5px;
     }
 
     .report-result-item {
-      padding: 9px 10px;
-      border-radius: 13px;
+      padding: 7px 8px;
+      border-radius: 11px;
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid rgba(148, 163, 184, 0.22);
       color: #243447;
-      font-size: 12.5px;
-      line-height: 1.45;
+      font-size: 11.5px;
+      line-height: 1.32;
       word-break: keep-all;
     }
 
     .report-result-item strong {
       display: block;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
       color: #123524;
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 850;
     }
 
     .report-source-line {
       display: block;
-      margin-top: 8px;
+      margin-top: 5px;
       color: #526176;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.4;
       word-break: keep-all;
     }
@@ -499,10 +525,10 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 28px;
-      padding: 0 10px;
+      min-height: 24px;
+      padding: 0 8px;
       border-radius: 999px;
-      font-size: 11.5px;
+      font-size: 10.8px;
       font-weight: 900;
       white-space: nowrap;
     }
@@ -528,11 +554,11 @@
 
     .report-summary-line,
     .report-next-step {
-      margin-top: 13px;
-      padding: 12px;
-      border-radius: 15px;
-      font-size: 13px;
-      line-height: 1.55;
+      margin-top: 7px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      font-size: 11.8px;
+      line-height: 1.34;
     }
 
     .report-summary-line {
@@ -1492,7 +1518,8 @@
         symptom: context.symptom || sample?.symptom || '',
         region: context.region || sample?.region || '',
         cultivationType: context.cultivationType || sample?.cultivationType || '',
-        aiCandidates: context.aiCandidates || sample?.aiCandidates || []
+        aiCandidates: context.aiCandidates || sample?.aiCandidates || [],
+        imageUrl: context.imageUrl || context.image_url || context.photoUrl || context.thumbnailUrl || sample?.imageUrl || ''
       };
     }
 
@@ -1560,9 +1587,37 @@
       return text || fallback;
     }
 
+    function compactText(value, fallback, maxLength = 18) {
+      const text = getReportValue(value, fallback).replace(/\s+/g, ' ');
+      return text.length > maxLength ? `${text.slice(0, maxLength).trim()}...` : text;
+    }
+
+    function getFirstImageUrl(value) {
+      if (Array.isArray(value)) return value.find(Boolean) || '';
+      if (!value) return '';
+      if (typeof value === 'string') {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) return parsed.find(Boolean) || '';
+        } catch (_) {
+          return value;
+        }
+      }
+      return '';
+    }
+
+    function getReportImageUrl(result) {
+      return getFirstImageUrl(
+        result.imageUrl || result.image_url || result.photoUrl || result.photo_url || result.thumbnailUrl
+        || result.imageUrls || result.image_urls || result.images
+        || result.diagnosis?.imageUrl || result.diagnosis?.image_url || result.diagnosis?.photoUrl
+        || result.diagnosis?.imageUrls || result.diagnosis?.image_urls || result.diagnosis?.images
+      );
+    }
+
     function getReportTitle(result) {
-      const crop = getReportValue(result.normalizedCrop || result.crop, '미확인 작물');
-      const symptom = getReportValue(result.normalizedSymptom || result.symptom, '미확인 증상');
+      const crop = compactText(result.normalizedCrop || result.crop, '미확인 작물', 10);
+      const symptom = compactText(result.normalizedSymptom || result.symptom, '미확인 증상', 12);
       return `${crop} · ${symptom}`;
     }
 
@@ -1724,6 +1779,12 @@
       `;
     }
 
+    function renderReportThumb(result) {
+      const imageUrl = getReportImageUrl(result);
+      if (!imageUrl) return '';
+      return `<img class="report-photo-thumb" src="${escapeHtml(imageUrl)}" alt="업로드 사진 미리보기" loading="lazy" />`;
+    }
+
     function renderSourceDetails(sources) {
       if (!sources.length) {
         return '<div class="empty-state">연결할 공공데이터 출처를 찾지 못했습니다. 기본 공공정보를 확인하세요.</div>';
@@ -1756,17 +1817,13 @@
     function renderMatchingReport(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
       const matchStatus = getReportValue(result.matchStatus, '일반 확인 항목 안내');
-      const mainSummary = getReportValue(
-        result.mainSummary,
-        '다만 공공데이터 출처 기준으로 확인할 수 있는 항목을 정리했습니다.'
-      );
       const nextStep = getReportValue(
         result.nextStep,
-        '증상 사진, 발생 시기, 재배환경을 정리해 공식자료 또는 관계기관으로 추가 확인하세요.'
+        '사진·발생시기·재배환경을 정리해 공식자료와 함께 확인하세요.'
       );
       const caution = getReportValue(
         result.caution,
-        '이 결과는 참고자료입니다. 공식자료와 전문가 확인을 함께 참고하세요.'
+        '참고자료입니다. 공식자료와 전문가 확인을 함께 참고하세요.'
       );
       return `
         <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
@@ -1776,8 +1833,8 @@
             <div class="report-title-row">
               <div>
                 <h3 class="report-title">${escapeHtml(getReportTitle(result))}</h3>
-                <p class="report-subtitle">AI 참고 후보와 공공데이터 기준 확인 항목을 연결했습니다.</p>
               </div>
+              ${renderReportThumb(result)}
             </div>
 
             <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
@@ -1793,8 +1850,6 @@
             </div>
 
             <span class="report-source-line">출처: ${escapeHtml(renderSourceLine(sources))}</span>
-            <div class="report-summary-line">${escapeHtml(mainSummary)}</div>
-            <div class="report-next-step">${escapeHtml(nextStep)}</div>
             <button class="detail-toggle-button" type="button" onclick="scrollReportDetail()">공식 사례 보기</button>
           </article>
 
@@ -1803,13 +1858,13 @@
             ${renderOfficialReferences(result)}
 
             <div class="report-extra-check">
-              <h2>요약보고 · 제안방향</h2>
+              <h2>제안방향</h2>
               <p>${escapeHtml(nextStep)}</p>
             </div>
 
             <div class="report-extra-check">
-              <h2>kFarmAI에서 이어서 확인</h2>
-              <p>비슷한 질문은 커뮤니티에서 확인하고, 농업날씨·재배가이드·농자재/지역정보를 함께 참고하세요.</p>
+              <h2>다음 확인</h2>
+              <p>커뮤니티 · 농업날씨 · 재배가이드 · 농자재/지역정보를 이어서 참고하세요.</p>
             </div>
 
             <div class="report-caution">
@@ -1956,13 +2011,14 @@
           const raw = localStorage.getItem(key);
           if (!raw) continue;
           const data = JSON.parse(raw);
-          const symptoms = Array.isArray(data.symptoms) ? data.symptoms.join(' ') : data.symptom;
+          const symptoms = Array.isArray(data.symptoms) ? data.symptoms.find(Boolean) : data.symptom;
           return {
             crop: data.crop || data.cropName || data.plant || '',
             symptom: symptoms || data.mainSymptom || '',
             region: data.region || '',
             cultivationType: data.cultivationType || data.type || '',
-            aiCandidates: Array.isArray(data.aiCandidates) ? data.aiCandidates : []
+            aiCandidates: Array.isArray(data.aiCandidates) ? data.aiCandidates : [],
+            imageUrl: getFirstImageUrl(data.imageUrl || data.image_url || data.photoUrl || data.thumbnailUrl || data.imageUrls || data.image_urls || data.images)
           };
         } catch (error) {
           console.warn('[public-data] ignored broken diagnosis context', { key });

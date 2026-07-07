@@ -386,6 +386,7 @@
       region: cleanText(safeDiagnosis.region),
       cultivationType: cleanText(safeDiagnosis.cultivationType),
       aiCandidateLabels: getCandidateLabels(safeDiagnosis),
+      imageUrl: cleanText(safeDiagnosis.imageUrl || safeDiagnosis.image_url || safeDiagnosis.photoUrl || safeDiagnosis.thumbnailUrl),
       createdAt: new Date().toISOString()
     };
   }

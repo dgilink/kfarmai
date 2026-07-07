@@ -120,9 +120,24 @@
       result && result.symptom,
       result && result.mainSymptom,
       result && result.symptoms,
-      result && result.summary,
-      result && result.message
+      result && result.symptomKeywords
     );
+  }
+
+  function firstImageUrl() {
+    for (var i = 0; i < arguments.length; i += 1) {
+      var value = arguments[i];
+      if (Array.isArray(value)) value = value.find(Boolean);
+      if (typeof value === 'string' && value.trim().charAt(0) === '[') {
+        try {
+          var parsed = JSON.parse(value);
+          value = Array.isArray(parsed) ? parsed.find(Boolean) : value;
+        } catch (error) {}
+      }
+      var text = cleanText(value);
+      if (text) return text;
+    }
+    return '';
   }
 
   function inferSummary(result, candidates) {
@@ -169,7 +184,20 @@
       needPublicDataMatching: true,
       cautionText: firstText(result.cautionText, result.safetyNotice) || '이 결과는 AI 참고 진단이며 최종 판단이 아닙니다.',
       nextActions: ['공공데이터 매칭 보고서 생성', 'AI 참고 진단 결과 저장', '관계기관 확인'],
-      imageUrl: null
+      imageUrl: firstImageUrl(
+        inputContext.imageUrl,
+        inputContext.image_url,
+        inputContext.photoUrl,
+        inputContext.thumbnailUrl,
+        inputContext.imageUrls,
+        inputContext.image_urls,
+        result.imageUrl,
+        result.image_url,
+        result.photoUrl,
+        result.thumbnailUrl,
+        result.imageUrls,
+        result.image_urls
+      )
     };
   }
 
