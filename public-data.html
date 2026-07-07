@@ -2453,12 +2453,6 @@
       return findings.slice(0, 4);
     }
 
-    function renderCandidateChips(result) {
-      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
-      const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
-      return chips.slice(0, 5).map((label) => `<span class="candidate-chip">${escapeHtml(label)}</span>`).join('');
-    }
-
     function renderSourceChips(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
       if (!sources.length) {
@@ -2499,12 +2493,6 @@
           이 보고서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 기사·공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
         </div>
       `;
-    }
-
-    function renderPrintCandidateChips(result) {
-      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
-      const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
-      return chips.slice(0, 5).map((label) => `<span class="print-candidate-chip">${escapeHtml(label)}</span>`).join('');
     }
 
     function renderPrintMatchRows(sources) {
@@ -2551,11 +2539,6 @@
           </header>
 
           <div class="print-report-status">${escapeHtml(matchStatus)}</div>
-
-          <section class="print-report-section">
-            <h2 class="print-report-section-title">원인 후보</h2>
-            <div class="print-candidate-list">${renderPrintCandidateChips(result)}</div>
-          </section>
 
           <section class="print-report-section">
             <h2 class="print-report-section-title">공공데이터 매칭 핵심</h2>
@@ -2674,11 +2657,6 @@
             </div>
 
             <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
-
-            <div class="report-block">
-              <h2>원인 후보</h2>
-              <div class="candidate-chip-list">${renderCandidateChips(result)}</div>
-            </div>
 
             <div class="report-block">
               <h2>공공데이터 매칭 핵심</h2>
