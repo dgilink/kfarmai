@@ -107,6 +107,90 @@
     });
   }
 
+  function rawResultText(result) {
+    if (typeof result === 'string') return cleanText(result);
+    return [
+      result && result.aiSummary,
+      result && result.summary,
+      result && result.result,
+      result && result.message,
+      result && result.answer,
+      result && result.text,
+      result && result.content,
+      result && result.userText,
+      result && result.description,
+      result && result.symptom
+    ].map(cleanText).filter(Boolean).join(' ');
+  }
+
+  var CROP_HINTS = [
+    ['고추', /고추|청양고추|풋고추|홍고추/i],
+    ['토마토', /토마토|방울토마토/i],
+    ['딸기', /딸기/i],
+    ['벼', /벼|논벼|도열|쌀/i],
+    ['콩', /콩|대두|콩깍지|꼬투리|두협/i],
+    ['오이', /오이/i],
+    ['상추', /상추/i],
+    ['감자', /감자/i],
+    ['배추', /배추/i],
+    ['무', /무|무우/i]
+  ];
+
+  var SYMPTOM_HINTS = [
+    ['탄저병', /탄저병|anthracnose|colletotrichum|탄저/i],
+    ['잎말림', /잎말림|잎이\s*말|오그라|신엽\s*말림/i],
+    ['반점', /반점|병반|갈색\s*반점|검은\s*반점|lesion|leaf\s*spot/i],
+    ['잿빛곰팡이', /잿빛곰팡이|회색\s*곰팡이|gray\s*mold|grey\s*mold/i],
+    ['도열병', /도열병|잎도열|목도열|blast/i],
+    ['흰가루병', /흰가루병|흰\s*가루|하얀\s*가루|powdery/i],
+    ['노균병', /노균병|downy/i],
+    ['역병', /역병|late\s*blight/i],
+    ['끝마름', /끝마름|잎끝\s*마름|tipburn/i],
+    ['흰잎마름병', /흰잎마름병|잎마름병/i]
+  ];
+
+  function inferFromHints(text, hints) {
+    var source = cleanText(text);
+    if (!source) return '';
+    for (var i = 0; i < hints.length; i += 1) {
+      if (hints[i][1].test(source)) return hints[i][0];
+    }
+    return '';
+  }
+
+  function candidatesFromText(text) {
+    var source = cleanText(text);
+    if (!source) return [];
+    var candidateTerms = [
+      '탄저병',
+      '반점병',
+      '갈색 조기낙엽병',
+      '흰가루병',
+      '노균병',
+      '역병',
+      '잿빛곰팡이',
+      '도열병',
+      '흰잎마름병',
+      '고온다습 환경',
+      '과습',
+      '통풍 부족',
+      '수분 스트레스',
+      '재배관리 요인'
+    ];
+    return candidateTerms
+      .filter(function (term) { return source.indexOf(term) >= 0; })
+      .slice(0, 5)
+      .map(function (term) {
+        return normalizeCandidate({
+          name: /환경|과습|통풍|수분|재배관리/.test(term) ? term : term + ' 가능성',
+          category: inferCategory(term),
+          keywords: keywordList(term),
+          reason: ''
+        });
+      })
+      .filter(Boolean);
+  }
+
   function inferCategory(value) {
     var text = cleanText(value).toLowerCase();
     if (/해충|진딧|총채|응애|나방|벌레|충/.test(text)) return 'pest';
@@ -123,17 +207,24 @@
       .concat(asArray(result && result.aiCandidates))
       .concat(asArray(result && result.causeCandidates))
       .concat(asArray(result && result.causes));
-    return source.map(normalizeCandidate).filter(Boolean).slice(0, 6);
+    var candidates = source.map(normalizeCandidate).filter(Boolean);
+    if (!candidates.length) candidates = candidatesFromText(rawResultText(result));
+    return candidates.slice(0, 6);
   }
 
   function inferSymptom(result, inputContext) {
-    return firstText(
+    var rawText = rawResultText(result);
+    var hinted = inferFromHints(rawText, SYMPTOM_HINTS);
+    var explicit = firstText(
       inputContext && inputContext.symptom,
       result && result.symptom,
       result && result.mainSymptom,
       result && result.symptoms,
       result && result.symptomKeywords
     );
+    if (!explicit) return hinted;
+    if (explicit.length > 80 && hinted) return hinted;
+    return explicit;
   }
 
   function firstImageUrl() {
@@ -168,7 +259,8 @@
     var inputContext = options.inputContext || {};
     var candidates = normalizeCandidates(result);
     if (!candidates.length) candidates = defaultCandidates();
-    var crop = firstText(inputContext.crop, result.crop, result.cropName, result.plant);
+    var rawText = rawResultText(result);
+    var crop = firstText(inputContext.crop, result.crop, result.cropName, result.plant, inferFromHints(rawText, CROP_HINTS));
     var symptom = inferSymptom(result, inputContext);
     var summary = inferSummary(result, candidates);
     var diagnosisId = firstText(result.diagnosisId, result.id) || ('local-' + Date.now().toString(36));

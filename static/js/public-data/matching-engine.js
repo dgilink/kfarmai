@@ -7,7 +7,8 @@
     '고추': ['고추', '청양고추', '풋고추', '홍고추', 'pepper'],
     '토마토': ['토마토', '방울토마토', 'tomato'],
     '딸기': ['딸기', 'strawberry'],
-    '벼': ['벼', '쌀', '논벼', 'rice']
+    '벼': ['벼', '쌀', '논벼', 'rice'],
+    '콩': ['콩', '대두', '콩깍지', '꼬투리', '두협', 'soybean']
   };
 
   var SYMPTOM_ALIASES = {
@@ -150,6 +151,15 @@
       aliases: ['감자 역병', '감자 잎 반점', '감자 줄기 썩음'],
       aiCandidateHints: ['병해 가능성', '저온다습 영향', '강우 영향'],
       mainSummary: 'AI 후보 중 역병·저온다습·강우 영향 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
+    },
+    {
+      id: 'soybean-anthracnose',
+      crop: '콩',
+      symptom: '탄저병',
+      aliases: ['콩 탄저병', '대두 탄저병', '콩깍지 탄저병', '꼬투리 탄저병', '콩 병반', '콩깍지 병반'],
+      aiCandidateHints: ['탄저병 가능성', '반점병 가능성', '고온다습 환경'],
+      mainSummary: 'AI 후보 중 탄저병·반점성 병해·고온다습 환경 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
       sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency']
     }
   ];
