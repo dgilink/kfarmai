@@ -585,6 +585,13 @@
       white-space: nowrap;
     }
 
+    .report-result-desc {
+      display: block;
+      color: #1f2937;
+      font-size: 11.2px;
+      font-weight: 850;
+    }
+
     .report-source-line {
       display: block;
       margin-top: 5px;
@@ -694,6 +701,52 @@
       white-space: nowrap;
     }
 
+    .report-actions {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .report-download-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 38px;
+      border: 0;
+      border-radius: 14px;
+      background: #14532d;
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 950;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 8px 16px rgba(20, 83, 45, 0.18);
+    }
+
+    .report-download-btn:active {
+      transform: translateY(1px);
+      background: #0f3d2e;
+    }
+
+    .report-print-footer {
+      margin-top: 9px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px dashed rgba(20, 83, 45, 0.24);
+      color: #334155;
+      font-size: 10.8px;
+      line-height: 1.45;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+
+    .report-print-footer strong {
+      color: #14532d;
+      font-weight: 950;
+    }
+
     @media (max-width: 374px) {
       .report-result-list {
         grid-template-columns: 1fr;
@@ -729,6 +782,56 @@
         max-width: none;
         margin-left: 0;
         margin-right: 0;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+      }
+
+      .page {
+        max-width: none;
+        min-height: auto;
+        box-shadow: none;
+        border: 0;
+      }
+
+      .hero,
+      .section--guide,
+      .section--examples,
+      .section--official,
+      .section--tool,
+      .section--safety,
+      .return-area,
+      .report-download-btn {
+        display: none !important;
+      }
+
+      .content,
+      .section--match,
+      .match-report-shell,
+      .match-summary-card {
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .match-summary-card {
+        border: 1px solid #d1d5db !important;
+        background: #ffffff !important;
+        padding: 18px !important;
+      }
+
+      .official-reference-card {
+        break-inside: avoid;
+      }
+
+      a[href]::after {
+        content: " (" attr(href) ")";
+        color: #475569;
+        font-size: 9px;
+        word-break: break-all;
       }
     }
 
@@ -1943,19 +2046,19 @@
       const sourceKeys = new Set(sources.map((source) => source.sourceKey));
       const findings = [];
       if (sourceKeys.has('ncpms')) {
-        findings.push({ tone: 'pest', icon: '🔎', title: '병해충', text: '발생환경 확인' });
+        findings.push({ tone: 'pest', icon: '🔎', title: '병해충 확인', text: '발생환경·증상 사진' });
       }
       if (sourceKeys.has('psis')) {
-        findings.push({ tone: 'safety', icon: '🛡️', title: '안전기준', text: '등록작물 확인' });
+        findings.push({ tone: 'safety', icon: '🛡️', title: '안전기준 확인', text: '등록작물·라벨' });
       }
       if (sourceKeys.has('agriWeather')) {
-        findings.push({ tone: 'weather', icon: '☀️', title: '날씨', text: '기온·습도 확인' });
+        findings.push({ tone: 'weather', icon: '☀️', title: '날씨 확인', text: '기온·습도·강수' });
       }
       if (sourceKeys.has('cropGuide') || sourceKeys.has('nongsaro')) {
-        findings.push({ tone: 'guide', icon: '📘', title: '재배관리', text: '관리포인트 확인' });
+        findings.push({ tone: 'guide', icon: '📘', title: '재배관리 확인', text: '생육단계·관리포인트' });
       }
       if (sourceKeys.has('localAgency')) {
-        findings.push({ tone: 'local', icon: '🏢', title: '추가확인', text: '사진 상담 권장' });
+        findings.push({ tone: 'local', icon: '🏢', title: '추가확인', text: '사진·발생환경 상담' });
       }
       return findings.slice(0, 4);
     }
@@ -1983,17 +2086,33 @@
     function renderMatchFindings(sources) {
       const findings = getMatchFindings(sources);
       if (!findings.length) {
-        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📘</span><div><strong>기본 확인</strong>공식자료 경로 정리</div></div>';
+        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📘</span><div><strong>[기본 확인]</strong><span class="report-result-desc">공식자료 경로 정리</span></div></div>';
       }
       return findings.map((item) => `
         <div class="report-result-item is-${escapeHtml(item.tone || 'guide')}">
           <span class="result-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
           <div>
-            <strong>${escapeHtml(item.title)}</strong>
-            ${escapeHtml(item.text)}
+            <strong>[${escapeHtml(item.title)}]</strong>
+            <span class="report-result-desc">${escapeHtml(item.text)}</span>
           </div>
         </div>
       `).join('');
+    }
+
+    function renderReportFooter(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      const labels = renderSourceLine(sources);
+      return `
+        <div class="report-print-footer">
+          <strong>출처</strong> ${escapeHtml(labels)}<br>
+          <strong>제공</strong> kfarmai.com<br>
+          이 보고서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 기사·공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
+        </div>
+      `;
+    }
+
+    function printPublicDataReport() {
+      window.print();
     }
 
     function renderSourceLine(sources) {
@@ -2104,6 +2223,12 @@
               <h2>바로 확인 링크</h2>
               ${renderOfficialReferences(result)}
             </div>
+
+            <div class="report-actions">
+              <button class="report-download-btn" type="button" onclick="printPublicDataReport()">PDF로 저장</button>
+            </div>
+
+            ${renderReportFooter(result)}
           </article>
         </section>
       `;
