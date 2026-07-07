@@ -374,6 +374,137 @@
       line-height: 1.42;
     }
 
+    .report-card {
+      padding: 14px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #f7fbff 0%, #ecfdf5 100%);
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .report-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.1);
+      color: #1d4ed8;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .report-title {
+      margin-top: 8px;
+      color: #0f2f22;
+      font-size: 20px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+
+    .report-status {
+      margin-top: 5px;
+      color: #1d4ed8;
+      font-size: 13px;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .report-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .report-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(18, 138, 67, 0.14);
+      color: #174c2d;
+      font-size: 11.5px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .report-block {
+      margin-top: 12px;
+      padding-top: 11px;
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .report-block h3 {
+      color: #183b29;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .report-summary {
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .report-source-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .report-source {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(15, 23, 42, 0.07);
+    }
+
+    .report-source strong {
+      display: block;
+      color: #123524;
+      font-size: 12.8px;
+      line-height: 1.28;
+      font-weight: 900;
+    }
+
+    .report-source span {
+      display: block;
+      margin-top: 2px;
+      color: #52635a;
+      font-size: 11.8px;
+      line-height: 1.35;
+    }
+
+    .report-source-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid rgba(37, 99, 235, 0.18);
+      color: #1d4ed8;
+      font-size: 11.5px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .report-source-link.is-guidance {
+      color: #64748b;
+      border-color: rgba(100, 116, 139, 0.18);
+      background: #f8fafc;
+    }
+
     .empty-state {
       padding: 12px;
       border-radius: 14px;
@@ -1146,6 +1277,40 @@
       return `href="${href}" target="_blank" rel="noopener noreferrer"`;
     }
 
+    function sourceLinkAttrs(source) {
+      if (!source?.sourceUrl || source.type === 'guidance') {
+        return '';
+      }
+      const href = escapeHtml(source.sourceUrl);
+      if (source.type === 'external') {
+        return `href="${href}" target="_blank" rel="noopener noreferrer"`;
+      }
+      return `href="${href}"`;
+    }
+
+    function getSampleDiagnosisForContext(context) {
+      const engine = window.KFPublicDataMatchingEngine;
+      if (!engine?.sampleDiagnoses) return null;
+      const crop = engine.normalizeCrop(context.crop);
+      const symptom = engine.normalizeSymptom(context.symptom);
+      const sampleEntries = Object.values(engine.sampleDiagnoses);
+      return sampleEntries.find((sample) => {
+        return engine.normalizeCrop(sample.crop) === crop && engine.normalizeSymptom(sample.symptom) === symptom;
+      }) || null;
+    }
+
+    function buildDiagnosisForEngine(context) {
+      const sample = getSampleDiagnosisForContext(context);
+      return {
+        ...(sample || {}),
+        crop: context.crop || sample?.crop || '',
+        symptom: context.symptom || sample?.symptom || '',
+        region: context.region || sample?.region || '',
+        cultivationType: context.cultivationType || sample?.cultivationType || '',
+        aiCandidates: context.aiCandidates || sample?.aiCandidates || []
+      };
+    }
+
     function findPublicDataMatch({ crop, symptom }) {
       const cropKey = normalizeText(crop);
       const symptomKey = normalizeText(symptom);
@@ -1205,8 +1370,72 @@
       `;
     }
 
+    function renderReportChips(result) {
+      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
+      const chips = candidates.length ? candidates : ['입력값 기준 확인'];
+      return chips.map((label) => `<span class="report-chip">${escapeHtml(label)}</span>`).join('');
+    }
+
+    function renderReportSources(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      if (!sources.length) {
+        return '<div class="empty-state">연결할 공공데이터 출처를 찾지 못했습니다. 기본 공공정보를 확인하세요.</div>';
+      }
+      return `
+        <div class="report-source-list">
+          ${sources.map((source) => {
+            const attrs = sourceLinkAttrs(source);
+            const action = attrs
+              ? `<a class="report-source-link" ${attrs}>${escapeHtml(source.shortName || '확인')}</a>`
+              : '<span class="report-source-link is-guidance">안내</span>';
+            return `
+              <article class="report-source">
+                <div>
+                  <strong>${escapeHtml(source.shortName || source.sourceName)}</strong>
+                  <span>${escapeHtml(source.checkedPoint)}</span>
+                </div>
+                ${action}
+              </article>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderMatchingReport(result) {
+      return `
+        <article class="report-card" aria-label="공공데이터 매칭 보고서">
+          <span class="report-eyebrow">공공데이터 매칭 보고서</span>
+          <h3 class="report-title">${escapeHtml(result.normalizedCrop || result.crop)} · ${escapeHtml(result.normalizedSymptom || result.symptom)}</h3>
+          <p class="report-status">${escapeHtml(result.matchStatus)}</p>
+          <div class="report-meta" aria-label="AI 참고 진단 후보">
+            ${renderReportChips(result)}
+          </div>
+
+          <div class="report-block">
+            <h3>매칭 결과</h3>
+            <p class="report-summary">${escapeHtml(result.mainSummary)}</p>
+          </div>
+
+          <div class="report-block">
+            <h3>출처별 확인한 점</h3>
+            ${renderReportSources(result)}
+          </div>
+
+          <div class="report-block">
+            <h3>추가 검증</h3>
+            <p class="report-summary">${escapeHtml(result.nextStep)}</p>
+          </div>
+
+          <div class="report-block">
+            <h3>주의</h3>
+            <p class="report-summary">${escapeHtml(result.caution)}</p>
+          </div>
+        </article>
+      `;
+    }
+
     function renderMatch(context, options = {}) {
-      const match = findPublicDataMatch(context) || buildFallbackMatch(context);
       const hasInput = Boolean(context.crop || context.symptom || context.region || context.cultivationType);
       if (!hasInput && !options.force) {
         $('#matchContent').className = 'empty-state';
@@ -1214,38 +1443,24 @@
         return;
       }
 
-      $('#matchContent').className = '';
-      $('#matchContent').innerHTML = `
-        <div class="summary-card">
-          <div class="summary-grid">
-            <div class="summary-item">
-              <span class="summary-label">작물</span>
-              <span class="summary-value">${escapeHtml(context.crop || '-')}</span>
-            </div>
-            <div class="summary-item">
-              <span class="summary-label">증상</span>
-              <span class="summary-value">${escapeHtml(context.symptom || '-')}</span>
-            </div>
-            <div class="summary-item">
-              <span class="summary-label">지역</span>
-              <span class="summary-value">${escapeHtml(context.region || '미입력')}</span>
-            </div>
-            <div class="summary-item">
-              <span class="summary-label">재배유형</span>
-              <span class="summary-value">${escapeHtml(context.cultivationType || '미입력')}</span>
-            </div>
+      const engine = window.KFPublicDataMatchingEngine;
+      if (!engine?.matchDiagnosisToPublicData) {
+        const match = findPublicDataMatch(context) || buildFallbackMatch(context);
+        $('#matchContent').className = '';
+        $('#matchContent').innerHTML = `
+          <div class="summary-card">
+            <h3 class="match-title">${escapeHtml(match.title)}</h3>
+            <p class="match-note">${escapeHtml(match.aiHint)}</p>
           </div>
-          <h3 class="match-title">${escapeHtml(match.title)}</h3>
-          <p class="match-note">AI 참고 진단에서 확인한 원인 후보를 아래 공공정보로 교차 확인하세요.</p>
-          <p class="match-note">${escapeHtml(match.aiHint)}</p>
-        </div>
-        ${renderPriorityChecks(match.priorityChecks, {
-          crop: context.crop || match.crop,
-          symptom: context.symptom || match.symptom,
-          region: context.region,
-          cultivationType: context.cultivationType
-        })}
-      `;
+          ${renderPriorityChecks(match.priorityChecks, context)}
+        `;
+        return;
+      }
+
+      const diagnosis = buildDiagnosisForEngine(context);
+      const result = engine.matchDiagnosisToPublicData(diagnosis);
+      $('#matchContent').className = '';
+      $('#matchContent').innerHTML = renderMatchingReport(result);
     }
 
     function renderExamples() {
@@ -1358,7 +1573,8 @@
             crop: data.crop || data.cropName || data.plant || '',
             symptom: symptoms || data.mainSymptom || '',
             region: data.region || '',
-            cultivationType: data.cultivationType || data.type || ''
+            cultivationType: data.cultivationType || data.type || '',
+            aiCandidates: Array.isArray(data.aiCandidates) ? data.aiCandidates : []
           };
         } catch (error) {
           console.warn('[public-data] ignored broken diagnosis context', { key });
