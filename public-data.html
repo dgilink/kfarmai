@@ -749,6 +749,10 @@
       font-weight: 950;
     }
 
+    .print-report-document {
+      display: none;
+    }
+
     @media (max-width: 374px) {
       .report-result-list {
         grid-template-columns: 1fr;
@@ -1002,6 +1006,222 @@
 
       a[href]::after {
         content: "";
+      }
+    }
+
+    @media print {
+      .match-summary-card {
+        display: none !important;
+      }
+
+      .print-report-document {
+        display: flex !important;
+        flex-direction: column;
+        width: 100% !important;
+        min-height: calc(297mm - 14mm);
+        padding: 10mm;
+        border: 1.2px solid #cbd5e1;
+        border-radius: 18px;
+        background: #ffffff;
+        color: #0f172a;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        word-break: keep-all;
+        overflow-wrap: break-word;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8mm;
+        align-items: start;
+        padding: 9mm;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #0f3d2e 0%, #14532d 46%, #1d4ed8 100%);
+        color: #ffffff;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-kicker {
+        margin-bottom: 3mm;
+        font-size: 10.5pt;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        color: #dbeafe;
+      }
+
+      .print-report-title {
+        margin: 0;
+        font-size: 27pt;
+        line-height: 1.18;
+        font-weight: 950;
+      }
+
+      .print-report-meta {
+        display: grid;
+        gap: 2mm;
+        min-width: 38mm;
+        text-align: right;
+        font-size: 10.5pt;
+        line-height: 1.35;
+        color: #e0f2fe;
+      }
+
+      .print-report-status {
+        width: fit-content;
+        margin: 6mm auto 0;
+        padding: 2.4mm 6mm;
+        border-radius: 999px;
+        background: #fef3c7;
+        border: 1px solid #f59e0b;
+        color: #92400e;
+        font-size: 12.5pt;
+        font-weight: 950;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-section {
+        margin-top: 7mm;
+      }
+
+      .print-report-section-title {
+        margin: 0 0 4mm;
+        color: #0f3d2e;
+        font-size: 16pt;
+        line-height: 1.3;
+        font-weight: 950;
+        text-align: center;
+      }
+
+      .print-candidate-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3mm;
+      }
+
+      .print-candidate-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 10mm;
+        padding: 0 5mm;
+        border-radius: 999px;
+        background: #e9f8ef;
+        border: 1px solid #9fd9b2;
+        color: #116735;
+        font-size: 12pt;
+        font-weight: 900;
+        white-space: nowrap;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-match-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6.5mm;
+      }
+
+      .print-match-row {
+        display: grid;
+        grid-template-columns: 22mm minmax(0, 1fr);
+        gap: 6mm;
+        align-items: center;
+        min-height: 33mm;
+        padding: 6mm 7mm;
+        border-radius: 17px;
+        border: 1.5px solid #cbd5e1;
+        background: #f8fafc;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-match-row.is-pest { background: #e8f8ef; border-color: #8fd4ab; }
+      .print-match-row.is-safety { background: #f0f9df; border-color: #b7d978; }
+      .print-match-row.is-weather { background: #e7f4ff; border-color: #88c7ef; }
+      .print-match-row.is-guide { background: #fff5c8; border-color: #e8c45a; }
+      .print-match-row.is-local { background: #fff0e3; border-color: #e8a77e; }
+
+      .print-match-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22mm;
+        height: 22mm;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        font-size: 29pt;
+      }
+
+      .print-match-label {
+        display: inline-flex;
+        width: fit-content;
+        margin-bottom: 3.5mm;
+        padding: 2mm 4.5mm;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.88);
+        color: #0f2f22;
+        font-size: 15pt;
+        line-height: 1.35;
+        font-weight: 950;
+      }
+
+      .print-match-desc {
+        color: #1f2937;
+        font-size: 14pt;
+        line-height: 1.75;
+        font-weight: 850;
+      }
+
+      .print-reference-list {
+        display: grid;
+        gap: 3mm;
+      }
+
+      .print-reference-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4mm;
+        align-items: center;
+        min-height: 13mm;
+        padding: 4mm 5mm;
+        border-radius: 12px;
+        background: #eef6ff;
+        border: 1px solid #bfdbfe;
+        color: #12315f;
+        font-size: 12pt;
+        line-height: 1.4;
+        font-weight: 900;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-reference-source {
+        color: #1d4ed8;
+        font-size: 10.5pt;
+        white-space: nowrap;
+      }
+
+      .print-report-footer {
+        margin-top: auto;
+        padding: 5mm;
+        border-radius: 13px;
+        background: #f8fafc;
+        border: 1px dashed #94a3b8;
+        color: #334155;
+        font-size: 10.5pt;
+        line-height: 1.58;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .print-report-footer strong {
+        color: #14532d;
+        font-weight: 950;
       }
     }
 
@@ -2281,6 +2501,81 @@
       `;
     }
 
+    function renderPrintCandidateChips(result) {
+      const candidates = Array.isArray(result.aiCandidateLabels) ? result.aiCandidateLabels : [];
+      const chips = candidates.length ? candidates : ['원인 후보', '환경 요인', '재배관리 요인'];
+      return chips.slice(0, 5).map((label) => `<span class="print-candidate-chip">${escapeHtml(label)}</span>`).join('');
+    }
+
+    function renderPrintMatchRows(sources) {
+      const findings = getMatchFindings(sources);
+      const items = findings.length ? findings : [{ tone: 'guide', icon: '📘', title: '기본 확인', text: '공식자료 경로 정리' }];
+      return items.map((item) => `
+        <div class="print-match-row is-${escapeHtml(item.tone || 'guide')}">
+          <span class="print-match-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
+          <div>
+            <div class="print-match-label">[${escapeHtml(item.title)}]</div>
+            <div class="print-match-desc">${escapeHtml(item.text)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderPrintReferences(result) {
+      return getOfficialReferenceLinks(result).slice(0, 2).map((item) => `
+        <div class="print-reference-row">
+          <span>${escapeHtml(getShortReferenceTitle(item.title))}</span>
+          <span class="print-reference-source">${escapeHtml(item.source || '공식자료')}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderPrintReportDocument(result) {
+      const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
+      const rawStatus = getReportValue(result.matchStatus, '공공데이터 확인 항목');
+      const matchStatus = rawStatus === '일반 확인 항목 안내' ? '공공데이터 확인 항목' : rawStatus;
+      const contextLine = getReportContextLine(result) || '작물·증상 확인 중';
+      const createdAt = new Date().toLocaleDateString('ko-KR');
+      return `
+        <article class="print-report-document" aria-label="인쇄용 공공데이터 매칭 보고서">
+          <header class="print-report-head">
+            <div>
+              <div class="print-report-kicker">kFarmAI 공공데이터 매칭 보고서</div>
+              <h1 class="print-report-title">${escapeHtml(contextLine)}</h1>
+            </div>
+            <div class="print-report-meta">
+              <span>생성일 ${escapeHtml(createdAt)}</span>
+              <span>kfarmai.com</span>
+              <span>참고자료</span>
+            </div>
+          </header>
+
+          <div class="print-report-status">${escapeHtml(matchStatus)}</div>
+
+          <section class="print-report-section">
+            <h2 class="print-report-section-title">원인 후보</h2>
+            <div class="print-candidate-list">${renderPrintCandidateChips(result)}</div>
+          </section>
+
+          <section class="print-report-section">
+            <h2 class="print-report-section-title">공공데이터 매칭 핵심</h2>
+            <div class="print-match-list">${renderPrintMatchRows(sources)}</div>
+          </section>
+
+          <section class="print-report-section">
+            <h2 class="print-report-section-title">공식자료 바로가기</h2>
+            <div class="print-reference-list">${renderPrintReferences(result)}</div>
+          </section>
+
+          <footer class="print-report-footer">
+            <strong>출처</strong> ${escapeHtml(renderSourceLine(sources))}<br>
+            <strong>제공</strong> kfarmai.com<br>
+            본 문서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
+          </footer>
+        </article>
+      `;
+    }
+
     function printPublicDataReport() {
       window.print();
     }
@@ -2401,6 +2696,7 @@
 
             ${renderReportFooter(result)}
           </article>
+          ${renderPrintReportDocument(result)}
         </section>
       `;
     }
