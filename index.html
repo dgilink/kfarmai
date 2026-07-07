@@ -877,6 +877,8 @@
   .symptom-textarea:focus { border-color: var(--green); }
   .diag-start-btn { width: 100%; height: 46px; border: 0; border-radius: 14px; background: var(--green); color: #fff; font-size: 15px; font-weight: 900; cursor: pointer; margin-top: 10px; opacity: .4; transition: opacity .2s; }
   .diag-start-btn:not([disabled]) { opacity: 1; }
+  .diag-public-data-btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; margin-top: 10px; margin-bottom: 16px; border-radius: 14px; background: #6D28D9; color: #fff; font-size: 15px; font-weight: 900; text-decoration: none; box-shadow: 0 10px 22px rgba(109,40,217,.18); touch-action: manipulation; }
+  .diag-public-data-btn:active { transform: translateY(1px); background: #5B21B6; }
   .diag-result-wrap { margin-top: 4px; }
   .diag-loading { text-align: center; padding: 24px 0; display: none; }
   .diag-loading.show { display: block; }
@@ -1982,6 +1984,7 @@
             </div>
           </details>
           <button class="diag-start-btn" id="diagStartBtn" disabled onclick="runDiagnosis()">AI 참고 진단 시작</button>
+          <a class="diag-public-data-btn" href="public-data.html">공공데이터 확인</a>
         </div>
         <div class="diag-loading" id="diagLoading"><div class="spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--sub)">AI가 원인 후보를 정리 중입니다...</div></div>
         <div class="diag-result-wrap" id="diagResultWrap"></div>
