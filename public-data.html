@@ -786,8 +786,24 @@
     }
 
     @media print {
+      @page {
+        size: A4 portrait;
+        margin: 9mm;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+      }
+
+      html,
       body {
         background: #ffffff !important;
+        width: 210mm;
+        min-height: 297mm;
+        overflow: visible !important;
       }
 
       .page {
@@ -810,28 +826,171 @@
 
       .content,
       .section--match,
-      .match-report-shell,
-      .match-summary-card {
+      .match-report-shell {
         padding: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
       }
 
+      .content {
+        display: block !important;
+      }
+
       .match-summary-card {
-        border: 1px solid #d1d5db !important;
-        background: #ffffff !important;
-        padding: 18px !important;
+        width: 100% !important;
+        min-height: calc(297mm - 18mm);
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 18px !important;
+        background:
+          linear-gradient(180deg, #f8fafc 0%, #ffffff 22%, #ffffff 100%) !important;
+        padding: 12mm !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .report-title-row {
+        margin-bottom: 7mm !important;
+        padding: 9mm 8mm !important;
+        border-radius: 16px !important;
+        background: linear-gradient(135deg, #0f3d2e 0%, #14532d 45%, #1d4ed8 100%) !important;
+        color: #ffffff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .report-title {
+        font-size: 20pt !important;
+        line-height: 1.15 !important;
+        color: #ffffff !important;
+      }
+
+      .report-context-line {
+        margin-top: 3mm !important;
+        color: #dbeafe !important;
+        font-size: 10.5pt !important;
+      }
+
+      .report-status-badge {
+        display: flex !important;
+        width: fit-content;
+        min-height: 8mm !important;
+        margin: -4mm auto 5mm !important;
+        padding: 0 5mm !important;
+        background: #fef3c7 !important;
+        border: 1px solid #f59e0b !important;
+        color: #92400e !important;
+        font-size: 9.5pt !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .report-block {
+        margin-top: 5mm !important;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .report-block h2 {
+        margin-bottom: 2.5mm !important;
+        color: #0f3d2e !important;
+        font-size: 12pt !important;
+        line-height: 1.2 !important;
+        text-align: center;
+      }
+
+      .candidate-chip-list {
+        justify-content: center;
+        gap: 2mm !important;
+      }
+
+      .candidate-chip {
+        min-height: 7mm !important;
+        padding: 0 3.5mm !important;
+        font-size: 9pt !important;
+        background: #e9f8ef !important;
+        border: 1px solid #9fd9b2 !important;
+        color: #116735 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .report-result-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 3mm !important;
+      }
+
+      .report-result-item {
+        display: grid !important;
+        grid-template-columns: 8mm minmax(0, 1fr) !important;
+        gap: 2mm !important;
+        min-height: 24mm;
+        padding: 4mm 3mm !important;
+        border-radius: 12px !important;
+        font-size: 8.5pt !important;
+        line-height: 1.25 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
+      .result-icon {
+        width: 8mm !important;
+        height: 8mm !important;
+        font-size: 10pt !important;
+      }
+
+      .report-result-item strong {
+        padding: 1.2mm 2.4mm !important;
+        margin-bottom: 1.8mm !important;
+        font-size: 8.4pt !important;
+      }
+
+      .report-result-desc {
+        font-size: 8.4pt !important;
+        line-height: 1.25 !important;
+      }
+
+      .official-reference-list {
+        gap: 2mm !important;
+        margin-top: 2mm !important;
       }
 
       .official-reference-card {
+        grid-template-columns: minmax(0, 1fr) 18mm !important;
+        min-height: 10mm !important;
+        padding: 3mm 4mm !important;
+        border-radius: 10px !important;
+        background: #eef6ff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
         break-inside: avoid;
       }
 
+      .official-reference-card strong {
+        font-size: 9pt !important;
+        line-height: 1.25 !important;
+      }
+
+      .official-reference-card em {
+        min-height: 7mm !important;
+        padding: 0 3mm !important;
+        font-size: 8.5pt !important;
+      }
+
+      .report-print-footer {
+        margin-top: 5mm !important;
+        padding: 4mm !important;
+        border-radius: 12px !important;
+        background: #f8fafc !important;
+        border: 1px dashed #94a3b8 !important;
+        color: #334155 !important;
+        font-size: 8.6pt !important;
+        line-height: 1.35 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
       a[href]::after {
-        content: " (" attr(href) ")";
-        color: #475569;
-        font-size: 9px;
-        word-break: break-all;
+        content: "";
       }
     }
 
@@ -2194,7 +2353,8 @@
 
     function renderMatchingReport(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
-      const matchStatus = getReportValue(result.matchStatus, '일반 확인 항목 안내');
+      const rawStatus = getReportValue(result.matchStatus, '공공데이터 확인 항목');
+      const matchStatus = rawStatus === '일반 확인 항목 안내' ? '공공데이터 확인 항목' : rawStatus;
       const contextLine = getReportContextLine(result);
       return `
         <section class="match-report-shell" aria-label="공공데이터 매칭 보고서">
@@ -2210,12 +2370,12 @@
             <div class="report-status-badge">${escapeHtml(matchStatus)}</div>
 
             <div class="report-block">
-              <h2>AI 참고 진단 결과</h2>
+              <h2>원인 후보</h2>
               <div class="candidate-chip-list">${renderCandidateChips(result)}</div>
             </div>
 
             <div class="report-block">
-              <h2>공공데이터 매칭결과</h2>
+              <h2>공공데이터 매칭 핵심</h2>
               <div class="report-result-list">${renderMatchFindings(sources)}</div>
             </div>
 
