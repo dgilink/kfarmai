@@ -2354,6 +2354,100 @@
       }).join(' ');
     }
 
+    function getParamValue(params, names) {
+      for (const name of names) {
+        const value = params.get(name);
+        if (value && value.trim()) return value.trim();
+      }
+      return '';
+    }
+
+    function splitCandidateParam(value) {
+      return String(value || '')
+        .split(/[,\|]/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    function normalizeQueryDiseaseText(value) {
+      return String(value || '').replace(/\s+/g, '');
+    }
+
+    function inferQueryCandidateCategory(text) {
+      const compact = normalizeQueryDiseaseText(text);
+      if (/역병|탄저병|반점|곰팡이|잿빛곰팡이|도열병|바이러스|병해/.test(compact)) return 'disease';
+      if (/잎말림|잎이말|말림|마름|과습|건조|고온|저온|습도|시듦|시들/.test(compact)) return 'environment';
+      if (/물|관수|배수/.test(compact)) return 'water';
+      if (/통풍|환기|관리|재배|정식|파종|시비/.test(compact)) return 'management';
+      if (/해충|진딧물|총채|응애|벌레/.test(compact)) return 'pest';
+      return 'unknown';
+    }
+
+    function inferQueryKeywords(text) {
+      const compact = normalizeQueryDiseaseText(text);
+      const keywords = [];
+      [
+        '역병',
+        '감자 역병',
+        '탄저병',
+        '잎말림',
+        '잎 말림',
+        '잿빛곰팡이',
+        '곰팡이',
+        '반점',
+        '과습',
+        '건조',
+        '통풍',
+        '관리'
+      ].forEach((keyword) => {
+        if (compact.includes(normalizeQueryDiseaseText(keyword))) keywords.push(keyword);
+      });
+      return [...new Set(keywords)];
+    }
+
+    function buildDefaultQueryCandidates(symptom, candidateParam) {
+      const explicit = splitCandidateParam(candidateParam);
+      if (explicit.length) {
+        return explicit.map((label) => ({
+          label,
+          name: label,
+          category: inferQueryCandidateCategory(`${symptom} ${label}`),
+          confidence: 'low',
+          keywords: inferQueryKeywords(`${symptom} ${label}`)
+        }));
+      }
+
+      const category = inferQueryCandidateCategory(symptom);
+      const keywords = inferQueryKeywords(symptom);
+      const primaryLabel = category === 'disease'
+        ? '병해 원인 후보'
+        : category === 'pest'
+          ? '해충 원인 후보'
+          : category === 'water'
+            ? '수분 관리 요인'
+            : category === 'environment'
+              ? '환경 요인'
+              : '원인 후보';
+
+      return [
+        { label: primaryLabel, name: primaryLabel, category, confidence: 'low', keywords },
+        { label: '환경 요인', name: '환경 요인', category: 'environment', confidence: 'low', keywords: ['고온', '습도', '건조', '강수'] },
+        { label: '재배관리 요인', name: '재배관리 요인', category: 'management', confidence: 'low', keywords: ['통풍', '관리', '재배'] }
+      ];
+    }
+
+    function normalizeQuerySymptom(value) {
+      const text = cleanReportField(value);
+      const compact = normalizeQueryDiseaseText(text);
+      if (!compact) return '';
+      if (compact.includes('감자역병') || compact.includes('역병')) return '역병';
+      if (compact.includes('탄저병')) return '탄저병';
+      if (compact.includes('잿빛곰팡이') || compact.includes('회색곰팡이')) return '잿빛곰팡이';
+      if (compact.includes('잎말림') || compact.includes('잎이말') || compact.includes('말려')) return '잎말림';
+      if (compact.includes('반점')) return '반점';
+      return text;
+    }
+
     function inferCropForReport(context) {
       const rawCrop = cleanReportField(context?.crop || '');
       if (rawCrop && !isBlockedReportValue(rawCrop)) return rawCrop;
@@ -2362,6 +2456,7 @@
       if (/토마토|방울토마토|tomato/i.test(text)) return '토마토';
       if (/딸기|strawberry/i.test(text)) return '딸기';
       if (/벼|논벼|도열병|rice/i.test(text)) return '벼';
+      if (/감자|potato/i.test(text)) return '감자';
       if (/콩|대두|콩깍지|꼬투리|soybean/i.test(text)) return '콩';
       return rawCrop;
     }
@@ -2369,6 +2464,8 @@
     function inferSymptomForReport(context) {
       const rawSymptom = cleanReportField(context?.symptom || '');
       const text = [rawSymptom, context?.summary, context?.aiSummary, getCandidateText(context)].filter(Boolean).join(' ');
+      const querySymptom = normalizeQuerySymptom(text);
+      if (querySymptom && querySymptom !== text) return querySymptom;
       if (/탄저병|anthracnose|colletotrichum/i.test(text)) return '탄저병';
       if (/잎\s*말림|잎말림|잎.*말려|오그라|신엽\s*말림/i.test(text)) return '잎말림';
       if (/잿빛\s*곰팡이|회색\s*곰팡이|gray\s*mold|grey\s*mold/i.test(text)) return '잿빛곰팡이';
@@ -2510,6 +2607,7 @@
         .trim();
       const compact = normalizeText(text);
       if (!compact || isBlockedReportValue(text)) return '';
+      if (/감자\s*역병|역병/.test(text)) return '역병 의심';
       if (/탄저병/.test(text)) return '탄저병 의심';
       if (/잿빛\s*곰팡이|회색\s*곰팡이|곰팡이/.test(text)) return '잿빛곰팡이 의심';
       if (/도열병|잎도열|목도열/.test(text)) return '도열병 의심';
@@ -3266,11 +3364,28 @@
     function getQueryContext() {
       const params = new URLSearchParams(window.location.search);
       const q = params.get('q') || '';
+      const crop = getParamValue(params, ['crop', 'cropName', 'plant']);
+      const symptom = getParamValue(params, ['symptom', 'symptoms', 'q']) || q;
+      const candidateParam = getParamValue(params, ['candidate', 'candidates']);
+      const hasDiagnosisQuery = Boolean(crop || symptom || candidateParam);
+      if (!hasDiagnosisQuery) {
+        return {
+          crop: '',
+          symptom: '',
+          region: params.get('region') || '',
+          cultivationType: params.get('cultivationType') || params.get('type') || '',
+          demo: params.get('demo') === '1'
+        };
+      }
       return {
-        crop: params.get('crop') || '',
-        symptom: params.get('symptom') || params.get('symptoms') || q,
+        crop,
+        symptom,
         region: params.get('region') || '',
-        cultivationType: params.get('cultivationType') || params.get('type') || ''
+        cultivationType: params.get('cultivationType') || params.get('type') || '',
+        aiCandidates: buildDefaultQueryCandidates(symptom, candidateParam),
+        source: params.get('source') || 'url-query',
+        demo: params.get('demo') === '1',
+        createdAt: new Date().toISOString()
       };
     }
 
@@ -3298,23 +3413,55 @@
     }
 
     function getFallbackDiagnosisForReport() {
-      const engine = window.KFPublicDataMatchingEngine;
-      return engine?.sampleDiagnoses?.pepperLeafCurl || {
-        crop: '미확인 작물',
-        symptom: '미확인 증상',
+      return {
+        crop: '미선택',
+        symptom: '증상 미확인',
         aiCandidates: [
-          { name: '원인 후보', category: 'unknown', keywords: [] },
-          { name: '환경 요인', category: 'environment', keywords: [] },
-          { name: '재배관리 요인', category: 'management', keywords: [] }
-        ]
+          { name: '원인 후보', label: '원인 후보', category: 'unknown', confidence: 'low', keywords: [] },
+          { name: '환경 요인', label: '환경 요인', category: 'environment', confidence: 'low', keywords: [] },
+          { name: '재배관리 요인', label: '재배관리 요인', category: 'management', confidence: 'low', keywords: [] }
+        ],
+        source: 'fallback',
+        createdAt: new Date().toISOString()
       };
     }
 
+    function getDemoDiagnosisForReport(queryContext = {}) {
+      const engine = window.KFPublicDataMatchingEngine;
+      const sample = getSampleDiagnosisForContext(queryContext) || engine?.sampleDiagnoses?.pepperLeafCurl;
+      return sample ? {
+        ...sample,
+        source: 'demo-sample',
+        createdAt: new Date().toISOString()
+      } : getFallbackDiagnosisForReport();
+    }
+
+    function hasUsableDiagnosisContext(context) {
+      return Boolean(
+        context
+        && (
+          context.crop
+          || context.symptom
+          || context.region
+          || context.cultivationType
+          || (Array.isArray(context.aiCandidates) && context.aiCandidates.length)
+        )
+      );
+    }
+
     function getLastDiagnosisForReport() {
+      const queryContext = getQueryContext();
+      if (hasUsableDiagnosisContext(queryContext)) {
+        return queryContext;
+      }
+
       const storedContext = readDiagnosisContext();
-      if (storedContext.crop || storedContext.symptom || storedContext.region || storedContext.cultivationType) {
+      if (hasUsableDiagnosisContext(storedContext)) {
         return storedContext;
       }
+
+      if (queryContext.demo) return getDemoDiagnosisForReport(queryContext);
+
       return getFallbackDiagnosisForReport();
     }
 
@@ -3354,18 +3501,8 @@
       renderOfficialInfo();
       $('#publicDataForm').addEventListener('submit', handleSubmit);
 
-      const queryContext = getQueryContext();
-      const hasQuery = Boolean(queryContext.crop || queryContext.symptom || queryContext.region || queryContext.cultivationType);
-      const storedContext = getLastDiagnosisForReport();
-      const storedMatchesQuery = hasQuery
-        && (!queryContext.crop || !storedContext.crop || normalizeText(queryContext.crop) === normalizeText(storedContext.crop))
-        && (!queryContext.symptom || !storedContext.symptom || normalizeText(queryContext.symptom) === normalizeText(storedContext.symptom));
-      const context = hasQuery ? {
-        ...storedContext,
-        ...queryContext,
-        aiCandidates: storedMatchesQuery ? (storedContext.aiCandidates || []) : []
-      } : storedContext;
-      const hasContext = Boolean(context.crop || context.symptom || context.region || context.cultivationType || context.aiCandidates);
+      const context = getLastDiagnosisForReport();
+      const hasContext = hasUsableDiagnosisContext(context);
       if (hasContext) {
         fillInputs(context);
         renderMatch(context, { force: true });
