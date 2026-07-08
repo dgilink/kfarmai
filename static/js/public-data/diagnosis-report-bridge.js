@@ -243,6 +243,14 @@
     return '';
   }
 
+  function safeImageUrl() {
+    var url = firstImageUrl.apply(null, arguments);
+    if (!url) return null;
+    if (/^data:/i.test(url)) return null;
+    if (/base64/i.test(url) && !/^https?:\/\//i.test(url)) return null;
+    return url;
+  }
+
   function inferSummary(result, candidates) {
     return firstText(
       result && result.aiSummary,
@@ -319,8 +327,34 @@
     return map[category] || map.unknown;
   }
 
+  function normalizeStoredDiagnosis(diagnosis) {
+    diagnosis = diagnosis || {};
+    var fallbackCandidates = defaultCandidates();
+    var candidates = asArray(diagnosis.aiCandidates).map(normalizeCandidate).filter(Boolean);
+    var imageUrl = safeImageUrl(
+      diagnosis.imageUrl,
+      diagnosis.image_url,
+      diagnosis.photoUrl,
+      diagnosis.thumbnailUrl
+    );
+    if (!candidates.length) candidates = fallbackCandidates;
+    return Object.assign({}, diagnosis, {
+      crop: firstText(diagnosis.crop, diagnosis.cropName, diagnosis.plant) || '미선택',
+      symptom: firstText(diagnosis.symptom, diagnosis.userText, diagnosis.description, diagnosis.summary) || '증상 미확인',
+      aiCandidates: candidates,
+      source: firstText(diagnosis.source) || 'ai-diagnosis',
+      imageStored: Boolean(diagnosis.imageStored && imageUrl),
+      imageUrl: imageUrl,
+      region: firstText(diagnosis.region) || null,
+      cultivationType: firstText(diagnosis.cultivationType, diagnosis.type) || null,
+      growthStage: firstText(diagnosis.growthStage) || null,
+      createdAt: firstText(diagnosis.createdAt) || nowIso()
+    });
+  }
+
   function saveLastDiagnosis(diagnosis) {
     if (!diagnosis) return false;
+    diagnosis = normalizeStoredDiagnosis(diagnosis);
     var ok = writeJson(LAST_DIAGNOSIS_KEY, diagnosis);
     writeJson(LAST_AI_DIAGNOSIS_KEY, diagnosis);
     return ok;
@@ -332,6 +366,15 @@
 
   function buildPublicDataUrl(diagnosis) {
     var params = new URLSearchParams();
+    try {
+      var currentParams = new URLSearchParams(window.location.search || '');
+      if (currentParams.get('demo') === '1') params.set('demo', '1');
+    } catch (error) {}
+    if (diagnosis) {
+      diagnosis = normalizeStoredDiagnosis(diagnosis);
+      if (diagnosis.crop === '미선택') diagnosis.crop = '';
+      if (diagnosis.symptom === '증상 미확인') diagnosis.symptom = '';
+    }
     if (diagnosis && diagnosis.crop && diagnosis.crop !== '미입력') params.set('crop', diagnosis.crop);
     if (diagnosis && diagnosis.symptom && diagnosis.symptom !== '미입력') params.set('symptom', diagnosis.symptom);
     if (diagnosis && diagnosis.region) params.set('region', diagnosis.region);
@@ -390,6 +433,7 @@
     LAST_DIAGNOSIS_KEY: LAST_DIAGNOSIS_KEY,
     REPORT_HISTORY_KEY: REPORT_HISTORY_KEY,
     buildStructuredDiagnosis: buildStructuredDiagnosis,
+    normalizeStoredDiagnosis: normalizeStoredDiagnosis,
     saveLastDiagnosis: saveLastDiagnosis,
     getLastDiagnosis: getLastDiagnosis,
     buildPublicDataUrl: buildPublicDataUrl,

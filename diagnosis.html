@@ -683,6 +683,18 @@
     box-shadow: 0 4px 14px rgba(182,255,60,.3);
   }
   .btn-share:active { transform: translateY(1px); }
+  .public-data-report-note {
+    margin-top: 12px;
+    border-radius: 12px;
+    background: rgba(109,40,217,.12);
+    border: 1px solid rgba(109,40,217,.2);
+    color: #EDE9FE;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    font-weight: 700;
+    word-break: keep-all;
+  }
 
   /* Toast */
   .toast {
@@ -1696,7 +1708,7 @@ function buildPublicDataDiagnosis(result) {
   return bridge.buildStructuredDiagnosis({
     result,
     inputContext,
-    source: capturedFile ? 'image-ai' : 'diagnosis-page'
+    source: capturedFile ? 'image-ai' : 'text-ai'
   });
 }
 
@@ -1884,6 +1896,7 @@ function showResult(result) {
       </div>
       ${renderPublicInfoCards(safeResult)}
       ${renderCommunityConnect(safeResult)}
+      <div class="public-data-report-note">AI 참고 후보를 공공데이터 출처와 연결해 확인 항목을 정리합니다.</div>
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
         <button class="btn-share" onclick="openPublicDataReport()">공공데이터 보고서 보기</button>
