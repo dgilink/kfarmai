@@ -78,6 +78,22 @@
       }
     },
     {
+      id: 'tomato-late-blight',
+      crop: '토마토',
+      symptom: '역병',
+      aliases: ['토마토 역병', '감자역병같아', '감자 역병', '역병', '토마토 잎 물러짐', '물에 젖은 듯한 병반'],
+      aiCandidateHints: ['역병 가능성', '저온다습 환경', '강우·습도 영향'],
+      mainSummary: 'AI 후보 중 역병 가능성, 강우·습도 영향, 잎·줄기 병반 항목은 공공데이터 출처와 함께 확인할 수 있습니다.',
+      sources: ['ncpms', 'psis', 'agriWeather', 'cropGuide', 'localAgency'],
+      sourceEvidence: {
+        ncpms: 'NCPMS 토마토 병해 자료 기준으로 잎·줄기 병반과 발생환경을 대조합니다.',
+        psis: '농약 사용 여부는 토마토 등록작물, 대상 병해충, 제품 라벨 기준을 확인해야 합니다.',
+        agriWeather: '비, 습도, 온도 조건을 역병 의심 환경과 함께 확인합니다.',
+        cropGuide: '환기, 배수, 병든 부위 정리 같은 재배관리 포인트를 확인합니다.',
+        localAgency: '사진, 발생 시기, 최근 강우·습도 정보를 정리해 관계기관 확인을 권장합니다.'
+      }
+    },
+    {
       id: 'strawberry-gray-mold',
       crop: '딸기',
       symptom: '잿빛곰팡이',
@@ -565,6 +581,11 @@
     });
   }
 
+  function getKnowledgeSummaryByCaseId(caseId) {
+    var knowledgeMap = window.KF_PUBLIC_DATA_KNOWLEDGE || {};
+    return caseId && knowledgeMap[caseId] ? knowledgeMap[caseId] : null;
+  }
+
   function matchDiagnosisToPublicData(diagnosis) {
     var safeDiagnosis = diagnosis || {};
     var caseRule = findCaseMatch(safeDiagnosis);
@@ -577,7 +598,8 @@
       matchedSources: buildMatchedSources(safeDiagnosis, caseRule),
       nextStep: '증상이 계속되거나 피해가 확산되면 사진과 발생환경을 가지고 관계기관 확인을 권장합니다.',
       caution: '이 결과는 참고자료입니다. 공식자료와 전문가 확인을 함께 참고하세요.',
-      caseId: caseRule.id
+      caseId: caseRule.id,
+      knowledgeSummary: getKnowledgeSummaryByCaseId(caseRule.id)
     });
   }
 
