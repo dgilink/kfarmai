@@ -44,7 +44,14 @@ export default {
       }
 
       if (url.pathname === '/api/health') {
-        return json({ ok: true, service: SERVICE_NAME }, 200, cors);
+        return json({
+          ok: true,
+          service: SERVICE_NAME,
+          secrets: {
+            psisConfigured: Boolean(env.PSIS_API_KEY),
+            ncpmsConfigured: Boolean(env.NCPMS_API_KEY)
+          }
+        }, 200, cors);
       }
 
       if (url.pathname === '/api/kamis/prices') {

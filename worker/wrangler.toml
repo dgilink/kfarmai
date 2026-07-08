@@ -1,6 +1,9 @@
 name = "kfarmai-api"
 main = "src/index.js"
 compatibility_date = "2026-07-02"
+routes = [
+  { pattern = "kfarmai.com/api/*", zone_name = "kfarmai.com" }
+]
 
 # Register secrets outside Git:
 # wrangler secret put KAMIS_API_KEY
