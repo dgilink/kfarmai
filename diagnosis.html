@@ -854,11 +854,12 @@
     background:#fff;
     border:1.5px solid var(--border);
     color:var(--text);
-    min-height:96px;
+    min-height:64px;
+    height:auto;
     line-height:1.55;
     padding:10px 12px;
-    resize:vertical;
-    overflow:auto;
+    resize:none;
+    overflow:hidden;
     word-break:keep-all;
     overflow-wrap:break-word;
     transition:border-color .15s;
@@ -1015,7 +1016,7 @@
               <textarea
                 id="symptomInput"
                 placeholder="증상을 간단히 적어주세요"
-                rows="4"
+                rows="2"
                 maxlength="500"
               ></textarea>
               <p class="ai-symptom-help">예: 잎이 노랗게 변해요, 잎끝이 말라요, 줄기가 물러요</p>
@@ -1264,8 +1265,17 @@ function sizeGuide() {
 
 const symptomEl  = document.getElementById('symptomInput');
 const charCountEl = document.getElementById('charCount');
+
+function autoResizeTextarea(textarea) {
+  if (!textarea) return;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
+autoResizeTextarea(symptomEl);
 symptomEl.addEventListener('input', () => {
   charCountEl.textContent = symptomEl.value.length;
+  autoResizeTextarea(symptomEl);
 });
 
 /* ── Step indicator (2 steps) ── */
@@ -1925,6 +1935,7 @@ function resetDiagnosis() {
 
   symptomEl.value          = '';
   charCountEl.textContent  = '0';
+  autoResizeTextarea(symptomEl);
   const cropInput = document.getElementById('cropInput');
   const envInput = document.getElementById('envInput');
   if (cropInput) cropInput.value = '';

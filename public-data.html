@@ -2286,6 +2286,10 @@
         .replace(/'/g, '&#39;');
     }
 
+    function cleanBadgeLabel(value) {
+      return String(value || '').replace(/[\[\]]/g, '').trim();
+    }
+
     function normalizeText(value) {
       return String(value || '').replace(/\s+/g, '').toLowerCase();
     }
@@ -2797,13 +2801,13 @@
     function renderMatchFindings(sources, result) {
       const findings = getMatchFindings(sources, result);
       if (!findings.length) {
-        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📎</span><div><strong>[전용 매칭 없음]</strong><span class="report-result-desc">공식자료 직접 확인 경로만 제공합니다</span></div></div>';
+        return '<div class="report-result-item is-guide"><span class="result-icon" aria-hidden="true">📎</span><div><strong>전용 매칭 없음</strong><span class="report-result-desc">공식자료 직접 확인 경로만 제공합니다</span></div></div>';
       }
       return findings.map((item) => `
         <div class="report-result-item is-${escapeHtml(item.tone || 'guide')}">
           <span class="result-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
           <div>
-            <strong>[${escapeHtml(item.title)}]</strong>
+            <strong>${escapeHtml(cleanBadgeLabel(item.title))}</strong>
             <span class="report-result-desc">${escapeHtml(item.text)}</span>
           </div>
         </div>
@@ -2829,7 +2833,7 @@
         <div class="print-match-row is-${escapeHtml(item.tone || 'guide')}">
           <span class="print-match-icon" aria-hidden="true">${escapeHtml(item.icon || '•')}</span>
           <div>
-            <div class="print-match-label">[${escapeHtml(item.title)}]</div>
+            <div class="print-match-label">${escapeHtml(cleanBadgeLabel(item.title))}</div>
             <div class="print-match-desc">${escapeHtml(item.text)}</div>
           </div>
         </div>
