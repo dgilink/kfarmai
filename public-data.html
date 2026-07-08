@@ -2746,6 +2746,84 @@
       `;
     }
 
+    function getPublicApiBase() {
+      return window.KFARMAI_API_BASE || '';
+    }
+
+    function compactPublicText(value) {
+      return String(value || '')
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function uniquePublicList(values) {
+      return Array.from(new Set((values || []).filter(Boolean)));
+    }
+
+    function getNcpmsApiUrl(result) {
+      const crop = cleanReportField(result?.normalizedCrop || result?.crop || '');
+      const symptom = cleanReportField(result?.normalizedSymptom || result?.symptom || '');
+      const url = new URL('/api/ncpms/diseases', getPublicApiBase() || window.location.origin);
+      if (crop && !isBlockedReportValue(crop)) url.searchParams.set('crop', crop);
+      if (symptom && !isBlockedReportValue(symptom)) url.searchParams.set('keyword', symptom);
+      return getPublicApiBase() ? url.toString() : `${url.pathname}${url.search}`;
+    }
+
+    function summarizeNcpmsItem(item, result) {
+      const name = item?.name || item?.diseaseName || item?.sickName || item?.title || cleanReportField(result?.symptom || '');
+      const crop = item?.cropName || cleanReportField(result?.crop || '');
+      const environment = item?.environment || item?.cause || item?.ecology || item?.condition || '';
+      const symptom = item?.symptom || item?.symptoms || item?.summary || item?.content || '';
+      const base = [];
+      if (crop && !isBlockedReportValue(crop)) base.push(crop);
+      if (name && !isBlockedReportValue(name)) base.push(name);
+      const subject = base.length ? base.join(' ') : 'NCPMS 병해충';
+      const detail = compactPublicText(environment || symptom).slice(0, 72);
+      return detail
+        ? `NCPMS 실제 응답에서 ${subject} 항목이 확인됩니다. ${detail}`
+        : `NCPMS 실제 응답에서 ${subject} 항목이 확인됩니다. AI 결과와 공식 병해충 항목을 함께 대조하세요.`;
+    }
+
+    function applyNcpmsApiEvidence(result, payload) {
+      const items = Array.isArray(payload?.items) ? payload.items : [];
+      if (!items.length || payload?.fallback) return null;
+      const first = items[0];
+      const nextResult = {
+        ...result,
+        matchedSources: (Array.isArray(result.matchedSources) ? result.matchedSources : []).map((source) => (
+          source.sourceKey === 'ncpms'
+            ? {
+                ...source,
+                resultText: summarizeNcpmsItem(first, result),
+                sourceUrl: first.officialUrl || source.sourceUrl,
+                matchedKeywords: Array.isArray(source.matchedKeywords)
+                  ? uniquePublicList(source.matchedKeywords.concat([first.name, first.cropName].filter(Boolean))).slice(0, 8)
+                  : [first.name, first.cropName].filter(Boolean)
+              }
+            : source
+        ))
+      };
+      nextResult.ncpmsApiMatched = true;
+      return nextResult;
+    }
+
+    async function enhanceReportWithNcpms(result) {
+      if (!result || !Array.isArray(result.matchedSources)) return;
+      if (!result.matchedSources.some((source) => source.sourceKey === 'ncpms')) return;
+      try {
+        const response = await fetch(getNcpmsApiUrl(result), { cache: 'no-store' });
+        if (!response.ok) throw new Error(`ncpms_http_${response.status}`);
+        const payload = await response.json();
+        const nextResult = applyNcpmsApiEvidence(result, payload);
+        if (!nextResult) return;
+        window.KFDiagnosisPublicDataBridge?.savePublicDataReport?.(nextResult);
+        $('#matchContent').innerHTML = renderMatchingReport(nextResult);
+      } catch (error) {
+        console.warn('[kFarmAI] NCPMS API fallback', error);
+      }
+    }
+
     function renderMatchingReport(result) {
       const sources = Array.isArray(result.matchedSources) ? result.matchedSources : [];
       const contextLine = getReportContextLine(result);
@@ -2808,6 +2886,7 @@
       window.KFDiagnosisPublicDataBridge?.savePublicDataReport?.(result, diagnosis);
       $('#matchContent').className = '';
       $('#matchContent').innerHTML = renderMatchingReport(result);
+      enhanceReportWithNcpms(result);
     }
 
     function renderExamples() {
