@@ -15,7 +15,10 @@ const ALLOWED_ORIGINS = new Set([
   'http://127.0.0.1:8787',
   'http://localhost:8787'
 ]);
-const KAMIS_CACHE = 'public, max-age=1800';
+const KAMIS_SUCCESS_CACHE = 'public, max-age=300, s-maxage=900';
+const KAMIS_CACHE = KAMIS_SUCCESS_CACHE;
+const NO_STORE = 'no-store';
+const LOCAL_MARKET_FALLBACK_SOURCE_DATE = '2026-07-02';
 const NCPMS_CACHE = 'public, max-age=86400';
 const WEATHER_CACHE = 'public, max-age=900';
 const NONGSARO_CACHE = 'public, max-age=21600';
@@ -112,9 +115,18 @@ export default {
 async function handleKamis(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const date = cleanDate(url.searchParams.get('date')) || todayKst();
+  const fetchedAt = new Date().toISOString();
 
   if (!env.KAMIS_API_KEY || !env.KAMIS_API_ID) {
-    return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
+    const fallback = kamisFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, true);
+    return json({
+      ...fallback,
+      ok: false,
+      source: 'local_fallback',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE,
+      fetchedAt,
+      reason: 'missing_kamis_credentials'
+    }, 200, cors, NO_STORE);
   }
 
   try {
@@ -126,7 +138,7 @@ async function handleKamis(url, env, cors) {
 
     const response = await fetch(apiUrl, {
       headers: { Accept: 'application/json, text/plain, */*' },
-      cf: { cacheTtl: 1800, cacheEverything: true }
+      cf: { cacheTtl: 900, cacheEverything: true }
     });
     if (!response.ok) throw new Error(`kamis_http_${response.status}`);
 
@@ -137,12 +149,29 @@ async function handleKamis(url, env, cors) {
     return json({
       source: 'KAMIS',
       updatedAt: date,
+      sourceDate: sourceDateFromItems(items) || date,
+      fetchedAt,
       items,
       fallback: false,
       notice: SAFE_MARKET_NOTICE
-    }, 200, cors, KAMIS_CACHE);
+    }, 200, cors, KAMIS_SUCCESS_CACHE);
   } catch (error) {
-    return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
+    const reason = normalizeKamisErrorReason(error);
+    console.error('kamis_prices_failed', {
+      reason,
+      item,
+      requestedDate: date,
+      status: error?.status || null
+    });
+    const fallback = kamisFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, true);
+    return json({
+      ...fallback,
+      ok: false,
+      source: 'local_fallback',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE,
+      fetchedAt,
+      reason
+    }, 200, cors, NO_STORE);
   }
 }
 
@@ -236,22 +265,42 @@ async function handleKamisPriceSummary(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const date = cleanDate(url.searchParams.get('date')) || todayKst();
   const requestedType = cleanText(url.searchParams.get('type')) || '';
+  const fetchedAt = new Date().toISOString();
 
   try {
     const kamis = await fetchKamisDailySalesList(env, item, date);
-    const summaryItems = buildPriceSummaryItems(item, date, kamis.items, false)
+    const summaryItems = buildPriceSummaryItems(item, date, kamis.items, kamis.fallback)
       .filter(row => !requestedType || row.type === requestedType);
     const fullItems = addMissingPriceTypes(summaryItems, item, date, requestedType);
+    const sourceDate = kamis.fallback ? LOCAL_MARKET_FALLBACK_SOURCE_DATE : (sourceDateFromItems(summaryItems) || kamis.sourceDate || date);
+    if (kamis.fallback) {
+      console.error('kamis_price_summary_failed', {
+        reason: kamis.reason,
+        item,
+        requestedDate: date,
+        status: kamis.status || null
+      });
+    }
     return json({
-      ok: true,
+      ok: !kamis.fallback && summaryItems.some(row => Number.isFinite(row.price)),
       item,
-      source: 'KAMIS/aT',
+      source: kamis.fallback ? 'local_fallback' : 'KAMIS',
+      sourceDate,
+      fetchedAt,
       fallback: kamis.fallback,
-      items: fullItems,
+      reason: kamis.fallback ? kamis.reason : undefined,
+      items: fullItems.map(row => ({ ...row, sourceDate: row.sourceDate || sourceDate })),
       notice: 'KAMIS 및 공공데이터 기반 시장 흐름 참고자료입니다.'
-    }, 200, cors, KAMIS_CACHE);
+    }, 200, cors, kamis.fallback ? NO_STORE : KAMIS_SUCCESS_CACHE);
   } catch (error) {
-    return json(priceSummaryFallback(item, date, requestedType), 200, cors, KAMIS_CACHE);
+    const reason = normalizeKamisErrorReason(error);
+    console.error('kamis_price_summary_failed', {
+      reason,
+      item,
+      requestedDate: date,
+      status: error?.status || null
+    });
+    return json(priceSummaryFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, requestedType, reason, fetchedAt), 200, cors, NO_STORE);
   }
 }
 
@@ -259,9 +308,9 @@ async function handleKamisPriceTrend(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const type = cleanText(url.searchParams.get('type')) || 'retail';
   const period = cleanText(url.searchParams.get('period')) || '30d';
-  const date = todayKst();
+  const fetchedAt = new Date().toISOString();
 
-  return json(priceTrendFallback(item, type, period, date), 200, cors, KAMIS_CACHE);
+  return json(priceTrendFallback(item, type, period, fetchedAt), 200, cors, NO_STORE);
 }
 
 function handleAuctionPrices(url, env, cors) {
@@ -281,7 +330,12 @@ function handleAuctionPrices(url, env, cors) {
 
 async function fetchKamisDailySalesList(env, item, date) {
   if (!env.KAMIS_API_KEY || !env.KAMIS_API_ID) {
-    return { items: kamisFallback(item, date, true).items, fallback: true };
+    return {
+      items: kamisFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, true).items,
+      fallback: true,
+      reason: 'missing_kamis_credentials',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE
+    };
   }
 
   const apiUrl = new URL(KAMIS_ENDPOINT);
@@ -292,13 +346,17 @@ async function fetchKamisDailySalesList(env, item, date) {
 
   const response = await fetch(apiUrl, {
     headers: { Accept: 'application/json, text/plain, */*' },
-    cf: { cacheTtl: 1800, cacheEverything: true }
+    cf: { cacheTtl: 900, cacheEverything: true }
   });
-  if (!response.ok) throw new Error(`kamis_http_${response.status}`);
+  if (!response.ok) {
+    const error = new Error('kamis_http_error');
+    error.status = response.status;
+    throw error;
+  }
   const payload = await parseFlexibleResponse(response);
   const items = normalizeKamisItems(payload, item, date);
   if (!items.length) throw new Error('kamis_empty_items');
-  return { items, fallback: false };
+  return { items, fallback: false, sourceDate: sourceDateFromItems(items) || date };
 }
 
 async function handleWeatherForecast(url, env, cors) {
@@ -687,31 +745,52 @@ function priceTypeFallback(type, item, date) {
   };
 }
 
-function priceSummaryFallback(item, date, requestedType) {
+function priceSummaryFallback(item, date, requestedType, reason = 'unknown_error', fetchedAt = new Date().toISOString()) {
   const types = requestedType ? [requestedType] : ['retail', 'middleman', 'auction', 'eco'];
   return {
     ok: false,
     item,
-    source: 'KAMIS/aT',
+    source: 'local_fallback',
+    sourceDate: date,
+    fetchedAt,
     fallback: true,
-    items: types.map(type => priceTypeFallback(type, item, date)),
+    reason,
+    items: types.map(type => ({ ...priceTypeFallback(type, item, date), sourceDate: date })),
     notice: '시세 데이터를 불러오지 못했습니다. 공식 정보를 함께 확인하세요.'
   };
 }
 
-function priceTrendFallback(item, type, period, date) {
+function priceTrendFallback(item, type, period, fetchedAt = new Date().toISOString()) {
   return {
     ok: false,
     item,
     type,
     period,
     source: type === 'auction' ? 'aT 공영도매시장 경매정보' : 'KAMIS',
+    sourceDate: null,
+    fetchedAt,
+    implemented: false,
     fallback: true,
     points: [],
-    summary: { latest: null, min: null, max: null, avg: null, changeFromPrevious: null, changeRateFromPrevious: null },
+    summary: {},
     notice: `${typeNotice(type)} 기간별 가격 동향 API는 공식 파라미터 확인 후 연결할 예정입니다.`,
+    reason: type === 'auction' ? 'auction_trend_not_implemented' : 'kamis_trend_not_implemented',
     error: type === 'auction' ? 'auction_endpoint_pending' : 'period_api_pending'
   };
+}
+
+function sourceDateFromItems(items = []) {
+  const row = items.find(item => cleanDate(item?.date || item?.sourceDate));
+  return row ? cleanDate(row.date || row.sourceDate) : '';
+}
+
+function normalizeKamisErrorReason(error) {
+  const message = String(error?.message || '');
+  if (message === 'kamis_http_error') return 'kamis_http_error';
+  if (message.includes('kamis_empty_items')) return 'kamis_empty_items';
+  if (message.includes('parse') || message.includes('json') || message.includes('xml')) return 'kamis_parse_error';
+  if (message.includes('no_data')) return 'kamis_no_data';
+  return 'unknown_error';
 }
 
 function priceTypeLabel(type) {
