@@ -1,6 +1,11 @@
 {
   "updatedAt": "2026-07-02",
-  "notice": "KAMIS 등 공공 시세 정보 연동 전 화면 확인을 위한 최근 저장 데이터입니다.",
+  "sourceDate": "2026-07-02",
+  "fetchedAt": "2026-07-02T00:00:00+09:00",
+  "status": "FALLBACK",
+  "freshness": "STALE",
+  "fallback": true,
+  "notice": "현재 최신 KAMIS 자료를 불러오지 못할 때 표시하는 2026-07-02 기준 저장 참고자료입니다.",
   "items": [
     { "item": "고추", "date": "2026-07-02", "type": "시세", "market": "전국 참고", "unit": "10kg", "price": 68000, "memo": "시장 흐름 참고자료입니다. 공식 제공처 확인이 필요합니다." },
     { "item": "토마토", "date": "2026-07-02", "type": "시세", "market": "전국 참고", "unit": "1kg", "price": 5200, "memo": "시설재배 여부와 시장 상황을 함께 확인하세요." },
