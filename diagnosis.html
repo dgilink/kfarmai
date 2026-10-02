@@ -14,7 +14,8 @@
 <title>AI 참고 진단 — kFarmAI</title>
 <meta name="description" content="kFarmAI AI 참고 진단 — 사진과 증상으로 원인 후보, 확인 포인트, 공공정보 확인 항목을 정리합니다.">
 <meta name="theme-color" content="#0B1410">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="static/js/security/safe-markdown.js"></script>
+<script src="static/js/ai/diagnosis-client.js"></script>
 <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -1064,29 +1065,6 @@
 <script>
 'use strict';
 
-// TODO: Edge Function 교체 필요 — API 키를 프론트엔드에 직접 노출하지 마세요
-const API_KEY = 'YOUR_API_KEY_HERE';
-
-const SYSTEM_PROMPT = `당신은 농업·식물 문제를 정리하는 AI 참고 진단 도우미입니다.
-절대 특정 농약을 추천하지 말 것.
-절대 확정 처방으로 말하지 말 것.
-절대 농약 사용이나 물품 선택을 유도하지 말 것.
-사진과 증상 설명을 바탕으로 원인 후보, 확인 포인트, AI 추정 강도, 공공데이터 확인 항목만 정리하세요.
-농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준 확인을 안내하세요.
-반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력:
-{
-  "mode": "AI 참고 진단",
-  "crop": "작물 또는 식물명",
-  "symptoms": ["관찰 증상1", "관찰 증상2"],
-  "causeCandidates": [
-    { "name": "원인 후보명", "strength": "높음/중간/낮음", "reason": "판단 이유" }
-  ],
-  "checkPoints": ["확인 포인트1", "확인 포인트2", "확인 포인트3"],
-  "publicDataNeeds": ["농약안전사용지침", "병해충 정보", "농업날씨"],
-  "safetyNotice": "이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.",
-  "urgent": false
-}`;
-
 let capturedFile = null;
 let lastResult   = null;
 let lastPublicDataDiagnosis = null;
@@ -1400,19 +1378,21 @@ const COMMUNITY_QUESTION_FALLBACK = [
 
 function normalizeDiagnosisResult(result) {
   const firstCandidate = Array.isArray(result.causeCandidates) ? result.causeCandidates[0] : null;
-  const legacyCandidate = result.cause ? [{ name: result.diagnosis || '원인 후보', strength: result.confidence || '중간', reason: result.cause }] : [];
+  const legacyCandidate = result.cause
+    ? [{ name: result.diagnosis || '원인 후보', strength: result.confidence || '중간', reason: result.cause }]
+    : asArray(result.causes).map(name => ({ name: String(name), strength: result.confidence || '중간', reason: '추가 확인이 필요합니다.' }));
   const causeCandidates = asArray(result.causeCandidates).length ? asArray(result.causeCandidates) : legacyCandidate;
   const checkPoints = asArray(result.checkPoints).length
     ? asArray(result.checkPoints)
-    : asArray(result.solution).concat(asArray(result.prevention)).slice(0, 4);
+    : asArray(result.management).concat(asArray(result.solution), asArray(result.prevention)).slice(0, 4);
   const publicDataNeeds = asArray(result.publicDataNeeds).length
     ? asArray(result.publicDataNeeds)
-    : ['농약안전사용지침', '병해충 정보', '농업날씨'];
+    : asArray(result.materials).length ? asArray(result.materials) : ['농약안전사용지침', '병해충 정보', '농업날씨'];
   const strength = result.confidence || firstCandidate?.strength || causeCandidates[0]?.strength || '중간';
   return {
     mode: result.mode || 'AI 참고 진단',
     crop: result.crop || '작물·식물',
-    symptoms: asArray(result.symptoms),
+    symptoms: asArray(result.symptoms).length ? asArray(result.symptoms) : asArray(result.symptom),
     causeCandidates,
     checkPoints,
     publicDataNeeds,
@@ -1422,51 +1402,6 @@ function normalizeDiagnosisResult(result) {
     urgent: Boolean(result.urgent),
     safetyNotice: result.safetyNotice || '이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.'
   };
-}
-
-function buildFallbackDiagnosisResult(context = {}) {
-  const crop = context.crop || '미선택';
-  const symptom = context.symptom || context.userText || context.description || '증상 미확인';
-  const hasImage = Boolean(context.imageAttached);
-  return {
-    mode: 'AI 참고 진단',
-    crop,
-    symptoms: [symptom].filter(Boolean),
-    symptom,
-    summary: hasImage
-      ? '사진과 입력 정보를 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.'
-      : '입력한 증상 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.',
-    causeCandidates: [
-      { label: '원인 후보', name: '원인 후보', category: 'unknown', confidence: 'low', strength: '낮음', reason: '추가 확인이 필요합니다.' },
-      { label: '환경 요인', name: '환경 요인', category: 'environment', confidence: 'low', strength: '낮음', reason: '최근 기온·습도·관수 상태를 함께 확인하세요.' },
-      { label: '재배관리 요인', name: '재배관리 요인', category: 'management', confidence: 'low', strength: '낮음', reason: '물관리, 통풍, 생육단계를 함께 확인하세요.' }
-    ],
-    aiCandidates: [
-      { label: '원인 후보', category: 'unknown', confidence: 'low' },
-      { label: '환경 요인', category: 'environment', confidence: 'low' },
-      { label: '재배관리 요인', category: 'management', confidence: 'low' }
-    ],
-    checkPoints: ['사진의 증상 부위 확인', '최근 물관리와 온습도 확인', '공식자료에서 유사 증상 확인'],
-    publicDataNeeds: ['병해충 정보', '농업날씨', '재배가이드'],
-    source: hasImage ? 'image-ai' : 'text-ai',
-    createdAt: new Date().toISOString(),
-    safetyNotice: '이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 공식자료와 전문가 확인을 함께 참고하세요.',
-    urgent: false
-  };
-}
-
-function parseDiagnosisJson(raw) {
-  const clean = String(raw || '').replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-  try {
-    return JSON.parse(clean);
-  } catch (_) {
-    const start = clean.indexOf('{');
-    const end = clean.lastIndexOf('}');
-    if (start >= 0 && end > start) {
-      return JSON.parse(clean.slice(start, end + 1));
-    }
-    throw new Error('PARSE_ERROR');
-  }
 }
 
 function normalizeTag(value) {
@@ -1761,75 +1696,25 @@ async function startDiagnosis() {
   setLoading(true);
 
   try {
-    const userContent = [];
-
-    if (capturedFile) {
-      const base64    = await toBase64(capturedFile);
-      const mediaType = capturedFile.type.startsWith('image/') ? capturedFile.type : 'image/jpeg';
-      userContent.push({
-        type: 'image',
-        source: { type: 'base64', media_type: mediaType, data: base64 }
-      });
-    }
-
-    userContent.push({
-      type: 'text',
-      text: [
-        crop ? `작물명: ${crop}` : '',
-        env ? `재배환경: ${env}` : '',
-        symptom ? `증상: ${symptom}` : '',
-        (!crop && !env && !symptom) ? '텍스트 없음, 사진을 기준으로 원인 후보와 확인 포인트를 정리해주세요.' : ''
-      ].filter(Boolean).join('\n')
+    if (!window.KFAIDiagnosisClient) throw new Error('DIAGNOSIS_CLIENT_UNAVAILABLE');
+    const imageBase64 = capturedFile ? await toBase64(capturedFile) : '';
+    const data = await window.KFAIDiagnosisClient.analyze({
+      crop,
+      symptom,
+      cultivationEnv: env,
+      imageBase64
     });
-
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-5',
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: userContent }]
-      })
-    });
-
-    if (!res.ok) throw new Error('API_' + res.status);
-
-    const data = await res.json();
-    const raw  = data.content?.[0]?.text || '';
-
-    let result;
-    try {
-      result = parseDiagnosisJson(raw);
-    } catch {
-      result = buildFallbackDiagnosisResult({
-        crop,
-        symptom,
-        cultivationType: env,
-        imageAttached: Boolean(capturedFile),
-        userText: raw
-      });
-      console.warn('[kFarmAI] diagnosis JSON parse failed');
-    }
+    const result = data.result && typeof data.result === 'object' ? data.result : data;
 
     lastResult = result;
     showResult(result);
 
   } catch (err) {
-    const fallbackResult = buildFallbackDiagnosisResult({
-      crop,
-      symptom,
-      cultivationType: env,
-      imageAttached: Boolean(capturedFile)
-    });
     console.warn('[kFarmAI] diagnosis request failed', err);
-    lastResult = fallbackResult;
-    showResult(fallbackResult);
-    showToast('공공정보 확인용 기본 결과를 만들었습니다.');
+    lastResult = null;
+    setLoading(false);
+    showFallbackResult();
+    showToast('현재 AI 분석을 불러오지 못했습니다.');
   }
 }
 
@@ -1859,7 +1744,7 @@ function showFallbackResult() {
             </a>
           `).join('')}
         </div>
-        <div class="result-disclaimer">이 결과는 AI 참고 진단이며 확정 판단이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+        <div class="result-disclaimer">AI 분석 실패 시 임의의 원인 후보나 관리 방법을 생성하지 않습니다. 공식 공공정보를 별도로 확인해주세요.</div>
       </div>
       ${renderCommunityConnect({ crop: '작물·식물', symptoms: [], causeCandidates: [], tags: [] })}
       <div class="result-actions">
@@ -1920,10 +1805,6 @@ function showResult(result) {
       </div>
     </div>`;
   loadAndRenderRelatedQuestions(safeResult);
-}
-
-function renderMarkdown(text) {
-  return window.marked ? marked.parse(String(text || '')) : escHtml(text || '');
 }
 
 function resetDiagnosis() {

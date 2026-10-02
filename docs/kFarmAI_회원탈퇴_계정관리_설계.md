@@ -1,5 +1,7 @@
 # kFarmAI 회원 탈퇴 및 계정 관리 설계
 
+> 문서 상태: 아래 내용은 초기 설계 기록입니다. 브라우저 localStorage에 요청을 기록하던 1차 흐름은 폐기되었습니다. 현재 계약은 `docs/phase1-account-deletion-data-contract.md`, 구현은 `supabase/functions/request-account-deletion/index.ts`와 관련 migration을 기준으로 합니다. Production에는 아직 적용되지 않았습니다.
+
 ## 목적
 
 회원 탈퇴는 인증 계정, 작성글, 댓글, 업로드 사진 등 사용자 데이터와 연결됩니다. 브라우저에서 즉시 계정을 삭제하는 방식은 관리자 권한이 필요한 키를 노출할 위험이 있으므로 사용하지 않습니다.

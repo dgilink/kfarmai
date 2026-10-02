@@ -34,7 +34,8 @@
 <meta name="twitter:image" content="https://kfarmai.com/static/kfarmai-logo-horizontal.png">
 
 <meta name="theme-color" content="#16a34a">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="static/js/security/safe-markdown.js"></script>
+<script src="static/js/ai/diagnosis-client.js"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1530,6 +1531,22 @@
     line-height: 1.65;
     font-weight: 700;
   }
+  .account-delete-confirmation {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 14px;
+    color: #374151;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 800;
+  }
+  .account-delete-confirmation input {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    accent-color: #B91C1C;
+  }
   #accountDeleteModal {
     z-index: 90;
     align-items: center;
@@ -2325,13 +2342,16 @@
       <button class="my-close" type="button" onclick="closeAccountDeleteModal()" aria-label="닫기">×</button>
     </div>
     <p class="account-delete-modal-copy">
-      탈퇴 요청 후 로그인 세션이 종료됩니다.<br>
-      작성한 질문, 댓글, 업로드 사진 등은 운영 정책에 따라 삭제 또는 익명화될 수 있습니다.<br>
-      계속 진행하시겠습니까?
+      서버에 계정 삭제 요청을 접수한 뒤 로그인 세션이 종료됩니다.<br>
+      작성한 질문, 댓글, 업로드 사진은 확정된 운영 정책에 따라 검토되며 이 요청만으로 즉시 삭제되지 않습니다.
     </p>
+    <label class="account-delete-confirmation">
+      <input id="accountDeleteAcknowledge" type="checkbox" onchange="updateAccountDeleteConfirmState()">
+      <span>계정 삭제 요청과 로그아웃을 진행하겠습니다.</span>
+    </label>
     <div class="account-delete-actions">
       <button class="delete-cancel" type="button" onclick="closeAccountDeleteModal()">취소</button>
-      <button class="delete-confirm" id="accountDeleteConfirmBtn" type="button" onclick="requestAccountDeletion()">탈퇴 요청</button>
+      <button class="delete-confirm" id="accountDeleteConfirmBtn" type="button" onclick="requestAccountDeletion()" disabled>탈퇴 요청</button>
     </div>
   </div>
 </div>
@@ -2483,7 +2503,6 @@
 
 // ===== AI 참고 진단 =====
 let diagImageBase64 = null;
-const DIAG_ENDPOINT = 'https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/bright-action';
 
 function diagOpenCamera() { document.getElementById('diagCameraInput').click(); }
 function diagOpenAlbum()  { document.getElementById('diagAlbumInput').click(); }
@@ -2544,28 +2563,6 @@ function openHomePublicDataReport() {
   location.href = 'public-data.html';
 }
 
-function buildHomeFallbackDiagnosisData(context = {}) {
-  const symptom = context.symptom || '증상 미확인';
-  const hasImage = Boolean(context.imageAttached);
-  return {
-    crop: context.crop || '미선택',
-    symptom,
-    summary: hasImage
-      ? '사진과 입력 정보를 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.'
-      : '입력한 증상 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.',
-    causes: ['원인 후보', '환경 요인', '재배관리 요인'],
-    management: ['증상 부위 사진 확인', '최근 물관리와 온습도 확인', '공식자료에서 유사 증상 확인'],
-    materials: ['병해충 정보', '농업날씨', '재배가이드'],
-    aiCandidates: [
-      { label: '원인 후보', category: 'unknown', confidence: 'low' },
-      { label: '환경 요인', category: 'environment', confidence: 'low' },
-      { label: '재배관리 요인', category: 'management', confidence: 'low' }
-    ],
-    source: hasImage ? 'image-ai' : 'text-ai',
-    createdAt: new Date().toISOString()
-  };
-}
-
 async function runDiagnosis() {
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
   const crop = (document.getElementById('diagCrop')?.value || '').trim();
@@ -2588,17 +2585,15 @@ async function runDiagnosis() {
     env ? `재배환경: ${env}` : '',
     symptom ? `증상: ${symptom}` : ''
   ].filter(Boolean).join('\n');
-  const body = { symptom: detail || symptom, region, crop, cultivationEnv: env };
-  if (diagImageBase64) body.image_base64 = diagImageBase64;
-
   try {
-    const res = await fetch(DIAG_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhaZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzMjUxMDMsImV4cCI6MjA2MzkwMTEwM30.Jx5oBXoUVvHlPjBmNqwJTyZH6lMVOFxwjTFjUBYlBnU' },
-      body: JSON.stringify(body)
+    if (!window.KFAIDiagnosisClient) throw new Error('DIAGNOSIS_CLIENT_UNAVAILABLE');
+    const data = await window.KFAIDiagnosisClient.analyze({
+      symptom,
+      crop,
+      cultivationEnv: env,
+      region,
+      imageBase64: diagImageBase64
     });
-    if (!res.ok) throw new Error('서버 오류 ' + res.status);
-    const data = await res.json();
     const diagnosisContext = {
       crop,
       symptom,
@@ -2610,17 +2605,8 @@ async function runDiagnosis() {
     renderDiagResult(data, resultWrap, structuredDiagnosis);
     saveDiagnosisHistory(detail || symptom, data);
   } catch (err) {
-    const diagnosisContext = {
-      crop,
-      symptom,
-      region,
-      cultivationType: env,
-      imageAttached: Boolean(diagImageBase64)
-    };
-    const fallbackData = buildHomeFallbackDiagnosisData(diagnosisContext);
     console.warn('[kFarmAI] diagnosis request failed', err);
-    const structuredDiagnosis = saveHomePublicDataDiagnosis(fallbackData, diagnosisContext);
-    renderDiagResult(fallbackData, resultWrap, structuredDiagnosis);
+    renderDiagFailure(resultWrap);
   } finally {
     loading.classList.remove('show');
     btn.textContent = 'AI 참고 진단 시작';
@@ -2655,6 +2641,10 @@ function renderDiagResult(data, wrap, structuredDiagnosis) {
   wrap.innerHTML = html;
 }
 
+function renderDiagFailure(wrap) {
+  wrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-title">AI 참고 진단을 불러오지 못했습니다</div><div class="diag-rc-body">현재 AI 분석을 불러오지 못했습니다. 잠시 후 다시 시도하거나 공공정보 확인 메뉴를 이용해주세요.</div></div><button class="diag-public-data-btn" type="button" onclick="location.href='public-data.html'">공공정보 확인</button>`;
+}
+
 function escDiag(s) {
   return String(s)
     .replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
@@ -2662,11 +2652,11 @@ function escDiag(s) {
 }
 
 function renderMarkdown(text) {
-  return window.marked ? marked.parse(text) : escDiag(text);
+  return window.KFSafeMarkdown ? window.KFSafeMarkdown.render(text) : escDiag(text);
 }
 
-const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
+const SUPABASE_URL = window.KFAIDiagnosisClient.config.supabaseUrl;
+const SUPABASE_KEY = window.KFAIDiagnosisClient.config.supabaseAnonKey;
 const CHANNEL_BADGE_COLORS = {'plant-hospital':'green','plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const CHANNEL_DISPLAY_NAMES = {'plant-share':'나눔·직거래'};
 function displayChannelName(slug,name){
@@ -4581,18 +4571,27 @@ function openMyPanel(){
 }
 function closeMyPanel(){document.body.classList.remove('my-panel-active');document.getElementById('myPanel')?.classList.remove('open');const fab=document.querySelector('.fab');if(fab)fab.hidden=false;closeMySubview();unlockBodyScroll();}
 let accountDeleteModalHistory = false;
+let accountDeletionRequestPending = false;
 function openAccountDeleteModal(){
   if(!currentUser){
     showToast('로그인이 필요합니다.');
     openMyPanel();
     return;
   }
+  const acknowledge=document.getElementById('accountDeleteAcknowledge');
+  if(acknowledge)acknowledge.checked=false;
+  updateAccountDeleteConfirmState();
   document.getElementById('accountDeleteModal')?.classList.add('open');
   lockBodyScroll();
   if(!accountDeleteModalHistory){
     history.pushState({accountDeleteModal:true}, '', location.href);
     accountDeleteModalHistory = true;
   }
+}
+function updateAccountDeleteConfirmState(){
+  const btn=document.getElementById('accountDeleteConfirmBtn');
+  const acknowledged=document.getElementById('accountDeleteAcknowledge')?.checked===true;
+  if(btn)btn.disabled=accountDeletionRequestPending||!acknowledged;
 }
 function closeAccountDeleteModal(syncHistory=true){
   const modal=document.getElementById('accountDeleteModal');
@@ -4611,11 +4610,16 @@ window.addEventListener('popstate',()=>{
   }
 });
 async function requestAccountDeletion(){
-  if(!_sb){
+  if(!_sb||accountDeletionRequestPending){
     showToast('탈퇴 요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
     return;
   }
   const btn=document.getElementById('accountDeleteConfirmBtn');
+  if(document.getElementById('accountDeleteAcknowledge')?.checked!==true){
+    showToast('최종 확인 항목을 선택해주세요.');
+    return;
+  }
+  accountDeletionRequestPending=true;
   if(btn){
     btn.dataset.originalText=btn.textContent;
     btn.textContent='처리 중...';
@@ -4623,34 +4627,37 @@ async function requestAccountDeletion(){
   }
   try{
     const {data:{session}}=await _sb.auth.getSession();
-    const user=session?.user||currentUser;
-    if(!user?.id){
+    if(!session?.access_token||!session?.user?.id){
       showToast('로그인이 필요합니다.');
       closeAccountDeleteModal();
       openMyPanel();
       return;
     }
-    const requestedAt=new Date().toISOString();
-    localStorage.setItem('kfarmai_account_delete_requested_at', requestedAt);
-    localStorage.setItem('kfarmai_account_delete_requested_user', user.id);
-    if(user.email)localStorage.setItem('kfarmai_account_delete_requested_email', user.email);
-    console.warn('account deletion request stored locally; server table or edge function is required for final deletion.', {user_id:user.id, requested_at:requestedAt});
+    const endpoint=window.KFAIDiagnosisClient.functionUrl(window.KFAIDiagnosisClient.config.accountDeletionFunction);
+    const response=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+      body:JSON.stringify({confirmation:'DELETE_MY_ACCOUNT'})
+    });
+    const result=await response.json().catch(()=>({ok:false}));
+    if(!response.ok||result.ok!==true||result.status!=='pending')throw new Error(result.error||`HTTP_${response.status}`);
     await _sb.auth.signOut();
     setMyState(null);
     resetUserUI();
     accountDeleteModalHistory = false;
     closeAccountDeleteModal(false);
     closeMyPanel();
-    showToast('탈퇴 요청이 접수되었습니다. 로그아웃 후 홈으로 이동합니다.');
+    showToast('계정 삭제 요청이 서버에 접수되었습니다.');
     setTimeout(()=>{ location.href='index.html'; }, 900);
   }catch(error){
     console.error('account deletion request failed', error);
     showToast('탈퇴 요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }finally{
+    accountDeletionRequestPending=false;
     if(btn){
       btn.textContent=btn.dataset.originalText||'탈퇴 요청';
-      btn.disabled=false;
     }
+    updateAccountDeleteConfirmState();
   }
 }
 function openLogin(){openMyPanel();}
