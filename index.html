@@ -37,6 +37,7 @@
 <meta name="theme-color" content="#16a34a">
 <script src="static/js/security/safe-markdown.js"></script>
 <script src="static/js/ai/diagnosis-client.js"></script>
+<script src="static/js/community/community-model.js"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1916,41 +1917,25 @@
         </div>
 
         <div class="section-head">
-          <div class="section-title" data-i18n="exploreChannels">채널 둘러보기</div>
-          <div class="section-more channel-count">8개 채널</div>
+          <div class="section-title" data-i18n="exploreChannels">커뮤니티 둘러보기</div>
+          <div class="section-more channel-count">4개 분류</div>
         </div>
         <div class="channels" id="channelGrid">
-          <div class="channel" style="background:#E8F5E9" onclick="location.href='channel.html?slug=plant-hospital'">
-            <div class="ch-icon-wrap">🌿</div>
-            <div class="ch-name">식물 병원</div>
-          </div>
-          <div class="channel" style="background:#E3F2FD" onclick="location.href='channel.html?slug=plant-question&v=20260705b'">
+          <div class="channel" style="background:#E3F2FD" onclick="location.href='channel.html?category=question-help'">
             <div class="ch-icon-wrap">💬</div>
-            <div class="ch-name">식물 질문방</div>
+            <div class="ch-name">질문·문제해결</div>
           </div>
-          <div class="channel" style="background:#FFF8E1" onclick="location.href='channel.html?slug=crop-consult&v=20260705b'">
-            <div class="ch-icon-wrap">🌾</div>
-            <div class="ch-name">작물 상담방</div>
+          <div class="channel" style="background:#E8F5E9" onclick="location.href='channel.html?category=cultivation-knowhow'">
+            <div class="ch-icon-wrap">🌱</div>
+            <div class="ch-name">재배·노하우</div>
           </div>
-          <div class="channel" style="background:#FCE4EC" onclick="location.href='channel.html?slug=plant-brag'">
+          <div class="channel" style="background:#FCE4EC" onclick="location.href='channel.html?category=showcase-daily'">
             <div class="ch-icon-wrap">📷</div>
-            <div class="ch-name">내 식물 자랑</div>
+            <div class="ch-name">자랑·일상</div>
           </div>
-          <div class="channel" style="background:#FFF3E0" onclick="location.href='channel.html?slug=farmer-lounge'">
-            <div class="ch-icon-wrap">🏡</div>
-            <div class="ch-name">농부 사랑방</div>
-          </div>
-          <div class="channel" style="background:#E0F7FA" onclick="location.href='channel.html?slug=plant-share'">
-            <div class="ch-icon-wrap">🪴</div>
-            <div class="ch-name">나눔·직거래</div>
-          </div>
-          <div class="channel" style="background:#F9FBE7" onclick="location.href='channel.html?slug=garden-class'">
-            <div class="ch-icon-wrap">✂️</div>
-            <div class="ch-name">원예 클래스</div>
-          </div>
-          <div class="channel" style="background:#FFFDE7" onclick="location.href='channel.html?slug=plant-meet'">
-            <div class="ch-icon-wrap">🤝</div>
-            <div class="ch-name">식집사 모임</div>
+          <div class="channel" style="background:#FFF8E1" onclick="location.href='channel.html?category=agri-field-info'">
+            <div class="ch-icon-wrap">🌾</div>
+            <div class="ch-name">농업·현장정보</div>
           </div>
         </div>
 
@@ -2123,7 +2108,7 @@
   <div class="modal">
     <button class="modal-handle" type="button" onclick="closeModal()" aria-label="닫기"></button>
     <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">커뮤니티에 질문하기 <button class="my-close" type="button" onclick="closeModal()" aria-label="닫기">×</button></div>
-    <div class="modal-field"><div class="modal-label">채널 선택</div><select class="modal-select" id="channelSelect"><option value="">채널을 선택하세요</option><option value="d88ba519-68fd-488f-8311-e316838ac4cf">식물 병원</option><option value="c7315bd6-eb60-484c-9c07-6def8f93ddc1">식물 질문방</option><option value="f586c6a8-882a-45d0-89e6-6d20fd9675de">작물 상담방</option><option value="9191bf52-84b6-42ca-b2c7-c886bde5d450">내 식물 자랑</option><option value="364c2c71-c313-47fc-a986-3124393bf381">농부 사랑방</option><option value="4619a407-a214-4555-8e63-06fa96ed87a2">나눔·직거래</option><option value="a6095ae4-1d7e-4671-a6b1-4277d343e586">✂️ 원예 클래스</option><option value="ae71a389-0723-4e76-b421-789a1474fd49">식집사 모임</option></select></div>
+    <div class="modal-field"><div class="modal-label">분류 선택</div><select class="modal-select" id="channelSelect"><option value="">분류를 선택하세요</option><option value="question-help">질문·문제해결</option><option value="cultivation-knowhow">재배·노하우</option><option value="showcase-daily">자랑·일상</option><option value="agri-field-info">농업·현장정보</option></select></div>
     <div class="modal-field">
       <div class="modal-label">대표 증상을 선택해주세요</div>
       <select class="modal-select" id="postCategory" onchange="toggleCustomSymptom()">
@@ -2141,8 +2126,8 @@
       <div class="image-file-info" id="postImageInfo"></div>
       <div class="image-preview-row" id="postImagePreview"></div>
     </div>
-    <div class="modal-field" hidden>
-      <div class="modal-label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(최대 5개)</span></div>
+    <div class="modal-field">
+      <div class="modal-label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(선택, 최대 8개)</span></div>
       <div class="tag-chip-row" id="tagSuggestions"></div>
       <div class="tag-input-row"><input class="modal-input" id="tagInput" placeholder="#고추 또는 잎마름" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput()}"><button class="tag-add-btn" type="button" onclick="addTagFromInput()">추가</button></div>
       <div class="post-tags" id="selectedTags"></div>
@@ -2623,7 +2608,7 @@ const I18N = {
     qa: '질문',
     nearby: '주변',
     recentQuestions: '방금 올라온 질문',
-    exploreChannels: '채널 둘러보기',
+    exploreChannels: '커뮤니티 둘러보기',
     heroTitle: '이상하다 싶을 때,<br/>바로 여기',
     searchPlaceholder: '식물·작물 증상을 검색해보세요'
   },
@@ -2635,7 +2620,7 @@ const I18N = {
     qa: 'Q&A',
     nearby: 'Nearby',
     recentQuestions: 'Recent Questions',
-    exploreChannels: 'Explore Channels',
+    exploreChannels: 'Explore Community',
     heroTitle: 'When Something Feels Off,<br/>Start Here',
     searchPlaceholder: 'Search plant and crop symptoms...'
   }
@@ -2668,6 +2653,7 @@ function toggleLanguage(){
 initLanguage();
 prepareQuestionListShell();
 async function initSupabaseApp(){
+  await hydrateCommunityCategorySelect();
   const {data:{session}}=await _sb.auth.getSession();
   setMyState(session?.user || null);
   if(session)updateUserUI(session.user);
@@ -2834,6 +2820,10 @@ async function loadMyCounts(userId){
 function postLikeButton(){
   return '';
 }
+function displayCommunityCategory(post){
+  return window.KFCommunity.categoryForPost(post,communityCategories)?.name
+    || displayChannelName(post?.channels?.slug,post?.channels?.name||post?.channelName);
+}
 const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
 async function attachCommentCounts(posts){
   const list=Array.isArray(posts)?posts:[];
@@ -2882,12 +2872,12 @@ async function loadMyPosts(userId){
     myPostCache=data||[];
     if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>{
-      const category=post.crop_tag||extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
+      const category=post.crop_tag||extractCategoryFromContent(post.content)||displayCommunityCategory(post)||'질문';
       const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
       const isEditing=String(myPostEditingId||'')===String(post.id);
       const meta=[
         displayNameForPost(post,{[userId]:displayNameForUser(currentUser)}),
-        displayChannelName(post.channels?.slug,post.channels?.name)||category,
+        displayCommunityCategory(post)||category,
         post.region_tag||'',
         commentCountLabel(post),
         `조회 ${Number(post.view_count||0)}`,
@@ -2896,7 +2886,7 @@ async function loadMyPosts(userId){
       return `<div class="my-list-item" onclick="location.href='post.html?v=20260705d&id=${encodeURIComponent(post.id)}'">
         <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
         ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
-        ${renderPostTags(post.content)}
+        ${renderPostTags(post.content,undefined,post.tags)}
         <div class="my-list-meta">${meta}<span>${postLikeButton(post)}</span></div>
         <div class="my-list-actions">
           <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">&#49688;&#51221;</button>
@@ -2912,11 +2902,11 @@ async function loadMyPosts(userId){
 async function fetchMyPosts(userId){
   const base=query=>query.eq('user_id',userId).order('created_at',{ascending:false}).limit(10);
   try{
-    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, title, content, crop_tag, created_at, region_tag, view_count, image_urls, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, category_id, title, content, crop_tag, tags, created_at, region_tag, view_count, image_urls, channels(name, slug), community_categories(name, slug)'));
     if(error)throw error;
     return await attachCommentCounts(data||[]);
   }catch(e){
-    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, title, content, created_at, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, category_id, title, content, tags, created_at, channels(name, slug), community_categories(name, slug)'));
     if(error)throw error;
     return data||[];
   }
@@ -2932,7 +2922,7 @@ function myPostSymptomOptions(active=''){
   return options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||'대표 증상 선택')}</option>`).join('');
 }
 function myPostTopicConfig(post){
-  const key=CHANNEL_TOPIC_ID_MAP[String(post?.channel_id||'')]||channelTopicKeyByName(post?.channels?.name||post?.content||'');
+  const key=COMMUNITY_CATEGORY_TOPIC[window.KFCommunity.categoryForPost(post,communityCategories)?.slug]||'default';
   return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
 }
 function myPostTopicOptions(post,active=''){
@@ -3322,8 +3312,8 @@ function extractTagsFromContent(content){
   if(!match)return [];
   return match[1].split(/\s+/).map(normalizeTag).filter(Boolean).slice(0,8);
 }
-function renderPostTags(content,cls='post-tag'){
-  const tags=extractTagsFromContent(content);
+function renderPostTags(content,cls='post-tag',storedTags=[]){
+  const tags=window.KFCommunity.normalizeTags(storedTags?.length?storedTags:extractTagsFromContent(content));
   return tags.length?`<div class="post-tags">${tags.map(tag=>`<span class="${cls}">${escHtml(tag)}</span>`).join('')}</div>`:'';
 }
 function stripPostPrefixes(content){
@@ -3340,7 +3330,7 @@ async function loadFeed(channelId=null){
     let data=[];
     if(channelId){
       const result=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+        .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,region_tag,view_count,image_urls,channels(name, slug),community_categories(name, slug)')
         .eq('channel_id',channelId)
         .order('created_at',{ascending:false})
         .limit(5);
@@ -3373,7 +3363,7 @@ function renderFeedCard(feed,post,profileMap={}){
   card.onclick=()=>openPostDetail(post);
   const symptom=post.crop_tag||extractCategoryFromContent(post.content);
   const meta=[displayNameForPost(post,profileMap),commentCountLabel(post),`조회 ${Number(post.view_count||0)}`,post.region_tag||'',post.created_at?getTimeAgo(post.created_at):'시연'].filter(Boolean);
-  card.innerHTML=`<div class="q-card-main"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name||post.channelName))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}<span>${postLikeButton(post)}</span></div></div>${thumb?`<img class="q-card-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}`;
+  card.innerHTML=`<div class="q-card-main"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}<span>${postLikeButton(post)}</span></div></div>${thumb?`<img class="q-card-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}`;
   feed.appendChild(card);
 }
 function cachePostForDetail(post){
@@ -3407,9 +3397,9 @@ async function renderFeedFallback(message){
 }
 function filterByChannel(id,name){loadFeed(id);const title=document.querySelector('#recentFeed')?.previousElementSibling?.querySelector('.section-title');if(title)title.textContent=`${name} 질문`;}
 const SEARCH_STORAGE_KEY='kfarmai_recent_searches';
-const FEATURE_TRENDING_QUESTIONS = true;
-const FEATURE_SAME_SYMPTOM_REACTION = true;
-const FEATURE_HELPFUL_REACTION = true;
+const FEATURE_TRENDING_QUESTIONS = false;
+const FEATURE_SAME_SYMPTOM_REACTION = false;
+const FEATURE_HELPFUL_REACTION = false;
 const FEATURE_SEARCH_ACTIONS = true;
 let staticSearchIndex = null;
 let staticSearchIndexPromise = null;
@@ -3422,8 +3412,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['잎 말림','생육 저하'],
     tags:['고추','잎 말림','고온'],
     view_count:34,
-    same_symptom_count:12,
-    helpful_count:8,
     url:'q/pepper-leaf-curling.html',
     seasonal:true
   },
@@ -3434,8 +3422,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['흰가루','잎 반점'],
     tags:['토마토','흰가루','시설재배'],
     view_count:29,
-    same_symptom_count:10,
-    helpful_count:7,
     url:'q/tomato-leaf-brown-spots.html',
     seasonal:false
   },
@@ -3446,8 +3432,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['흰 곰팡이','과습'],
     tags:['상토','곰팡이','물관리'],
     view_count:24,
-    same_symptom_count:14,
-    helpful_count:9,
     url:'q/potting-soil-white-mold.html',
     seasonal:false
   },
@@ -3458,8 +3442,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['노란잎','과습 의심'],
     tags:['몬스테라','노란잎','실내식물'],
     view_count:21,
-    same_symptom_count:9,
-    helpful_count:6,
     url:'q/monstera-yellow-leaves.html',
     seasonal:false
   },
@@ -3470,8 +3452,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['과습','뿌리 활력 저하'],
     tags:['장마','과습','배수'],
     view_count:31,
-    same_symptom_count:11,
-    helpful_count:10,
     url:'q/overwatering-signs.html',
     seasonal:true
   },
@@ -3482,8 +3462,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['잎 말림','시듦'],
     tags:['고온','잎 말림','수분 스트레스'],
     view_count:27,
-    same_symptom_count:13,
-    helpful_count:7,
     url:'q/underwatering-signs.html',
     seasonal:true
   }
@@ -3654,7 +3632,7 @@ function renderHomeQuestionSections(){
       note:'공감',
       sort:'symptom',
       className:'same-symptom',
-      items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.same_symptom_count-a.same_symptom_count).slice(0,2)
+      items:[]
     }
   ].filter(section=>section.enabled&&section.items.length);
   wrap.innerHTML=sections.map(section=>`
@@ -3681,10 +3659,6 @@ function renderHomeQuestionCard(item){
       <div class="insight-card-top"><span class="insight-crop">${escHtml(item.crop)}</span><span class="insight-kind">시제품 추천 질문</span></div>
       <div class="insight-card-title">${escHtml(item.title)}</div>
       <div class="tag-row">${item.symptoms.map(tag=>`<span class="mini-tag">${escHtml(tag)}</span>`).join('')}</div>
-      <div class="reaction-row">
-        <span class="reaction-pill">나도 같은 증상 ${Number(item.same_symptom_count)||0}</span>
-        <span class="reaction-pill">도움 됐어요 ${Number(item.helpful_count)||0}</span>
-      </div>
     </a>
     <div class="card-actions">
       <a class="primary" href="${diagUrl}">AI 참고 진단</a>
@@ -3705,7 +3679,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
   const orderColumn=sort==='popular'||sort==='symptom'?'view_count':'created_at';
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,region_tag,view_count,image_urls,channels(name, slug),community_categories(name, slug)')
       .order(orderColumn,{ascending:false})
       .limit(limit);
     if(error)throw error;
@@ -3713,7 +3687,7 @@ async function loadSortedQuestionPosts(sort,limit=20){
   }catch(e){
     try{
       const {data}=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
+        .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,channels(name, slug),community_categories(name, slug)')
         .order('created_at',{ascending:false})
         .limit(limit);
       return await attachCommentCounts(data||[]);
@@ -3769,7 +3743,7 @@ function renderQuestionListCard(post,profileMap={}){
   const content=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
   const meta=[
     displayNameForPost(post,profileMap),
-    displayChannelName(post.channels?.slug,post.channels?.name||post.channelName),
+    displayCommunityCategory(post),
     post.region_tag||'',
     commentCountLabel(post),
     `조회 ${Number(post.view_count||0)}`,
@@ -3828,7 +3802,7 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   }).join(',');
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,region_tag,view_count,image_urls,channels(name, slug),community_categories(name, slug)')
       .or(orQuery)
       .order('created_at',{ascending:false})
       .limit(limit);
@@ -3837,7 +3811,7 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   }catch(_){
     try{
       const {data}=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
+        .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,channels(name, slug),community_categories(name, slug)')
         .order('created_at',{ascending:false})
         .limit(limit);
       const lowered=uniqueTerms.map(term=>term.toLowerCase());
@@ -3900,7 +3874,7 @@ function renderSuggestSection(title,items){
 function postSuggestHtml(post,kw){
   const slug=post.channels?.slug||'';
   const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
-    return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name))}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
+    return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post))}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
 }
 function linkSuggestHtml(item,kw,kind){
   const url=`${item.url}?q=${encodeURIComponent(item.query||kw)}`;
@@ -3955,11 +3929,16 @@ async function searchPosts(kw,limit){
     const cleanKw=String(kw||'').replace(/^#/,'');
     const like=`%${cleanKw.replace(/[%_]/g,'')}%`;
     const hashLike=`%#${cleanKw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
-    let list=data||[];
+    const fields='id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,view_count,created_at,channels(name, slug),community_categories(name, slug)';
+    const normalizedTag=window.KFCommunity.normalizeTags([cleanKw])[0]||'';
+    const [textResult,tagResult]=await Promise.all([
+      _sb.from('posts').select(fields).or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit),
+      normalizedTag?_sb.from('posts').select(fields).contains('tags',[normalizedTag]).order('created_at',{ascending:false}).limit(limit):Promise.resolve({data:[]})
+    ]);
+    let list=[...(textResult.data||[]),...(tagResult.data||[])].filter((post,index,all)=>all.findIndex(row=>row.id===post.id)===index).slice(0,limit);
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
-      list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,view_count,created_at,channels(name, slug),community_categories(name, slug)').order('created_at',{ascending:false}).limit(40);
+      list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${(p.tags||[]).join(' ')} ${p.community_categories?.name||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return await attachCommentCounts(list);
   }catch(e){return [];}
@@ -3976,7 +3955,7 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const postUrl=post.id?`post.html?v=20260705d&id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=post.crop_tag||extractCategoryFromContent(post.content);
     const clickAttr=post.id?``:'';
-    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>${commentCountLabel(post)}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>${commentCountLabel(post)}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
   const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
   const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
@@ -4206,45 +4185,27 @@ function openDiagnosisDemoCase(caseId){
 function closeDiagnosisDemoCase(){document.getElementById('diagnosisDemoModal')?.classList.remove('open');unlockBodyScroll();}
 let selectedPostImages = [];
 let selectedPostTags = [];
-const TAG_LIMIT = 5;
+let communityCategories = window.KFCommunity?.fallbackCategories?.() || [];
+const TAG_LIMIT = 8;
 const CHANNEL_TOPIC_CONFIG = {
   default:{label:'글 주제',helper:'글의 성격에 맞는 주제를 선택해주세요.',options:['질문','정보공유','일상','후기','기타']},
   problem:{label:'대표증상',helper:'가장 가까운 증상을 선택해주세요.',options:['잎마름','잎노랑','잎말림','시들음','벌레','곰팡이','줄기무름','열매이상','생육불량','물관리','분갈이','기타']},
-  plant_showcase:{label:'자랑 유형',helper:'자랑하고 싶은 식물의 모습을 골라주세요.',options:['새잎','꽃핌','열매','폭풍성장','분갈이 성공','회복 성공','희귀식물','오늘의 화분','기타']},
-  farmer_lounge:{label:'이야기 주제',helper:'나누고 싶은 이야기에 가까운 주제를 선택해주세요.',options:['농사일상','농사고민','농번기 이야기','농촌생활','장비·작업','날씨이야기','정보공유','잡담','기타']},
-  market_share:{label:'거래 유형',helper:'나눔, 판매, 교환 등 글의 성격을 선택해주세요.',options:['나눔','판매','교환','구합니다','농산물','모종·씨앗','화분·자재','지역거래','기타']},
-  gardening_class:{label:'수업·정보 유형',helper:'원예 정보나 클래스 성격을 선택해주세요.',options:['초보가이드','분갈이','물주기','가지치기','번식·삽목','흙·상토','병해충기초','실습후기','기타']},
-  plant_people:{label:'모임 주제',helper:'식집사들과 나누고 싶은 주제를 선택해주세요.',options:['반려식물','실내식물','플랜테리어','물주기루틴','식물친구','식물사진','질문나눔','오프모임','기타']},
-  agri_inputs:{label:'관심 자재',helper:'궁금한 농자재 종류를 선택해주세요.',options:['상토','비료','퇴비','농약안전정보','종자·모종','농기계','관수자재','시설자재','기타']},
-  local_info:{label:'정보 유형',helper:'공유하려는 정보 유형을 선택해주세요.',options:['지역소식','지원사업','교육·행사','농업뉴스','시세흐름','기술정보','정책정보','기타']}
+  knowhow:{label:'노하우 주제',helper:'공유하려는 재배 경험에 가까운 항목을 선택해주세요.',options:['파종·육묘','물관리','토양·영양','병해충 관리','시설재배','스마트팜','아쿠아팜','수확·저장','기타']},
+  daily:{label:'일상 주제',helper:'공유하려는 일상에 가까운 항목을 선택해주세요.',options:['새잎','꽃·열매','성장기록','회복기록','농사일상','반려식물','작업기록','기타']},
+  field:{label:'현장정보 유형',helper:'공유하려는 현장정보에 가까운 항목을 선택해주세요.',options:['지역소식','지원사업','교육·행사','농업날씨','시세흐름','기술정보','정책정보','기타']}
 };
-const CHANNEL_TOPIC_ID_MAP = {
-  'd88ba519-68fd-488f-8311-e316838ac4cf':'problem',
-  'c7315bd6-eb60-484c-9c07-6def8f93ddc1':'problem',
-  'f586c6a8-882a-45d0-89e6-6d20fd9675de':'problem',
-  '9191bf52-84b6-42ca-b2c7-c886bde5d450':'plant_showcase',
-  '364c2c71-c313-47fc-a986-3124393bf381':'farmer_lounge',
-  '4619a407-a214-4555-8e63-06fa96ed87a2':'market_share',
-  'a6095ae4-1d7e-4671-a6b1-4277d343e586':'gardening_class',
-  'ae71a389-0723-4e76-b421-789a1474fd49':'plant_people'
-};
-const TAG_SUGGESTIONS = ['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
-function channelTopicKeyByName(name=''){
-  const value=String(name||'');
-  if(value.includes('자랑'))return 'plant_showcase';
-  if(value.includes('사랑방'))return 'farmer_lounge';
-  if(value.includes('나눔')||value.includes('직거래'))return 'market_share';
-  if(value.includes('클래스'))return 'gardening_class';
-  if(value.includes('식집사')||value.includes('모임'))return 'plant_people';
-  if(value.includes('농자재'))return 'agri_inputs';
-  if(value.includes('지역')||value.includes('정보'))return 'local_info';
-  if(value.includes('질문')||value.includes('상담')||value.includes('병원')||value.includes('증상'))return 'problem';
-  return 'default';
+const COMMUNITY_CATEGORY_TOPIC = {'question-help':'problem','cultivation-knowhow':'knowhow','showcase-daily':'daily','agri-field-info':'field'};
+const TAG_SUGGESTIONS = ['고추','토마토','딸기','벼','상추','잎말림','탄저병','과습','총채벌레','홈가드닝','텃밭','노지','시설재배','스마트팜','아쿠아팜','전남','순천'];
+async function hydrateCommunityCategorySelect(){
+  communityCategories=await window.KFCommunity.loadCategories(window._sb);
+  const select=document.getElementById('channelSelect');
+  if(!select)return;
+  const active=select.value;
+  select.innerHTML='<option value="">분류를 선택하세요</option>'+communityCategories.map(item=>`<option value="${escAttr(item.slug)}">${escHtml(item.name)}</option>`).join('');
+  if(communityCategories.some(item=>item.slug===active))select.value=active;
 }
 function getChannelTopicConfigById(channelId){
-  const select=document.getElementById('channelSelect');
-  const selectedName=select?.selectedOptions?.[0]?.textContent||'';
-  const key=CHANNEL_TOPIC_ID_MAP[String(channelId||'')]||channelTopicKeyByName(selectedName);
+  const key=COMMUNITY_CATEGORY_TOPIC[String(channelId||'')]||'default';
   return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
 }
 function renderTopicOptions(select,config,active=''){
@@ -4363,7 +4324,7 @@ function showPostFieldError(fieldId,message){
 }
 function validatePostForm({channelId,category,title,content}){
   clearPostValidationErrors();
-  if(!channelId){showPostFieldError('channelSelect','채널을 선택해주세요.');showToast('채널을 선택해주세요.');return false;}
+  if(!channelId){showPostFieldError('channelSelect','분류를 선택해주세요.');showToast('분류를 선택해주세요.');return false;}
   if(!category){showPostFieldError('postCategory',`${getChannelTopicConfigById(channelId).label}을 선택해주세요.`);showToast(`${getChannelTopicConfigById(channelId).label}을 선택해주세요.`);return false;}
   if(!title){showPostFieldError('postTitle','제목을 입력해주세요.');showToast('제목을 입력해주세요.');return false;}
   if(!content){showPostFieldError('postContent','내용을 입력해주세요.');showToast('내용을 입력해주세요.');return false;}
@@ -4373,8 +4334,9 @@ function contentWithCategory(content,category,channelName='',region='',tags=[],a
   const clean=String(content||'').trim();
   const prefix=[
     authorName?`[작성자: ${authorName}]`:'',
-    channelName?`[채널: ${channelName}]`:'',
-    region?`[지역: ${region}]`:''
+    channelName?`[분류: ${channelName}]`:'',
+    region?`[지역: ${region}]`:'',
+    tags.length?`[태그: ${window.KFCommunity.normalizeTags(tags).map(tag=>`#${tag}`).join(' ')}]`:''
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }
@@ -4391,23 +4353,25 @@ function classifyPostUploadError(err){
 async function submitPost(){
   if(!window._sb){showToast('인증 준비 중입니다. 잠시 후 다시 시도해주세요.');return;}
   const channelSelect=document.getElementById('channelSelect');
-  const channelId=channelSelect.value;
-  const channelName=channelSelect.options[channelSelect.selectedIndex]?.textContent?.replace(/^✂️\s*/,'')||'';
+  const categorySlug=channelSelect.value;
+  const categoryRecord=window.KFCommunity.categoryBySlug(communityCategories,categorySlug);
+  const channelName=categoryRecord?.name||'';
   const category=selectedSymptom();
   const region=document.getElementById('regionSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
-  if(!validatePostForm({channelId,category,title,content}))return;
+  if(!validatePostForm({channelId:categoryRecord?.id,category,title,content}))return;
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
-  const allowedPayloadKeys=['channel_id','title','content','user_id','crop_tag','region_tag','image_urls'];
+  const allowedPayloadKeys=['category_id','title','content','user_id','crop_tag','region_tag','image_urls','tags'];
   try{
     const {data:{session}}=await window._sb.auth.getSession();
     const userId=session?.user?.id;
     if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openMyPanel();return;}
     localStorage.setItem('kfarmai_user_id',userId);
     const imageUrls=await uploadPostImages(userId);
-    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(session.user)),user_id:userId,crop_tag:category||undefined,region_tag:region||undefined,image_urls:imageUrls});
+    const tags=window.KFCommunity.normalizeTags([...selectedPostTags,category,region]);
+    const payload=cleanPayload({category_id:categoryRecord.id,title,content:contentWithCategory(content,'',channelName,region,tags,displayNameForUser(session.user)),user_id:userId,crop_tag:category||undefined,region_tag:region||undefined,image_urls:imageUrls,tags});
     const payloadKeys=Object.keys(payload);
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);

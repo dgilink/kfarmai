@@ -42,11 +42,14 @@ function Invoke-Deletion([string]$token, [hashtable]$payload) {
   } catch {
     $response = $_.Exception.Response
     if (-not $response) { throw }
-    $reader = [System.IO.StreamReader]::new($response.GetResponseStream())
-    try {
-      $content = $reader.ReadToEnd()
-    } finally {
-      $reader.Dispose()
+    $content = [string]$_.ErrorDetails.Message
+    if (-not $content -and $response.PSObject.Methods.Name -contains 'GetResponseStream') {
+      $reader = [System.IO.StreamReader]::new($response.GetResponseStream())
+      try {
+        $content = $reader.ReadToEnd()
+      } finally {
+        $reader.Dispose()
+      }
     }
     return [pscustomobject]@{
       StatusCode = [int]$response.StatusCode

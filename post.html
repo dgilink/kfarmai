@@ -108,6 +108,10 @@
   .edit-cancel { flex:1; height:42px; }
   .actions { display:flex; align-items:center; gap:10px; margin-top:13px; padding-top:11px; border-top:1px solid var(--border); }
   .stat { color:#777; font-size:13px; font-weight:800; }
+  .engagement-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; padding-top:11px; border-top:1px solid var(--border); }
+  .engagement-button { min-height:38px; border:1px solid var(--border); border-radius:999px; background:#fff; color:#315446; padding:8px 12px; font-size:12px; font-weight:850; cursor:pointer; }
+  .engagement-button[aria-pressed="true"] { border-color:var(--green); background:#e8f6f0; color:var(--green-dark); }
+  .engagement-button.secondary { color:#6b7280; }
   .like-btn { margin-left:auto; height:38px; padding:0 14px; border:1px solid rgba(29,158,117,.25); border-radius:999px; background:rgba(29,158,117,.08); color:var(--green-dark); font-size:13px; font-weight:900; cursor:pointer; }
   .like-btn.on { background:var(--green); color:#fff; }
   .section { margin-top:12px; }
@@ -310,6 +314,7 @@
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="static/js/community/community-model.js"></script>
 <script>
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
@@ -332,16 +337,6 @@ const CHANNEL_TOPIC_CONFIG = {
   gardening_class:{label:'수업·정보 유형',options:['초보가이드','분갈이','물주기','가지치기','번식·삽목','흙·상토','병해충기초','실습후기','기타']},
   plant_people:{label:'모임 주제',options:['반려식물','실내식물','플랜테리어','물주기루틴','식물친구','식물사진','질문나눔','오프모임','기타']}
 };
-const CHANNEL_TOPIC_ID_MAP = {
-  'd88ba519-68fd-488f-8311-e316838ac4cf':'problem',
-  'c7315bd6-eb60-484c-9c07-6def8f93ddc1':'problem',
-  'f586c6a8-882a-45d0-89e6-6d20fd9675de':'problem',
-  '9191bf52-84b6-42ca-b2c7-c886bde5d450':'plant_showcase',
-  '364c2c71-c313-47fc-a986-3124393bf381':'farmer_lounge',
-  '4619a407-a214-4555-8e63-06fa96ed87a2':'market_share',
-  'a6095ae4-1d7e-4671-a6b1-4277d343e586':'gardening_class',
-  'ae71a389-0723-4e76-b421-789a1474fd49':'plant_people'
-};
 const CHANNEL_BADGE_COLORS = {'plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const params = new URLSearchParams(location.search);
 const postId = params.get('id') || '';
@@ -357,6 +352,8 @@ let commentAuthorSnapshots = {};
 const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
 let replyParentId = null;
 let commentsById = {};
+let communityCategories = window.KFCommunity.fallbackCategories();
+let blockedUserIdsSet = new Set();
 function emailPrefix(email){return String(email||'').split('@')[0]||'';}
 function displayNameForUser(user=currentUser, profileMap=null){
   if(!user)return 'kFarmAI 사용자';
@@ -377,7 +374,10 @@ function displayNameForRecord(record,profileMap={}){
   return 'kFarmAI 사용자';
 }
 function editTopicConfigForPost(post=currentPost){
-  const key=CHANNEL_TOPIC_ID_MAP[String(post?.channel_id||'')]||'default';
+  const categorySlug=window.KFCommunity.categoryForPost(post,communityCategories)?.slug||'';
+  const categoryTopics={'question-help':'problem','cultivation-knowhow':'gardening_class','showcase-daily':'plant_showcase','agri-field-info':'farmer_lounge'};
+  const legacyTopics={'plant-hospital':'problem','plant-question':'problem','crop-consult':'problem','plant-brag':'plant_showcase','farmer-lounge':'farmer_lounge','plant-share':'market_share','garden-class':'gardening_class','plant-meet':'plant_people'};
+  const key=categoryTopics[categorySlug]||legacyTopics[post?.channels?.slug||'']||'default';
   return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
 }
 function applyEditTopicConfig(active=''){
@@ -516,9 +516,14 @@ async function init() {
     const { data: authData } = await withTimeout(sb.auth.getUser(), 3000, {data:{user:null}});
     currentUser = authData?.user || null;
   }
-  if(currentUser)hydrateCurrentProfile(currentUser);
-  sb.auth.onAuthStateChange((event,session)=>{
+  communityCategories=await window.KFCommunity.loadCategories(sb);
+  if(currentUser){
+    hydrateCurrentProfile(currentUser);
+    blockedUserIdsSet=await window.KFCommunity.blockedUserIds(sb,currentUser.id);
+  }
+  sb.auth.onAuthStateChange(async (event,session)=>{
     currentUser=session?.user||null;
+    blockedUserIdsSet=currentUser?.id?await window.KFCommunity.blockedUserIds(sb,currentUser.id):new Set();
     if(currentUser)hydrateCurrentProfile(currentUser);
     renderCommentFormState();
     if(currentPost)renderPost(currentPost,{});
@@ -554,7 +559,7 @@ async function loadPost() {
   try {
     const { data, error } = await sb
       .from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en')
+      .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name,slug),community_categories(name,slug)')
       .eq('id', postId)
       .single();
     if (error) throw error;
@@ -572,8 +577,13 @@ async function loadPost() {
 
 function renderPost(post,profileMap={}) {
   document.getElementById('postArea')?.classList.remove('loading');
-  const slug = post.channels?.slug || '';
-  const channelNameValue = post.channels?.name || channelName(slug);
+  if(blockedUserIdsSet.has(String(post?.user_id||''))){
+    document.getElementById('postArea').innerHTML='<div class="empty">차단한 사용자의 게시글입니다.</div>';
+    return;
+  }
+  const categoryInfo=window.KFCommunity.categoryForPost(post,communityCategories);
+  const slug = categoryInfo?.slug || post.channels?.slug || '';
+  const channelNameValue = categoryInfo?.name || post.channels?.name || channelName(slug);
   const isOwner = canEditPost(post);
   const categoryLabel = post.crop_tag || extractCategoryFromContent(post.content);
   document.getElementById('channelTitle').textContent = channelNameValue;
@@ -582,12 +592,83 @@ function renderPost(post,profileMap={}) {
   const imageHtml = images.length ? `<div class="image-slider">${images.map(url => `<img class="post-image" src="${escAttr(url)}" alt="게시글 이미지" loading="lazy" onclick="openImageModal('${escAttr(url)}')">`).join('')}</div>` : '';
   const ownerMenu = isOwner ? `<div class="post-menu-wrap"><button class="post-menu-btn" type="button" aria-label="post menu" onclick="togglePostActionMenu(event)">&#8942;</button><div class="post-menu" id="postActionMenu"><button type="button" onclick="openEditPostModal(event)">&#49688;&#51221;</button><button class="delete" type="button" onclick="deletePost(event)">&#49325;&#51228;</button></div></div>` : '';
   const bodyText=stripCategoryPrefix(post.content||'');
-  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<div class="post-title-row"><h1 class="post-title">${esc(post.title || '\uC81C\uBAA9 \uC5C6\uC74C')}</h1>${ownerMenu}</div><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>\uC870\uD68C ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div><div class="post-body">${esc(bodyText)}</div>${imageHtml}<div class="actions"><span class="stat">\uB313\uAE00\uACFC \uBE44\uC2B7\uD55C \uC9C8\uBB38\uC744 \uD568\uAED8 \uCC38\uACE0\uD558\uC138\uC694.</span></div></article>`;
+  const tags=window.KFCommunity.normalizeTags(post.tags?.length?post.tags:extractTagsFromContent(post.content));
+  const tagHtml=tags.length?`<div class="meta">${tags.map(tag=>`<span>#${esc(tag)}</span>`).join('')}</div>`:'';
+  const moderation=!isOwner&&currentUser?.id?`<button class="engagement-button secondary" type="button" onclick="reportCommunityTarget('post','${escAttr(post.id)}')">신고</button><button class="engagement-button secondary" type="button" onclick="blockCommunityUser('${escAttr(post.user_id)}')">차단</button>`:'';
+  document.getElementById('postArea').innerHTML = `<article class="card"><span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(channelNameValue)}</span>${categoryLabel ? `<span class="badge" style="margin-left:6px;background:#E8F5E9;color:var(--green-dark)">${esc(categoryLabel)}</span>` : ''}<div class="post-title-row"><h1 class="post-title">${esc(post.title || '\uC81C\uBAA9 \uC5C6\uC74C')}</h1>${ownerMenu}</div><div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span>${post.region_tag ? `<span>${esc(post.region_tag)}</span>` : ''}<span>${timeAgo(post.created_at)}</span><span>\uC870\uD68C ${Number(post.view_count || 0).toLocaleString('ko-KR')}</span></div>${tagHtml}<div class="post-body">${esc(bodyText)}</div>${imageHtml}<div class="engagement-actions"><button class="engagement-button" id="sameSymptomButton" type="button" aria-pressed="false" onclick="toggleCommunityReaction('same_symptom')">나도 같은 증상 <span id="sameSymptomCount">0</span></button><button class="engagement-button" id="helpfulButton" type="button" aria-pressed="false" onclick="toggleCommunityReaction('helpful')">도움 됐어요 <span id="helpfulCount">0</span></button><button class="engagement-button" id="bookmarkButton" type="button" aria-pressed="false" onclick="toggleCommunityBookmark()">저장</button>${moderation}</div></article>`;
+  void loadPostEngagement();
+}
+
+async function requireCommunityUser(){
+  const user=await ensureCurrentUser();
+  if(user?.id)return user;
+  showToast('로그인 후 이용할 수 있습니다.');
+  openLoginModal();
+  return null;
+}
+
+async function loadPostEngagement(){
+  if(!sb||!postId)return;
+  try{
+    const state=await window.KFCommunity.engagement(sb,postId);
+    const same=document.getElementById('sameSymptomButton');
+    const helpful=document.getElementById('helpfulButton');
+    const bookmark=document.getElementById('bookmarkButton');
+    if(document.getElementById('sameSymptomCount'))document.getElementById('sameSymptomCount').textContent=String(state.same_symptom_count||0);
+    if(document.getElementById('helpfulCount'))document.getElementById('helpfulCount').textContent=String(state.helpful_count||0);
+    same?.setAttribute('aria-pressed',String(Boolean(state.same_symptom_active)));
+    helpful?.setAttribute('aria-pressed',String(Boolean(state.helpful_active)));
+    bookmark?.setAttribute('aria-pressed',String(Boolean(state.saved)));
+    if(bookmark)bookmark.textContent=state.saved?'저장됨':'저장';
+  }catch(_){
+    document.querySelectorAll('.engagement-button').forEach(button=>button.disabled=true);
+  }
+}
+
+async function toggleCommunityReaction(type){
+  if(!await requireCommunityUser())return;
+  try{
+    await window.KFCommunity.toggleReaction(sb,postId,type);
+    await loadPostEngagement();
+  }catch(_){showToast('반응을 처리하지 못했습니다.');}
+}
+
+async function toggleCommunityBookmark(){
+  if(!await requireCommunityUser())return;
+  try{
+    await window.KFCommunity.toggleBookmark(sb,postId);
+    await loadPostEngagement();
+  }catch(_){showToast('저장을 처리하지 못했습니다.');}
+}
+
+async function reportCommunityTarget(targetType,targetId){
+  const user=await requireCommunityUser();
+  if(!user)return;
+  const reason=prompt('신고 이유를 3자 이상 입력해주세요.');
+  if(reason===null)return;
+  if(String(reason).trim().length<3)return showToast('신고 이유를 3자 이상 입력해주세요.');
+  try{
+    await window.KFCommunity.report(sb,user.id,targetType,targetId,reason);
+    showToast('신고가 접수되었습니다.');
+  }catch(_){showToast('이미 신고했거나 신고를 접수하지 못했습니다.');}
+}
+
+async function blockCommunityUser(targetUserId){
+  const user=await requireCommunityUser();
+  if(!user||sameUserId(user.id,targetUserId))return;
+  if(!confirm('이 사용자의 게시글과 댓글을 숨기시겠습니까?'))return;
+  try{
+    await window.KFCommunity.block(sb,user.id,targetUserId);
+    blockedUserIdsSet.add(String(targetUserId));
+    if(currentPost)renderPost(currentPost,{});
+    renderComments(Object.values(commentsById),{});
+    showToast('사용자를 차단했습니다.');
+  }catch(_){showToast('이미 차단했거나 차단을 처리하지 못했습니다.');}
 }
 
 async function loadPostFallback(){
   try{
-    const url = `${SUPABASE_URL}/rest/v1/posts?select=id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,title_en,content_en&id=eq.${encodeURIComponent(postId)}&limit=1`;
+    const url = `${SUPABASE_URL}/rest/v1/posts?select=id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,image_urls,view_count,created_at,title_en,content_en,channels(name,slug),community_categories(name,slug)&id=eq.${encodeURIComponent(postId)}&limit=1`;
     const res = await fetch(url, {headers:{apikey:SUPABASE_KEY, Authorization:`Bearer ${SUPABASE_KEY}`}});
     if(!res.ok)throw new Error(`fallback ${res.status}`);
     const rows = await res.json();
@@ -836,13 +917,14 @@ function renderCommentArticle(comment,profileMap={},isReply=false){
   const longBody=visible && isLongComment(body);
   const bodyId=`commentBody-${escAttr(comment.id)}`;
   const ownerActions=isOwner ? `<div class="comment-actions"><button class="comment-action" type="button" onclick="editComment('${escAttr(comment.id)}')">수정</button><button class="comment-action delete" type="button" onclick="deleteComment('${escAttr(comment.id)}')">삭제</button></div>` : '';
+  const moderationActions=!isOwner&&currentUser?.id?`<div class="comment-actions"><button class="comment-action" type="button" onclick="reportCommunityTarget('comment','${escAttr(comment.id)}')">신고</button><button class="comment-action" type="button" onclick="blockCommunityUser('${escAttr(comment.user_id)}')">차단</button></div>`:'';
   const replyAction=(!isReply && currentUser?.id) ? `<button class="comment-action" type="button" onclick="startReply('${escAttr(comment.id)}','${escAttr(displayName)}')">답글</button>` : '';
   const secretBadge=comment.is_secret ? '<span class="ai-badge">비밀</span>' : '';
   const authorHint=isPostOwner && comment.is_secret && !isOwner ? '<span class="ai-badge">원글 작성자 열람</span>' : '';
-  return `<article class="comment${isReply?' reply':''}" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayName)}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}${secretBadge}${authorHint}<span>${timeAgo(comment.created_at)}</span>${replyAction}${ownerActions}</div><div class="comment-body${longBody?' collapsed':''}" id="${bodyId}"${longBody?` onclick="toggleCommentBody(event,'${escAttr(comment.id)}')"`:''}>${esc(body)}</div>${longBody?`<button class="comment-toggle" type="button" onclick="toggleCommentBody(event,'${escAttr(comment.id)}')">더보기</button>`:''}</article>`;
+  return `<article class="comment${isReply?' reply':''}" id="comment-${escAttr(comment.id)}"><div class="comment-head"><span>${esc(displayName)}</span>${comment.is_ai ? '<span class="ai-badge">AI</span>' : ''}${secretBadge}${authorHint}<span>${timeAgo(comment.created_at)}</span>${replyAction}${ownerActions}${moderationActions}</div><div class="comment-body${longBody?' collapsed':''}" id="${bodyId}"${longBody?` onclick="toggleCommentBody(event,'${escAttr(comment.id)}')"`:''}>${esc(body)}</div>${longBody?`<button class="comment-toggle" type="button" onclick="toggleCommentBody(event,'${escAttr(comment.id)}')">더보기</button>`:''}</article>`;
 }
 function renderComments(comments,profileMap={}) {
-  const activeComments=(comments||[]).filter(comment=>!comment.deleted_at);
+  const activeComments=(comments||[]).filter(comment=>!comment.deleted_at&&!blockedUserIdsSet.has(String(comment.user_id||'')));
   document.getElementById('commentCount').textContent = String(activeComments.length || 0);
   const list = document.getElementById('commentList');
   if (!activeComments.length) { list.innerHTML = '<div class="empty">아직 댓글이 없습니다.</div>'; return; }
@@ -944,15 +1026,15 @@ function renderCommentFormState(){
 }
 
 async function loadRelatedPosts() {
-  if (!currentPost?.channel_id) {
+  if (!currentPost?.category_id) {
     document.getElementById('relatedList').innerHTML = '<div class="empty">관련 글이 없습니다.</div>';
     return;
   }
   try {
     const { data, error } = await sb
       .from('posts')
-      .select('id,title,created_at,region_tag,channels(name, slug)')
-      .eq('channel_id', currentPost.channel_id)
+      .select('id,category_id,title,created_at,region_tag,community_categories(name, slug)')
+      .eq('category_id', currentPost.category_id)
       .neq('id', postId)
       .order('created_at', { ascending:false })
       .limit(3);
@@ -970,9 +1052,9 @@ function renderRelatedPosts(posts) {
     return;
   }
   list.innerHTML = posts.map(post => {
-    const slug = post.channels?.slug || '';
+    const slug = post.community_categories?.slug || '';
     return `<a class="related-card" href="post.html?v=20260705d&id=${encodeURIComponent(post.id)}">
-      <span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(post.channels?.name || channelName(slug))}</span>
+      <span class="badge ${CHANNEL_BADGE_COLORS[slug] || ''}">${esc(post.community_categories?.name || channelName(slug))}</span>
       <div class="related-title">${esc(post.title || '제목 없음')}</div>
       <div class="related-meta">${post.region_tag ? '#' + esc(post.region_tag) + ' · ' : ''}${timeAgo(post.created_at)}</div>
     </a>`;
@@ -1183,6 +1265,10 @@ function classifyPostEditUploadError(err){
 function extractCategoryFromContent(content){
   const match=String(content||'').match(/^\[(?:대표 증상|카테고리):\s*([^\]]+)\]/m);
   return match ? match[1].trim() : '';
+}
+function extractTagsFromContent(content){
+  const match=String(content||'').match(/^\[태그:\s*([^\]]+)\]/m);
+  return match?match[1].split(/\s+/).map(value=>value.replace(/^#/, '')).filter(Boolean):[];
 }
 function extractAuthorNicknameFromContent(content){
   const match=String(content||'').match(/^\[(?:\uC791\uC131\uC790|[^:\]]*):\s*([^\]]+)\]/m);
