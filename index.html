@@ -19,6 +19,7 @@
 <link rel="preload" as="image" href="/static/kfarmai-logo-horizontal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="static/css/agri-info-v3.css">
 
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="kFarmAI">
@@ -1971,6 +1972,19 @@
         </div>
 
         <div class="home-insights" id="homeInsightSections" aria-label="농업·식물 문제해결 탐색"></div>
+
+        <section class="home-agri-summary-section" aria-labelledby="homeAgriTitle">
+          <div class="section-head">
+            <div>
+              <div class="section-title" id="homeAgriTitle">오늘의 농업정보</div>
+              <div class="section-copy">기준일과 출처가 확인되는 공식자료를 요약합니다.</div>
+            </div>
+            <a class="section-more-btn" href="agri-info.html">더보기 &gt;</a>
+          </div>
+          <div class="agri-feed-summary" id="homeAgriFeed" aria-live="polite">
+            <div class="agri-feed-loading">농업정보를 확인하고 있습니다.</div>
+          </div>
+        </section>
       </section>
 
       <!-- ============ PAGE 2: AI 참고 진단 ============ -->
@@ -2070,86 +2084,18 @@
       <section class="page">
         <div class="page3-title">
           <h2>농업정보</h2>
-          <p>농업 영상, 연구동향, 재배정보를 쉽게 모아봤습니다.</p>
+          <p>공공기관과 공식 데이터의 기준일과 출처를 확인합니다.</p>
         </div>
-
-        <section class="agri-content-section" id="agriVideoSection" hidden>
-          <div class="agri-section-title">
-            <div>
-              <h3>농업 참고 영상</h3>
-              <p>공식기관과 연구기관의 공개 영상을 임베드 방식으로 제공합니다.</p>
-            </div>
-            <a class="agri-section-more" href="agri-videos.html">영상 더보기</a>
-          </div>
-          <div id="agriVideoHero"></div>
-          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록"></div>
-          <div class="agri-source-note">kFarmAI는 영상을 저장하거나 재업로드하지 않고, 공식 플랫폼의 임베드 방식으로 제공합니다. 영상의 저작권은 각 제공 기관과 원 게시자에게 있습니다.</div>
-        </section>
-
-        <section class="agri-content-section" id="agriResearchSection">
-          <div class="agri-section-title">
-            <div>
-              <h3>농업연구동향</h3>
-              <p>농업 연구성과와 기술자료를 쉽게 풀어 정리합니다.</p>
-            </div>
-            <a class="agri-section-more" href="agri-research.html">연구 더보기</a>
-          </div>
-          <div class="agri-research-chips" id="agriResearchChips" aria-label="연구동향 카테고리"></div>
-          <div class="agri-research-list" id="agriResearchList"></div>
-        </section>
-
-        <section class="agri-content-section">
-          <div class="agri-section-title">
-            <div>
-              <h3>농업 이슈·공고</h3>
-              <p>농업 관련 언론 보도를 주제별 링크로 모아봅니다.</p>
-            </div>
-            <a class="agri-section-more" href="agri-news.html">이슈 더보기</a>
-          </div>
-          <div class="agri-issue-grid" id="agriIssueGrid"></div>
-          <div class="agri-source-note">기사 본문은 제공하지 않으며, 원문은 각 언론사 사이트에서 확인하세요.</div>
-        </section>
-
-        <div class="section-head" style="margin-top:4px"><div class="section-title">핵심 바로가기</div></div>
-        <div class="ql-grid">
-          <a class="ql" href="agri-weather.html"><div class="ql-icon"><svg><use href="#ql-weather"/></svg></div><div class="ql-name">농업 날씨</div></a>
-          <a class="ql" href="market-prices.html"><div class="ql-icon"><svg><use href="#ql-price"/></svg></div><div class="ql-name">농산물 시세</div></a>
-          <a class="ql" href="crop-guide.html"><div class="ql-icon"><svg><use href="#ql-book"/></svg></div><div class="ql-name">재배 가이드</div></a>
-          <a class="ql" href="crop-calendar.html"><div class="ql-icon"><svg><use href="#ql-cal"/></svg></div><div class="ql-name">재배 달력</div></a>
-          <a class="ql" href="subsidy-calendar.html"><div class="ql-icon"><svg><use href="#ql-gov"/></svg></div><div class="ql-name">보조사업</div></a>
-          <a class="ql" href="agri_map.html"><div class="ql-icon"><svg><use href="#ql-map"/></svg></div><div class="ql-name">주변 농약방</div></a>
-          <a class="ql" href="links.html"><div class="ql-icon"><svg><use href="#ql-link"/></svg></div><div class="ql-name">농업링크</div></a>
+        <div class="agri-feed-summary" id="agriTabFeed" aria-live="polite">
+          <div class="agri-feed-loading">농업정보를 확인하고 있습니다.</div>
         </div>
-
-        <div class="section-head"><div class="section-title">농자재·관리 카테고리</div></div>
-        <div class="info-note">주요 농자재 제조사 정보는 시제품에 일부 반영했으며, 향후 카테고리별로 보완할 계획입니다.</div>
-        <div class="stat-row info-cats">
-          <a class="stat-card" href="seed.html"><div class="stat-ic"><svg><use href="#st-seed"/></svg></div><div class="stat-name">종자</div></a>
-          <a class="stat-card" href="cpa.html"><div class="stat-ic"><svg><use href="#st-chem"/></svg></div><div class="stat-name">작물보호</div></a>
-          <a class="stat-card" href="mfg.html?category=irrigation-facility"><div class="stat-ic"><svg><use href="#ql-weather"/></svg></div><div class="stat-name">관수·시설자재</div></a>
-          <a class="stat-card" href="mfg.html?category=home-gardening-tools"><div class="stat-ic"><svg><use href="#ic-pot"/></svg></div><div class="stat-name">화분·도구</div></a>
-          <a class="stat-card" href="mfg.html?category=smartfarm"><div class="stat-ic"><svg><use href="#ql-link"/></svg></div><div class="stat-name">스마트팜</div></a>
-          <a class="stat-card" href="santo.html"><div class="stat-ic"><svg><use href="#st-soil"/></svg></div><div class="stat-name">상토</div></a>
-          <a class="stat-card" href="fert.html"><div class="stat-ic"><svg><use href="#st-fert"/></svg></div><div class="stat-name">비료</div></a>
-        </div>
-
-        <div class="section-head"><div class="section-title">농작업 계산기</div></div>
-        <div class="tools-caption">상토량, 액비 희석, 농약 희석 계산을 참고용으로 확인합니다.</div>
-        <div class="tools-card">
-          <a href="/tools-soil.html">상토 계산기</a>
-          <a href="/tools-fertilizer.html">액비 계산기</a>
-          <a href="/tools-pesticide.html">농약 계산기</a>
-        </div>
-        <div class="safety-caption">농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
-
-        <div class="section-head"><div class="section-title">오늘의 시세 참고</div></div>
-        <div class="promo-banner" onclick="location.href='market-prices.html'" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='market-prices.html';}">
-          <div>
-            <div class="pb-t1">KAMIS 공공 시세를 품목별로 확인할 수 있습니다.</div>
-            <div class="pb-t2">시세 보러가기</div>
-          </div>
-          <div class="pb-arrow">›</div>
-        </div>
+        <nav class="agri-tab-shortcuts" aria-label="농업정보 분야">
+          <a href="agri-info.html#weather">날씨·재해</a>
+          <a href="agri-info.html#pest-safety">병해충·농약안전</a>
+          <a href="agri-info.html#market">농산물 시세</a>
+          <a href="agri-info.html#cultivation">재배·기술</a>
+          <a href="agri-info.html#support">지원·공고</a>
+        </nav>
       </section>
 
     </div>
@@ -2361,11 +2307,7 @@
 <script src="static/cpa_data.js"></script>
 <script src="static/fert_data.js"></script>
 <script src="static/crop-pages.js?v=20260706-regional"></script>
-<script src="static/js/agri-info/agri-info-utils.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-videos.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-research-trends.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-issues.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-info.js?v=20260706-news2"></script>
+<script src="static/js/agri-info/agri-feed-ui.js"></script>
 <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <script>
 (function(){
@@ -2724,7 +2666,6 @@ function toggleLanguage(){
   applyLanguage(next);
 }
 initLanguage();
-loadAgriInfoContent();
 prepareQuestionListShell();
 async function initSupabaseApp(){
   const {data:{session}}=await _sb.auth.getSession();

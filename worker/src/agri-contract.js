@@ -83,12 +83,12 @@ export function buildProviderResult(providerKey, input = {}, generatedAt = new D
   const rawItems = Array.isArray(input.items) ? input.items : [];
   const rootDataDate = normalizeDataDate(input.dataDate || input.sourceDate || input.updatedAt || '');
   const rootPublishedAt = normalizeTimestamp(input.publishedAt || '');
-  const rootFreshness = assessFreshness(providerKey, rootDataDate || rootPublishedAt, fetchedAt);
+  const rootFreshness = assessFreshness(providerKey, rootPublishedAt || rootDataDate, fetchedAt);
 
   const items = rawItems.map((item, index) => {
     const dataDate = normalizeDataDate(item?.dataDate || item?.sourceDate || item?.date || rootDataDate);
     const publishedAt = normalizeTimestamp(item?.publishedAt || rootPublishedAt);
-    const freshness = assessFreshness(providerKey, dataDate || publishedAt, fetchedAt);
+    const freshness = assessFreshness(providerKey, publishedAt || dataDate, fetchedAt);
     const itemFallback = Boolean(item?.isFallback ?? item?.fallback ?? isFallback);
     const status = statusFor({ isFallback: itemFallback, hasData: hasMeaningfulItem(item), freshness, errorCode: input.errorCode });
     return commonFields(config, {
@@ -110,7 +110,7 @@ export function buildProviderResult(providerKey, input = {}, generatedAt = new D
   const status = providerStatus(items, { isFallback, freshness: rootFreshness, errorCode: input.errorCode });
   const dataDate = rootDataDate || newestDate(items.map(item => item.dataDate));
   const publishedAt = rootPublishedAt || newestDate(items.map(item => item.publishedAt));
-  const freshness = assessFreshness(providerKey, dataDate || publishedAt, fetchedAt);
+  const freshness = assessFreshness(providerKey, publishedAt || dataDate, fetchedAt);
   return {
     ...commonFields(config, {
       status,

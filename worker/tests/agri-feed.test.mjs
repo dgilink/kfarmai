@@ -109,6 +109,7 @@ test('KMA fixture is normalized with forecast base date', async () => {
     const feed = await requestFeedUrl({ KMA_SERVICE_KEY: 'fixture' }, 'https://kfarmai.test/api/agri-feed?nx=60&ny=127');
     assert.equal(feed.providers.kma.status, PROVIDER_STATUS.LIVE);
     assert.match(feed.providers.kma.dataDate, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(feed.providers.kma.publishedAt, /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00\.000Z$/);
   });
 });
 

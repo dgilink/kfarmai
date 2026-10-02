@@ -670,6 +670,7 @@ async function responseJson(value) {
 
 function kmaFeedInput(payload = {}, fetchedAt) {
   const dataDate = formatCompactProviderDate(payload.baseDate);
+  const publishedAt = formatKmaPublishedAt(payload.baseDate, payload.baseTime);
   const values = payload.items && typeof payload.items === 'object' ? payload.items : null;
   const summary = values
     ? [
@@ -682,6 +683,7 @@ function kmaFeedInput(payload = {}, fetchedAt) {
     title: `${payload.displayName || '선택 지역'} 기상청 단기예보`,
     summary,
     dataDate,
+    publishedAt,
     fetchedAt,
     source: 'KMA',
     sourceUrl: PROVIDER_CONFIG.kma.sourceUrl,
@@ -691,11 +693,19 @@ function kmaFeedInput(payload = {}, fetchedAt) {
       title: `${payload.displayName || '선택 지역'} 단기예보`,
       summary: summary || SAFE_WEATHER_NOTICE,
       dataDate,
+      publishedAt,
       source: 'KMA',
       sourceUrl: PROVIDER_CONFIG.kma.sourceUrl,
       extra: values
     }] : []
   };
+}
+
+function formatKmaPublishedAt(baseDate, baseTime) {
+  const date = String(baseDate || '').trim();
+  const time = String(baseTime || '').trim().padStart(4, '0');
+  if (!/^\d{8}$/.test(date) || !/^\d{4}$/.test(time)) return null;
+  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2)}:00+09:00`;
 }
 
 function kamisFeedInput(payload = {}, fetchedAt) {
