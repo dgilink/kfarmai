@@ -72,6 +72,12 @@ function Invoke-Api([string]$method, [string]$path, [string]$token, $body = $nul
 
 Invoke-SqlFile 'supabase/tests/phase2b-local-base.sql'
 Invoke-SqlFile 'supabase/tests/phase4a-community-base.sql'
+if ((Invoke-Sql "select count(*) from pg_policies where schemaname='public' and tablename='comments' and policyname='comments_select_secret_participant';") -eq '1') {
+  # The Phase 5D-2A policy depends on community_is_moderator(). Remove it before
+  # exercising the older moderation rollback; the secret-comment migration below
+  # immediately recreates the expected safe SELECT contract.
+  Invoke-Sql 'drop policy comments_select_secret_participant on public.comments;' | Out-Null
+}
 if ((Invoke-Sql "select to_regclass('public.community_user_roles') is not null;") -eq 't') {
   Invoke-SqlFile 'supabase/rollback/20261004100000_v3_community_moderation_down.sql'
 }

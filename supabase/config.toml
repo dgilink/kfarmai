@@ -13,8 +13,10 @@ shadow_port = 54320
 major_version = 15
 
 [db.migrations]
-# Local E2E bootstraps the minimal fixture schema before explicitly running migrations.
-enabled = false
+# This repository stores additive V3 migrations on top of the current Production
+# schema. Local E2E explicitly bootstraps the fixture schema before migration up.
+enabled = true
+schema_paths = ["./tests/phase2b-local-base.sql", "./tests/phase4a-community-base.sql"]
 
 [db.seed]
 enabled = false

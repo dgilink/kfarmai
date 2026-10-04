@@ -243,3 +243,77 @@ Integrated candidate에서 농자재 48/48, community 166/166, agri-info 50/50, 
 - Pages Gate: PASS (local integrated candidate only) — DB/Worker Gate 통과 전 public push 금지다.
 
 결론은 `NOT READY`다. Phase 5D-3 coordinated Production deployment는 위 BLOCKER/HIGH가 해소되고 동일 gate를 재검증하기 전까지 실행하지 않는다.
+
+## Phase 5D-2A production gate remediation
+
+기준일은 2026-10-04이다. Phase 5D-2 결과 문서는 `79e6ed5e556e1b1f35a6d3c66fb260011a6b2780` (`docs: record v3 production preflight blockers`)로 checkpoint했다. Production DB, Edge Function, Worker, Pages에는 쓰기 또는 배포를 수행하지 않았다.
+
+### Migration configuration and linked dry-run
+
+`supabase/config.toml`의 `[db.migrations].enabled`를 `true`로 변경했다. 이 저장소의 migration은 기존 Production schema 위의 additive delta이므로 local 검증은 Production-compatible fixture schema를 먼저 구성한 뒤 migration history를 초기화하고 `supabase migration up --local --include-all`을 실행한다.
+
+Production linked read-only 검증 결과 pending migration은 다음 6개다.
+
+1. `20261002090000_secure_secret_comments.sql`
+2. `20261002091000_account_deletion_requests.sql`
+3. `20261002110000_v3_community_model.sql`
+4. `20261002130000_v3_community_feed_metrics.sql`
+5. `20261004100000_v3_community_moderation.sql`
+6. `20261004133000_v3_production_rls_hardening.sql`
+
+`supabase db push --linked --dry-run`은 skip 없이 정확히 위 6개를 순서대로 표시했다. dry-run 전후 Production migration history는 동일하고 실제 push는 실행하지 않았다.
+
+### Production RLS hardening candidate
+
+신규 migration `20261004133000_v3_production_rls_hardening.sql`은 기존 5개 historical migration을 수정하지 않고 다음 계약을 추가한다.
+
+- posts/comments의 legacy INSERT·UPDATE·DELETE policy와 comments SELECT policy를 모두 제거하고 단일 V3 최소권한 계약으로 교체한다.
+- anon/PUBLIC의 posts/comments write table privilege를 제거하고 공개 read만 유지한다.
+- authenticated posts INSERT/UPDATE는 non-null `user_id = auth.uid()`를, DELETE는 owner를 강제한다.
+- authenticated comments write는 non-null `user_id = auth.uid()`와 `is_ai = false`를 강제한다. server-only service role 경로는 유지한다.
+- public comments와 secret comments를 별도 SELECT policy로 분리한다. secret body는 작성자, 게시글 작성자, server-verified moderator/admin만 볼 수 있다.
+- account deletion queue는 Edge Function이 필요한 service-role SELECT/INSERT/UPDATE만 명시적으로 허용한다.
+- `community_interaction_allowed(actor_id, target_user_id)`는 `actor_id = auth.uid()`를 강제한다. 잘못된 actor는 차단 상태와 무관하게 `false`이며 anon 실행 권한은 없다.
+
+Production drift와 같은 broad SELECT, nullable-owner INSERT, `is_ai=true` INSERT, anon table grants를 local에 재현한 뒤 migration을 적용한 REST/RLS 공격시험은 30/30 PASS, secret body leak 0건이었다. 기존 Phase 2B/4A/4B/4C 계약도 통과했다.
+
+### Local validation result
+
+- fixture schema reset과 6개 migration 적용: 6/6 PASS
+- Phase 2B secret comments/account deletion: 17/17 PASS
+- Phase 4A local community: 28/28 PASS
+- Phase 4B feed metrics: 13/13 PASS
+- Phase 4C moderation: 21/21 PASS
+- Phase 5D-2A attack tests: 30/30 PASS
+- Phase 5D-2A static hardening contracts: 23/23 PASS
+- Worker route tests: 20/20 PASS
+- Wrangler dry-run: PASS
+
+### Cloudflare read-only gate
+
+Repository-pinned Wrangler는 `4.147.0`이고 Worker name/route/source 계약은 변하지 않았다. 기존 12개 route와 `/api/agri-feed`의 local tests 및 dry-run은 통과했다.
+
+그러나 기존 OAuth credential은 만료 상태다. localhost callback login 두 차례와 device authorization 한 차례를 시도했으나 승인 callback 없이 timeout됐다. token 또는 secret은 생성·변경하지 않았다. 따라서 다음 값은 여전히 확인되지 않았다.
+
+- `CURRENT_WORKER_DEPLOYMENT`
+- `CURRENT_WORKER_VERSION`
+- `ROLLBACK_WORKER_VERSION`
+
+Cloudflare account owner가 device authorization을 완료한 뒤 아래 read-only 명령을 재실행해야 한다.
+
+```text
+npx --no-install wrangler whoami
+npx --no-install wrangler deployments list --name kfarmai-api --json
+npx --no-install wrangler versions list --name kfarmai-api --json
+```
+
+실제 deploy 또는 rollback 명령은 실행하지 않는다.
+
+### Phase 5D-2A hard gate result
+
+- DB Gate: PASS — enabled, linked dry-run 6/6, local apply 6/6, RLS attack/RPC tests PASS, Production write 0.
+- Function Gate: PASS (preflight only) — DB Gate 이후에만 deploy한다.
+- Worker Gate: FAIL — Cloudflare OAuth 승인이 완료되지 않아 current/rollback version을 확정하지 못했다.
+- Pages Gate: HOLD — security remediation checkpoint와 Integrated Release V2는 Worker Gate 통과 후에만 생성한다.
+
+보안 코드 기준으로 Phase 5D-2의 RLS HIGH와 RPC MEDIUM은 해소됐지만, Worker BLOCKER가 남아 있어 remediation commit과 `INTEGRATED_RELEASE_V2_SHA`는 생성하지 않았다. 결론은 `NOT READY`이며 Phase 5D-3은 실행할 수 없다.
