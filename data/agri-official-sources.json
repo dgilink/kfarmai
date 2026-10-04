@@ -1,0 +1,275 @@
+{
+  "version": "1.0",
+  "checkedAt": "2026-10-04",
+  "contentPolicy": {
+    "officialSourceDisplay": ["institution", "title", "url", "publishedAt", "checkedAt"],
+    "kfarmaiExplanation": "공식자료의 근거 범위 안에서 kFarmAI가 자체 재구성한 설명으로 표시한다.",
+    "aiContent": "AI가 생성하거나 요약한 정보는 공식자료와 구분한다.",
+    "communityContent": "이용자 경험과 의견은 공식 기술 근거나 진단자료로 표시하지 않는다.",
+    "quotationPolicy": "공식자료 원문을 대량 복제하지 않고 자체 설명과 원문 링크를 제공한다."
+  },
+  "sources": [
+    {
+      "id": "rda-agtech-smartfarm-environment-data",
+      "institution": "농촌진흥청",
+      "title": "농업기술 데이터 플랫폼 - 딸기 데이터 개요",
+      "url": "https://adp.rda.go.kr/portal/pub/idc/strawberryData.do",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트팜", "온도", "습도", "CO₂", "일사", "관수", "EC", "pH", "환경데이터"],
+      "evidenceFor": [
+        "smartfarm.temperature", "smartfarm.humidity", "smartfarm.co2", "smartfarm.solar-radiation",
+        "smartfarm.ec", "smartfarm.ph", "smartfarm.irrigation", "smartfarm.environmental-control"
+      ],
+      "notes": "스마트팜 환경정보의 수집 항목과 수집 방식을 확인하는 1차 공식 근거다. 개별 작물의 적정값으로 일반화하지 않는다."
+    },
+    {
+      "id": "nongsaro-smartfarm-field-applications",
+      "institution": "농촌진흥청 농사로",
+      "title": "작목별 현장적용기술",
+      "url": "https://www.nongsaro.go.kr/portal/ps/psz/psza/contentMain.ps?menuId=PS65470",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트팜", "온습도", "CO₂", "일사", "EC", "pH", "관수", "양액", "환경제어", "자동화"],
+      "evidenceFor": [
+        "smartfarm.temperature", "smartfarm.humidity", "smartfarm.co2", "smartfarm.solar-radiation",
+        "smartfarm.ec", "smartfarm.ph", "smartfarm.irrigation", "smartfarm.nutrient-solution",
+        "smartfarm.environmental-control", "smartfarm.automation"
+      ],
+      "notes": "작목·시설유형에 따른 측정과 제어 사례를 제공한다. 사례 수치를 전체 시설에 적용하는 기준으로 사용하지 않는다."
+    },
+    {
+      "id": "nongsaro-smartfarm-introduction",
+      "institution": "농촌진흥청 농사로",
+      "title": "스마트팜 소개",
+      "url": "https://www.nongsaro.go.kr/portal/ps/psz/psza/contentMain.ps?menuId=PS65467",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트팜", "온습도", "CO₂", "관수", "양분공급", "원격제어", "데이터 활용"],
+      "evidenceFor": [
+        "smartfarm.definition", "smartfarm.temperature", "smartfarm.humidity", "smartfarm.co2",
+        "smartfarm.irrigation", "smartfarm.nutrient-solution", "smartfarm.environmental-control",
+        "smartfarm.automation", "smartfarm.data-use"
+      ],
+      "notes": "스마트팜의 모니터링·원격 자동제어·데이터 활용 개념을 확인하는 공식 안내다."
+    },
+    {
+      "id": "nongsaro-smartfarm-status",
+      "institution": "농촌진흥청 농사로",
+      "title": "스마트팜 추진현황",
+      "url": "https://www.nongsaro.go.kr/portal/ps/psz/psza/contentMain.ps?menuId=PS65472",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["온도", "습도", "CO₂", "토양온도", "토양수분", "EC", "관수", "양액", "에너지관제"],
+      "evidenceFor": [
+        "smartfarm.temperature", "smartfarm.humidity", "smartfarm.co2", "smartfarm.soil-moisture",
+        "smartfarm.ec", "smartfarm.irrigation", "smartfarm.nutrient-solution",
+        "smartfarm.energy-management", "smartfarm.ems"
+      ],
+      "notes": "스마트팜 환경 센서와 제어 설비의 정책상 범위를 확인한다. 개별 제품 또는 측정값을 추천하는 근거로 사용하지 않는다."
+    },
+    {
+      "id": "mafra-smartfarm-overview",
+      "institution": "농림축산식품부",
+      "title": "스마트팜 개요",
+      "url": "https://www.mafra.go.kr/home/5280/subview.do",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트팜", "원격제어", "정밀 생육관리", "자동화", "에너지", "데이터"],
+      "evidenceFor": [
+        "smartfarm.definition", "smartfarm.environmental-control", "smartfarm.automation",
+        "smartfarm.energy-management", "smartfarm.ems", "smartfarm.data-use"
+      ],
+      "notes": "스마트팜의 세대별 기능과 환경관리·자동화 개념을 확인하는 정책 안내다."
+    },
+    {
+      "id": "mafra-smart-agriculture-master-plan",
+      "institution": "농림축산식품부",
+      "title": "제1차 스마트농업 육성 기본계획",
+      "url": "https://www.mafra.go.kr/bbs/home/792/584835/download.do",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트농업", "환경제어", "ICT 제어장비", "자동화", "에너지"],
+      "evidenceFor": [
+        "smartfarm.environmental-control", "smartfarm.automation", "smartfarm.energy-management", "smartfarm.ems"
+      ],
+      "notes": "스마트온실 확대와 환경제어·ICT 제어장비·에너지 관련 정책 범위를 확인한다. 문서의 정확한 공표일과 이용조건은 추가 확인이 필요하다."
+    },
+    {
+      "id": "nifs-2022-climate-aquaculture-ras",
+      "institution": "국립수산과학원",
+      "title": "2022 수산분야 기후변화 영향 및 연구 보고서",
+      "url": "https://www.nifs.go.kr/cmmn/file/climatechange_02.pdf",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["RAS", "고형물 제거", "용존유기물 처리", "pH", "이온 조절", "생물여과", "질산화", "탈질", "살균", "용존가스", "산소공급", "재순환"],
+      "evidenceFor": [
+        "aquafarm.ras", "aquafarm.solids-removal", "aquafarm.dissolved-organic-treatment",
+        "aquafarm.water-temperature", "aquafarm.salinity", "aquafarm.ph", "aquafarm.ion-balance",
+        "aquafarm.ammonia-nitrogen", "aquafarm.nitrite-nitrogen", "aquafarm.nitrate-nitrogen",
+        "aquafarm.biofiltration", "aquafarm.nitrification",
+        "aquafarm.denitrification", "aquafarm.disinfection", "aquafarm.dissolved-gas",
+        "aquafarm.dissolved-oxygen", "aquafarm.recirculation", "aquafarm.water-treatment"
+      ],
+      "notes": "RAS의 정의와 수처리 공정 구성을 직접 설명하는 핵심 근거다. ORP를 독립 핵심지표로 뒷받침하지는 않는다."
+    },
+    {
+      "id": "nifs-water-quality-guidance-2024",
+      "institution": "국립수산과학원",
+      "title": "관상어 수질 측정 관련 문의에 대해 답변드립니다.",
+      "url": "https://www.nifs.go.kr/board/actionBoard0008View.do?BBS_CL_CD=B&BBS_ID=20240904181109541KID&MENU_ID=M0000054",
+      "sourceType": "official",
+      "publishedAt": "2024-09-04",
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["수온", "DO", "pH", "암모니아", "아질산", "수질센서", "교정", "순환여과"],
+      "evidenceFor": [
+        "aquafarm.water-temperature", "aquafarm.dissolved-oxygen", "aquafarm.ph",
+        "aquafarm.ammonia-nitrogen", "aquafarm.nitrite-nitrogen", "aquafarm.sensor", "aquafarm.ras"
+      ],
+      "notes": "수질항목의 중요성과 측정기 관리 필요성을 확인하는 기관 답변이다. 대상 생물별 수치 기준으로 일반화하지 않는다."
+    },
+    {
+      "id": "mof-smart-maritime-strategy-2019",
+      "institution": "해양수산부",
+      "title": "4차 산업혁명 시대 이끌 해양수산 스마트화 본격 시동",
+      "url": "https://www.mof.go.kr/doc/ko/selectDoc.do?bbsSeq=10&docSeq=27859&menuSeq=971",
+      "sourceType": "official",
+      "publishedAt": "2019-11-11",
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트양식", "IoT 센서", "수질", "사료", "질병", "데이터", "자동화", "정밀제어"],
+      "evidenceFor": [
+        "aquafarm.definition", "aquafarm.sensor", "aquafarm.automation", "aquafarm.water-treatment"
+      ],
+      "notes": "센서 기반 데이터화와 자동화·지능화·정밀제어의 정책 방향을 확인한다."
+    },
+    {
+      "id": "mof-ai-land-aquaculture-2026",
+      "institution": "해양수산부",
+      "title": "인공지능으로 육상 양식장 질병 미리 막는다…넙치 생존율 22%p 높여",
+      "url": "https://www.mof.go.kr/doc/ko/selectDoc.do?bbsSeq=10&docSeq=64641&menuSeq=971",
+      "sourceType": "official",
+      "publishedAt": "2026-01-23",
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["육상양식", "수처리", "고형물 제거", "살균", "산소공급", "수질 자동조절", "에너지 절감"],
+      "evidenceFor": [
+        "aquafarm.definition", "aquafarm.solids-removal", "aquafarm.disinfection",
+        "aquafarm.dissolved-oxygen", "aquafarm.water-treatment", "aquafarm.automation",
+        "aquafarm.energy-management", "aquafarm.ems"
+      ],
+      "notes": "유수식 스마트양식의 수질 자동조절·수처리·에너지 절감 실증 범위를 확인한다. 특정 양식장 성과를 전체 시스템 성능으로 일반화하지 않는다."
+    },
+    {
+      "id": "nifs-energy-saving-smart-aquaculture-2025",
+      "institution": "국립수산과학원",
+      "title": "(2024년도 국립수산과학원 사업보고서)AI학습용 데이터 기반의 에너지 절감형 스마트양식 실증연구",
+      "url": "https://www.nifs.go.kr/library/detailview.do?MASTER_ID=7543075&action=detailView&menuPath=newBookSESearch&pageIndex=1&searchSubId=0",
+      "sourceType": "official",
+      "publishedAt": null,
+      "updatedAt": null,
+      "checkedAt": "2026-10-04",
+      "license": {
+        "type": "확인 불가",
+        "commercialUse": "unknown",
+        "modification": "unknown",
+        "status": "needs-review"
+      },
+      "topics": ["스마트양식", "육상담수", "해수 테스트베드", "데이터수집", "에너지분석", "플랫폼"],
+      "evidenceFor": ["aquafarm.sensor", "aquafarm.energy-management", "aquafarm.ems"],
+      "notes": "도서관 서지정보에서 2025년 발행과 에너지분석 연구 범위를 확인했다. 원문 이용조건과 세부 결과는 별도 검토가 필요하다."
+    }
+  ],
+  "seoCandidates": [
+    { "id": "smartfarm-overview", "title": "스마트팜이란", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["nongsaro-smartfarm-introduction", "mafra-smartfarm-overview"] },
+    { "id": "smartfarm-environment-sensors", "title": "스마트팜 환경센서", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+    { "id": "smartfarm-climate-control", "title": "온습도·CO₂·일사 관리", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+    { "id": "smartfarm-rootzone", "title": "토양수분·EC·pH", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications", "nongsaro-smartfarm-status"] },
+    { "id": "smartfarm-irrigation-nutrients", "title": "스마트팜 관수·양액", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+    { "id": "smartfarm-automation", "title": "스마트팜 환경제어·자동화", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["nongsaro-smartfarm-field-applications", "mafra-smartfarm-overview"] },
+    { "id": "smartfarm-energy", "title": "스마트팜 에너지관리", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["nongsaro-smartfarm-status", "mafra-smartfarm-overview", "mafra-smart-agriculture-master-plan"] },
+    { "id": "land-aquafarm-overview", "title": "육상 아쿠아팜이란", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["mof-smart-maritime-strategy-2019", "mof-ai-land-aquaculture-2026"] },
+    { "id": "aquafarm-ras", "title": "RAS 순환여과양식", "eligibility": "eligible", "priorityRank": 1, "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+    { "id": "aquafarm-water-quality", "title": "육상양식 수질관리", "eligibility": "eligible", "priorityRank": 2, "sourceIds": ["nifs-2022-climate-aquaculture-ras", "nifs-water-quality-guidance-2024"] },
+    { "id": "aquafarm-core-water-indicators", "title": "수온·DO·pH·염분", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["nifs-2022-climate-aquaculture-ras", "nifs-water-quality-guidance-2024"] },
+    { "id": "aquafarm-nitrogen-water-quality", "title": "질소계 수질관리", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["nifs-2022-climate-aquaculture-ras", "nifs-water-quality-guidance-2024"] },
+    { "id": "aquafarm-sensors-automation", "title": "스마트양식 센서·자동제어", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["mof-smart-maritime-strategy-2019", "mof-ai-land-aquaculture-2026"] },
+    { "id": "aquafarm-energy", "title": "스마트양식 에너지관리", "eligibility": "eligible", "priorityRank": null, "sourceIds": ["mof-ai-land-aquaculture-2026", "nifs-energy-saving-smart-aquaculture-2025"] },
+    { "id": "aquafarm-orp", "title": "육상양식 ORP", "eligibility": "hold", "priorityRank": null, "sourceIds": [], "evidenceLevel": "supplementary", "notes": "taxonomy와 검색 보조항목으로만 유지하며 공식 핵심지표 또는 독립 SEO 페이지로 승격하지 않는다." }
+  ]
+}

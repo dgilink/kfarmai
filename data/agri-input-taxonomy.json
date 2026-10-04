@@ -1,6 +1,7 @@
 {
   "version": "3.0",
   "updatedAt": "2026-10-04",
+  "sourceRegistry": "data/agri-official-sources.json",
   "principles": {
     "informationFirst": true,
     "vendorPlacement": "after-taxonomy-and-official-information",
@@ -68,6 +69,21 @@
           "name": "스마트팜",
           "summary": "시설재배 환경·센서·제어 기술정보",
           "topics": ["온도", "습도", "CO₂", "일사", "토양수분", "EC", "pH", "관수", "양액", "센서", "환경제어", "자동화", "에너지", "EMS", "시설재배", "데이터 활용"],
+          "evidence": [
+            { "topic": "온도", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+            { "topic": "습도", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+            { "topic": "CO₂", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+            { "topic": "일사", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+            { "topic": "토양수분", "sourceIds": ["nongsaro-smartfarm-status"] },
+            { "topic": "EC", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications", "nongsaro-smartfarm-status"] },
+            { "topic": "pH", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },
+            { "topic": "관수", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications", "nongsaro-smartfarm-status"] },
+            { "topic": "양액", "sourceIds": ["nongsaro-smartfarm-field-applications", "nongsaro-smartfarm-status"] },
+            { "topic": "환경제어", "sourceIds": ["nongsaro-smartfarm-field-applications", "nongsaro-smartfarm-introduction", "mafra-smartfarm-overview"] },
+            { "topic": "자동화", "sourceIds": ["nongsaro-smartfarm-introduction", "mafra-smartfarm-overview", "mafra-smart-agriculture-master-plan"] },
+            { "topic": "에너지관리", "sourceIds": ["nongsaro-smartfarm-status", "mafra-smartfarm-overview", "mafra-smart-agriculture-master-plan"] },
+            { "topic": "EMS", "sourceIds": ["nongsaro-smartfarm-status", "mafra-smartfarm-overview", "mafra-smart-agriculture-master-plan"] }
+          ],
           "entries": [
             { "title": "온습도 센서", "description": "시설 내부 온도와 습도의 측정 위치·주기·센서 상태를 함께 확인합니다." },
             { "title": "EC·pH", "description": "양액 농도와 산도를 해석할 때 작물 생육단계와 측정기 교정 상태를 함께 확인합니다." },
@@ -81,6 +97,37 @@
           "name": "육상 아쿠아팜",
           "summary": "수질·순환여과·센서·에너지 기반 육상 스마트양식 기술정보",
           "topics": ["수온", "용존산소", "DO", "pH", "염분", "ORP", "암모니아", "질소계 수질", "순환여과", "RAS", "수처리", "펌프", "산소공급", "센서", "모니터링", "자동제어", "에너지", "EMS", "육상양식", "해조류", "김"],
+          "evidence": [
+            { "topic": "수온", "sourceIds": ["nifs-water-quality-guidance-2024", "nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "DO", "sourceIds": ["nifs-water-quality-guidance-2024", "nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "pH", "sourceIds": ["nifs-water-quality-guidance-2024", "nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "염분", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "암모니아성질소", "sourceIds": ["nifs-water-quality-guidance-2024", "nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "아질산성질소", "sourceIds": ["nifs-water-quality-guidance-2024", "nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "질산성질소", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "RAS", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "고형물 제거", "sourceIds": ["nifs-2022-climate-aquaculture-ras", "mof-ai-land-aquaculture-2026"] },
+            { "topic": "용존유기물 처리", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "pH·이온 조절", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "생물여과", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "질산화·탈질", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "살균", "sourceIds": ["nifs-2022-climate-aquaculture-ras", "mof-ai-land-aquaculture-2026"] },
+            { "topic": "용존가스·산소 관리", "sourceIds": ["nifs-2022-climate-aquaculture-ras", "mof-ai-land-aquaculture-2026"] },
+            { "topic": "재순환", "sourceIds": ["nifs-2022-climate-aquaculture-ras"] },
+            { "topic": "수처리", "sourceIds": ["nifs-2022-climate-aquaculture-ras", "mof-ai-land-aquaculture-2026"] },
+            { "topic": "센서", "sourceIds": ["mof-smart-maritime-strategy-2019", "nifs-water-quality-guidance-2024", "nifs-energy-saving-smart-aquaculture-2025"] },
+            { "topic": "자동제어", "sourceIds": ["mof-smart-maritime-strategy-2019", "mof-ai-land-aquaculture-2026"] },
+            { "topic": "에너지관리", "sourceIds": ["mof-ai-land-aquaculture-2026", "nifs-energy-saving-smart-aquaculture-2025"] },
+            { "topic": "EMS", "sourceIds": ["mof-ai-land-aquaculture-2026", "nifs-energy-saving-smart-aquaculture-2025"] }
+          ],
+          "topicPolicies": {
+            "ORP": {
+              "evidenceLevel": "supplementary",
+              "seoEligibility": "hold",
+              "sourceIds": [],
+              "notes": "taxonomy와 검색 보조항목으로 유지하되 공식 핵심지표 또는 독립 SEO 페이지로 승격하지 않는다."
+            }
+          },
           "entries": [
             { "title": "수온", "description": "사육 대상과 시스템 조건에 맞는 수온 범위와 시간대별 변화를 확인합니다." },
             { "title": "용존산소(DO)", "description": "측정 위치와 시간, 산소공급 설비 상태를 함께 확인하는 핵심 수질 항목입니다." },
