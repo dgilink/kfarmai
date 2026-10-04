@@ -1,0 +1,59 @@
+:root {
+  color-scheme: light;
+  --kf-green-900: #164a2f;
+  --kf-green-700: #1f7a4d;
+  --kf-green-100: #e9f6ed;
+  --kf-green-050: #f5faf6;
+  --kf-border: #d9e8dd;
+  --kf-text: #17251d;
+  --kf-muted: #59675f;
+  --kf-warn-bg: #fff8e8;
+  --kf-warn-border: #e4a11b;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--kf-green-050); }
+body { margin: 0; background: var(--kf-green-050); color: var(--kf-text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.72; word-break: keep-all; overflow-wrap: break-word; }
+.site-header { min-height: 62px; display: flex; align-items: center; justify-content: center; padding: 10px 16px; background: #fff; border-bottom: 1px solid var(--kf-border); }
+.site-header a { display: inline-flex; align-items: center; }
+.site-header img { width: auto; height: 36px; }
+main { width: min(100% - 28px, 960px); margin: 0 auto; padding: 22px 0 64px; }
+.breadcrumb { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; color: var(--kf-muted); font-size: 14px; }
+.breadcrumb a { color: var(--kf-green-700); }
+.knowledge-article { padding: clamp(20px, 4vw, 44px); border: 1px solid var(--kf-border); border-radius: 20px; background: #fff; box-shadow: 0 10px 28px rgba(20, 74, 47, 0.07); }
+.eyebrow { display: inline-block; margin: 0 0 10px; padding: 4px 10px; border-radius: 999px; background: var(--kf-green-100); color: var(--kf-green-900); font-size: 13px; font-weight: 800; }
+h1 { margin: 0 0 16px; color: var(--kf-green-900); font-size: clamp(27px, 5vw, 40px); line-height: 1.25; letter-spacing: -0.035em; }
+h2 { margin: 38px 0 12px; color: var(--kf-green-900); font-size: clamp(21px, 3.2vw, 27px); line-height: 1.35; }
+h3 { margin: 22px 0 8px; font-size: 18px; line-height: 1.4; }
+p { margin: 0 0 14px; }
+ul, ol { margin: 0; padding-left: 22px; }
+li { margin: 7px 0; }
+a { color: #12663d; text-underline-offset: 3px; }
+a:focus-visible { outline: 3px solid #f2b632; outline-offset: 3px; border-radius: 4px; }
+.lead { margin: 0; padding: 18px; border-left: 5px solid var(--kf-green-700); border-radius: 10px; background: var(--kf-green-100); font-size: 17px; }
+.process-grid, .metric-grid, .related-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.info-card { min-width: 0; padding: 16px; border: 1px solid var(--kf-border); border-radius: 14px; background: #fbfdfb; }
+.info-card h3 { margin-top: 0; color: var(--kf-green-900); }
+.info-card p:last-child { margin-bottom: 0; }
+.caution { margin-top: 26px; padding: 16px; border-left: 5px solid var(--kf-warn-border); border-radius: 10px; background: var(--kf-warn-bg); }
+.content-origin { margin: 34px 0 0; padding: 16px; border: 1px dashed #9ab9a5; border-radius: 12px; background: var(--kf-green-050); color: #3f5146; font-size: 14px; }
+.official-sources { margin-top: 38px; padding: 20px; border-radius: 16px; background: #f2f5f3; }
+.official-sources h2 { margin-top: 0; }
+.source-status { color: var(--kf-muted); }
+.source-list { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
+.source-card { min-width: 0; padding: 15px; border: 1px solid #d4dfd8; border-radius: 12px; background: #fff; }
+.source-card strong { display: block; color: var(--kf-green-900); }
+.source-card a { display: inline-block; max-width: 100%; margin-top: 7px; overflow-wrap: anywhere; }
+.source-meta { margin: 8px 0 0; color: var(--kf-muted); font-size: 13px; }
+.related-grid a { display: block; padding: 14px; border: 1px solid var(--kf-border); border-radius: 12px; background: var(--kf-green-050); font-weight: 750; text-decoration: none; }
+.site-footer { padding: 24px 16px 36px; border-top: 1px solid var(--kf-border); background: #fff; color: var(--kf-muted); text-align: center; font-size: 13px; }
+.site-footer a { margin: 0 6px; }
+@media (max-width: 600px) {
+  main { width: min(100% - 24px, 960px); padding-top: 16px; }
+  .knowledge-article { padding: 20px 16px 28px; border-radius: 16px; }
+  .process-grid, .metric-grid, .related-grid { grid-template-columns: 1fr; }
+  .official-sources { padding: 16px; }
+}
+@media (min-width: 900px) {
+  .process-grid, .metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

@@ -128,6 +128,16 @@
               "notes": "taxonomy와 검색 보조항목으로 유지하되 공식 핵심지표 또는 독립 SEO 페이지로 승격하지 않는다."
             }
           },
+          "contentLinks": [
+            {
+              "label": "RAS 순환여과양식 알아보기",
+              "url": "kb/ras-recirculating-aquaculture.html"
+            },
+            {
+              "label": "육상양식 수질관리 알아보기",
+              "url": "kb/land-aquaculture-water-quality.html"
+            }
+          ],
           "entries": [
             { "title": "수온", "description": "사육 대상과 시스템 조건에 맞는 수온 범위와 시간대별 변화를 확인합니다." },
             { "title": "용존산소(DO)", "description": "측정 위치와 시간, 산소공급 설비 상태를 함께 확인하는 핵심 수질 항목입니다." },

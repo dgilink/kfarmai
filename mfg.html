@@ -236,7 +236,10 @@ const DEFAULT_CANONICAL_CATEGORIES = [
   { id: 'facility-irrigation', name: '시설·관수', summary: '관수, 배수, 환기와 시설 유지관리 항목을 확인합니다.', legacyIds: ['irrigation-facility', 'machinery-safety'], topics: ['관수', '배수', '펌프', '환기', '시설 안전'] },
   { id: 'smart-agriculture', name: '스마트농업', summary: '센서와 제어 데이터를 활용하는 스마트팜·육상 스마트양식 기술을 살펴봅니다.', legacyIds: ['smartfarm'], topics: ['센서', '모니터링', '자동제어', '에너지', 'EMS'], children: [
     { id: 'smartfarm', name: '스마트팜', summary: '시설재배 환경·센서·제어 기술정보', topics: ['온도', '습도', 'CO₂', '일사', '토양수분', 'EC', 'pH', '관수', '양액', '센서', '환경제어', '자동화', '에너지', 'EMS'] },
-    { id: 'land-aquafarm', name: '육상 아쿠아팜', summary: '수질·순환여과·센서·에너지 기반 육상 스마트양식 기술정보', topics: ['수온', '용존산소(DO)', 'pH', '염분', 'ORP', '암모니아', '순환여과(RAS)', '수처리', '펌프', '산소공급', '센서', '자동제어', '에너지', 'EMS'] }
+    { id: 'land-aquafarm', name: '육상 아쿠아팜', summary: '수질·순환여과·센서·에너지 기반 육상 스마트양식 기술정보', topics: ['수온', '용존산소(DO)', 'pH', '염분', 'ORP', '암모니아', '순환여과(RAS)', '수처리', '펌프', '산소공급', '센서', '자동제어', '에너지', 'EMS'], contentLinks: [
+      { label: 'RAS 순환여과양식 알아보기', url: 'kb/ras-recirculating-aquaculture.html' },
+      { label: '육상양식 수질관리 알아보기', url: 'kb/land-aquaculture-water-quality.html' }
+    ] }
   ] },
   { id: 'gardening-tools', name: '원예·도구', summary: '화분, 분갈이와 재배·관리 도구를 사용 목적에 따라 확인합니다.', legacyIds: ['home-gardening-tools'], topics: ['화분', '분갈이', '배수망', '전지가위', '원예 안전'] }
 ];
@@ -568,6 +571,7 @@ function renderSmartAgricultureAreas(item, selectedArea) {
     <h3 style="margin:0 0 8px;font-size:17px;color:#111827;">${escapeHtml(active.name)}</h3>
     ${renderTagBlock('기본 주제', active.topics || [])}
     ${(active.entries || []).length ? `<div class="topic-entry-grid">${active.entries.map(entry => `<article class="topic-entry"><h4>${escapeHtml(entry.title)}</h4><p>${escapeHtml(entry.description)}</p></article>`).join('')}</div>` : ''}
+    ${(active.contentLinks || []).length ? `<nav class="hub-links" aria-label="${escapeHtml(active.name)} 관련 기술정보">${active.contentLinks.map(link => `<a href="${escapeHtml(link.url)}">${escapeHtml(link.label)}</a>`).join('')}</nav>` : ''}
     ${active.id === 'land-aquafarm' ? '<div class="guide-notice">육상 기반 스마트양식의 중립적인 기술정보를 다룹니다. 해상 가두리나 특정 사업·제품 정보는 포함하지 않습니다.</div>' : ''}
   </section>` : '';
   return `<div class="smart-area-grid" aria-label="스마트농업 하위 영역">${cards}</div>${details}`;
