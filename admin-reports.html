@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>신고 관리 · kFarmAI</title>
+  <style>
+    :root{color-scheme:light;--green:#0f4c43;--line:#dbe7e2;--bg:#f5f8f6}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#17211f;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}header{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 max(20px,calc((100% - 1100px)/2))}header a{color:var(--green);font-weight:800;text-decoration:none}main{max-width:1100px;margin:0 auto;padding:28px 20px 60px}h1{font-size:26px;margin:0 0 8px}.lead{color:#61706c;margin:0 0 20px}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}.filters button,.action{border:1px solid var(--line);border-radius:10px;background:#fff;padding:9px 12px;cursor:pointer}.filters button.active{background:var(--green);color:#fff}.status{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px}.report{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:12px}.report-head{display:flex;justify-content:space-between;gap:12px}.meta{font-size:12px;color:#687671}.preview{white-space:pre-wrap;background:#f7faf8;border-radius:10px;padding:12px;margin:12px 0}.reason{font-weight:650}.actions{display:flex;gap:8px;flex-wrap:wrap}.action[data-status="actioned"]{color:#9d2e20}.action[data-status="reviewed"]{color:var(--green)}button:disabled{opacity:.55;cursor:wait}@media(max-width:600px){main{padding:20px 14px}.report-head{display:block}.meta{margin-top:5px}}
+  </style>
+</head>
+<body>
+  <header><a href="index.html">← kFarmAI</a><span>관리</span></header>
+  <main>
+    <h1>신고 관리</h1>
+    <p class="lead">신고 내용을 확인하고 검토 상태만 기록합니다. 콘텐츠는 자동 삭제되지 않습니다.</p>
+    <section id="gate" class="status" role="status">접근 권한을 확인하고 있습니다.</section>
+    <section id="workspace" hidden>
+      <div class="filters" aria-label="신고 상태 필터">
+        <button class="active" data-filter="pending">대기</button><button data-filter="reviewed">검토완료</button><button data-filter="dismissed">기각</button><button data-filter="actioned">조치필요</button><button data-filter="">전체</button>
+      </div>
+      <div id="reportList" aria-live="polite"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="static/js/community/community-model.js"></script>
+  <script>
+    const SUPABASE_URL='https://xzetqijeucldbfgjuoes.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
+    const client=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    let filter='pending';
+    function node(tag,className,text){const el=document.createElement(tag);if(className)el.className=className;if(text!==undefined)el.textContent=text;return el;}
+    function labelStatus(value){return ({pending:'대기',reviewed:'검토완료',dismissed:'기각',actioned:'조치필요'})[value]||value;}
+    function renderReports(rows){
+      const list=document.getElementById('reportList');list.replaceChildren();
+      if(!rows.length){list.append(node('div','status','해당 상태의 신고가 없습니다.'));return;}
+      rows.forEach(row=>{
+        const card=node('article','report');const head=node('div','report-head');
+        head.append(node('strong','',`${row.target_type==='post'?'게시글':'댓글'} 신고 · ${labelStatus(row.status)}`));
+        head.append(node('span','meta',new Date(row.created_at).toLocaleString('ko-KR')));card.append(head);
+        card.append(node('div','preview',row.target_preview||'대상 내용을 확인할 수 없습니다.'));
+        card.append(node('div','reason',`신고 사유: ${row.reason}`));
+        card.append(node('div','meta',`신고자: ${row.reporter_user_id||'탈퇴 사용자'} · 대상 ID: ${row.target_id}`));
+        const actions=node('div','actions');
+        [['reviewed','검토완료'],['dismissed','기각'],['actioned','조치필요']].forEach(([status,label])=>{const button=node('button','action',label);button.type='button';button.dataset.status=status;button.disabled=row.status===status;button.onclick=()=>updateStatus(row.id,status,button);actions.append(button);});
+        card.append(actions);list.append(card);
+      });
+    }
+    async function loadReports(){const list=document.getElementById('reportList');list.replaceChildren(node('div','status','신고 목록을 불러오는 중입니다.'));try{renderReports(await KFCommunity.reportQueue(client,filter,100,0));}catch(_){list.replaceChildren(node('div','status','신고 목록을 불러오지 못했습니다.'));}}
+    async function updateStatus(id,status,button){button.disabled=true;try{await KFCommunity.moderateReport(client,id,status);await loadReports();}catch(_){button.disabled=false;alert('상태 변경을 처리하지 못했습니다.');}}
+    async function init(){
+      const gate=document.getElementById('gate');const {data:{session}}=await client.auth.getSession();
+      if(!session){gate.textContent='로그인한 관리자만 접근할 수 있습니다.';return;}
+      try{if(!await KFCommunity.isModerator(client)){gate.textContent='이 페이지에 접근할 권한이 없습니다.';return;}}catch(_){gate.textContent='권한을 확인하지 못했습니다.';return;}
+      gate.hidden=true;document.getElementById('workspace').hidden=false;
+      document.querySelectorAll('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;document.querySelectorAll('[data-filter]').forEach(item=>item.classList.toggle('active',item===button));loadReports();}));
+      loadReports();
+    }
+    init();
+  </script>
+</body>
+</html>

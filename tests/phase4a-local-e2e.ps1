@@ -72,12 +72,15 @@ function Invoke-Api([string]$method, [string]$path, [string]$token, $body = $nul
 
 Invoke-SqlFile 'supabase/tests/phase2b-local-base.sql'
 Invoke-SqlFile 'supabase/tests/phase4a-community-base.sql'
-$ErrorActionPreference = 'Continue'
-$migrationCheck = supabase migration up --local 2>&1 | Out-String
-$migrationExitCode = $LASTEXITCODE
-$ErrorActionPreference = $savedErrorActionPreference
-if ($migrationExitCode -ne 0) { throw "Supabase migration up failed: $migrationCheck" }
+if ((Invoke-Sql "select to_regclass('public.community_user_roles') is not null;") -eq 't') {
+  Invoke-SqlFile 'supabase/rollback/20261004100000_v3_community_moderation_down.sql'
+}
+if ((Invoke-Sql "select to_regclass('public.community_channel_category_map') is not null;") -eq 't') {
+  Invoke-SqlFile 'supabase/rollback/20261002130000_v3_community_feed_metrics_down.sql'
+}
 Invoke-SqlFile 'supabase/rollback/20261002110000_v3_community_model_down.sql'
+Invoke-SqlFile 'supabase/migrations/20261002090000_secure_secret_comments.sql'
+Invoke-SqlFile 'supabase/migrations/20261002091000_account_deletion_requests.sql'
 
 $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
 $password = 'LocalOnly-' + [guid]::NewGuid().ToString('N') + '!aA1'

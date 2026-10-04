@@ -132,6 +132,33 @@
     return new Set((data || []).map(row => String(row.blocked_user_id)));
   }
 
+  async function isModerator(client) {
+    if (!client) return false;
+    const { data, error } = await client.rpc('community_is_moderator');
+    if (error) throw error;
+    return data === true;
+  }
+
+  async function reportQueue(client, status = null, limit = 100, offset = 0) {
+    const { data, error } = await client.rpc('community_report_queue', {
+      status_filter: status || null,
+      page_limit: Math.min(Math.max(Number(limit) || 1, 1), 100),
+      page_offset: Math.max(Number(offset) || 0, 0)
+    });
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  }
+
+  async function moderateReport(client, reportId, status) {
+    if (!['reviewed', 'dismissed', 'actioned'].includes(status)) throw new Error('invalid_report_status');
+    const { data, error } = await client.rpc('moderate_community_report', {
+      report_id: reportId,
+      next_status: status
+    });
+    if (error) throw error;
+    return data?.[0] || null;
+  }
+
   global.KFCommunity = Object.freeze({
     CATEGORIES,
     LEGACY_CATEGORY,
@@ -149,6 +176,9 @@
     report,
     block,
     unblock,
-    blockedUserIds
+    blockedUserIds,
+    isModerator,
+    reportQueue,
+    moderateReport
   });
 })(window);

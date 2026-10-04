@@ -278,6 +278,7 @@
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="static/js/community/community-model.js"></script>
+<script src="static/js/community/question-draft.js"></script>
 <script>
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
@@ -385,7 +386,7 @@ const sectionParam = params.get('section') || '';
 const sortParam = normalizeMoreSort(params.get('sort') || sectionParam || 'latest');
 const isMoreListMode = params.has('sort') || params.has('section');
 const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
-let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', keyword=(params.get('q')||'').trim(), offset=0, isLoading=false, hasMore=true, selectedPostImages=[], selectedPostTags=[], blockedUserIdsSet=new Set();
+let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', keyword=(params.get('q')||'').trim(), offset=0, isLoading=false, hasMore=true, selectedPostImages=[], selectedPostTags=[], blockedUserIdsSet=new Set(), activeQuestionDraftImageId='';
 const TAG_LIMIT=8;
 const TAG_SUGGESTIONS=['고추','토마토','딸기','벼','상추','잎말림','탄저병','과습','총채벌레','홈가드닝','텃밭','노지','시설재배','스마트팜','아쿠아팜','전남','순천'];
 let currentProfileNickname='';
@@ -754,13 +755,17 @@ function cachePostForDetail(post){
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
 async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();applyWriteTopicConfig();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.body.classList.add('is-composing');document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
-function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();}
-function applyPendingQuestionQuery(){
+function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();if(activeQuestionDraftImageId&&window.KFQuestionDraft){window.KFQuestionDraft.removeImage(activeQuestionDraftImageId).catch(()=>{});activeQuestionDraftImageId='';}}
+async function applyPendingQuestionQuery(){
   const params=new URLSearchParams(location.search);
   if(params.get('write')!=='1')return;
   let pending=null;
   try{pending=JSON.parse(localStorage.getItem('kfarmai_pending_question')||'null');}catch(_){pending=null;}
-  if(!pending||pending.source!=='ai-reference-diagnosis')return;
+  if(!pending||!['ai_diagnosis','ai-reference-diagnosis'].includes(pending.source))return;
+  if(pending.imageDraftId&&window.KFQuestionDraft){
+    try{const draftFile=await window.KFQuestionDraft.loadImage(pending.imageDraftId);if(draftFile){selectedPostImages=[draftFile];activeQuestionDraftImageId=pending.imageDraftId;renderPostImageInfo(selectedPostImages);renderPostImagePreview();}}
+    catch(error){console.warn('[question draft] local image unavailable',{message:error?.message||'unknown'});}
+  }
   openWriteFlow(makePendingQuestionPreset(pending));
   localStorage.removeItem('kfarmai_pending_question');
 }
@@ -773,13 +778,14 @@ function makePendingQuestionPreset(pending){
     categorySlug: 'question-help',
     topic: symptoms[0]||'기타',
     crop,
-    tags: [crop,...symptoms,...(Array.isArray(pending.tags)?pending.tags:[])],
+    tags: [crop,...symptoms,...(Array.isArray(pending.suggestedTags)?pending.suggestedTags:pending.tags||[])],
     title: `${crop} ${symptoms[0]||'증상'} 관련 확인이 필요합니다`,
     content: [
-      'AI 참고 진단 결과를 바탕으로 커뮤니티에 질문합니다.',
+      '관찰한 증상:',
+      `${symptoms.join(', ') || '추가 입력 필요'}`,
       '',
-      `작물/식물명: ${crop}`,
-      `관찰 증상: ${symptoms.join(', ') || '추가 입력 필요'}`,
+      'AI 참고 확인에서 정리된 내용:',
+      `${String(pending.summary||'원인 후보는 추가 확인이 필요합니다.')}`,
       `원인 후보: ${causes.join(', ') || '추가 확인 필요'}`,
       `확인 포인트: ${checks.join(', ') || '잎 앞면·뒷면, 줄기, 토양 상태 확인'}`,
       '',
@@ -921,7 +927,8 @@ function renderPostImageInfo(files,targetId='postImageInfo'){
 function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
 function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(file)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([file])});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
+async function uploadPostImages(userId){const result={urls:[],paths:[]};if(!selectedPostImages.length)return result;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const safeFile=await window.KFQuestionDraft.prepareForUpload(file);const ext=getPostImageExt(safeFile);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,safeFile,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(safeFile)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([safeFile])});throw error;}const uploadedPath=uploadData?.path||path;const {data}=sb.storage.from('post-images').getPublicUrl(uploadedPath);if(!data?.publicUrl)throw new Error('public image url unavailable');result.urls.push(data.publicUrl);result.paths.push(uploadedPath);}postSubmitWarn('storage.upload.done',{uploadedCount:result.urls.length});return result;}
+async function cleanupPostUploads(paths){if(paths?.length)await sb.storage.from('post-images').remove(paths).catch(()=>{});}
 function classifyPostUploadError(err){
   const message=String(err?.message||'').toLowerCase();
   if(message.includes('invalid image file')||message.includes('mime')||message.includes('type')||message.includes('size'))return '이미지 파일 형식 또는 용량을 확인해주세요. 카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.';
@@ -944,12 +951,13 @@ async function submitPost(){
   if(!categoryId||!category||!title||!content)return showToast(`분류, ${getChannelTopicConfig(selectedWriteChannel()).label}, 제목, 내용을 입력해주세요.`);
   const btn=document.getElementById('submitBtn');btn.disabled=true;
   const allowedPayloadKeys=['user_id','category_id','title','content','crop_tag','region_tag','image_urls','tags'];
+  let uploaded={urls:[],paths:[]};
   try{
     const {data:{session}}=await sb.auth.getSession();
     const userId=session?.user?.id;
     if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openLoginModal();return;}
     localStorage.setItem('kfarmai_user_id',userId);
-    const imageUrls=await uploadPostImages(userId);
+    uploaded=await uploadPostImages(userId);const imageUrls=uploaded.urls;
     const tags=window.KFCommunity.normalizeTags([...selectedPostTags,crop,category,cultivation,region]);
     const payload={user_id:userId,category_id:categoryId,title,content:contentWithCategory(content,category,channelName,region,tags,displayNameForUser(currentUser||session.user)),crop_tag:crop||category||null,region_tag:region||null,image_urls:imageUrls,tags};
     const payloadKeys=Object.keys(payload);
@@ -965,6 +973,7 @@ async function submitPost(){
     autoResizeTextarea(document.getElementById('postContent'),240);
     selectedPostImages=[];selectedPostTags=[];renderPostImageInfo([]);renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
   }catch(err){
+    await cleanupPostUploads(uploaded.paths);
     const message=String(err?.message||'');
     console.warn('post submit failed',{message});
     showToast(classifyPostUploadError(err));

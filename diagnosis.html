@@ -17,6 +17,7 @@
 <script src="static/js/security/safe-markdown.js"></script>
 <script src="static/js/ai/diagnosis-client.js"></script>
 <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
+<script src="static/js/community/question-draft.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -1581,12 +1582,15 @@ function scrollRelatedQuestions() {
 
 function makePendingQuestion(result) {
   const safeResult = normalizeDiagnosisResult(result || {});
+  const causeSummary = asArray(safeResult.causeCandidates).map(item => typeof item === 'string' ? item : item.name).filter(Boolean);
   return {
-    source: 'ai-reference-diagnosis',
+    source: 'ai_diagnosis',
     crop: safeResult.crop,
     symptoms: safeResult.symptoms,
     tags: safeResult.tags,
-    causeCandidates: asArray(safeResult.causeCandidates).map(item => typeof item === 'string' ? item : item.name).filter(Boolean),
+    suggestedTags: safeResult.tags,
+    summary: causeSummary.length ? `원인 후보: ${causeSummary.join(', ')}` : '원인 후보는 추가 확인이 필요합니다.',
+    causeCandidates: causeSummary,
     checkPoints: safeResult.checkPoints,
     createdAt: new Date().toISOString()
   };
@@ -1834,10 +1838,20 @@ function resetDiagnosis() {
   document.getElementById('imgBadge').classList.remove('show');
 }
 
-function shareToCommunity() {
+async function shareToCommunity() {
   const pending = makePendingQuestion(lastResult || {});
+  if (capturedFile) {
+    try {
+      if (!window.KFQuestionDraft) throw new Error('draft_store_unavailable');
+      pending.imageDraftId = await window.KFQuestionDraft.saveImage(capturedFile);
+    } catch (error) {
+      console.warn('[kFarmAI] local image draft failed', { message: error?.message || 'unknown' });
+      showToast('사진 초안을 안전하게 준비하지 못했습니다. 다시 시도해주세요.');
+      return;
+    }
+  }
   safeLocalWrite(PENDING_QUESTION_KEY, pending);
-  location.href = 'channel.html?write=1&source=ai-reference-diagnosis';
+  location.href = 'channel.html?write=1&source=ai_diagnosis';
 }
 
 /* ── Pull-to-refresh ── */

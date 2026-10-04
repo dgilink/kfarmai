@@ -858,6 +858,10 @@ async function deletePost(event){
       console.warn('[post delete] no rows', {postId, hasUser:!!authUser?.id, idsMatch});
       throw new Error('no deleted rows');
     }
+    const storagePaths=(currentPost.image_urls||[]).map(url=>{
+      try{const marker='/storage/v1/object/public/post-images/';const parsed=new URL(url,location.href);const index=parsed.pathname.indexOf(marker);return index>=0?decodeURIComponent(parsed.pathname.slice(index+marker.length)):'';}catch(_){return '';}
+    }).filter(Boolean);
+    if(storagePaths.length){try{await sb.storage.from('post-images').remove(storagePaths);}catch(error){console.warn('[post delete] storage cleanup deferred',{count:storagePaths.length});}}
     location.href='channel.html';
   }catch(err){
     showToast('삭제 권한이 없거나 이미 삭제된 글입니다.');

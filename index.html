@@ -39,6 +39,7 @@
 <script src="static/js/security/safe-markdown.js"></script>
 <script src="static/js/ai/diagnosis-client.js"></script>
 <script src="static/js/community/community-model.js"></script>
+<script src="static/js/community/question-draft.js"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -2210,8 +2211,11 @@
       </div>
       <div class="my-menu" id="myMainMenu">
         <div class="my-row clickable" onclick="openMySubview('myPostsView')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
+        <div class="my-row clickable" onclick="openMySubview('mySavedView')"><span>저장한 글</span><span class="count" id="mySavedCount">0</span></div>
         <div class="my-row clickable" onclick="openMySubview('myDiagnosesView')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
         <div class="my-row clickable" onclick="openMySubview('myBlocksView')"><span>차단한 사용자 관리</span><span class="count" id="myBlockCount">0</span></div>
+        <a class="my-row clickable" id="myAdminReports" href="admin-reports.html" hidden><span>신고 관리</span><span>›</span></a>
+        <div class="my-row clickable" onclick="openMySubview('myAccountView')"><span>계정 설정</span><span>›</span></div>
         <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
         <div class="my-row logout" onclick="logout()">로그아웃</div>
       </div>
@@ -2238,6 +2242,13 @@
           <div class="my-subtitle">내가 쓴 글</div>
         </div>
         <div class="my-list open" id="myPostList"></div>
+      </div>
+      <div class="my-subview" id="mySavedView">
+        <div class="my-subhead">
+          <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
+          <div class="my-subtitle">저장한 글</div>
+        </div>
+        <div class="my-list open" id="mySavedList"></div>
       </div>
       <div class="my-subview" id="myDiagnosesView">
         <div class="my-subhead">
@@ -2687,11 +2698,13 @@ function updateUserUI(user){
   renderHeaderProfile(user);
   renderMyProfile(user);
   loadMyCounts(user.id);
+  refreshModeratorState();
   hydrateCurrentProfile(user);
 }
 function resetUserUI(){
   currentUser = null;
   blockedUserIdsSet = new Set();
+  const adminLink=document.getElementById('myAdminReports');if(adminLink)adminLink.hidden=true;
   const bell=document.getElementById('headerProfile');
   const loginBtn=document.getElementById('headerLoginBtn');
   if(loginBtn)loginBtn.style.display='';
@@ -2868,6 +2881,10 @@ async function loadMyCounts(userId){
     document.getElementById('myPostCount').textContent='0';
   }
   try{
+    const {count:savedCount} = await _sb.from('post_bookmarks').select('post_id',{count:'exact',head:true}).eq('user_id',userId);
+    document.getElementById('mySavedCount').textContent=savedCount ?? 0;
+  }catch(e){document.getElementById('mySavedCount').textContent='0';}
+  try{
     const {count:diagnosisCount} = await _sb.from('diagnoses').select('id',{count:'exact',head:true}).eq('user_id',userId);
     const reportCount=window.KFDiagnosisPublicDataBridge?.getPublicDataReports?.().length || 0;
     document.getElementById('myDiagnosisCount').textContent=(diagnosisCount ?? 0)+reportCount;
@@ -2877,6 +2894,11 @@ async function loadMyCounts(userId){
   }
   loadMyPosts(userId);
   loadMyDiagnoses(userId);
+}
+async function refreshModeratorState(){
+  const link=document.getElementById('myAdminReports');if(link)link.hidden=true;
+  if(!window._sb||!currentUser?.id)return;
+  try{if(await window.KFCommunity.isModerator(_sb)){if(link)link.hidden=false;}}catch(_){if(link)link.hidden=true;}
 }
 function postLikeButton(){
   const post=arguments[0]||{};
@@ -2913,8 +2935,23 @@ function openMySubview(id){
   document.querySelectorAll('.my-subview').forEach(view=>view.classList.remove('open'));
   document.getElementById(id)?.classList.add('open');
   if(id==='myPostsView')loadMyPosts(currentUser.id);
+  if(id==='mySavedView')loadMySavedPosts(currentUser.id);
   if(id==='myDiagnosesView')loadMyDiagnoses(currentUser.id);
   if(id==='myBlocksView')loadMyBlocks();
+}
+async function loadMySavedPosts(userId){
+  const list=document.getElementById('mySavedList');if(!list||!window._sb||!userId)return;
+  list.innerHTML='<div class="my-list-empty">저장한 글을 불러오는 중입니다.</div>';
+  try{
+    const {data:bookmarks,error:bookmarkError}=await _sb.from('post_bookmarks').select('post_id,created_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(100);
+    if(bookmarkError)throw bookmarkError;
+    const ids=(bookmarks||[]).map(row=>row.post_id);
+    if(!ids.length){list.innerHTML='<div class="my-list-empty">아직 저장한 글이 없습니다.</div>';return;}
+    const {data:posts,error:postError}=await _sb.from('posts').select('id,title,content,created_at').in('id',ids);
+    if(postError)throw postError;
+    const map=new Map((posts||[]).map(post=>[String(post.id),post]));
+    list.innerHTML=ids.map(id=>map.get(String(id))).filter(Boolean).map(post=>`<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'"><div class="my-list-title">${escHtml(post.title||'제목 없음')}</div><div class="my-list-preview">${escHtml(stripPostPrefixes(post.content||'').slice(0,120))}</div></div>`).join('')||'<div class="my-list-empty">표시할 수 있는 저장 글이 없습니다.</div>';
+  }catch(_){list.innerHTML='<div class="my-list-empty">저장한 글을 불러오지 못했습니다.</div>';}
 }
 function closeMySubview(){
   const main=document.getElementById('myMainMenu');
@@ -4346,7 +4383,8 @@ function renderPostImageInfo(files,targetId='postImageInfo'){
 function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
 function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await window._sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(file)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([file])});throw error;}const {data}=window._sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
+async function uploadPostImages(userId){const result={urls:[],paths:[]};if(!selectedPostImages.length)return result;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file))throw new Error('invalid image file');const safeFile=await window.KFQuestionDraft.prepareForUpload(file);const ext=getPostImageExt(safeFile);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await window._sb.storage.from('post-images').upload(path,safeFile,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(safeFile)});if(error)throw error;const uploadedPath=uploadData?.path||path;const {data}=window._sb.storage.from('post-images').getPublicUrl(uploadedPath);if(!data?.publicUrl)throw new Error('public image url unavailable');result.urls.push(data.publicUrl);result.paths.push(uploadedPath);}postSubmitWarn('storage.upload.done',{uploadedCount:result.urls.length});return result;}
+async function cleanupPostUploads(paths){if(paths?.length){try{await window._sb.storage.from('post-images').remove(paths);}catch(_){}}}
 function cleanPayload(obj){return Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!==''));}
 function normalizeTag(value){const clean=String(value||'').trim().replace(/^#+/,'').replace(/\s+/g,'').slice(0,12);return clean?`#${clean}`:'';}
 function renderTagSuggestions(){const wrap=document.getElementById('tagSuggestions');if(!wrap)return;wrap.innerHTML=TAG_SUGGESTIONS.map(tag=>`<button class="tag-chip" type="button" onclick="addPostTag('${tag}')">#${tag}</button>`).join('');renderSelectedTags();}
@@ -4412,12 +4450,13 @@ async function submitPost(){
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
   const allowedPayloadKeys=['category_id','title','content','user_id','crop_tag','region_tag','image_urls','tags'];
+  let uploaded={urls:[],paths:[]};
   try{
     const {data:{session}}=await window._sb.auth.getSession();
     const userId=session?.user?.id;
     if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openMyPanel();return;}
     localStorage.setItem('kfarmai_user_id',userId);
-    const imageUrls=await uploadPostImages(userId);
+    uploaded=await uploadPostImages(userId);const imageUrls=uploaded.urls;
     const tags=window.KFCommunity.normalizeTags([...selectedPostTags,crop,category,cultivation,region]);
     const payload=cleanPayload({category_id:categoryRecord.id,title,content:contentWithCategory(content,category,channelName,region,tags,displayNameForUser(session.user)),user_id:userId,crop_tag:crop||category||undefined,region_tag:region||undefined,image_urls:imageUrls,tags});
     const payloadKeys=Object.keys(payload);
@@ -4440,7 +4479,7 @@ async function submitPost(){
     toggleCustomSymptom();
     await loadFeed();
     await loadMyCounts(userId);
-  }catch(err){showToast(friendlyPostError(err));}
+  }catch(err){await cleanupPostUploads(uploaded.paths);showToast(friendlyPostError(err));}
   finally{if(btn){btn.textContent=btn.dataset.originalText||'게시하기';btn.disabled=false;}}
 }
 function lockBodyScroll(){document.body.style.overflow='hidden';}
