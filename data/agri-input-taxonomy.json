@@ -1,0 +1,137 @@
+{
+  "version": "3.0",
+  "updatedAt": "2026-10-04",
+  "principles": {
+    "informationFirst": true,
+    "vendorPlacement": "after-taxonomy-and-official-information",
+    "productRanking": false,
+    "realtimeClaims": false
+  },
+  "canonicalCategories": [
+    {
+      "id": "seed-nursery",
+      "name": "종자·육묘",
+      "summary": "종자, 모종, 파종과 육묘 환경을 함께 확인합니다.",
+      "legacyIds": ["seed"],
+      "topics": ["종자", "품종", "모종", "파종", "육묘", "정식"],
+      "links": [
+        { "label": "종자 참고 정보", "url": "seed.html" },
+        { "label": "재배달력 확인", "url": "crop-calendar.html" }
+      ]
+    },
+    {
+      "id": "soil-nutrition",
+      "name": "토양·영양",
+      "summary": "상토·배지, 토양 상태, 비료와 양분 관리 기준을 확인합니다.",
+      "legacyIds": ["santo", "fertilizer"],
+      "topics": ["상토", "배지", "토양", "비료", "액비", "EC", "pH", "양분"],
+      "links": [
+        { "label": "상토 계산기", "url": "tools-soil.html" },
+        { "label": "비료 계산기", "url": "tools-fertilizer.html" }
+      ]
+    },
+    {
+      "id": "crop-protection",
+      "name": "작물보호",
+      "summary": "병해충 정보와 농약 안전사용기준을 우선 확인합니다.",
+      "legacyIds": ["crop-protection"],
+      "topics": ["병해충", "예찰", "작물보호", "안전사용기준", "보호장비", "분무기"],
+      "links": [
+        { "label": "공공정보 확인", "url": "public-data.html" },
+        { "label": "농약 희석 계산기", "url": "tools-pesticide.html" }
+      ]
+    },
+    {
+      "id": "facility-irrigation",
+      "name": "시설·관수",
+      "summary": "관수, 배수, 환기와 시설 유지관리 항목을 확인합니다.",
+      "legacyIds": ["irrigation-facility", "machinery-safety"],
+      "topics": ["관수", "배수", "펌프", "하우스", "환기", "차광", "농기계 안전", "시설 안전"],
+      "links": [
+        { "label": "농업날씨 확인", "url": "agri-weather.html" },
+        { "label": "관련기관 확인", "url": "links.html" }
+      ]
+    },
+    {
+      "id": "smart-agriculture",
+      "name": "스마트농업",
+      "summary": "센서와 제어 데이터를 활용하는 스마트팜·육상 스마트양식 기술을 살펴봅니다.",
+      "legacyIds": ["smartfarm"],
+      "topics": ["센서", "모니터링", "자동제어", "데이터 활용", "에너지", "EMS"],
+      "links": [
+        { "label": "스마트농업 공식자료", "url": "agri-info.html?section=cultivation" },
+        { "label": "지원·공고 확인", "url": "agri-info.html?section=support" }
+      ],
+      "children": [
+        {
+          "id": "smartfarm",
+          "name": "스마트팜",
+          "summary": "시설재배 환경·센서·제어 기술정보",
+          "topics": ["온도", "습도", "CO₂", "일사", "토양수분", "EC", "pH", "관수", "양액", "센서", "환경제어", "자동화", "에너지", "EMS", "시설재배", "데이터 활용"],
+          "entries": [
+            { "title": "온습도 센서", "description": "시설 내부 온도와 습도의 측정 위치·주기·센서 상태를 함께 확인합니다." },
+            { "title": "EC·pH", "description": "양액 농도와 산도를 해석할 때 작물 생육단계와 측정기 교정 상태를 함께 확인합니다." },
+            { "title": "관수·양액", "description": "관수량과 공급 주기는 배지, 일사, 생육단계와 배액 상태를 함께 살펴봅니다." },
+            { "title": "환경제어", "description": "환기·차광·난방·냉방 제어값은 현장 작물 상태와 센서값을 함께 확인합니다." },
+            { "title": "에너지관리", "description": "설비 운전 기록과 에너지 사용량을 비교해 운영 효율을 점검합니다." }
+          ]
+        },
+        {
+          "id": "land-aquafarm",
+          "name": "육상 아쿠아팜",
+          "summary": "수질·순환여과·센서·에너지 기반 육상 스마트양식 기술정보",
+          "topics": ["수온", "용존산소", "DO", "pH", "염분", "ORP", "암모니아", "질소계 수질", "순환여과", "RAS", "수처리", "펌프", "산소공급", "센서", "모니터링", "자동제어", "에너지", "EMS", "육상양식", "해조류", "김"],
+          "entries": [
+            { "title": "수온", "description": "사육 대상과 시스템 조건에 맞는 수온 범위와 시간대별 변화를 확인합니다." },
+            { "title": "용존산소(DO)", "description": "측정 위치와 시간, 산소공급 설비 상태를 함께 확인하는 핵심 수질 항목입니다." },
+            { "title": "pH", "description": "단일 수치보다 변화 추이와 알칼리도·질소계 수질항목을 함께 살펴봅니다." },
+            { "title": "순환여과(RAS)", "description": "고형물 제거, 생물여과, 산소공급과 순환 유량의 연결 구조를 확인합니다." },
+            { "title": "수질센서", "description": "수온·DO·pH·염분 센서의 교정, 세척과 이상값 점검 기준을 확인합니다." },
+            { "title": "에너지관리", "description": "펌프·산소공급·수처리 설비의 연속 운전과 비상 대응을 함께 검토합니다." }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gardening-tools",
+      "name": "원예·도구",
+      "summary": "화분, 분갈이와 재배·관리 도구를 사용 목적에 따라 확인합니다.",
+      "legacyIds": ["home-gardening-tools"],
+      "topics": ["화분", "분갈이", "배수망", "전지가위", "지지대", "물조리개", "원예 안전"],
+      "links": [
+        { "label": "재배가이드 확인", "url": "crop-guide.html" },
+        { "label": "관련 질문 보기", "url": "channel.html?category=cultivation-knowhow" }
+      ]
+    }
+  ],
+  "legacyMapping": [
+    { "legacyId": "santo", "canonicalId": "soil-nutrition", "action": "MERGE" },
+    { "legacyId": "seed", "canonicalId": "seed-nursery", "action": "MOVE" },
+    { "legacyId": "fertilizer", "canonicalId": "soil-nutrition", "action": "MERGE" },
+    { "legacyId": "crop-protection", "canonicalId": "crop-protection", "action": "KEEP" },
+    { "legacyId": "irrigation-facility", "canonicalId": "facility-irrigation", "action": "MOVE" },
+    { "legacyId": "home-gardening-tools", "canonicalId": "gardening-tools", "action": "MOVE" },
+    { "legacyId": "smartfarm", "canonicalId": "smart-agriculture", "childId": "smartfarm", "action": "MOVE" },
+    { "legacyId": "machinery-safety", "canonicalId": "facility-irrigation", "action": "HIDE", "distributedTags": ["시설 안전", "작물보호", "원예 안전"] }
+  ],
+  "aliases": {
+    "cpa": "crop-protection",
+    "cropProtection": "crop-protection",
+    "crop_protection": "crop-protection",
+    "fert": "soil-nutrition",
+    "fertilizer": "soil-nutrition",
+    "soil": "soil-nutrition",
+    "potting": "soil-nutrition",
+    "santo": "soil-nutrition",
+    "seed": "seed-nursery",
+    "irrigation": "facility-irrigation",
+    "irrigation-facility": "facility-irrigation",
+    "home-gardening-tools": "gardening-tools",
+    "smartfarm": "smart-agriculture",
+    "aquafarm": "smart-agriculture",
+    "land-aquafarm": "smart-agriculture",
+    "machinery": "facility-irrigation",
+    "machinery-safety": "facility-irrigation",
+    "safety": "facility-irrigation"
+  }
+}
