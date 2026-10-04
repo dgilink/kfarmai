@@ -153,8 +153,9 @@
   .toast { position:fixed; left:50%; bottom:24px; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:200; background:#111; color:#fff; border-radius:999px; padding:11px 16px; font-size:13px; font-weight:800; opacity:0; pointer-events:none; transition:opacity .2s; }
   .toast.show { opacity:1; }
 </style>
+<link rel="stylesheet" href="static/css/community-v3.css">
 </head>
-<body>
+<body class="community-post-page">
 <svg width="0" height="0" style="position:absolute">
   <symbol id="nav-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" fill="currentColor" opacity=".2"/><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></symbol>
   <symbol id="nav-q" viewBox="0 0 24 24"><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" fill="currentColor" opacity=".2"/><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="13" cy="10" r="1" fill="currentColor"/><circle cx="17" cy="10" r="1" fill="currentColor"/></symbol>
@@ -650,7 +651,10 @@ async function reportCommunityTarget(targetType,targetId){
   try{
     await window.KFCommunity.report(sb,user.id,targetType,targetId,reason);
     showToast('신고가 접수되었습니다.');
-  }catch(_){showToast('이미 신고했거나 신고를 접수하지 못했습니다.');}
+  }catch(error){
+    if(String(error?.code||'')==='23505')showToast('이미 신고한 콘텐츠입니다.');
+    else showToast('신고를 접수하지 못했습니다. 잠시 후 다시 시도해주세요.');
+  }
 }
 
 async function blockCommunityUser(targetUserId){

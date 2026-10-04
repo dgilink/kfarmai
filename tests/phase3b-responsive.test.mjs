@@ -88,8 +88,47 @@ async function run() {
       if (width >= 1024) assert.ok(metrics.mainWidth > 430, `${width}px must not use fixed phone width`);
     }
 
+    for (const width of widths) {
+      await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 1000, deviceScaleFactor: 1, mobile: width <= 430 });
+      const loaded = socket.once('Page.loadEventFired');
+      await socket.send('Page.navigate', { url: `http://127.0.0.1:${port}/index.html?responsive=${width}` });
+      await loaded;
+      await delay(500);
+      const metrics = await evaluate(socket, `(() => {
+        const phone = document.querySelector('.phone');
+        const home = document.querySelector('.page');
+        const categories = [...document.querySelectorAll('.v3-category-card')];
+        const feed = document.querySelector('.community-feed-section');
+        const agri = document.querySelector('.home-agri-summary-section');
+        return {
+          innerWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+          pageScrollWidth: home?.scrollWidth || 0,
+          pageClientWidth: home?.clientWidth || 0,
+          phoneWidth: phone ? Math.round(phone.getBoundingClientRect().width) : 0,
+          categoryCount: categories.length,
+          categoryColumns: document.querySelector('.v3-category-grid') ? getComputedStyle(document.querySelector('.v3-category-grid')).gridTemplateColumns.split(' ').length : 0,
+          feedBeforeAgri: Boolean(feed && agri && (feed.compareDocumentPosition(agri) & Node.DOCUMENT_POSITION_FOLLOWING)),
+          primaryWriteVisible: Boolean(document.querySelector('.community-primary-cta')?.offsetParent),
+          forbiddenCoreCopy: /공모전|MVP|데모|시제품|준비중/i.test(home?.innerText || ''),
+          coreActionsReady: ['openModal','setHomeFeedSort','safeOpenMyPanel','runSearch'].every(name => typeof window[name] === 'function')
+        };
+      })()`);
+      assert.ok(metrics.scrollWidth <= metrics.innerWidth + 1, `${width}px home horizontal overflow`);
+      assert.ok(metrics.pageScrollWidth <= metrics.pageClientWidth + 1, `${width}px home page overflow`);
+      assert.equal(metrics.categoryCount, 4, `${width}px canonical categories`);
+      assert.equal(metrics.feedBeforeAgri, true, `${width}px feed hierarchy`);
+      assert.equal(metrics.primaryWriteVisible, true, `${width}px write CTA`);
+      assert.equal(metrics.forbiddenCoreCopy, false, `${width}px production copy`);
+      assert.equal(metrics.coreActionsReady, true, `${width}px core actions`);
+      if (width <= 899) assert.equal(metrics.categoryColumns, 2, `${width}px compact category grid`);
+      if (width >= 900) assert.equal(metrics.categoryColumns, 4, `${width}px desktop category grid`);
+      if (width >= 1024) assert.ok(metrics.phoneWidth > 430, `${width}px home must not use fixed phone width`);
+    }
+
     assert.deepEqual(fatal, [], `browser fatal errors: ${fatal.join(' | ')}`);
     process.stdout.write(`Phase 3B responsive browser: ${widths.length}/${widths.length} widths PASS\n`);
+    process.stdout.write(`Phase 4B responsive browser: ${widths.length}/${widths.length} widths PASS\n`);
   } finally {
     try { await socket?.send('Browser.close'); } catch (_) {}
     socket?.close();
@@ -115,7 +154,44 @@ function serveStatic(pathname, response) {
   const extension = path.extname(target).toLowerCase();
   const mime = ({ '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml' })[extension] || 'application/octet-stream';
   response.writeHead(200, { 'Content-Type': `${mime}; charset=utf-8`, 'Cache-Control': 'no-store' });
+  if (relative === 'index.html') {
+    const mock = `<script>${supabaseBrowserMock()}<\/script>`;
+    const html = fs.readFileSync(target, 'utf8')
+      .replace(/<script async src="https:\/\/www\.googletagmanager\.com\/[^>]+><\/script>/, '')
+      .replace('</head>', `${mock}</head>`)
+      .replace(/const sbScript = document\.createElement\('script'\);[\s\S]*?document\.head\.appendChild\(sbScript\);/, 'window._sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); queueMicrotask(initSupabaseApp);');
+    response.end(html);
+    return;
+  }
   fs.createReadStream(target).pipe(response);
+}
+
+function supabaseBrowserMock() {
+  return `(() => {
+    const result = { data: [], count: 0, error: null };
+    const chain = () => {
+      const value = {
+        select(){ return value; }, eq(){ return value; }, neq(){ return value; }, not(){ return value; },
+        or(){ return value; }, contains(){ return value; }, in(){ return value; }, order(){ return value; },
+        limit(){ return value; }, range(){ return value; }, update(){ return value; }, delete(){ return value; },
+        insert(){ return value; }, maybeSingle(){ return Promise.resolve({ data: null, error: null }); },
+        single(){ return Promise.resolve({ data: null, error: null }); },
+        then(resolve){ return Promise.resolve(result).then(resolve); }
+      };
+      return value;
+    };
+    window.supabase = { createClient(){ return {
+      auth: {
+        getSession: async () => ({ data: { session: null } }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe(){} } } }),
+        signOut: async () => ({ error: null })
+      },
+      from: chain,
+      rpc: async () => ({ data: [], error: null }),
+      storage: { from: () => ({ upload: async () => ({ data: null, error: null }), getPublicUrl: () => ({ data: { publicUrl: '' } }) }) },
+      functions: { invoke: async () => ({ data: null, error: new Error('mock') }) }
+    }; } };
+  })();`;
 }
 
 function feedFixture() {

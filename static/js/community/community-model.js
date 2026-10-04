@@ -15,8 +15,16 @@
     'garden-class': 'cultivation-knowhow',
     'plant-brag': 'showcase-daily',
     'plant-meet': 'showcase-daily',
-    'farmer-lounge': 'agri-field-info',
-    'plant-share': 'agri-field-info'
+    'farmer-lounge': 'agri-field-info'
+  });
+
+  const ARCHIVED_LEGACY = Object.freeze({
+    'plant-share': Object.freeze({
+      id: '4619a407-a214-4555-8e63-06fa96ed87a2',
+      slug: 'plant-share',
+      name: '나눔·직거래',
+      transition_status: 'archive'
+    })
   });
 
   function normalizeTags(values) {
@@ -62,6 +70,31 @@
     return data?.[0] || { same_symptom_count: 0, helpful_count: 0, same_symptom_active: false, helpful_active: false, saved: false };
   }
 
+  function visiblePosts(posts, blockedUserIds) {
+    const blocked = blockedUserIds instanceof Set ? blockedUserIds : new Set(blockedUserIds || []);
+    return (Array.isArray(posts) ? posts : []).filter(post =>
+      post?.category_id && !blocked.has(String(post?.user_id || ''))
+    );
+  }
+
+  async function enrichFeedPosts(client, posts) {
+    const list = Array.isArray(posts) ? posts : [];
+    const ids = [...new Set(list.map(post => post?.id).filter(Boolean).map(String))].slice(0, 100);
+    if (!client || !ids.length) return list;
+    const { data, error } = await client.rpc('community_feed_metrics', { target_post_ids: ids });
+    if (error) throw error;
+    const metrics = new Map((data || []).map(row => [String(row.post_id), row]));
+    return list.map(post => ({
+      ...post,
+      comment_count: Number(metrics.get(String(post.id))?.comment_count || 0),
+      same_symptom_count: Number(metrics.get(String(post.id))?.same_symptom_count || 0),
+      helpful_count: Number(metrics.get(String(post.id))?.helpful_count || 0),
+      same_symptom_active: Boolean(metrics.get(String(post.id))?.same_symptom_active),
+      helpful_active: Boolean(metrics.get(String(post.id))?.helpful_active),
+      saved: Boolean(metrics.get(String(post.id))?.saved)
+    }));
+  }
+
   async function toggleReaction(client, postId, type) {
     if (!['same_symptom', 'helpful'].includes(type)) throw new Error('invalid_reaction_type');
     const { data, error } = await client.rpc('toggle_post_reaction', { target_post_id: postId, target_reaction_type: type });
@@ -102,12 +135,15 @@
   global.KFCommunity = Object.freeze({
     CATEGORIES,
     LEGACY_CATEGORY,
+    ARCHIVED_LEGACY,
     normalizeTags,
     fallbackCategories,
     loadCategories,
     categoryBySlug,
     categoryForPost,
     engagement,
+    visiblePosts,
+    enrichFeedPosts,
     toggleReaction,
     toggleBookmark,
     report,

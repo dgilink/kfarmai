@@ -1502,7 +1502,7 @@ function renderCommunityConnect(result) {
       <div class="community-action-grid">
         <button class="community-action" type="button" onclick="scrollRelatedQuestions()">비슷한 질문 보기</button>
         <button class="community-action secondary" type="button" onclick="markDiagnosisSameSymptom()">나도 같은 증상</button>
-        <button class="community-action dark" type="button" onclick="shareToCommunity()">커뮤니티에 질문하기</button>
+        <button class="community-action dark" type="button" onclick="shareToCommunity()">이 내용으로 질문하기</button>
       </div>
       <div class="community-safe-note">나도 같은 증상은 통계나 예측이 아니라 비슷한 증상 반응을 표시하는 사용자 관심 참고 신호입니다.</div>
       <div id="relatedQuestions" class="related-question-list">
@@ -1585,6 +1585,7 @@ function makePendingQuestion(result) {
     source: 'ai-reference-diagnosis',
     crop: safeResult.crop,
     symptoms: safeResult.symptoms,
+    tags: safeResult.tags,
     causeCandidates: asArray(safeResult.causeCandidates).map(item => typeof item === 'string' ? item : item.name).filter(Boolean),
     checkPoints: safeResult.checkPoints,
     createdAt: new Date().toISOString()
@@ -1801,7 +1802,7 @@ function showResult(result) {
       <div class="result-actions">
         <button class="btn-retry" onclick="resetDiagnosis()">다시 확인하기</button>
         <button class="btn-share" onclick="openPublicDataReport()">공공데이터 보고서 보기</button>
-        <button class="btn-share" onclick="shareToCommunity()">커뮤니티에 질문하기</button>
+        <button class="btn-share" onclick="shareToCommunity()">이 내용으로 질문하기</button>
       </div>
     </div>`;
   loadAndRenderRelatedQuestions(safeResult);
