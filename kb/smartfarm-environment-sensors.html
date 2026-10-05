@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
+  <title>스마트팜 환경센서: 온습도·CO₂·일사·EC·pH | kFarmAI</title>
+  <meta name="description" content="스마트팜의 온도·습도·CO₂·일사·토양 및 배지 수분·EC·pH 센서가 무엇을 확인하며 환경제어와 어떻게 연결되는지 공식자료 기반으로 정리합니다.">
+  <link rel="canonical" href="https://kfarmai.com/kb/smartfarm-environment-sensors.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="스마트팜 환경센서: 온습도·CO₂·일사·EC·pH | kFarmAI">
+  <meta property="og:description" content="스마트팜 주요 환경센서의 역할과 측정값을 환경제어에 연결할 때의 확인 포인트를 살펴봅니다.">
+  <meta property="og:url" content="https://kfarmai.com/kb/smartfarm-environment-sensors.html">
+  <link rel="stylesheet" href="/static/css/knowledge-v3.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Article","headline":"스마트팜 환경센서: 온습도·CO₂·일사·EC·pH","description":"스마트팜의 온도·습도·CO₂·일사·토양 및 배지 수분·EC·pH 센서가 무엇을 확인하며 환경제어와 어떻게 연결되는지 공식자료 기반으로 정리합니다.","author":{"@type":"Organization","name":"kFarmAI"},"publisher":{"@type":"Organization","name":"kFarmAI"},"datePublished":"2026-10-05","dateModified":"2026-10-05","mainEntityOfPage":{"@type":"WebPage","@id":"https://kfarmai.com/kb/smartfarm-environment-sensors.html"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://kfarmai.com/"},{"@type":"ListItem","position":2,"name":"스마트농업","item":"https://kfarmai.com/mfg.html?category=smart-agriculture"},{"@type":"ListItem","position":3,"name":"스마트팜","item":"https://kfarmai.com/mfg.html?category=smart-agriculture&area=smartfarm"},{"@type":"ListItem","position":4,"name":"환경센서","item":"https://kfarmai.com/kb/smartfarm-environment-sensors.html"}]}
+  </script>
+  <script src="/static/js/agri/official-source-registry.js" defer></script>
+</head>
+<body>
+  <header class="site-header"><a href="/index.html" aria-label="kFarmAI 홈"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
+  <main>
+    <nav class="breadcrumb" aria-label="현재 위치"><a href="/index.html">홈</a><span aria-hidden="true">›</span><a href="/mfg.html?category=smart-agriculture">스마트농업</a><span aria-hidden="true">›</span><a href="/mfg.html?category=smart-agriculture&amp;area=smartfarm">스마트팜</a><span aria-hidden="true">›</span><span aria-current="page">환경센서</span></nav>
+    <article class="knowledge-article">
+      <p class="eyebrow">스마트팜 기술정보</p>
+      <h1>스마트팜 환경센서 이해하기</h1>
+      <p class="lead">스마트팜 환경센서는 시설 안의 온도·습도·CO₂·일사와 근권부의 수분·EC·pH 변화를 기록해 환경 상태를 확인하는 도구입니다. 센서값은 작물 관찰과 설비 운전기록을 함께 볼 때 환경제어 판단에 도움이 됩니다.</p>
+
+      <section>
+        <h2>스마트팜 환경센서란?</h2>
+        <p>환경센서는 시설 내부와 토양·배지에서 계속 변하는 조건을 측정 가능한 데이터로 바꿉니다. 스마트팜은 이 데이터를 시간대별로 모아 환기, 차광, 냉난방, 관수와 양액 공급 같은 관리 흐름을 확인할 수 있게 합니다.</p>
+        <p>센서가 관리 결정을 자동으로 확정하는 것은 아닙니다. 작물, 생육단계, 재배방식과 시설 조건에 따라 같은 측정값의 의미가 달라질 수 있으므로 현장 상태와 함께 해석해야 합니다.</p>
+      </section>
+
+      <section>
+        <h2>왜 환경 데이터를 측정하나요?</h2>
+        <div class="process-grid">
+          <article class="info-card"><h3>변화 흐름 확인</h3><p>한 시점의 값보다 시간대별 변화와 급격한 변동을 기록해 시설환경의 흐름을 살펴봅니다.</p></article>
+          <article class="info-card"><h3>설비 운전 비교</h3><p>환기·차광·냉난방·관수 전후의 데이터를 비교해 설비가 의도한 방향으로 작동하는지 확인합니다.</p></article>
+          <article class="info-card"><h3>현장 관찰 보완</h3><p>잎과 생육상태, 배지의 실제 수분감, 배액과 센서 기록을 함께 보며 이상값이나 측정 편차를 점검합니다.</p></article>
+        </div>
+      </section>
+
+      <section>
+        <h2>시설 환경을 확인하는 센서</h2>
+        <div class="metric-grid">
+          <article class="info-card"><h3>온도 센서</h3><p>시설 안의 온도 변화와 냉난방·환기 운전의 관계를 확인합니다. 측정 위치, 높이와 직사광선의 영향을 함께 살펴야 합니다.</p></article>
+          <article class="info-card"><h3>습도 센서</h3><p>공기 중 수분 상태의 변화를 기록합니다. 온도와 환기 상태를 함께 보며 결로나 과도한 건조 가능성을 확인하는 참고자료로 사용합니다.</p></article>
+          <article class="info-card"><h3>CO₂ 센서</h3><p>시설 내부 CO₂ 농도의 시간대별 변화를 확인합니다. 환기와 작물 상태, 공급 설비의 운전기록을 분리하지 않고 살펴봅니다.</p></article>
+          <article class="info-card"><h3>일사 센서</h3><p>시설로 들어오는 빛의 변화를 측정해 차광과 관수 관리의 참고자료로 활용합니다. 날씨, 피복재와 센서 설치 위치의 영향도 확인합니다.</p></article>
+        </div>
+      </section>
+
+      <section>
+        <h2>토양·배지와 양액을 확인하는 센서</h2>
+        <div class="metric-grid">
+          <article class="info-card"><h3>토양·배지 수분 센서</h3><p>근권부의 수분 변화를 확인해 관수 전후 상태를 비교합니다. 센서 주변만의 값일 수 있으므로 설치 위치와 배지 전체의 균일성을 함께 봅니다.</p></article>
+          <article class="info-card"><h3>EC 센서</h3><p>양액이나 근권부 용액의 전기전도도를 통해 용존 이온 상태를 확인하는 데 쓰입니다. 공급액과 배액, 수분 상태 및 측정기 교정을 함께 확인합니다.</p></article>
+          <article class="info-card"><h3>pH 센서</h3><p>양액과 근권부의 산성·알칼리성 상태를 살펴봅니다. 단일 측정값보다 변화 추이, 측정 위치와 교정 상태를 함께 기록합니다.</p></article>
+        </div>
+        <p><a href="/kb/smartfarm-irrigation-fertigation.html">수분·EC·pH 데이터를 관수·양액 관리와 연결하는 방법 보기</a></p>
+      </section>
+
+      <section>
+        <h2>센서 데이터와 환경제어 연결</h2>
+        <ol>
+          <li>센서값과 측정 시각, 위치를 기록합니다.</li>
+          <li>작물 상태와 외부 날씨, 설비 운전기록을 함께 확인합니다.</li>
+          <li>설정된 관리범위를 벗어난 값이 반복되는지 살펴봅니다.</li>
+          <li>환기·차광·냉난방·관수 등 관련 설비의 상태를 점검합니다.</li>
+          <li>제어 후 측정값과 작물 반응을 다시 확인해 기록을 이어갑니다.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>센서 데이터를 해석할 때 주의할 점</h2>
+        <ul>
+          <li>적정 범위는 작물, 생육단계, 재배방식과 시설 조건에 따라 달라질 수 있습니다.</li>
+          <li>한 센서의 값만으로 작물 상태나 공급 조건을 확정하지 않습니다.</li>
+          <li>설치 위치, 오염, 노후화, 통신 장애와 교정 상태가 측정값에 영향을 줄 수 있습니다.</li>
+          <li>이상값은 다른 센서와 수동 측정, 실제 작물 상태로 교차확인합니다.</li>
+          <li>자동제어에는 경보, 수동 전환과 설비 고장 시 대응 절차가 함께 필요합니다.</li>
+        </ul>
+      </section>
+
+      <aside class="caution" aria-label="센서 기준 주의"><strong>확인 안내:</strong> 이 페이지는 작물별 최적 온도·습도·CO₂·EC·pH 수치를 제시하지 않습니다. 실제 관리범위는 해당 작물과 시설의 공식 재배자료, 센서 설명서와 현장 조건을 함께 확인하세요.</aside>
+      <p class="content-origin"><strong>kFarmAI 설명:</strong> 아래 공식자료가 다루는 스마트팜 환경정보와 측정·제어 범위를 바탕으로 자체 재구성했습니다. 공식기관 원문을 대량 복제하지 않았으며 특정 센서나 제품을 추천하지 않습니다.</p>
+
+      <section class="official-sources" data-official-source-ids="rda-agtech-smartfarm-environment-data,nongsaro-smartfarm-field-applications,nongsaro-smartfarm-introduction,nongsaro-smartfarm-status">
+        <h2>관련 공식자료</h2>
+        <p class="source-status" role="status" aria-live="polite">공식자료 Registry를 확인하고 있습니다.</p>
+        <ul class="source-list"></ul>
+        <noscript><p>공식자료 목록을 보려면 JavaScript를 활성화하거나 kFarmAI 농업정보에서 원문 출처를 확인해 주세요.</p></noscript>
+      </section>
+
+      <section>
+        <h2>관련 kFarmAI 콘텐츠</h2>
+        <nav class="related-grid" aria-label="관련 정보">
+          <a href="/kb/smartfarm-irrigation-fertigation.html">스마트팜 관수·양액</a>
+          <a href="/mfg.html?category=smart-agriculture&amp;area=smartfarm">스마트팜 기술분류</a>
+          <a href="/agri-info.html?section=cultivation">재배·기술 공식정보</a>
+        </nav>
+      </section>
+    </article>
+  </main>
+  <footer class="site-footer"><a href="/oauth/privacy/">개인정보처리방침</a></footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+'use strict';
+const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
+const root=path.resolve(__dirname,'..');const read=file=>fs.readFileSync(path.join(root,file),'utf8');const exists=file=>fs.existsSync(path.join(root,file));
+const sensorPath='kb/smartfarm-environment-sensors.html';const irrigationPath='kb/smartfarm-irrigation-fertigation.html';
+const sensor=read(sensorPath);const irrigation=read(irrigationPath);const pages=[sensor,irrigation];const sitemap=read('sitemap.xml');const mfg=read('mfg.html');const css=read('static/css/knowledge-v3.css');const taxonomy=JSON.parse(read('data/agri-input-taxonomy.json'));const registry=JSON.parse(read('data/agri-official-sources.json'));
+const sourceIds=new Set(registry.sources.map(source=>source.id));const smartfarm=taxonomy.canonicalCategories.find(item=>item.id==='smart-agriculture').children.find(item=>item.id==='smartfarm');
+let passed=0;function test(name,fn){try{fn();passed++}catch(error){error.message=name+': '+error.message;throw error}}
+const titleOf=page=>page.match(/<title>([^<]+)<\/title>/)?.[1]||'';const canonicalOf=page=>page.match(/<link rel="canonical" href="([^"]+)"/)?.[1]||'';const idsOf=page=>(page.match(/data-official-source-ids="([^"]+)"/)?.[1]||'').split(',').filter(Boolean);const articleOf=page=>page.match(/<article class="knowledge-article">([\s\S]*)<\/article>\s*<\/main>/)?.[1]||'';const textOf=html=>html.replace(/<script[\s\S]*?<\/script>/g,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+
+test('environment sensor page exists',()=>assert.ok(exists(sensorPath)));
+test('irrigation and fertigation page exists',()=>assert.ok(exists(irrigationPath)));
+test('page titles are unique and specific',()=>{assert.notEqual(titleOf(sensor),titleOf(irrigation));assert.match(titleOf(sensor),/스마트팜 환경센서/);assert.match(titleOf(irrigation),/스마트팜 관수·양액/)});
+test('canonical URLs are exact production URLs',()=>{assert.equal(canonicalOf(sensor),'https://kfarmai.com/'+sensorPath);assert.equal(canonicalOf(irrigation),'https://kfarmai.com/'+irrigationPath)});
+test('canonical URLs contain no preview host',()=>pages.forEach(page=>assert.doesNotMatch(canonicalOf(page),/localhost|127\.0\.0\.1/)));
+test('descriptions and OpenGraph metadata are complete',()=>pages.forEach(page=>{assert.match(page,/<meta name="description" content="[^"]+">/);assert.match(page,/<meta property="og:title" content="[^"]+">/);assert.match(page,/<meta property="og:description" content="[^"]+">/);assert.match(page,/<meta property="og:url" content="https:\/\/kfarmai\.com\//)}));
+test('each page has exactly one H1',()=>pages.forEach(page=>assert.equal((page.match(/<h1\b/g)||[]).length,1)));
+test('visible breadcrumbs include smart agriculture and smartfarm',()=>pages.forEach(page=>{assert.match(page,/<nav class="breadcrumb" aria-label="현재 위치">/);assert.match(page,/스마트농업/);assert.match(page,/스마트팜/)}));
+test('Article and BreadcrumbList JSON-LD are present',()=>pages.forEach(page=>{assert.match(page,/"@type":"Article"/);assert.match(page,/"@type":"BreadcrumbList"/)}));
+test('all JSON-LD parses and kFarmAI is the author',()=>pages.forEach(page=>[...page.matchAll(/<script type="application\/ld\+json">\s*([\s\S]*?)\s*<\/script>/g)].forEach(match=>{const value=JSON.parse(match[1]);if(value['@type']==='Article')assert.equal(value.author.name,'kFarmAI')})));
+test('approved favicon is explicit',()=>pages.forEach(page=>assert.match(page,/<link rel="icon" href="\/static\/kfarmai-logo-horizontal\.png">/)));
+test('pages use the established knowledge stylesheet and registry renderer',()=>pages.forEach(page=>{assert.match(page,/\/static\/css\/knowledge-v3\.css/);assert.match(page,/\/static\/js\/agri\/official-source-registry\.js/)}));
+test('sensor page covers every required measurement',()=>['온도','습도','CO₂','일사','토양·배지 수분','EC','pH'].forEach(term=>assert.ok(sensor.includes(term),term)));
+test('sensor page connects measurement to control and cautions',()=>['환기','차광','냉난방','관수','교정','수동 전환'].forEach(term=>assert.ok(sensor.includes(term),term)));
+test('irrigation page covers water nutrient and rootzone data',()=>['관수','양액','토양·배지 수분','EC','pH','공급량','공급시점'].forEach(term=>assert.ok(irrigation.includes(term),term)));
+test('irrigation page covers sensor linkage and safe automation',()=>['환경센서','자동제어','경보','수동 전환','통신 장애'].forEach(term=>assert.ok(irrigation.includes(term),term)));
+test('pages link to each other',()=>{assert.match(sensor,/href="\/kb\/smartfarm-irrigation-fertigation\.html"/);assert.match(irrigation,/href="\/kb\/smartfarm-environment-sensors\.html"/)});
+test('smartfarm taxonomy links both pages',()=>assert.deepEqual(smartfarm.contentLinks.map(item=>item.url),[sensorPath,irrigationPath]));
+test('mfg fallback exposes both pages',()=>[sensorPath,irrigationPath].forEach(url=>assert.ok(mfg.includes(url),url)));
+test('sitemap contains each new canonical exactly once',()=>[sensorPath,irrigationPath].forEach(url=>assert.equal(sitemap.split('https://kfarmai.com/'+url).length-1,1,url)));
+test('all connected source IDs exist',()=>pages.flatMap(idsOf).forEach(id=>assert.ok(sourceIds.has(id),id)));
+test('sensor source coverage is sufficient',()=>['rda-agtech-smartfarm-environment-data','nongsaro-smartfarm-field-applications','nongsaro-smartfarm-introduction','nongsaro-smartfarm-status'].forEach(id=>assert.ok(idsOf(sensor).includes(id),id)));
+test('irrigation source coverage is sufficient',()=>['rda-agtech-smartfarm-environment-data','nongsaro-smartfarm-field-applications','nongsaro-smartfarm-introduction','nongsaro-smartfarm-status','mafra-smartfarm-overview'].forEach(id=>assert.ok(idsOf(irrigation).includes(id),id)));
+test('referenced source licenses remain needs-review',()=>pages.flatMap(idsOf).forEach(id=>assert.equal(registry.sources.find(source=>source.id===id).license.status,'needs-review',id)));
+test('content does not claim free reuse or copy official text',()=>pages.forEach(page=>{assert.doesNotMatch(page,/자유\s*이용|상업적\s*이용\s*가능|변경\s*이용\s*가능/);assert.match(page,/원문을 대량 복제하지/)}));
+test('pages avoid unsupported absolute agronomic values',()=>pages.forEach(page=>assert.doesNotMatch(articleOf(page),/\d+(?:\.\d+)?\s*(?:°C|도|ppm|%|mS\/?cm|dS\/?m|배|리터|L\b)/i)));
+test('pages avoid sales and product promotion',()=>pages.forEach(page=>assert.doesNotMatch(page,/구매하기|가격비교|장바구니|결제|추천 제품|최저가|업체 순위|상품 추천/)));
+test('sensor values are not described as automatic prescriptions',()=>pages.forEach(page=>{assert.doesNotMatch(page,/센서값만으로\s*자동\s*처방(?:이 가능|합니다)|AI가\s*(?:전문가|농업인).*대신/);assert.match(page,/센서값[^.]*만으로[^.]*않|한 센서의 값만으로[^.]*않/)}));
+test('pages are substantive rather than thin content',()=>pages.forEach(page=>assert.ok(textOf(articleOf(page)).length>1800,textOf(articleOf(page)).length)));
+test('heading hierarchy never skips levels',()=>pages.forEach(page=>{const levels=[...page.matchAll(/<h([1-3])\b/g)].map(match=>Number(match[1]));assert.equal(levels[0],1);for(let i=1;i<levels.length;i++)assert.ok(levels[i]-levels[i-1]<=1)}));
+test('core internal links resolve locally',()=>pages.forEach(page=>[...page.matchAll(/href="(\/[^"]+)"/g)].map(match=>match[1].split(/[?#]/)[0]).filter(url=>!url.startsWith('/api/')).forEach(url=>{const relative=url==='/'?'index.html':url.replace(/^\//,'');const target=relative.endsWith('/')?relative+'index.html':relative;assert.ok(exists(target),url)})));
+test('focus and long URL accessibility contracts remain active',()=>{assert.match(css,/a:focus-visible/);assert.match(css,/\.source-card a[\s\S]*overflow-wrap:\s*anywhere/)});
+test('ORP remains supplementary and held without a page',()=>{const aquafarm=taxonomy.canonicalCategories.find(item=>item.id==='smart-agriculture').children.find(item=>item.id==='land-aquafarm');assert.equal(aquafarm.topicPolicies.ORP.evidenceLevel,'supplementary');assert.equal(aquafarm.topicPolicies.ORP.seoEligibility,'hold');assert.equal(exists('kb/aquafarm-orp.html'),false);assert.doesNotMatch(sitemap,/orp/i)});
+
+process.stdout.write('Phase 6A smartfarm SEO contracts: '+passed+'/'+passed+' PASS\n');

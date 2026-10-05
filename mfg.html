@@ -237,7 +237,10 @@ const DEFAULT_CANONICAL_CATEGORIES = [
   { id: 'crop-protection', name: '작물보호', summary: '병해충 정보와 농약 안전사용기준을 우선 확인합니다.', legacyIds: ['crop-protection'], topics: ['병해충', '안전사용기준', '보호장비'] },
   { id: 'facility-irrigation', name: '시설·관수', summary: '관수, 배수, 환기와 시설 유지관리 항목을 확인합니다.', legacyIds: ['irrigation-facility', 'machinery-safety'], topics: ['관수', '배수', '펌프', '환기', '시설 안전'] },
   { id: 'smart-agriculture', name: '스마트농업', summary: '센서와 제어 데이터를 활용하는 스마트팜·육상 스마트양식 기술을 살펴봅니다.', legacyIds: ['smartfarm'], topics: ['센서', '모니터링', '자동제어', '에너지', 'EMS'], children: [
-    { id: 'smartfarm', name: '스마트팜', summary: '시설재배 환경·센서·제어 기술정보', topics: ['온도', '습도', 'CO₂', '일사', '토양수분', 'EC', 'pH', '관수', '양액', '센서', '환경제어', '자동화', '에너지', 'EMS'] },
+    { id: 'smartfarm', name: '스마트팜', summary: '시설재배 환경·센서·제어 기술정보', topics: ['온도', '습도', 'CO₂', '일사', '토양수분', 'EC', 'pH', '관수', '양액', '센서', '환경제어', '자동화', '에너지', 'EMS'], contentLinks: [
+      { label: '스마트팜 환경센서 알아보기', url: 'kb/smartfarm-environment-sensors.html' },
+      { label: '스마트팜 관수·양액 알아보기', url: 'kb/smartfarm-irrigation-fertigation.html' }
+    ] },
     { id: 'land-aquafarm', name: '육상 아쿠아팜', summary: '수질·순환여과·센서·에너지 기반 육상 스마트양식 기술정보', topics: ['수온', '용존산소(DO)', 'pH', '염분', 'ORP', '암모니아', '순환여과(RAS)', '수처리', '펌프', '산소공급', '센서', '자동제어', '에너지', 'EMS'], contentLinks: [
       { label: 'RAS 순환여과양식 알아보기', url: 'kb/ras-recirculating-aquaculture.html' },
       { label: '육상양식 수질관리 알아보기', url: 'kb/land-aquaculture-water-quality.html' }

@@ -84,6 +84,16 @@
             { "topic": "에너지관리", "sourceIds": ["nongsaro-smartfarm-status", "mafra-smartfarm-overview", "mafra-smart-agriculture-master-plan"] },
             { "topic": "EMS", "sourceIds": ["nongsaro-smartfarm-status", "mafra-smartfarm-overview", "mafra-smart-agriculture-master-plan"] }
           ],
+          "contentLinks": [
+            {
+              "label": "스마트팜 환경센서 알아보기",
+              "url": "kb/smartfarm-environment-sensors.html"
+            },
+            {
+              "label": "스마트팜 관수·양액 알아보기",
+              "url": "kb/smartfarm-irrigation-fertigation.html"
+            }
+          ],
           "entries": [
             { "title": "온습도 센서", "description": "시설 내부 온도와 습도의 측정 위치·주기·센서 상태를 함께 확인합니다." },
             { "title": "EC·pH", "description": "양액 농도와 산도를 해석할 때 작물 생육단계와 측정기 교정 상태를 함께 확인합니다." },
