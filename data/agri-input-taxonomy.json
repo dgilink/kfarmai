@@ -68,6 +68,7 @@
           "id": "smartfarm",
           "name": "스마트팜",
           "summary": "시설재배 환경·센서·제어 기술정보",
+          "landingUrl": "kb/smartfarm-guide.html",
           "topics": ["온도", "습도", "CO₂", "일사", "토양수분", "EC", "pH", "관수", "양액", "센서", "환경제어", "자동화", "에너지", "EMS", "시설재배", "데이터 활용"],
           "evidence": [
             { "topic": "온도", "sourceIds": ["rda-agtech-smartfarm-environment-data", "nongsaro-smartfarm-field-applications"] },

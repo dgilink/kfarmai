@@ -57,6 +57,17 @@
   line-height: 1.6;
 }
 
+.agri-smartfarm-entry {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--agri-border);
+  border-radius: 14px;
+  background: var(--agri-surface);
+}
+
+.agri-smartfarm-entry h2 { margin: 0 0 6px; font-size: 17px; color: var(--agri-green-900); }
+.agri-smartfarm-entry p { margin: 0 0 12px; font-size: 13px; line-height: 1.6; color: var(--agri-muted); }
+
 .agri-feed-loading[hidden],
 .agri-feed-message[hidden] {
   display: none;
