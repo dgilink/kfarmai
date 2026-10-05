@@ -29,20 +29,10 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Prepare static site
-        shell: bash
-        run: |
-          rm -rf _site
-          mkdir _site
-          rsync -av \
-            --exclude='.git/' \
-            --exclude='.github/' \
-            --exclude='worker/' \
-            --exclude='.env*' \
-            --exclude='node_modules/' \
-            --exclude='.wrangler/' \
-            --exclude='worker/.wrangler/' \
-            --exclude='_site/' \
-            ./ _site/
+        run: node scripts/pages/build-pages-artifact.cjs --output=_site
+
+      - name: Verify static site security contract
+        run: node scripts/pages/verify-pages-artifact.cjs _site
 
       - name: Upload static files
         uses: actions/upload-pages-artifact@v3
