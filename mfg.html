@@ -420,12 +420,25 @@ function getOfficialCompanyGridItems() {
     })));
 }
 
+function normalizeExternalHttpUrl(value) {
+  if(typeof value !== 'string') return '';
+  const text = value.trim();
+  if(!text) return '';
+  try {
+    const url = new URL(text);
+    return (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
 function renderCards(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
   list.forEach(item => {
     const tags = item.products ? item.products.split(',').slice(0,5).map(p=>`<span class="kf-tag ${item.tagClass}">${p.trim()}</span>`).join('') : '';
-    const hp = item.homepage ? `<a href="${item.homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>` : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
+    const homepage = normalizeExternalHttpUrl(item.homepage);
+    const hp = homepage ? `<a href="${homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>` : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
     const catColor = item.tagClass==='kf-tag-green'?'#1e6b2e':item.tagClass==='kf-tag-blue'?'#4a90d9':item.tagClass==='kf-tag-red'?'#c0392b':item.tagClass==='kf-tag-teal'?'#0d9488':'#e65100';
     grid.innerHTML += `<div class="kf-company-card" style="border-top-color:${catColor}">
       <div style="margin-bottom:6px;"><span class="kf-tag ${item.tagClass}">${item.cat}</span></div>
