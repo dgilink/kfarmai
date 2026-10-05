@@ -24,7 +24,7 @@ test('sensor page connects measurement to control and cautions',()=>['환기','�
 test('irrigation page covers water nutrient and rootzone data',()=>['관수','양액','토양·배지 수분','EC','pH','공급량','공급시점'].forEach(term=>assert.ok(irrigation.includes(term),term)));
 test('irrigation page covers sensor linkage and safe automation',()=>['환경센서','자동제어','경보','수동 전환','통신 장애'].forEach(term=>assert.ok(irrigation.includes(term),term)));
 test('pages link to each other',()=>{assert.match(sensor,/href="\/kb\/smartfarm-irrigation-fertigation\.html"/);assert.match(irrigation,/href="\/kb\/smartfarm-environment-sensors\.html"/)});
-test('smartfarm taxonomy links both pages',()=>assert.deepEqual(smartfarm.contentLinks.map(item=>item.url),[sensorPath,irrigationPath]));
+test('smartfarm taxonomy retains both Phase 6A pages',()=>[sensorPath,irrigationPath].forEach(url=>assert.ok(smartfarm.contentLinks.some(item=>item.url===url),url)));
 test('mfg fallback exposes both pages',()=>[sensorPath,irrigationPath].forEach(url=>assert.ok(mfg.includes(url),url)));
 test('sitemap contains each new canonical exactly once',()=>[sensorPath,irrigationPath].forEach(url=>assert.equal(sitemap.split('https://kfarmai.com/'+url).length-1,1,url)));
 test('all connected source IDs exist',()=>pages.flatMap(idsOf).forEach(id=>assert.ok(sourceIds.has(id),id)));

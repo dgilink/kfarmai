@@ -92,6 +92,14 @@
             {
               "label": "스마트팜 관수·양액 알아보기",
               "url": "kb/smartfarm-irrigation-fertigation.html"
+            },
+            {
+              "label": "스마트팜 환경제어·자동화 알아보기",
+              "url": "kb/smartfarm-environment-control-automation.html"
+            },
+            {
+              "label": "스마트팜 에너지관리 알아보기",
+              "url": "kb/smartfarm-energy-management.html"
             }
           ],
           "entries": [
