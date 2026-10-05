@@ -6,6 +6,7 @@ import worker from '../src/index.js';
 import {
   PROVIDER_CONFIG,
   PROVIDER_STATUS,
+  assessFreshness,
   buildAgriFeed,
   buildProviderResult,
   fetchProvider
@@ -26,6 +27,28 @@ test('normal response becomes LIVE', () => {
   }, NOW);
   assert.equal(result.status, PROVIDER_STATUS.LIVE);
   assert.equal(result.items[0].status, PROVIDER_STATUS.LIVE);
+});
+
+test('72-hour freshness boundary is deterministic in UTC', () => {
+  const checkedAt = new Date('2026-10-05T00:00:00.000Z');
+  const beforeBoundary = assessFreshness('kamis', '2026-10-02T00:01:00.000Z', NOW, checkedAt);
+  const atBoundary = assessFreshness('kamis', '2026-10-02T00:00:00.000Z', NOW, checkedAt);
+  const afterBoundary = assessFreshness('kamis', '2026-10-01T23:54:00.000Z', NOW, checkedAt);
+  const future = assessFreshness('kamis', '2026-10-05T01:00:00.000Z', NOW, checkedAt);
+  const invalid = assessFreshness('kamis', 'not-a-date', NOW, checkedAt);
+  const offsetBoundary = assessFreshness('kamis', '2026-10-02T09:00:00+09:00', NOW, checkedAt);
+
+  assert.equal(beforeBoundary.state, 'FRESH');
+  assert.equal(atBoundary.state, 'FRESH');
+  assert.equal(atBoundary.ageHours, 72);
+  assert.equal(afterBoundary.state, 'STALE');
+  assert.equal(afterBoundary.ageHours, 72.1);
+  assert.equal(future.state, 'FRESH');
+  assert.equal(future.ageHours, 0);
+  assert.equal(invalid.state, 'UNKNOWN');
+  assert.equal(invalid.ageHours, null);
+  assert.equal(offsetBoundary.state, 'FRESH');
+  assert.equal(offsetBoundary.ageHours, 72);
 });
 
 test('provider timeout is classified and cannot wait forever', async () => {
@@ -81,17 +104,22 @@ test('fallback preserves source date and explicit freshness notice', () => {
   assert.match(result.notice, /현재 최신 데이터를 불러오지 못해 2026-07-02 기준/);
 });
 
-test('partial provider success returns overall LIVE', async () => {
-  const fixture = {
-    price: [{ productName: '토마토', product_cls_name: '소매', lastest_day: TODAY, unit: '1kg', dpr1: '5200' }]
-  };
-  await withFetch(async () => Response.json(fixture), async () => {
-    const feed = await requestFeed({ KAMIS_API_KEY: 'fixture', KAMIS_API_ID: 'fixture' });
-    assert.equal(feed.overallStatus, PROVIDER_STATUS.LIVE);
-    assert.equal(feed.partial, true);
-    assert.equal(feed.providers.kamis.status, PROVIDER_STATUS.LIVE);
-    assert.equal(feed.providers.ncpms.status, PROVIDER_STATUS.UNAVAILABLE);
-  });
+test('partial provider success returns overall LIVE', async context => {
+  context.mock.timers.enable({ apis: ['Date'], now: new Date(NOW) });
+  try {
+    const fixture = {
+      price: [{ productName: '토마토', product_cls_name: '소매', lastest_day: TODAY, unit: '1kg', dpr1: '5200' }]
+    };
+    await withFetch(async () => Response.json(fixture), async () => {
+      const feed = await requestFeed({ KAMIS_API_KEY: 'fixture', KAMIS_API_ID: 'fixture' });
+      assert.equal(feed.overallStatus, PROVIDER_STATUS.LIVE);
+      assert.equal(feed.partial, true);
+      assert.equal(feed.providers.kamis.status, PROVIDER_STATUS.LIVE);
+      assert.equal(feed.providers.ncpms.status, PROVIDER_STATUS.UNAVAILABLE);
+    });
+  } finally {
+    context.mock.timers.reset();
+  }
 });
 
 test('KMA fixture is normalized with forecast base date', async () => {
