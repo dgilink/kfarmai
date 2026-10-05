@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-P6FSHHD8D1"></script>
 <script>
@@ -34,6 +35,7 @@
 
 <meta name="theme-color" content="#16a34a">
 <link rel="stylesheet" href="style.css">
+<script src="/static/js/external-homepage.js"></script>
 <style>
 .kf-company-card { border-top-color: #4a90d9; }
 .kf-homepage-btn { background: #eef4fb; color: #4a90d9; }
@@ -145,8 +147,9 @@ function renderCards(list) {
     const prods = item.products.split(',').map(p => p.trim()).filter(p => p);
     const tags = prods.slice(0, 7).map(p => `<span class="kf-tag kf-tag-blue">${p}</span>`).join('');
     const more = prods.length > 7 ? `<span class="kf-tag kf-tag-blue">+${prods.length-7}</span>` : '';
-    const hp = item.homepage
-      ? `<a href="${item.homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>`
+    const homepage = window.KFExternalLinks.normalizeExternalHomepage(item.homepage);
+    const hp = homepage
+      ? `<a href="${homepage}" target="_blank" rel="noopener noreferrer" class="kf-homepage-btn">홈페이지 →</a>`
       : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
     grid.innerHTML += `
       <div class="kf-company-card">
