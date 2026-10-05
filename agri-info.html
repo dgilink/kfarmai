@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>농업정보 - kFarmAI</title>
+  <meta name="description" content="날씨·재해, 병해충·농약안전, 농산물 시세, 재배기술, 지원·공고를 기준일과 출처와 함께 확인합니다.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://kfarmai.com/agri-info.html">
+  <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
+  <link rel="stylesheet" href="static/css/agri-info-v3.css">
+</head>
+<body class="agri-v3-page">
+  <a class="agri-skip-link" href="#agriMain">본문 바로가기</a>
+  <header class="agri-v3-header">
+    <div class="agri-v3-header-inner">
+      <a class="agri-v3-brand" href="index.html" aria-label="kFarmAI 홈">
+        <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI">
+      </a>
+      <a class="agri-home-link" href="index.html">홈으로</a>
+    </div>
+  </header>
+
+  <main class="agri-v3-main" id="agriMain">
+    <div class="agri-v3-hero">
+      <div>
+        <h1>농업정보</h1>
+        <p>공공기관과 공식 데이터의 최신 정보를 확인합니다.</p>
+      </div>
+      <div class="agri-last-check" id="agriLastCheck">마지막 확인: 확인 중</div>
+    </div>
+
+    <nav class="agri-v3-nav" aria-label="농업정보 분야">
+      <a href="#today">오늘</a>
+      <a href="#weather">날씨·재해</a>
+      <a href="#pest-safety">병해충·농약안전</a>
+      <a href="#market">농산물 시세</a>
+      <a href="#cultivation">재배·기술</a>
+      <a href="#support">지원·공고</a>
+    </nav>
+
+    <div class="agri-feed-loading" id="agriFeedLoading" role="status" aria-live="polite">공식 농업정보를 확인하고 있습니다.</div>
+    <div class="agri-feed-message" id="agriFeedMessage" role="status" aria-live="polite" hidden></div>
+    <div class="agri-v3-dashboard" id="agriFeedDashboard" aria-label="농업정보 목록"></div>
+  </main>
+
+  <footer class="agri-v3-footer">
+    자료의 기준일과 출처를 확인하고, 신청·농약 사용·농작업 전에는 공식 제공처의 최신 내용을 다시 확인하세요.
+  </footer>
+  <script src="static/js/agri-info/agri-feed-ui.js"></script>
+</body>
+</html>

@@ -9,6 +9,7 @@
 <title>채널 게시글 - kFarmAI</title>
 <meta name="description" content="kFarmAI 채널별 농업·식물 커뮤니티 게시글 목록입니다.">
 <link rel="canonical" href="https://kfarmai.com/channel.html">
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <style>
   :root { --green:#1D9E75; --green-dark:#0E8A5F; --border:#E5E7EB; --bg:#F6F8F5; --text:#111827; --muted:#6B7280; --card:#fff; }
   * { box-sizing:border-box; }
@@ -149,8 +150,9 @@
   .toast { position:fixed; left:50%; bottom:24px; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:200; background:#111; color:#fff; border-radius:999px; padding:11px 16px; font-size:13px; font-weight:800; opacity:0; pointer-events:none; transition:opacity .2s; }
   .toast.show { opacity:1; }
 </style>
+<link rel="stylesheet" href="static/css/community-v3.css">
 </head>
-<body>
+<body class="community-list-page">
 <svg width="0" height="0" style="position:absolute">
   <symbol id="nav-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" fill="currentColor" opacity=".2"/><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></symbol>
   <symbol id="nav-q" viewBox="0 0 24 24"><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" fill="currentColor" opacity=".2"/><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" fill="none"/></symbol>
@@ -200,7 +202,7 @@
       </div>
       <div class="mini-list" id="popularQuestions"><div class="mini-empty">불러오는 중...</div></div>
     </article>
-    <article class="question-block question-block--same">
+    <article class="question-block question-block--same" hidden>
       <div class="hub-section-head">
         <div class="hub-section-title"><span class="hub-section-icon" aria-hidden="true">🌿</span>나도 같은 증상</div>
         <a class="hub-more" data-more-sort="symptom" data-more-section="same" href="channel.html?sort=symptom" onclick="goMoreLink(event,this)">더보기 &gt;</a>
@@ -224,7 +226,7 @@
   <div class="modal">
     <button class="modal-handle" type="button" onclick="closeWriteModal()" aria-label="닫기"></button>
     <div class="modal-head"><div class="modal-title">커뮤니티에 질문하기</div><button class="modal-close" type="button" onclick="closeWriteModal()" aria-label="닫기">×</button></div>
-    <div class="field"><div class="label">채널 선택</div><select class="select" id="channelSelect"></select></div>
+    <div class="field"><div class="label">분류 선택</div><select class="select" id="channelSelect"></select></div>
     <div class="field">
       <div class="label">대표 증상을 선택해주세요</div>
       <select class="select" id="postCategory" onchange="toggleCustomSymptom()">
@@ -234,6 +236,8 @@
     </div>
     <div class="field"><div class="label">제목</div><input class="input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
     <div class="field"><div class="label">내용</div><textarea class="textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
+    <div class="field"><div class="label">작물·식물 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><input class="input" id="postCrop" placeholder="예: 고추, 몬스테라" autocomplete="off"></div>
+    <div class="field"><div class="label">재배방식 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><select class="select" id="cultivationSelect"><option value="">재배방식 미선택</option><option>홈가드닝</option><option>텃밭</option><option>노지</option><option>시설재배</option><option>스마트팜</option><option>아쿠아팜</option></select></div>
     <div class="field"><div class="label">지역 선택 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><select class="select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
     <div class="field">
       <div class="label">사진 업로드 <span style="font-weight:600;color:var(--muted)">(선택, 최대 3장)</span></div>
@@ -242,13 +246,13 @@
       <div class="image-file-info" id="postImageInfo"></div>
       <div class="image-preview-row" id="postImagePreview"></div>
     </div>
-    <div class="field" hidden>
-      <div class="label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(최대 5개)</span></div>
+    <div class="field">
+      <div class="label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(선택, 최대 8개)</span></div>
       <div class="tag-chip-row" id="tagSuggestions"></div>
       <div class="tag-input-row"><input class="input" id="tagInput" placeholder="#고추 또는 잎마름" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput()}"><button class="tag-add-btn" type="button" onclick="addTagFromInput()">추가</button></div>
       <div class="post-tags" id="selectedTags"></div>
     </div>
-    <button class="submit" id="submitBtn" type="button" onclick="submitPost()">질문 등록하기</button>
+    <button class="submit" id="submitBtn" type="button" onclick="submitPost()">게시하기</button>
   </div>
 </div>
 
@@ -274,10 +278,16 @@
 
 <div class="toast" id="toast"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="static/js/community/community-model.js"></script>
+<script src="static/js/community/question-draft.js"></script>
 <script>
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
 const CHANNEL_CONFIG = {
+  'question-help':'질문·문제해결',
+  'cultivation-knowhow':'재배·노하우',
+  'showcase-daily':'자랑·일상',
+  'agri-field-info':'농업·현장정보',
   'plant-hospital':'식물 병원',
   'plant-question':'식물 질문방',
   'crop-consult':'작물 상담방',
@@ -288,6 +298,10 @@ const CHANNEL_CONFIG = {
   'plant-meet':'식집사 모임'
 };
 const CHANNEL_ICONS = {
+  'question-help':'💬',
+  'cultivation-knowhow':'🌱',
+  'showcase-daily':'📷',
+  'agri-field-info':'🌾',
   'plant-hospital':'🌿',
   'plant-question':'💬',
   'crop-consult':'🌾',
@@ -307,6 +321,10 @@ const CHANNEL_TOPIC_CONFIG = {
   plant_people:{label:'모임 주제',helper:'식집사들과 나누고 싶은 주제를 선택해주세요.',options:['반려식물','실내식물','플랜테리어','물주기루틴','식물친구','식물사진','질문나눔','오프모임','기타']}
 };
 const CHANNEL_TOPIC_SLUG_MAP = {
+  'question-help':'problem',
+  'cultivation-knowhow':'gardening_class',
+  'showcase-daily':'plant_showcase',
+  'agri-field-info':'farmer_lounge',
   'plant-hospital':'problem',
   'plant-question':'problem',
   'crop-consult':'problem',
@@ -362,92 +380,40 @@ const CHANNEL_HUBS = {
 const CHANNEL_BADGE_COLORS = {'plant-hospital':'','plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const PAGE_SIZE = 20;
 const params = new URLSearchParams(location.search);
-const slugParam = params.get('slug') || '';
+const legacySlugParam = params.get('slug') || '';
+const archivedChannel = window.KFCommunity.ARCHIVED_LEGACY[legacySlugParam] || null;
+const slugParam = params.get('category') || window.KFCommunity.LEGACY_CATEGORY[legacySlugParam] || archivedChannel?.slug || '';
 const sectionParam = params.get('section') || '';
 const sortParam = normalizeMoreSort(params.get('sort') || sectionParam || 'latest');
 const isMoreListMode = params.has('sort') || params.has('section');
 const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
-const DEMO_CASE_WRITE_PRESETS = {
-  'tomato-leaf-mold': {
-    channelSlug: 'plant-hospital',
-    category: '식물 병원',
-    title: '토마토 잎 뒷면에 회색 곰팡이가 보입니다',
-    content: 'AI 참고 진단에서 잎곰팡이병 가능성을 확인했습니다. 공공자료 기준으로 어떤 점을 더 확인하면 좋을까요?'
-  },
-  'pepper-anthracnose': {
-    channelSlug: 'crop-consult',
-    category: '작물 상담방',
-    title: '고추 열매에 작은 검은 반점이 생겼습니다',
-    content: 'AI 참고 진단에서 탄저병 초기 가능성을 확인했습니다. 공공자료 기준으로 사진에서 어떤 증상을 더 확인하면 좋을까요?'
-  },
-  'cucumber-downy-or-good': {
-    channelSlug: 'plant-hospital',
-    category: '식물 병원',
-    title: '오이 잎 반점이 노균병인지 정상 생육인지 궁금합니다',
-    content: 'AI 참고 진단에서 노균병 가능성과 정상 생육 변화를 함께 확인해야 한다고 나왔습니다. 어떤 관찰 포인트를 더 보면 좋을까요?'
-  },
-  'strawberry-powdery-mildew': {
-    channelSlug: 'crop-consult',
-    category: '작물 상담방',
-    title: '딸기 잎 표면에 흰 가루 같은 흔적이 보입니다',
-    content: 'AI 참고 진단에서 흰가루병 가능성을 확인했습니다. 공공자료 기준으로 어떤 증상을 더 확인하면 좋을까요?'
-  }
-};
-const CHANNEL_DEMO_FALLBACKS = {
-  'plant-brag': [
-    {title:'새로 들인 몬스테라 잎이 잘 펴졌어요', summary:'분갈이 후 새잎이 안정적으로 펴진 경험을 공유하고, 물주기 간격을 함께 이야기해보고 싶습니다.', region:'실내', category:'내 식물 자랑'},
-    {title:'베란다 허브 화분이 많이 자랐습니다', summary:'바질과 로즈마리를 키우며 햇빛과 통풍을 어떻게 맞췄는지 기록해봅니다.', region:'베란다', category:'홈가드닝'},
-    {title:'다육식물 모아둔 선반을 정리했어요', summary:'과습을 줄이려고 화분 간격을 넓히고 통풍 위치를 조정했습니다.', region:'실내', category:'반려식물'}
-  ],
-  'farmer-lounge': [
-    {title:'장마 전 밭 배수로를 어떻게 정리하시나요?', summary:'비가 잦을 때 밭 가장자리 배수와 고랑 정리 경험을 나눠보고 싶습니다.', region:'전국', category:'농작업'},
-    {title:'텃밭 고추 지지대 설치 시점이 궁금합니다', summary:'바람이 강한 날이 늘어서 지지대와 끈 묶는 시점을 어떻게 잡는지 의견을 듣고 싶습니다.', region:'텃밭', category:'작물관리'},
-    {title:'농번기 작업 기록은 어떤 방식이 편한가요?', summary:'물관리, 웃거름, 사진 기록을 간단히 남기는 방법을 공유해주세요.', region:'전국', category:'농부 이야기'}
-  ],
-  'plant-share': [
-    {title:'분갈이 후 남은 상토 보관 방법이 궁금합니다', summary:'개봉한 상토를 다음 분갈이까지 깔끔하게 보관하는 방법을 공유해보고 싶습니다.', region:'기타', category:'나눔·직거래'},
-    {title:'삽목한 로즈마리 나눔 전 확인할 점이 있을까요?', summary:'뿌리 상태와 화분 흙 상태를 어느 정도 확인하고 나누면 좋을지 궁금합니다.', region:'실내', category:'식물 나눔'},
-    {title:'사용하지 않는 작은 화분 정리 팁을 나눠요', summary:'화분 크기별로 정리하고 필요한 분들과 나누는 방법을 이야기해봅니다.', region:'기타', category:'가드닝 용품'}
-  ],
-  'plant-meet': [
-    {title:'초보 식집사 모임에서 어떤 이야기를 나누면 좋을까요?', summary:'물주기, 분갈이, 빛 관리처럼 처음 겪는 고민을 편하게 나눌 주제를 모아봅니다.', region:'전국', category:'식집사 모임'},
-    {title:'반려식물 사진 기록 같이 해보실 분 있나요?', summary:'한 달에 한 번 새잎과 생육 상태를 기록하며 변화 과정을 공유하고 싶습니다.', region:'온라인', category:'기록 모임'},
-    {title:'동네 식물 교류 모임은 어떻게 시작하면 좋을까요?', summary:'무리한 거래보다 경험 공유와 작은 나눔 중심으로 시작하는 방법을 이야기해봅니다.', region:'지역 미정', category:'커뮤니티'}
-  ]
-};
-let didApplyDemoWritePreset = false;
-let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', keyword='', offset=0, isLoading=false, hasMore=true, demoThreads=null, selectedPostImages=[], selectedPostTags=[];
-const TAG_LIMIT=5;
-const TAG_SUGGESTIONS=['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
+let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', keyword=(params.get('q')||'').trim(), offset=0, isLoading=false, hasMore=true, selectedPostImages=[], selectedPostTags=[], blockedUserIdsSet=new Set(), activeQuestionDraftImageId='';
+const TAG_LIMIT=8;
+const TAG_SUGGESTIONS=['고추','토마토','딸기','벼','상추','잎말림','탄저병','과습','총채벌레','홈가드닝','텃밭','노지','시설재배','스마트팜','아쿠아팜','전남','순천'];
 let currentProfileNickname='';
 function postLikeButton(){
-  return '';
+  const post=arguments[0]||{};
+  const parts=[];
+  if(post.same_symptom_count!==null&&post.same_symptom_count!==undefined)parts.push(`같은 증상 ${Number(post.same_symptom_count)}`);
+  if(post.helpful_count!==null&&post.helpful_count!==undefined)parts.push(`도움됐어요 ${Number(post.helpful_count)}`);
+  return parts.join(' · ');
 }
 const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
 async function attachCommentCounts(posts){
-  const list=Array.isArray(posts)?posts:[];
-  const ids=[...new Set(list.map(post=>post?.id).filter(Boolean).map(String))];
-  if(!ids.length||!sb)return list;
+  const source=Array.isArray(posts)?posts:[];
+  const list=archivedChannel
+    ? source.filter(post=>!blockedUserIdsSet.has(String(post?.user_id||'')))
+    : window.KFCommunity.visiblePosts(source,blockedUserIdsSet);
+  if(!list.length||!sb)return list;
   try{
-    const {data,error}=await sb.from('comments')
-      .select('post_id,content,deleted_at')
-      .in('post_id',ids)
-      .is('deleted_at',null);
-    if(error)throw error;
-    const counts={};
-    (data||[]).forEach(comment=>{
-      if(String(comment.content||'').trim()===COMMENT_DELETE_MARKER)return;
-      const key=String(comment.post_id);
-      counts[key]=(counts[key]||0)+1;
-    });
-    return list.map(post=>({...post,comment_count:counts[String(post.id)]||0}));
+    return await window.KFCommunity.enrichFeedPosts(sb,list);
   }catch(error){
-    console.error('comment count load failed',error);
-    return list;
+    console.error('community metrics load failed',error);
+    return list.map(post=>({...post,comment_count:null,same_symptom_count:null,helpful_count:null}));
   }
 }
 function commentCountLabel(post){
-  return `댓글 ${Number(post?.comment_count||0)}`;
+  return post?.comment_count===null||post?.comment_count===undefined?'':`댓글 ${Number(post.comment_count)}`;
 }
 
 function autoResizeTextarea(el, maxHeight = 240){
@@ -467,43 +433,36 @@ function bindAutoResizeTextareas(){
 }
 
 document.addEventListener('DOMContentLoaded', init);
+async function refreshBlockedUsers(){
+  try{blockedUserIdsSet=currentUser?.id?await window.KFCommunity.blockedUserIds(sb,currentUser.id):new Set();}
+  catch(_){blockedUserIdsSet=new Set();}
+}
 async function init(){
   bindAutoResizeTextareas();
   sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
   const {data:{session}}=await sb.auth.getSession();
   currentUser=session?.user||null;
   if(currentUser)hydrateCurrentProfile(currentUser);
-  sb.auth.onAuthStateChange((event,session)=>{currentUser=session?.user||null; if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();}});
+  await refreshBlockedUsers();
+  sb.auth.onAuthStateChange(async (event,session)=>{currentUser=session?.user||null; await refreshBlockedUsers(); if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();} resetAndLoad();});
   await loadChannels();
+  document.getElementById('searchInput').value=keyword;
   document.getElementById('searchInput').addEventListener('input', debounce(applyKeywordSearch, 300));
   window.addEventListener('scroll', handleScroll, {passive:true});
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){closeWriteModal();closeLoginModal();} });
   resetAndLoad();
-  applyDemoWriteQuery();
   applyPendingQuestionQuery();
 }
 async function loadChannels(){
-  try{
-    const {data,error}=await sb.from('channels').select('id, slug, name').order('slug');
-    if(error)throw error;
-    channels=mergeDefaultChannels(data);
-  }catch(e){channels=defaultChannels();}
-  currentChannel=slugParam?channels.find(ch=>ch.slug===slugParam):null;
-  document.getElementById('channelTitle').textContent=currentChannel?.name || (slugParam?(CHANNEL_CONFIG[slugParam]||'채널'):'전체 게시글');
+  channels=await window.KFCommunity.loadCategories(sb);
+  currentChannel=archivedChannel|| (slugParam?channels.find(ch=>ch.slug===slugParam):null);
+  document.getElementById('channelTitle').textContent=currentChannel?.name || (slugParam?(CHANNEL_CONFIG[slugParam]||'분류'):'전체 게시글');
   renderChannelSelect();
   renderChannelChips();
   renderChannelHub();
   loadHubQuestionSections();
 }
-function defaultChannels(){return Object.entries(CHANNEL_CONFIG).map(([slug,name])=>({id:slug,slug,name}));}
-function mergeDefaultChannels(data){
-  const bySlug=new Map((Array.isArray(data)?data:[]).filter(ch=>ch?.slug).map(ch=>[ch.slug,ch]));
-  defaultChannels().forEach(ch=>{if(!bySlug.has(ch.slug))bySlug.set(ch.slug,ch);});
-  return defaultChannels().map(ch=>{
-    const saved=bySlug.get(ch.slug)||ch;
-    return {...saved, slug:ch.slug, name:ch.name};
-  });
-}
+function defaultChannels(){return window.KFCommunity.fallbackCategories();}
 function channelTopicKeyByName(name=''){
   const value=String(name||'');
   if(value.includes('자랑'))return 'plant_showcase';
@@ -549,7 +508,7 @@ function applyWriteTopicConfig(active=''){
 }
 function renderChannelSelect(){
   const select=document.getElementById('channelSelect');
-  select.innerHTML='<option value="">채널을 선택하세요</option>';
+  select.innerHTML='<option value="">분류를 선택하세요</option>';
   channels.forEach(ch=>{
     const opt=document.createElement('option');
     opt.value=ch.id;
@@ -582,19 +541,22 @@ function currentHub(){
 }
 function postBelongsToCurrentChannel(post){
   if(!currentChannel)return true;
-  const name=currentChannel.name||CHANNEL_CONFIG[currentChannel.slug]||'';
-  return post.channel_id===currentChannel.id
-    || post.channels?.slug===currentChannel.slug
-    || post.channels?.name===name
-    || String(post.content||'').includes(`[채널: ${name}]`);
+  if(archivedChannel)return post.channel_id===archivedChannel.id||post.channels?.slug===archivedChannel.slug;
+  return post.category_id===currentChannel.id
+    || post.community_categories?.slug===currentChannel.slug
+    || window.KFCommunity.categoryForPost(post,channels)?.slug===currentChannel.slug;
 }
 function renderChannelHub(){
   const hub=currentHub();
-  const name=currentChannel?.name || '전체 채널';
-  document.getElementById('hubTitle').textContent=`${name} 문제해결 허브`;
-  document.getElementById('hubDescription').textContent=hub.description;
-  const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?channel=${encodeURIComponent(currentChannel.slug)}`:''}`;
-  document.getElementById('hubActions').innerHTML=`<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
+  const name=currentChannel?.name || '전체 커뮤니티';
+  document.getElementById('hubTitle').textContent=archivedChannel?'보관된 나눔·직거래 글':(currentChannel?name:'목적에 맞는 글을 찾고 경험을 나눕니다');
+  document.getElementById('hubDescription').textContent=archivedChannel?'기존 콘텐츠 보존을 위한 읽기 전용 목록입니다. 새 거래 글은 등록할 수 없습니다.':hub.description;
+  const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?category=${encodeURIComponent(currentChannel.slug)}`:''}`;
+  document.getElementById('hubActions').innerHTML=archivedChannel
+    ? '<a class="secondary" href="channel.html">현재 커뮤니티 보기</a>'
+    : `<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">글쓰기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
+  const writeButton=document.querySelector('.fab');
+  if(writeButton)writeButton.hidden=Boolean(archivedChannel);
   document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');
   refreshMoreLinks();
   applyMoreListMode();
@@ -626,13 +588,13 @@ function withChannelQuery(url){
   const channelSlug=currentChannel?.slug || slugParam;
   if(!channelSlug || !url.startsWith('channel.html'))return url;
   const target=new URL(url, location.href);
-  target.searchParams.set('slug', channelSlug);
+  target.searchParams.set('category', channelSlug);
   return `channel.html${target.search}${target.hash}`;
 }
 function channelListUrl(sort){
   const target=new URL('channel.html', location.href);
   const channelSlug=currentChannel?.slug || slugParam;
-  if(channelSlug)target.searchParams.set('slug', channelSlug);
+  if(channelSlug)target.searchParams.set('category', channelSlug);
   const safeSort=normalizeMoreSort(sort || 'latest');
   target.searchParams.set('section', moreSectionForSort(safeSort));
   target.searchParams.set('sort', safeSort);
@@ -673,11 +635,14 @@ function searchTopic(encodedTopic){
 function openMore(sort){
   location.href=channelListUrl(sort);
 }
+function displayPostCategory(post){
+  return window.KFCommunity.categoryForPost(post,channels)?.name
+    || displayChannelName(post?.channels?.slug,post?.channels?.name);
+}
 async function loadHubQuestionSections(){
   await Promise.all([
     loadMiniPosts('latestQuestions','created_at'),
-    loadMiniPosts('popularQuestions','view_count'),
-    loadMiniPosts('symptomQuestions','view_count')
+    loadMiniPosts('popularQuestions','helpful')
   ]);
 }
 async function loadMiniPosts(targetId,orderColumn){
@@ -685,12 +650,16 @@ async function loadMiniPosts(targetId,orderColumn){
   if(!wrap||!sb)return;
   wrap.innerHTML='<div class="mini-empty">불러오는 중...</div>';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,created_at,view_count,channels(name,slug)').order(orderColumn,{ascending:false}).limit(currentChannel?12:3);
-    if(currentChannel?.id&&currentChannel.id!==currentChannel.slug)query=query.eq('channel_id',currentChannel.id);
+    let query=sb.from('posts').select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,view_count,channels(name,slug),community_categories(name,slug)').order(orderColumn==='helpful'?'created_at':orderColumn,{ascending:false}).limit(orderColumn==='helpful'?50:(currentChannel?12:3));
+    if(archivedChannel)query=query.eq('channel_id',archivedChannel.id);
+    else if(currentChannel?.id)query=query.eq('category_id',currentChannel.id);
+    else query=query.not('category_id','is',null);
     const {data,error}=await query;
     if(error)throw error;
-    const source=currentChannel?.id&&currentChannel.id!==currentChannel.slug?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
-    const posts=await attachCommentCounts(source.slice(0,3));
+    const source=currentChannel?.id?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
+    let posts=await attachCommentCounts(source);
+    if(orderColumn==='helpful')posts.sort((a,b)=>Number(b.helpful_count||0)-Number(a.helpful_count||0)||new Date(b.created_at||0)-new Date(a.created_at||0));
+    posts=posts.slice(0,3);
     const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
     if(!posts.length){
       renderMiniPosts(wrap,posts,profileMap);
@@ -707,15 +676,7 @@ function renderMiniPosts(wrap,posts,profileMap={}){
     wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
     return;
   }
-  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="${channelPostUrl(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayChannelName(post.channels?.slug,currentChannel?.name||post.channels?.name))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
-}
-async function renderMiniFallback(wrap){
-  const filtered=await fallbackThreadsForCurrentChannel(3);
-  if(!filtered.length){
-    wrap.innerHTML='<div class="mini-empty">아직 이 채널에 올라온 질문이 없습니다.<br>첫 질문을 남겨보세요.</div>';
-    return;
-  }
-  wrap.innerHTML=filtered.map(item=>`<a class="mini-post" href="channel.html?slug=${encodeURIComponent(item.channelSlug||currentChannel?.slug||'')}"><div class="mini-title">${esc(item.title)}</div><div class="mini-meta"><span>${esc(item.channelName||currentChannel?.name||'예시')}</span><span>${esc(item.category||'참고자료')}</span><span>참고자료</span></div></a>`).join('');
+  wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="${channelPostUrl(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayPostCategory(post))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
 function applyKeywordSearch(){keyword=document.getElementById('searchInput').value.trim();resetAndLoad();}
 function resetAndLoad(){offset=0;hasMore=true;document.getElementById('postList').innerHTML='<div class="loading"><span class="spinner"></span>불러오는 중...</div>';loadPosts();}
@@ -724,31 +685,34 @@ async function loadPosts(){
   isLoading=true;
   document.getElementById('moreLoader').style.display=offset>0?'block':'none';
   try{
-    let query=sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,image_urls,view_count,created_at,channels(name,slug)',{count:'exact'});
-    if(currentChannel?.id&&currentChannel.id!==currentChannel.slug)query=query.eq('channel_id',currentChannel.id);
+    let query=sb.from('posts').select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,image_urls,view_count,created_at,channels(name,slug),community_categories(name,slug)',{count:'exact'});
+    if(archivedChannel)query=query.eq('channel_id',archivedChannel.id);
+    else if(currentChannel?.id)query=query.eq('category_id',currentChannel.id);
+    else query=query.not('category_id','is',null);
     query=applyPostFilters(query);
     const pageSize=currentChannel?80:PAGE_SIZE;
     query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+pageSize-1);
     const {data,count,error}=await query;
     if(error)throw error;
-    const source=currentChannel?.id&&currentChannel.id!==currentChannel.slug?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
+    const source=currentChannel?.id?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
     const posts=await attachCommentCounts(source);
+    if(sortParam==='symptom')posts.sort((a,b)=>Number(b.same_symptom_count||0)-Number(a.same_symptom_count||0)||new Date(b.created_at||0)-new Date(a.created_at||0));
     const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
-    renderPosts(posts,currentChannel?posts.length:(count||0),profileMap);
+    renderPosts(posts,(currentChannel||blockedUserIdsSet.size)?posts.length:(count||0),profileMap);
     offset+=(data||[]).length;
     hasMore=(data||[]).length===pageSize;
   }catch(e){
-    if(offset===0)await renderDemoThreads('현재는 시제품 운영 중으로 예시 질문과 공개 질문을 함께 표시합니다.');
+    if(offset===0)document.getElementById('postList').innerHTML='<div class="empty">현재 커뮤니티 글을 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';
   }finally{
     isLoading=false;
     document.getElementById('moreLoader').style.display='none';
   }
 }
 function applyPostFilters(query){
-  if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%`);
+  if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%,crop_tag.ilike.%${escapeLike(keyword)}%,region_tag.ilike.%${escapeLike(keyword)}%`);
   return query;
 }
-function listSortColumn(){return sortParam==='popular'||sortParam==='symptom'?'view_count':'created_at';}
+function listSortColumn(){return sortParam==='popular'?'view_count':'created_at';}
 function renderPosts(posts,totalCount,profileMap={}){
   const list=document.getElementById('postList');
   posts=activeCategory?posts.filter(post=>extractCategoryFromContent(post.content)===activeCategory):posts;
@@ -773,7 +737,7 @@ function renderPosts(posts,totalCount,profileMap={}){
     return;
   }
   posts.forEach(post=>{
-    const slug=post.channels?.slug||channels.find(ch=>ch.id===post.channel_id)?.slug||'';
+    const slug=window.KFCommunity.categoryForPost(post,channels)?.slug||'';
     const imageUrls=normalizeImages(post.image_urls);
     const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
     const category=post.crop_tag||extractCategoryFromContent(post.content);
@@ -782,7 +746,7 @@ function renderPosts(posts,totalCount,profileMap={}){
     card.className='post-card'+(thumbHtml?' has-thumb':'');
     card.href=channelPostUrl(post.id);
     card.addEventListener('click',()=>cachePostForDetail(post));
-    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(displayChannelName(slug,post.channels?.name))}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
+    card.innerHTML=`<div><span class="badge ${CHANNEL_BADGE_COLORS[slug]||''}">${esc(displayPostCategory(post))}</span>${category?`<span class="category-badge">${esc(category)}</span>`:''}<div class="post-title">${esc(post.title||'제목 없음')}</div>${preview?`<div class="post-content">${esc(preview)}</div>`:''}${renderPostTags(post.content,post.tags)}<div class="meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span>${post.region_tag?`<span>${esc(post.region_tag)}</span>`:''}<span>${timeAgo(post.created_at)}</span></div></div>${thumbHtml}`;
     list.appendChild(card);
   });
 }
@@ -790,66 +754,21 @@ function cachePostForDetail(post){
   if(!post?.id)return;
   try{sessionStorage.setItem('kfarmai_post_preview',JSON.stringify({...post,_cachedAt:Date.now()}));}catch(_){}
 }
-async function loadDemoThreads(){
-  if(demoThreads)return demoThreads;
-  try{
-    const res=await fetch('data/community_threads.json',{cache:'no-store'});
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    demoThreads=await res.json();
-  }catch(e){
-    demoThreads=[
-      {channelSlug:'plant-hospital',channelName:'식물 병원',title:'토마토 잎 뒷면에 회색 곰팡이가 보여요',summary:'시설 토마토 잎 뒷면에 회색 곰팡이층이 보입니다.',region:'전남 순천',category:'딸기·토마토',labels:['AI 요약','공공정보 확인','시연'],demoNotice:'공모전 시연용 질문',aiSummary:'AI가 원인 후보를 추정했으며 공공정보 확인과 전문가 상담이 필요합니다.'},
-      {channelSlug:'plant-question',channelName:'식물 질문방',title:'화분 잎이 노랗게 변해요',summary:'아래쪽 잎부터 노랗게 변하고 있습니다.',region:'충남 논산',category:'반려식물',labels:['커뮤니티 답변 대기','관찰 필요'],demoNotice:'시연용 질문',aiSummary:'물주기, 광량, 배수 상태를 함께 확인해보는 것이 좋습니다.'}
-    ];
-  }
-  return Array.isArray(demoThreads)?demoThreads:[];
-}
-async function fallbackThreadsForCurrentChannel(limit=3){
-  const threads=await loadDemoThreads();
-  const slug=currentChannel?.slug||'';
-  const matched=threads.filter(item=>!slug||item.channelSlug===slug);
-  if(matched.length)return matched.slice(0,limit);
-  const local=(CHANNEL_DEMO_FALLBACKS[slug]||[]).map(item=>({
-    ...item,
-    channelSlug: slug,
-    channelName: currentChannel?.name || CHANNEL_CONFIG[slug] || '예시 채널',
-    labels: item.labels || ['참고자료','커뮤니티'],
-    demoNotice: item.demoNotice || '시제품 예시 질문',
-    aiSummary: item.aiSummary || '이 예시는 채널 사용 흐름을 보여주기 위한 참고자료입니다. 실제 질문이 등록되면 공개 질문을 우선 표시합니다.'
-  }));
-  return local.slice(0,limit);
-}
-async function renderDemoThreads(message){
-  const list=document.getElementById('postList');
-  const threads=await loadDemoThreads();
-  const kw=keyword.toLowerCase();
-  let filtered=threads.filter(item=>(!currentChannel?.slug||item.channelSlug===currentChannel.slug)&&(!activeCategory||item.category===activeCategory)&&(!kw||[item.channelName,item.title,item.summary,item.region,item.category,item.aiSummary].join(' ').toLowerCase().includes(kw)));
-  if(!filtered.length&&currentChannel?.slug){
-    const fallback=await fallbackThreadsForCurrentChannel(6);
-    filtered=fallback.filter(item=>(!activeCategory||item.category===activeCategory)&&(!kw||[item.channelName,item.title,item.summary,item.region,item.category,item.aiSummary].join(' ').toLowerCase().includes(kw)));
-  }
-  document.getElementById('resultLabel').textContent=currentChannel?.name||activeCategory||'커뮤니티 예시';
-  document.getElementById('resultCount').textContent=`${filtered.length}개`;
-  if(!filtered.length){list.innerHTML=`<div class="empty">${esc(message)}<br>조건에 맞는 시연용 질문이 없습니다.</div>`;return;}
-  list.innerHTML=`<div class="empty" style="padding:18px 12px 8px">${esc(message)}</div>`+filtered.map(item=>`
-    <article class="demo-card">
-      <div><span class="badge ${CHANNEL_BADGE_COLORS[item.channelSlug]||''}">${esc(item.channelName)}</span><span class="category-badge">${esc(item.category)}</span><span class="demo-notice">${esc(item.demoNotice||'시연용 질문')}</span></div>
-      <div class="post-title">${esc(item.title)}</div>
-      <div class="post-content">${esc(item.summary)}</div>
-      <div class="meta"><span>#${esc(item.region)}</span><span>시연</span><span>공공정보 연결</span></div>
-      <div class="label-row">${(item.labels||[]).map(label=>`<span class="status-badge">${esc(label)}</span>`).join('')}</div>
-      <div class="ai-summary"><strong>AI 참고 요약</strong><br>${esc(item.aiSummary)}</div>
-      <div class="demo-actions"><a href="diagnosis.html">AI 참고 진단</a><a href="diagnosis-cases.html">비슷한 사례 보기</a><a href="public-data.html">공공데이터 확인</a></div>
-    </article>`).join('');
-}
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
 async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();applyWriteTopicConfig();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.body.classList.add('is-composing');document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
-function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();}
-function applyDemoWriteQuery(){
-  return;
-}
-function applyPendingQuestionQuery(){
-  return;
+function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();if(activeQuestionDraftImageId&&window.KFQuestionDraft){window.KFQuestionDraft.removeImage(activeQuestionDraftImageId).catch(()=>{});activeQuestionDraftImageId='';}}
+async function applyPendingQuestionQuery(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('write')!=='1')return;
+  let pending=null;
+  try{pending=JSON.parse(localStorage.getItem('kfarmai_pending_question')||'null');}catch(_){pending=null;}
+  if(!pending||!['ai_diagnosis','ai-reference-diagnosis'].includes(pending.source))return;
+  if(pending.imageDraftId&&window.KFQuestionDraft){
+    try{const draftFile=await window.KFQuestionDraft.loadImage(pending.imageDraftId);if(draftFile){selectedPostImages=[draftFile];activeQuestionDraftImageId=pending.imageDraftId;renderPostImageInfo(selectedPostImages);renderPostImagePreview();}}
+    catch(error){console.warn('[question draft] local image unavailable',{message:error?.message||'unknown'});}
+  }
+  openWriteFlow(makePendingQuestionPreset(pending));
+  localStorage.removeItem('kfarmai_pending_question');
 }
 function makePendingQuestionPreset(pending){
   const crop=String(pending.crop||'작물·식물');
@@ -857,14 +776,17 @@ function makePendingQuestionPreset(pending){
   const causes=Array.isArray(pending.causeCandidates)?pending.causeCandidates.filter(Boolean):[];
   const checks=Array.isArray(pending.checkPoints)?pending.checkPoints.filter(Boolean):[];
   return {
-    channelSlug: guessChannelSlug(crop),
-    category: guessCategory(crop),
+    categorySlug: 'question-help',
+    topic: symptoms[0]||'기타',
+    crop,
+    tags: [crop,...symptoms,...(Array.isArray(pending.suggestedTags)?pending.suggestedTags:pending.tags||[])],
     title: `${crop} ${symptoms[0]||'증상'} 관련 확인이 필요합니다`,
     content: [
-      'AI 참고 진단 결과를 바탕으로 커뮤니티에 질문합니다.',
+      '관찰한 증상:',
+      `${symptoms.join(', ') || '추가 입력 필요'}`,
       '',
-      `작물/식물명: ${crop}`,
-      `관찰 증상: ${symptoms.join(', ') || '추가 입력 필요'}`,
+      'AI 참고 확인에서 정리된 내용:',
+      `${String(pending.summary||'원인 후보는 추가 확인이 필요합니다.')}`,
       `원인 후보: ${causes.join(', ') || '추가 확인 필요'}`,
       `확인 포인트: ${checks.join(', ') || '잎 앞면·뒷면, 줄기, 토양 상태 확인'}`,
       '',
@@ -872,26 +794,21 @@ function makePendingQuestionPreset(pending){
     ].join('\n')
   };
 }
-function guessChannelSlug(crop){
-  return /몬스테라|화분|실내|상토/.test(crop) ? 'plant-hospital' : 'crop-consult';
-}
-function guessCategory(crop){
-  if(/몬스테라|화분|실내/.test(crop))return '식물 질문방';
-  if(/고추|마늘|양파|딸기|토마토/.test(crop))return '작물 상담방';
-  if(/상토|농약|비료/.test(crop))return '나눔·직거래';
-  return '식물 질문방';
-}
 function fillWritePreset(preset){
-  const channel=channels.find(ch=>ch.slug===preset.channelSlug) || channels.find(ch=>ch.slug==='plant-hospital') || channels[0];
+  const channel=channels.find(ch=>ch.slug===preset.categorySlug) || channels.find(ch=>ch.slug==='question-help') || channels[0];
   const channelSelect=document.getElementById('channelSelect');
   const categorySelect=document.getElementById('postCategory');
   if(channelSelect&&channel)channelSelect.value=channel.id;
-  applyWriteTopicConfig();
-  setSelectValueOrText(categorySelect,preset.category);
+  applyWriteTopicConfig(preset.topic);
+  setSelectValueOrText(categorySelect,preset.topic);
   const title=document.getElementById('postTitle');
   const content=document.getElementById('postContent');
+  const crop=document.getElementById('postCrop');
   if(title)title.value=preset.title;
   if(content)content.value=preset.content;
+  if(crop)crop.value=preset.crop||'';
+  selectedPostTags=[];
+  (preset.tags||[]).forEach(addPostTag);
 }
 function setSelectValueOrText(select,value){
   if(!select||!value)return;
@@ -1011,7 +928,8 @@ function renderPostImageInfo(files,targetId='postImageInfo'){
 function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
 function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(file)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([file])});throw error;}const {data}=sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
+async function uploadPostImages(userId){const result={urls:[],paths:[]};if(!selectedPostImages.length)return result;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const safeFile=await window.KFQuestionDraft.prepareForUpload(file);const ext=getPostImageExt(safeFile);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,safeFile,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(safeFile)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([safeFile])});throw error;}const uploadedPath=uploadData?.path||path;const {data}=sb.storage.from('post-images').getPublicUrl(uploadedPath);if(!data?.publicUrl)throw new Error('public image url unavailable');result.urls.push(data.publicUrl);result.paths.push(uploadedPath);}postSubmitWarn('storage.upload.done',{uploadedCount:result.urls.length});return result;}
+async function cleanupPostUploads(paths){if(paths?.length)await sb.storage.from('post-images').remove(paths).catch(()=>{});}
 function classifyPostUploadError(err){
   const message=String(err?.message||'').toLowerCase();
   if(message.includes('invalid image file')||message.includes('mime')||message.includes('type')||message.includes('size'))return '이미지 파일 형식 또는 용량을 확인해주세요. 카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.';
@@ -1022,22 +940,27 @@ function classifyPostUploadError(err){
 }
 async function submitPost(){
   const channelSelect=document.getElementById('channelSelect');
-  const channelId=channelSelect.value;
-  const channelName=channelSelect.options[channelSelect.selectedIndex]?.textContent||'';
+  const categoryId=channelSelect.value;
+  const categoryRecord=channels.find(item=>item.id===categoryId);
+  const channelName=categoryRecord?.name||'';
   const category=selectedSymptom();
+  const crop=document.getElementById('postCrop')?.value.trim()||'';
+  const cultivation=document.getElementById('cultivationSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
   const region=document.getElementById('regionSelect').value;
-  if(!channelId||!category||!title||!content)return showToast(`채널, ${getChannelTopicConfig(selectedWriteChannel()).label}, 제목, 내용을 입력해주세요.`);
+  if(!categoryId||!category||!title||!content)return showToast(`분류, ${getChannelTopicConfig(selectedWriteChannel()).label}, 제목, 내용을 입력해주세요.`);
   const btn=document.getElementById('submitBtn');btn.disabled=true;
-  const allowedPayloadKeys=['user_id','channel_id','title','content','crop_tag','region_tag','image_urls'];
+  const allowedPayloadKeys=['user_id','category_id','title','content','crop_tag','region_tag','image_urls','tags'];
+  let uploaded={urls:[],paths:[]};
   try{
     const {data:{session}}=await sb.auth.getSession();
     const userId=session?.user?.id;
     if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openLoginModal();return;}
     localStorage.setItem('kfarmai_user_id',userId);
-    const imageUrls=await uploadPostImages(userId);
-    const payload={user_id:userId,channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(currentUser||session.user)),crop_tag:category||null,region_tag:region||null,image_urls:imageUrls};
+    uploaded=await uploadPostImages(userId);const imageUrls=uploaded.urls;
+    const tags=window.KFCommunity.normalizeTags([...selectedPostTags,crop,category,cultivation,region]);
+    const payload={user_id:userId,category_id:categoryId,title,content:contentWithCategory(content,category,channelName,region,tags,displayNameForUser(currentUser||session.user)),crop_tag:crop||category||null,region_tag:region||null,image_urls:imageUrls,tags};
     const payloadKeys=Object.keys(payload);
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
@@ -1047,10 +970,11 @@ async function submitPost(){
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
     closeWriteModal();
-    ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['postTitle','postContent','postCategory','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     autoResizeTextarea(document.getElementById('postContent'),240);
     selectedPostImages=[];selectedPostTags=[];renderPostImageInfo([]);renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
   }catch(err){
+    await cleanupPostUploads(uploaded.paths);
     const message=String(err?.message||'');
     console.warn('post submit failed',{message});
     showToast(classifyPostUploadError(err));
@@ -1085,8 +1009,8 @@ function extractTagsFromContent(content){
   if(!match)return [];
   return match[1].split(/\s+/).map(normalizeTag).filter(Boolean).slice(0,8);
 }
-function renderPostTags(content){
-  const tags=extractTagsFromContent(content);
+function renderPostTags(content,storedTags=[]){
+  const tags=window.KFCommunity.normalizeTags(storedTags?.length?storedTags:extractTagsFromContent(content));
   return tags.length?`<div class="post-tags">${tags.map(tag=>`<span class="post-tag">${esc(tag)}</span>`).join('')}</div>`:'';
 }
 function stripPostPrefixes(content){
@@ -1096,8 +1020,10 @@ function contentWithCategory(content,category,channelName='',region='',tags=[],a
   const clean=String(content||'').trim();
   const prefix=[
     authorName?`[작성자: ${authorName}]`:'',
-    channelName?`[채널: ${channelName}]`:'',
-    region?`[지역: ${region}]`:''
+    channelName?`[분류: ${channelName}]`:'',
+    category?`[주제: ${category}]`:'',
+    region?`[지역: ${region}]`:'',
+    tags.length?`[태그: ${window.KFCommunity.normalizeTags(tags).map(tag=>`#${tag}`).join(' ')}]`:''
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }

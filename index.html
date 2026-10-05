@@ -19,6 +19,8 @@
 <link rel="preload" as="image" href="/static/kfarmai-logo-horizontal.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="static/css/agri-info-v3.css">
+<link rel="stylesheet" href="static/css/community-v3.css">
 
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="kFarmAI">
@@ -34,7 +36,10 @@
 <meta name="twitter:image" content="https://kfarmai.com/static/kfarmai-logo-horizontal.png">
 
 <meta name="theme-color" content="#16a34a">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="static/js/security/safe-markdown.js"></script>
+<script src="static/js/ai/diagnosis-client.js"></script>
+<script src="static/js/community/community-model.js"></script>
+<script src="static/js/community/question-draft.js"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -1530,6 +1535,22 @@
     line-height: 1.65;
     font-weight: 700;
   }
+  .account-delete-confirmation {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 14px;
+    color: #374151;
+    font-size: 13px;
+    line-height: 1.5;
+    font-weight: 800;
+  }
+  .account-delete-confirmation input {
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+    accent-color: #B91C1C;
+  }
   #accountDeleteModal {
     z-index: 90;
     align-items: center;
@@ -1579,7 +1600,7 @@
   });
 </script>
 </head>
-<body>
+<body class="v3-home">
 
 <!-- ===================== SVG ICON DEFS ===================== -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1860,6 +1881,7 @@
       </div>
       <div class="header-actions">
         <button class="lang-toggle" id="langToggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button>
+        <button class="header-write-btn" type="button" onclick="openModal('question-help')">질문하기</button>
         <button class="login-top-btn" id="headerLoginBtn" type="button" onclick="safeOpenMyPanel()">로그인/가입</button>
         <div class="bell" id="headerProfile" onclick="safeOpenMyPanel()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
@@ -1886,74 +1908,77 @@
 
       <!-- ============ PAGE 1: 커뮤니티 ============ -->
       <section class="page">
-        <div class="hero" role="button" tabindex="0" aria-label="AI 참고 진단으로 이동" onclick="switchMainTab('diagnosis')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchMainTab('diagnosis');}">
-          <div class="hero-img"></div>
-          <div class="hero-content">
-            <span class="badge-orange">AI 참고 진단</span>
-            <div>
-              <div class="hero-title" data-i18n="heroTitle">이상하다 싶을 때,<br/>바로 여기</div>
-              <div class="hero-sub">사진·문장으로 원인 후보를 정리해요</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-head">
-          <div class="section-title" data-i18n="exploreChannels">채널 둘러보기</div>
-          <div class="section-more channel-count">8개 채널</div>
-        </div>
-        <div class="channels" id="channelGrid">
-          <div class="channel" style="background:#E8F5E9" onclick="location.href='channel.html?slug=plant-hospital'">
-            <div class="ch-icon-wrap">🌿</div>
-            <div class="ch-name">식물 병원</div>
-          </div>
-          <div class="channel" style="background:#E3F2FD" onclick="location.href='channel.html?slug=plant-question&v=20260705b'">
-            <div class="ch-icon-wrap">💬</div>
-            <div class="ch-name">식물 질문방</div>
-          </div>
-          <div class="channel" style="background:#FFF8E1" onclick="location.href='channel.html?slug=crop-consult&v=20260705b'">
-            <div class="ch-icon-wrap">🌾</div>
-            <div class="ch-name">작물 상담방</div>
-          </div>
-          <div class="channel" style="background:#FCE4EC" onclick="location.href='channel.html?slug=plant-brag'">
-            <div class="ch-icon-wrap">📷</div>
-            <div class="ch-name">내 식물 자랑</div>
-          </div>
-          <div class="channel" style="background:#FFF3E0" onclick="location.href='channel.html?slug=farmer-lounge'">
-            <div class="ch-icon-wrap">🏡</div>
-            <div class="ch-name">농부 사랑방</div>
-          </div>
-          <div class="channel" style="background:#E0F7FA" onclick="location.href='channel.html?slug=plant-share'">
-            <div class="ch-icon-wrap">🪴</div>
-            <div class="ch-name">나눔·직거래</div>
-          </div>
-          <div class="channel" style="background:#F9FBE7" onclick="location.href='channel.html?slug=garden-class'">
-            <div class="ch-icon-wrap">✂️</div>
-            <div class="ch-name">원예 클래스</div>
-          </div>
-          <div class="channel" style="background:#FFFDE7" onclick="location.href='channel.html?slug=plant-meet'">
-            <div class="ch-icon-wrap">🤝</div>
-            <div class="ch-name">식집사 모임</div>
-          </div>
-        </div>
-
-        <div class="home-insights" id="frequentSymptomSection" aria-label="자주 묻는 증상"></div>
-
-        <div class="section-head question-section-head recent-question-head">
+        <section class="community-home-intro" aria-labelledby="communityHomeTitle">
           <div>
-            <div style="display:flex;align-items:center">
-              <div class="section-title accent" data-i18n="recentQuestions"><span class="insight-icon" aria-hidden="true">✨</span>방금 올라온 질문</div>
-              <span class="live-dot">최신</span>
-            </div>
-            <div class="section-copy">최근 등록된 질문을 바로 확인하세요.</div>
+            <h1 id="communityHomeTitle">함께 묻고, 재배 경험을 나눠요</h1>
+            <p>농업과 식물에 관한 질문부터 현장 이야기까지 한곳에서 확인하세요.</p>
           </div>
-          <a class="section-more-btn" href="index.html?view=questions&sort=latest">더보기 &gt;</a>
-        </div>
+          <button class="community-primary-cta" type="button" onclick="openModal('question-help')">질문하기</button>
+        </section>
 
-        <div id="recentFeed" class="recent-question-panel">
-          <div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>
-        </div>
+        <div class="community-home-layout">
+          <main class="community-home-main">
+            <div class="section-head">
+              <div>
+                <div class="section-title">커뮤니티</div>
+                <div class="section-copy">글의 목적에 맞는 4개 분류를 선택하세요.</div>
+              </div>
+              <a class="section-more-btn" href="channel.html">전체보기 &gt;</a>
+            </div>
+            <nav class="v3-category-grid" id="channelGrid" aria-label="커뮤니티 분류">
+              <a class="v3-category-card" href="channel.html?category=question-help"><span class="v3-category-icon" aria-hidden="true">💬</span><span class="v3-category-name">질문·문제해결</span></a>
+              <a class="v3-category-card" href="channel.html?category=cultivation-knowhow"><span class="v3-category-icon" aria-hidden="true">🌱</span><span class="v3-category-name">재배·노하우</span></a>
+              <a class="v3-category-card" href="channel.html?category=showcase-daily"><span class="v3-category-icon" aria-hidden="true">📷</span><span class="v3-category-name">자랑·일상</span></a>
+              <a class="v3-category-card" href="channel.html?category=agri-field-info"><span class="v3-category-icon" aria-hidden="true">🌾</span><span class="v3-category-name">농업·현장정보</span></a>
+            </nav>
 
-        <div class="home-insights" id="homeInsightSections" aria-label="농업·식물 문제해결 탐색"></div>
+            <section class="community-feed-section" aria-labelledby="communityFeedTitle">
+              <div class="section-head question-section-head recent-question-head">
+                <div>
+                  <div class="section-title accent" id="communityFeedTitle">커뮤니티 Feed</div>
+                  <div class="section-copy" id="communityFeedCopy">새로 올라온 이야기를 확인하세요.</div>
+                </div>
+                <a class="section-more-btn" href="index.html?view=questions&sort=latest">더보기 &gt;</a>
+              </div>
+              <div class="community-feed-toolbar" role="tablist" aria-label="Feed 정렬">
+                <button class="feed-filter active" type="button" role="tab" aria-selected="true" data-feed-sort="latest" onclick="setHomeFeedSort('latest',this)">최신</button>
+                <button class="feed-filter" type="button" role="tab" aria-selected="false" data-feed-sort="unanswered" onclick="setHomeFeedSort('unanswered',this)">답변을 기다려요</button>
+                <button class="feed-filter" type="button" role="tab" aria-selected="false" data-feed-sort="helpful" onclick="setHomeFeedSort('helpful',this)">도움된 글</button>
+              </div>
+              <div id="recentFeed" class="recent-question-panel v3-community-feed" aria-live="polite">
+                <div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>
+              </div>
+            </section>
+          </main>
+
+          <aside class="community-home-aside" aria-label="커뮤니티 보조 정보">
+            <section class="community-side-card" aria-labelledby="topicTagTitle">
+              <div class="community-side-title" id="topicTagTitle">관심 주제</div>
+              <div class="community-side-copy">작물·증상·재배방식 태그로 글을 찾아보세요.</div>
+              <div class="topic-tag-list">
+                <a href="index.html?view=questions&tag=고추">#고추</a><a href="index.html?view=questions&tag=토마토">#토마토</a><a href="index.html?view=questions&tag=잎말림">#잎말림</a><a href="index.html?view=questions&tag=과습">#과습</a><a href="index.html?view=questions&tag=시설재배">#시설재배</a><a href="index.html?view=questions&tag=홈가드닝">#홈가드닝</a>
+              </div>
+            </section>
+
+            <a class="community-side-card ai-compact-card" href="diagnosis.html">
+              <div><strong>AI로 먼저 확인</strong><span>사진이나 증상 설명으로 원인 후보와 확인 포인트를 정리합니다.</span></div>
+              <span class="ai-compact-arrow" aria-hidden="true">→</span>
+            </a>
+
+            <section class="home-agri-summary-section" aria-labelledby="homeAgriTitle">
+              <div class="section-head">
+                <div>
+                  <div class="section-title" id="homeAgriTitle">오늘의 농업정보</div>
+                  <div class="section-copy">기준일과 출처가 확인되는 공식자료입니다.</div>
+                </div>
+                <a class="section-more-btn" href="agri-info.html">더보기 &gt;</a>
+              </div>
+              <div class="agri-feed-summary" id="homeAgriFeed" aria-live="polite">
+                <div class="agri-feed-loading">농업정보를 확인하고 있습니다.</div>
+              </div>
+            </section>
+          </aside>
+        </div>
       </section>
 
       <!-- ============ PAGE 2: AI 참고 진단 ============ -->
@@ -2053,86 +2078,18 @@
       <section class="page">
         <div class="page3-title">
           <h2>농업정보</h2>
-          <p>농업 영상, 연구동향, 재배정보를 쉽게 모아봤습니다.</p>
+          <p>공공기관과 공식 데이터의 기준일과 출처를 확인합니다.</p>
         </div>
-
-        <section class="agri-content-section" id="agriVideoSection" hidden>
-          <div class="agri-section-title">
-            <div>
-              <h3>오늘의 농업 영상</h3>
-              <p>공식기관과 연구기관의 공개 영상을 임베드 방식으로 제공합니다.</p>
-            </div>
-            <a class="agri-section-more" href="agri-videos.html">영상 더보기</a>
-          </div>
-          <div id="agriVideoHero"></div>
-          <div class="agri-video-strip" id="agriVideoList" aria-label="농업 영상 목록"></div>
-          <div class="agri-source-note">kFarmAI는 영상을 저장하거나 재업로드하지 않고, 공식 플랫폼의 임베드 방식으로 제공합니다. 영상의 저작권은 각 제공 기관과 원 게시자에게 있습니다.</div>
-        </section>
-
-        <section class="agri-content-section" id="agriResearchSection">
-          <div class="agri-section-title">
-            <div>
-              <h3>최신 농업연구동향</h3>
-              <p>농업 연구성과와 기술자료를 쉽게 풀어 정리합니다.</p>
-            </div>
-            <a class="agri-section-more" href="agri-research.html">연구 더보기</a>
-          </div>
-          <div class="agri-research-chips" id="agriResearchChips" aria-label="연구동향 카테고리"></div>
-          <div class="agri-research-list" id="agriResearchList"></div>
-        </section>
-
-        <section class="agri-content-section">
-          <div class="agri-section-title">
-            <div>
-              <h3>오늘의 농업 이슈</h3>
-              <p>농업 관련 언론 보도를 주제별 링크로 모아봅니다.</p>
-            </div>
-            <a class="agri-section-more" href="agri-news.html">이슈 더보기</a>
-          </div>
-          <div class="agri-issue-grid" id="agriIssueGrid"></div>
-          <div class="agri-source-note">기사 본문은 제공하지 않으며, 원문은 각 언론사 사이트에서 확인하세요.</div>
-        </section>
-
-        <div class="section-head" style="margin-top:4px"><div class="section-title">핵심 바로가기</div></div>
-        <div class="ql-grid">
-          <a class="ql" href="agri-weather.html"><div class="ql-icon"><svg><use href="#ql-weather"/></svg></div><div class="ql-name">농업 날씨</div></a>
-          <a class="ql" href="market-prices.html"><div class="ql-icon"><svg><use href="#ql-price"/></svg></div><div class="ql-name">농산물 시세</div></a>
-          <a class="ql" href="crop-guide.html"><div class="ql-icon"><svg><use href="#ql-book"/></svg></div><div class="ql-name">재배 가이드</div></a>
-          <a class="ql" href="crop-calendar.html"><div class="ql-icon"><svg><use href="#ql-cal"/></svg></div><div class="ql-name">재배 달력</div></a>
-          <a class="ql" href="subsidy-calendar.html"><div class="ql-icon"><svg><use href="#ql-gov"/></svg></div><div class="ql-name">보조사업</div></a>
-          <a class="ql" href="agri_map.html"><div class="ql-icon"><svg><use href="#ql-map"/></svg></div><div class="ql-name">주변 농약방</div></a>
-          <a class="ql" href="links.html"><div class="ql-icon"><svg><use href="#ql-link"/></svg></div><div class="ql-name">농업링크</div></a>
+        <div class="agri-feed-summary" id="agriTabFeed" aria-live="polite">
+          <div class="agri-feed-loading">농업정보를 확인하고 있습니다.</div>
         </div>
-
-        <div class="section-head"><div class="section-title">농자재·관리 카테고리</div></div>
-        <div class="info-note">주요 농자재 제조사 정보는 시제품에 일부 반영했으며, 향후 카테고리별로 보완할 계획입니다.</div>
-        <div class="stat-row info-cats">
-          <a class="stat-card" href="seed.html"><div class="stat-ic"><svg><use href="#st-seed"/></svg></div><div class="stat-name">종자</div></a>
-          <a class="stat-card" href="cpa.html"><div class="stat-ic"><svg><use href="#st-chem"/></svg></div><div class="stat-name">작물보호</div></a>
-          <a class="stat-card" href="mfg.html?category=irrigation-facility"><div class="stat-ic"><svg><use href="#ql-weather"/></svg></div><div class="stat-name">관수·시설자재</div></a>
-          <a class="stat-card" href="mfg.html?category=home-gardening-tools"><div class="stat-ic"><svg><use href="#ic-pot"/></svg></div><div class="stat-name">화분·도구</div></a>
-          <a class="stat-card" href="mfg.html?category=smartfarm"><div class="stat-ic"><svg><use href="#ql-link"/></svg></div><div class="stat-name">스마트팜</div></a>
-          <a class="stat-card" href="santo.html"><div class="stat-ic"><svg><use href="#st-soil"/></svg></div><div class="stat-name">상토</div></a>
-          <a class="stat-card" href="fert.html"><div class="stat-ic"><svg><use href="#st-fert"/></svg></div><div class="stat-name">비료</div></a>
-        </div>
-
-        <div class="section-head"><div class="section-title">농작업 계산기</div></div>
-        <div class="tools-caption">상토량, 액비 희석, 농약 희석 계산을 참고용으로 확인합니다.</div>
-        <div class="tools-card">
-          <a href="/tools-soil.html">상토 계산기</a>
-          <a href="/tools-fertilizer.html">액비 계산기</a>
-          <a href="/tools-pesticide.html">농약 계산기</a>
-        </div>
-        <div class="safety-caption">농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
-
-        <div class="section-head"><div class="section-title">오늘의 시세 참고</div></div>
-        <div class="promo-banner" onclick="location.href='market-prices.html'" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();location.href='market-prices.html';}">
-          <div>
-            <div class="pb-t1">KAMIS 공공 시세를 품목별로 확인할 수 있습니다.</div>
-            <div class="pb-t2">시세 보러가기</div>
-          </div>
-          <div class="pb-arrow">›</div>
-        </div>
+        <nav class="agri-tab-shortcuts" aria-label="농업정보 분야">
+          <a href="agri-info.html#weather">날씨·재해</a>
+          <a href="agri-info.html#pest-safety">병해충·농약안전</a>
+          <a href="agri-info.html#market">농산물 시세</a>
+          <a href="agri-info.html#cultivation">재배·기술</a>
+          <a href="agri-info.html#support">지원·공고</a>
+        </nav>
       </section>
 
     </div>
@@ -2144,11 +2101,6 @@
       <div class="pdot"></div>
     </div>
 
-    <button class="fab" onclick="openModal()">
-      <span style="font-size:17px;line-height:1">＋</span>
-      <span>질문하기</span>
-    </button>
-
     <div class="toast" id="toast"></div>
   </div>
 
@@ -2159,8 +2111,8 @@
 <div class="modal-overlay" id="writeModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <button class="modal-handle" type="button" onclick="closeModal()" aria-label="닫기"></button>
-    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">커뮤니티에 질문하기 <button class="my-close" type="button" onclick="closeModal()" aria-label="닫기">×</button></div>
-    <div class="modal-field"><div class="modal-label">채널 선택</div><select class="modal-select" id="channelSelect"><option value="">채널을 선택하세요</option><option value="d88ba519-68fd-488f-8311-e316838ac4cf">식물 병원</option><option value="c7315bd6-eb60-484c-9c07-6def8f93ddc1">식물 질문방</option><option value="f586c6a8-882a-45d0-89e6-6d20fd9675de">작물 상담방</option><option value="9191bf52-84b6-42ca-b2c7-c886bde5d450">내 식물 자랑</option><option value="364c2c71-c313-47fc-a986-3124393bf381">농부 사랑방</option><option value="4619a407-a214-4555-8e63-06fa96ed87a2">나눔·직거래</option><option value="a6095ae4-1d7e-4671-a6b1-4277d343e586">✂️ 원예 클래스</option><option value="ae71a389-0723-4e76-b421-789a1474fd49">식집사 모임</option></select></div>
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">커뮤니티 글쓰기 <button class="my-close" type="button" onclick="closeModal()" aria-label="닫기">×</button></div>
+    <div class="modal-field"><div class="modal-label">무엇을 올리시나요?</div><select class="modal-select" id="channelSelect"><option value="">분류를 선택하세요</option><option value="question-help">질문·문제해결</option><option value="cultivation-knowhow">재배·노하우</option><option value="showcase-daily">자랑·일상</option><option value="agri-field-info">농업·현장정보</option></select></div>
     <div class="modal-field">
       <div class="modal-label">대표 증상을 선택해주세요</div>
       <select class="modal-select" id="postCategory" onchange="toggleCustomSymptom()">
@@ -2168,23 +2120,28 @@
       </select>
       <div class="symptom-extra" id="customSymptomWrap"><input class="modal-input" id="customSymptom" placeholder="증상을 직접 입력해주세요" autocomplete="off"></div>
     </div>
-    <div class="modal-field"><div class="modal-label">제목</div><input class="modal-input" id="postTitle" placeholder="어떤 증상인가요? 예) 잎이 노랗게 변했어요" autocomplete="off"></div>
-    <div class="modal-field"><div class="modal-label">내용</div><textarea class="modal-textarea" id="postContent" placeholder="작물명, 재배환경, 증상을 자세히 적어주세요"></textarea></div>
-    <div class="modal-field"><div class="modal-label">지역 선택 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><select class="modal-select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
-    <div class="modal-field">
+    <div class="modal-field"><div class="modal-label">제목</div><input class="modal-input" id="postTitle" placeholder="궁금한 점이나 나누고 싶은 이야기를 적어주세요" autocomplete="off"></div>
+    <div class="modal-field"><div class="modal-label">내용</div><textarea class="modal-textarea" id="postContent" placeholder="상황과 관찰한 내용을 자세히 적어주세요"></textarea></div>
+    <div class="modal-field question-photo-field" id="questionPhotoField">
       <div class="modal-label">사진 업로드 <span style="font-weight:600;color:var(--muted)">(선택, 최대 3장)</span></div>
       <label class="image-upload-btn" for="postImages">사진 선택</label>
       <input class="image-input" type="file" id="postImages" accept="image/*" multiple onchange="handlePostImages(this)">
       <div class="image-file-info" id="postImageInfo"></div>
       <div class="image-preview-row" id="postImagePreview"></div>
     </div>
-    <div class="modal-field" hidden>
-      <div class="modal-label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(최대 5개)</span></div>
+    <div class="write-optional-grid">
+      <div class="modal-field"><div class="modal-label">작물·식물 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><input class="modal-input" id="postCrop" placeholder="예: 고추, 몬스테라" autocomplete="off"></div>
+      <div class="modal-field"><div class="modal-label">재배방식 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><select class="modal-select" id="cultivationSelect"><option value="">재배방식 미선택</option><option>홈가드닝</option><option>텃밭</option><option>노지</option><option>시설재배</option><option>스마트팜</option><option>아쿠아팜</option></select></div>
+      <div class="modal-field"><div class="modal-label">지역 <span style="font-weight:600;color:var(--muted)">(선택)</span></div><select class="modal-select" id="regionSelect"><option value="">지역 미선택</option><option>서울특별시</option><option>부산광역시</option><option>대구광역시</option><option>인천광역시</option><option>광주광역시</option><option>대전광역시</option><option>울산광역시</option><option>세종특별자치시</option><option>경기도</option><option>강원특별자치도</option><option>충청북도</option><option>충청남도</option><option>전북특별자치도</option><option>전라남도</option><option>경상북도</option><option>경상남도</option><option>제주특별자치도</option><option>기타</option></select></div>
+    </div>
+    <div class="modal-field">
+      <div class="modal-label">태그 선택/입력 <span style="font-weight:600;color:var(--muted)">(선택, 최대 8개)</span></div>
       <div class="tag-chip-row" id="tagSuggestions"></div>
       <div class="tag-input-row"><input class="modal-input" id="tagInput" placeholder="#고추 또는 잎마름" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();addTagFromInput()}"><button class="tag-add-btn" type="button" onclick="addTagFromInput()">추가</button></div>
       <div class="post-tags" id="selectedTags"></div>
     </div>
-    <button class="modal-submit" id="postSubmitBtn" type="button" onclick="submitPost()">질문 등록하기</button>
+    <div class="modal-field"><a class="image-upload-btn" href="diagnosis.html">AI로 먼저 확인</a><div class="image-file-info">AI 결과는 자동 공개되지 않으며, 사용자가 확인한 뒤 글을 게시합니다.</div></div>
+    <button class="modal-submit" id="postSubmitBtn" type="button" onclick="submitPost()">게시하기</button>
   </div>
 </div>
 
@@ -2192,7 +2149,7 @@
 <div class="modal-overlay" id="diagnosisDemoModal" onclick="if(event.target===this)closeDiagnosisDemoCase()">
   <div class="modal demo-modal">
     <button class="modal-handle" type="button" onclick="closeDiagnosisDemoCase()" aria-label="닫기"></button>
-    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">공공자료 기반 데모 진단사례 <button class="my-close" type="button" onclick="closeDiagnosisDemoCase()" aria-label="닫기">×</button></div>
+    <div class="modal-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">공공자료 기반 참고 진단사례 <button class="my-close" type="button" onclick="closeDiagnosisDemoCase()" aria-label="닫기">×</button></div>
     <div id="diagnosisDemoBody"></div>
   </div>
 </div>
@@ -2212,13 +2169,12 @@
     <div id="myLoggedOut">
       <div class="login-sub">
         <strong>로그인하고 더 많은 기능을 이용하세요</strong>
-        질문 등록, 진단 기록, 내 식물 관리
+        질문 등록, 저장, 진단 기록을 이용할 수 있습니다.
       </div>
       <button class="btn-google" id="googleBtn" onclick="loginGoogle()">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Google로 안전하게 시작하기
       </button>
-      <button class="btn-kakao" type="button" disabled>카카오로 시작하기 (준비중)</button>
       <div class="email-auth" aria-label="이메일 로그인">
         <input id="authEmail" type="email" placeholder="이메일" autocomplete="email">
         <div class="auth-status" id="authStatus" role="status" aria-live="polite"></div>
@@ -2255,11 +2211,12 @@
       </div>
       <div class="my-menu" id="myMainMenu">
         <div class="my-row clickable" onclick="openMySubview('myPostsView')"><span>내가 쓴 글</span><span class="count" id="myPostCount">0</span></div>
+        <div class="my-row clickable" onclick="openMySubview('mySavedView')"><span>저장한 글</span><span class="count" id="mySavedCount">0</span></div>
         <div class="my-row clickable" onclick="openMySubview('myDiagnosesView')"><span>내 진단 기록</span><span class="count" id="myDiagnosisCount">0</span></div>
-        <div class="my-row"><span>저장한 정보</span><span class="muted">준비중</span></div>
+        <div class="my-row clickable" onclick="openMySubview('myBlocksView')"><span>차단한 사용자 관리</span><span class="count" id="myBlockCount">0</span></div>
+        <a class="my-row clickable" id="myAdminReports" href="admin-reports.html" hidden><span>신고 관리</span><span>›</span></a>
+        <div class="my-row clickable" onclick="openMySubview('myAccountView')"><span>계정 설정</span><span>›</span></div>
         <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
-        <div class="my-row"><span>공지사항</span><span class="muted">준비중</span></div>
-        <div class="my-row"><span>문의하기</span><span class="muted">준비중</span></div>
         <div class="my-row logout" onclick="logout()">로그아웃</div>
       </div>
       <div class="my-subview" id="myAccountView">
@@ -2286,6 +2243,13 @@
         </div>
         <div class="my-list open" id="myPostList"></div>
       </div>
+      <div class="my-subview" id="mySavedView">
+        <div class="my-subhead">
+          <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
+          <div class="my-subtitle">저장한 글</div>
+        </div>
+        <div class="my-list open" id="mySavedList"></div>
+      </div>
       <div class="my-subview" id="myDiagnosesView">
         <div class="my-subhead">
           <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
@@ -2293,7 +2257,13 @@
         </div>
         <div class="my-list open" id="myDiagList"></div>
       </div>
-      <div class="my-version">앱 버전: v2.0</div>
+      <div class="my-subview" id="myBlocksView">
+        <div class="my-subhead">
+          <button class="my-back" type="button" onclick="closeMySubview()">목록</button>
+          <div class="my-subtitle">차단한 사용자 관리</div>
+        </div>
+        <div class="blocked-list" id="myBlockedList"><div class="my-list-empty">차단 목록을 불러오는 중입니다.</div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -2325,13 +2295,16 @@
       <button class="my-close" type="button" onclick="closeAccountDeleteModal()" aria-label="닫기">×</button>
     </div>
     <p class="account-delete-modal-copy">
-      탈퇴 요청 후 로그인 세션이 종료됩니다.<br>
-      작성한 질문, 댓글, 업로드 사진 등은 운영 정책에 따라 삭제 또는 익명화될 수 있습니다.<br>
-      계속 진행하시겠습니까?
+      서버에 계정 삭제 요청을 접수한 뒤 로그인 세션이 종료됩니다.<br>
+      작성한 질문, 댓글, 업로드 사진은 확정된 운영 정책에 따라 검토되며 이 요청만으로 즉시 삭제되지 않습니다.
     </p>
+    <label class="account-delete-confirmation">
+      <input id="accountDeleteAcknowledge" type="checkbox" onchange="updateAccountDeleteConfirmState()">
+      <span>계정 삭제 요청과 로그아웃을 진행하겠습니다.</span>
+    </label>
     <div class="account-delete-actions">
       <button class="delete-cancel" type="button" onclick="closeAccountDeleteModal()">취소</button>
-      <button class="delete-confirm" id="accountDeleteConfirmBtn" type="button" onclick="requestAccountDeletion()">탈퇴 요청</button>
+      <button class="delete-confirm" id="accountDeleteConfirmBtn" type="button" onclick="requestAccountDeletion()" disabled>탈퇴 요청</button>
     </div>
   </div>
 </div>
@@ -2341,11 +2314,7 @@
 <script src="static/cpa_data.js"></script>
 <script src="static/fert_data.js"></script>
 <script src="static/crop-pages.js?v=20260706-regional"></script>
-<script src="static/js/agri-info/agri-info-utils.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-videos.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-research-trends.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-issues.js?v=20260706-news2"></script>
-<script src="static/js/agri-info/agri-info.js?v=20260706-news2"></script>
+<script src="static/js/agri-info/agri-feed-ui.js"></script>
 <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <script>
 (function(){
@@ -2483,7 +2452,6 @@
 
 // ===== AI 참고 진단 =====
 let diagImageBase64 = null;
-const DIAG_ENDPOINT = 'https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/bright-action';
 
 function diagOpenCamera() { document.getElementById('diagCameraInput').click(); }
 function diagOpenAlbum()  { document.getElementById('diagAlbumInput').click(); }
@@ -2544,28 +2512,6 @@ function openHomePublicDataReport() {
   location.href = 'public-data.html';
 }
 
-function buildHomeFallbackDiagnosisData(context = {}) {
-  const symptom = context.symptom || '증상 미확인';
-  const hasImage = Boolean(context.imageAttached);
-  return {
-    crop: context.crop || '미선택',
-    symptom,
-    summary: hasImage
-      ? '사진과 입력 정보를 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.'
-      : '입력한 증상 기준으로 공공정보 확인이 필요한 항목을 정리했습니다.',
-    causes: ['원인 후보', '환경 요인', '재배관리 요인'],
-    management: ['증상 부위 사진 확인', '최근 물관리와 온습도 확인', '공식자료에서 유사 증상 확인'],
-    materials: ['병해충 정보', '농업날씨', '재배가이드'],
-    aiCandidates: [
-      { label: '원인 후보', category: 'unknown', confidence: 'low' },
-      { label: '환경 요인', category: 'environment', confidence: 'low' },
-      { label: '재배관리 요인', category: 'management', confidence: 'low' }
-    ],
-    source: hasImage ? 'image-ai' : 'text-ai',
-    createdAt: new Date().toISOString()
-  };
-}
-
 async function runDiagnosis() {
   const symptom = (document.getElementById('diagSymptom')?.value || '').trim();
   const crop = (document.getElementById('diagCrop')?.value || '').trim();
@@ -2588,17 +2534,15 @@ async function runDiagnosis() {
     env ? `재배환경: ${env}` : '',
     symptom ? `증상: ${symptom}` : ''
   ].filter(Boolean).join('\n');
-  const body = { symptom: detail || symptom, region, crop, cultivationEnv: env };
-  if (diagImageBase64) body.image_base64 = diagImageBase64;
-
   try {
-    const res = await fetch(DIAG_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhaZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgzMjUxMDMsImV4cCI6MjA2MzkwMTEwM30.Jx5oBXoUVvHlPjBmNqwJTyZH6lMVOFxwjTFjUBYlBnU' },
-      body: JSON.stringify(body)
+    if (!window.KFAIDiagnosisClient) throw new Error('DIAGNOSIS_CLIENT_UNAVAILABLE');
+    const data = await window.KFAIDiagnosisClient.analyze({
+      symptom,
+      crop,
+      cultivationEnv: env,
+      region,
+      imageBase64: diagImageBase64
     });
-    if (!res.ok) throw new Error('서버 오류 ' + res.status);
-    const data = await res.json();
     const diagnosisContext = {
       crop,
       symptom,
@@ -2610,17 +2554,8 @@ async function runDiagnosis() {
     renderDiagResult(data, resultWrap, structuredDiagnosis);
     saveDiagnosisHistory(detail || symptom, data);
   } catch (err) {
-    const diagnosisContext = {
-      crop,
-      symptom,
-      region,
-      cultivationType: env,
-      imageAttached: Boolean(diagImageBase64)
-    };
-    const fallbackData = buildHomeFallbackDiagnosisData(diagnosisContext);
     console.warn('[kFarmAI] diagnosis request failed', err);
-    const structuredDiagnosis = saveHomePublicDataDiagnosis(fallbackData, diagnosisContext);
-    renderDiagResult(fallbackData, resultWrap, structuredDiagnosis);
+    renderDiagFailure(resultWrap);
   } finally {
     loading.classList.remove('show');
     btn.textContent = 'AI 참고 진단 시작';
@@ -2655,6 +2590,10 @@ function renderDiagResult(data, wrap, structuredDiagnosis) {
   wrap.innerHTML = html;
 }
 
+function renderDiagFailure(wrap) {
+  wrap.innerHTML = `<div class="diag-result-card"><div class="diag-rc-title">AI 참고 진단을 불러오지 못했습니다</div><div class="diag-rc-body">현재 AI 분석을 불러오지 못했습니다. 잠시 후 다시 시도하거나 공공정보 확인 메뉴를 이용해주세요.</div></div><button class="diag-public-data-btn" type="button" onclick="location.href='public-data.html'">공공정보 확인</button>`;
+}
+
 function escDiag(s) {
   return String(s)
     .replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
@@ -2662,11 +2601,11 @@ function escDiag(s) {
 }
 
 function renderMarkdown(text) {
-  return window.marked ? marked.parse(text) : escDiag(text);
+  return window.KFSafeMarkdown ? window.KFSafeMarkdown.render(text) : escDiag(text);
 }
 
-const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
+const SUPABASE_URL = window.KFAIDiagnosisClient.config.supabaseUrl;
+const SUPABASE_KEY = window.KFAIDiagnosisClient.config.supabaseAnonKey;
 const CHANNEL_BADGE_COLORS = {'plant-hospital':'green','plant-question':'blue','crop-consult':'orange','plant-share':'teal'};
 const CHANNEL_DISPLAY_NAMES = {'plant-share':'나눔·직거래'};
 function displayChannelName(slug,name){
@@ -2682,6 +2621,8 @@ let currentUser = null;
 let currentProfileNickname = '';
 let myPostEditingId = null;
 let myPostCache = [];
+let blockedUserIdsSet = new Set();
+let homeFeedSort = 'latest';
 const I18N = {
   ko: {
     community: '커뮤니티',
@@ -2691,7 +2632,7 @@ const I18N = {
     qa: '질문',
     nearby: '주변',
     recentQuestions: '방금 올라온 질문',
-    exploreChannels: '채널 둘러보기',
+    exploreChannels: '커뮤니티 둘러보기',
     heroTitle: '이상하다 싶을 때,<br/>바로 여기',
     searchPlaceholder: '식물·작물 증상을 검색해보세요'
   },
@@ -2703,7 +2644,7 @@ const I18N = {
     qa: 'Q&A',
     nearby: 'Nearby',
     recentQuestions: 'Recent Questions',
-    exploreChannels: 'Explore Channels',
+    exploreChannels: 'Explore Community',
     heroTitle: 'When Something Feels Off,<br/>Start Here',
     searchPlaceholder: 'Search plant and crop symptoms...'
   }
@@ -2734,18 +2675,22 @@ function toggleLanguage(){
   applyLanguage(next);
 }
 initLanguage();
-loadAgriInfoContent();
 prepareQuestionListShell();
 async function initSupabaseApp(){
+  await hydrateCommunityCategorySelect();
   const {data:{session}}=await _sb.auth.getSession();
   setMyState(session?.user || null);
   if(session)updateUserUI(session.user);
-  _sb.auth.onAuthStateChange((event,session)=>{
+  await refreshBlockState(session?.user || null);
+  _sb.auth.onAuthStateChange(async (event,session)=>{
     setMyState(session?.user || null);
     if(session)updateUserUI(session.user);
     else resetUserUI();
+    await refreshBlockState(session?.user || null);
+    if(!document.getElementById('questionListView')?.hidden)renderQuestionListView(new URLSearchParams(location.search).get('sort')||'latest');
+    else loadFeed(homeFeedSort);
   });
-  if(!applyQuestionListQuery())loadFeed();
+  if(!applyQuestionListQuery())loadFeed(homeFeedSort);
   refreshFrequentSymptoms();
 }
 function updateUserUI(user){
@@ -2753,10 +2698,13 @@ function updateUserUI(user){
   renderHeaderProfile(user);
   renderMyProfile(user);
   loadMyCounts(user.id);
+  refreshModeratorState();
   hydrateCurrentProfile(user);
 }
 function resetUserUI(){
   currentUser = null;
+  blockedUserIdsSet = new Set();
+  const adminLink=document.getElementById('myAdminReports');if(adminLink)adminLink.hidden=true;
   const bell=document.getElementById('headerProfile');
   const loginBtn=document.getElementById('headerLoginBtn');
   if(loginBtn)loginBtn.style.display='';
@@ -2874,6 +2822,49 @@ async function fetchProfileMap(userIds){
   }
   return map;
 }
+async function refreshBlockState(user=currentUser){
+  const count=document.getElementById('myBlockCount');
+  if(!window._sb||!user?.id){
+    blockedUserIdsSet=new Set();
+    if(count)count.textContent='0';
+    return blockedUserIdsSet;
+  }
+  try{
+    blockedUserIdsSet=await window.KFCommunity.blockedUserIds(_sb,user.id);
+  }catch(_){
+    blockedUserIdsSet=new Set();
+  }
+  if(count)count.textContent=String(blockedUserIdsSet.size);
+  return blockedUserIdsSet;
+}
+
+async function loadMyBlocks(){
+  const list=document.getElementById('myBlockedList');
+  if(!list||!currentUser?.id)return;
+  list.innerHTML='<div class="my-list-empty">차단 목록을 불러오는 중입니다.</div>';
+  await refreshBlockState(currentUser);
+  const ids=[...blockedUserIdsSet];
+  if(!ids.length){
+    list.innerHTML='<div class="my-list-empty">차단한 사용자가 없습니다.</div>';
+    return;
+  }
+  const profiles=await fetchProfileMap(ids);
+  list.innerHTML=ids.map(id=>`<div class="blocked-list-item"><span>${escHtml(profiles[id]||'kFarmAI 사용자')}</span><button type="button" onclick="unblockCommunityUser('${escAttr(id)}')">차단 해제</button></div>`).join('');
+}
+
+async function unblockCommunityUser(userId){
+  if(!window._sb||!currentUser?.id)return;
+  try{
+    await window.KFCommunity.unblock(_sb,currentUser.id,userId);
+    await refreshBlockState(currentUser);
+    await loadMyBlocks();
+    showToast('차단을 해제했습니다.');
+    if(!document.getElementById('questionListView')?.hidden)renderQuestionListView(new URLSearchParams(location.search).get('sort')||'latest');
+    else loadFeed(homeFeedSort);
+  }catch(_){
+    showToast('차단 해제를 처리하지 못했습니다.');
+  }
+}
 async function upsertUserDisplayProfile(user=currentUser){
   if(!window._sb||!user?.id)return;
   const nickname=displayNameForUser(user);
@@ -2890,6 +2881,10 @@ async function loadMyCounts(userId){
     document.getElementById('myPostCount').textContent='0';
   }
   try{
+    const {count:savedCount} = await _sb.from('post_bookmarks').select('post_id',{count:'exact',head:true}).eq('user_id',userId);
+    document.getElementById('mySavedCount').textContent=savedCount ?? 0;
+  }catch(e){document.getElementById('mySavedCount').textContent='0';}
+  try{
     const {count:diagnosisCount} = await _sb.from('diagnoses').select('id',{count:'exact',head:true}).eq('user_id',userId);
     const reportCount=window.KFDiagnosisPublicDataBridge?.getPublicDataReports?.().length || 0;
     document.getElementById('myDiagnosisCount').textContent=(diagnosisCount ?? 0)+reportCount;
@@ -2900,34 +2895,38 @@ async function loadMyCounts(userId){
   loadMyPosts(userId);
   loadMyDiagnoses(userId);
 }
+async function refreshModeratorState(){
+  const link=document.getElementById('myAdminReports');if(link)link.hidden=true;
+  if(!window._sb||!currentUser?.id)return;
+  try{if(await window.KFCommunity.isModerator(_sb)){if(link)link.hidden=false;}}catch(_){if(link)link.hidden=true;}
+}
 function postLikeButton(){
-  return '';
+  const post=arguments[0]||{};
+  const parts=[];
+  if(post.same_symptom_count!==null&&post.same_symptom_count!==undefined&&Number.isFinite(Number(post.same_symptom_count)))parts.push(`같은 증상 ${Number(post.same_symptom_count)}`);
+  if(post.helpful_count!==null&&post.helpful_count!==undefined&&Number.isFinite(Number(post.helpful_count)))parts.push(`도움됐어요 ${Number(post.helpful_count)}`);
+  return parts.map(item=>`<span>${escHtml(item)}</span>`).join('');
+}
+function displayCommunityCategory(post){
+  return window.KFCommunity.categoryForPost(post,communityCategories)?.name
+    || displayChannelName(post?.channels?.slug,post?.channels?.name||post?.channelName);
 }
 const COMMENT_DELETE_MARKER = '[kfarmai_deleted_comment]';
-async function attachCommentCounts(posts){
-  const list=Array.isArray(posts)?posts:[];
-  const ids=[...new Set(list.map(post=>post?.id).filter(Boolean).map(String))];
-  if(!ids.length||!window._sb)return list;
+async function attachCommentCounts(posts,options={}){
+  const source=Array.isArray(posts)?posts:[];
+  const list=options.includeArchived
+    ? source.filter(post=>!blockedUserIdsSet.has(String(post?.user_id||'')))
+    : window.KFCommunity.visiblePosts(source,blockedUserIdsSet);
+  if(!list.length||!window._sb)return list;
   try{
-    const {data,error}=await _sb.from('comments')
-      .select('post_id,content,deleted_at')
-      .in('post_id',ids)
-      .is('deleted_at',null);
-    if(error)throw error;
-    const counts={};
-    (data||[]).forEach(comment=>{
-      if(String(comment.content||'').trim()===COMMENT_DELETE_MARKER)return;
-      const key=String(comment.post_id);
-      counts[key]=(counts[key]||0)+1;
-    });
-    return list.map(post=>({...post,comment_count:counts[String(post.id)]||0}));
+    return await window.KFCommunity.enrichFeedPosts(_sb,list);
   }catch(error){
-    console.error('comment count load failed',error);
-    return list;
+    console.error('community metrics load failed',error);
+    return list.map(post=>({...post,comment_count:null,same_symptom_count:null,helpful_count:null}));
   }
 }
 function commentCountLabel(post){
-  return `댓글 ${Number(post?.comment_count||0)}`;
+  return Number.isFinite(Number(post?.comment_count))&&post?.comment_count!==null ? `댓글 ${Number(post.comment_count)}` : '';
 }
 function openMySubview(id){
   if(!currentUser)return;
@@ -2936,7 +2935,23 @@ function openMySubview(id){
   document.querySelectorAll('.my-subview').forEach(view=>view.classList.remove('open'));
   document.getElementById(id)?.classList.add('open');
   if(id==='myPostsView')loadMyPosts(currentUser.id);
+  if(id==='mySavedView')loadMySavedPosts(currentUser.id);
   if(id==='myDiagnosesView')loadMyDiagnoses(currentUser.id);
+  if(id==='myBlocksView')loadMyBlocks();
+}
+async function loadMySavedPosts(userId){
+  const list=document.getElementById('mySavedList');if(!list||!window._sb||!userId)return;
+  list.innerHTML='<div class="my-list-empty">저장한 글을 불러오는 중입니다.</div>';
+  try{
+    const {data:bookmarks,error:bookmarkError}=await _sb.from('post_bookmarks').select('post_id,created_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(100);
+    if(bookmarkError)throw bookmarkError;
+    const ids=(bookmarks||[]).map(row=>row.post_id);
+    if(!ids.length){list.innerHTML='<div class="my-list-empty">아직 저장한 글이 없습니다.</div>';return;}
+    const {data:posts,error:postError}=await _sb.from('posts').select('id,title,content,created_at').in('id',ids);
+    if(postError)throw postError;
+    const map=new Map((posts||[]).map(post=>[String(post.id),post]));
+    list.innerHTML=ids.map(id=>map.get(String(id))).filter(Boolean).map(post=>`<div class="my-list-item" onclick="location.href='post.html?id=${encodeURIComponent(post.id)}'"><div class="my-list-title">${escHtml(post.title||'제목 없음')}</div><div class="my-list-preview">${escHtml(stripPostPrefixes(post.content||'').slice(0,120))}</div></div>`).join('')||'<div class="my-list-empty">표시할 수 있는 저장 글이 없습니다.</div>';
+  }catch(_){list.innerHTML='<div class="my-list-empty">저장한 글을 불러오지 못했습니다.</div>';}
 }
 function closeMySubview(){
   const main=document.getElementById('myMainMenu');
@@ -2947,16 +2962,16 @@ async function loadMyPosts(userId){
   const list=document.getElementById('myPostList');
   if(!list||!window._sb||!userId)return;
   try{
-    const data=await attachCommentCounts(await fetchMyPosts(userId));
+    const data=await attachCommentCounts(await fetchMyPosts(userId),{includeArchived:true});
     myPostCache=data||[];
     if(!(data||[]).length){list.innerHTML='<div class="my-list-empty">아직 작성한 글이 없습니다.</div>';return;}
     list.innerHTML=(data||[]).map(post=>{
-      const category=post.crop_tag||extractCategoryFromContent(post.content)||displayChannelName(post.channels?.slug,post.channels?.name)||'질문';
+      const category=post.crop_tag||extractCategoryFromContent(post.content)||displayCommunityCategory(post)||'질문';
       const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
       const isEditing=String(myPostEditingId||'')===String(post.id);
       const meta=[
         displayNameForPost(post,{[userId]:displayNameForUser(currentUser)}),
-        displayChannelName(post.channels?.slug,post.channels?.name)||category,
+        displayCommunityCategory(post)||category,
         post.region_tag||'',
         commentCountLabel(post),
         `조회 ${Number(post.view_count||0)}`,
@@ -2965,7 +2980,7 @@ async function loadMyPosts(userId){
       return `<div class="my-list-item" onclick="location.href='post.html?v=20260705d&id=${encodeURIComponent(post.id)}'">
         <div class="my-list-title">${escHtml(post.title||'제목 없음')}</div>
         ${preview?`<div class="my-list-preview">${escHtml(preview)}</div>`:''}
-        ${renderPostTags(post.content)}
+        ${renderPostTags(post.content,undefined,post.tags)}
         <div class="my-list-meta">${meta}<span>${postLikeButton(post)}</span></div>
         <div class="my-list-actions">
           <button class="my-list-action" type="button" onclick="editMyPost(event,'${escAttr(post.id)}')">&#49688;&#51221;</button>
@@ -2981,11 +2996,11 @@ async function loadMyPosts(userId){
 async function fetchMyPosts(userId){
   const base=query=>query.eq('user_id',userId).order('created_at',{ascending:false}).limit(10);
   try{
-    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, title, content, crop_tag, created_at, region_tag, view_count, image_urls, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, category_id, title, content, crop_tag, tags, created_at, region_tag, view_count, image_urls, channels(name, slug), community_categories(name, slug)'));
     if(error)throw error;
-    return await attachCommentCounts(data||[]);
+    return data||[];
   }catch(e){
-    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, title, content, created_at, channels(name, slug)'));
+    const {data,error}=await base(_sb.from('posts').select('id, user_id, channel_id, category_id, title, content, tags, created_at, channels(name, slug), community_categories(name, slug)'));
     if(error)throw error;
     return data||[];
   }
@@ -3001,7 +3016,7 @@ function myPostSymptomOptions(active=''){
   return options.map(value=>`<option value="${escAttr(value)}" ${String(value)===String(active||'')?'selected':''}>${escHtml(value||'대표 증상 선택')}</option>`).join('');
 }
 function myPostTopicConfig(post){
-  const key=CHANNEL_TOPIC_ID_MAP[String(post?.channel_id||'')]||channelTopicKeyByName(post?.channels?.name||post?.content||'');
+  const key=COMMUNITY_CATEGORY_TOPIC[window.KFCommunity.categoryForPost(post,communityCategories)?.slug]||'default';
   return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
 }
 function myPostTopicOptions(post,active=''){
@@ -3391,37 +3406,28 @@ function extractTagsFromContent(content){
   if(!match)return [];
   return match[1].split(/\s+/).map(normalizeTag).filter(Boolean).slice(0,8);
 }
-function renderPostTags(content,cls='post-tag'){
-  const tags=extractTagsFromContent(content);
+function renderPostTags(content,cls='post-tag',storedTags=[]){
+  const tags=window.KFCommunity.normalizeTags(storedTags?.length?storedTags:extractTagsFromContent(content));
   return tags.length?`<div class="post-tags">${tags.map(tag=>`<span class="${cls}">${escHtml(tag)}</span>`).join('')}</div>`:'';
 }
 function stripPostPrefixes(content){
   return String(content||'').replace(/^\[(?:\uC791\uC131\uC790|\uCC44\uB110|\uC9C0\uC5ED|\uB300\uD45C\s*\uC99D\uC0C1|\uD0DC\uADF8|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
 }
 function getInitial(user){return (displayNameForUser(user)||'U').trim()[0].toUpperCase();}
-async function loadFeed(channelId=null){
+async function loadFeed(sort=homeFeedSort){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
+  homeFeedSort=['latest','unanswered','helpful'].includes(sort)?sort:'latest';
   feed.dataset.loading='1';
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>불러오는 중...</div>';
   try{
     if(!window._sb)throw new Error('Supabase client is not ready');
-    let data=[];
-    if(channelId){
-      const result=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
-        .eq('channel_id',channelId)
-        .order('created_at',{ascending:false})
-        .limit(5);
-      if(result.error)throw result.error;
-      data=result.data||[];
-    }else{
-      data=await loadSortedQuestionPosts('latest',3);
-    }
-    data=await attachCommentCounts(data);
+    const data=await loadSortedQuestionPosts(homeFeedSort,6);
     feed.dataset.loading='0';
     if(!data||data.length===0){
-      feed.innerHTML='<div class="feed-loading">아직 등록된 질문이 없습니다.</div>';
+      feed.innerHTML=homeFeedSort==='unanswered'
+        ? '<div class="feed-loading">현재 답변을 기다리는 글이 없습니다.</div>'
+        : '<div class="feed-loading">아직 등록된 글이 없습니다.</div>';
       return;
     }
     feed.innerHTML='';
@@ -3429,11 +3435,28 @@ async function loadFeed(channelId=null){
     data.forEach(post=>renderFeedCard(feed, post, profileMap));
   }catch(e){
     feed.dataset.loading='0';
-    await renderFeedFallback('현재 데이터를 불러오지 못했습니다. 공개 예시 질문을 표시합니다.');
+    await renderFeedFallback('현재 커뮤니티 글을 불러오지 못했습니다. 잠시 후 다시 확인해주세요.');
   }
 }
+function setHomeFeedSort(sort,button){
+  document.querySelectorAll('.feed-filter').forEach(item=>{
+    const active=item===button;
+    item.classList.toggle('active',active);
+    item.setAttribute('aria-selected',String(active));
+  });
+  const copy=document.getElementById('communityFeedCopy');
+  const labels={latest:'새로 올라온 이야기를 확인하세요.',unanswered:'아직 댓글이 없는 글을 모았습니다.',helpful:'도움됐어요 반응이 많은 글을 모았습니다.'};
+  if(copy)copy.textContent=labels[sort]||labels.latest;
+  loadFeed(sort);
+}
+function feedReactionHtml(post){
+  const items=[];
+  if(post?.same_symptom_count!==null&&post?.same_symptom_count!==undefined)items.push(`<span class="same-symptom-count">같은 증상 ${Number(post.same_symptom_count)}</span>`);
+  if(post?.helpful_count!==null&&post?.helpful_count!==undefined)items.push(`<span>도움됐어요 ${Number(post.helpful_count)}</span>`);
+  return items.length?`<div class="feed-reactions">${items.join('')}</div>`:'';
+}
 function renderFeedCard(feed,post,profileMap={}){
-  const slug=post.channels?.slug||'';
+  const slug=post.community_categories?.slug||post.channels?.slug||'';
   const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
   const card=document.createElement('div');
   const thumb=postImageList(post)[0]||'';
@@ -3441,8 +3464,9 @@ function renderFeedCard(feed,post,profileMap={}){
   card.style.cursor='pointer';
   card.onclick=()=>openPostDetail(post);
   const symptom=post.crop_tag||extractCategoryFromContent(post.content);
-  const meta=[displayNameForPost(post,profileMap),commentCountLabel(post),`조회 ${Number(post.view_count||0)}`,post.region_tag||'',post.created_at?getTimeAgo(post.created_at):'시연'].filter(Boolean);
-  card.innerHTML=`<div class="q-card-main"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name||post.channelName))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${renderPostTags(post.content)}<div class="q-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}<span>${postLikeButton(post)}</span></div></div>${thumb?`<img class="q-card-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}`;
+  const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
+  const meta=[displayNameForPost(post,profileMap),commentCountLabel(post),post.region_tag||'',post.created_at?getTimeAgo(post.created_at):''].filter(Boolean);
+  card.innerHTML=`<div class="q-card-main"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${preview?`<div class="feed-preview">${escHtml(preview)}</div>`:''}${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}</div>${feedReactionHtml(post)}</div>${thumb?`<img class="q-card-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}`;
   feed.appendChild(card);
 }
 function cachePostForDetail(post){
@@ -3456,29 +3480,13 @@ function openPostDetail(post){
 async function renderFeedFallback(message){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
-  let items=[];
-  try{
-    const res=await fetch('data/community_threads.json',{cache:'no-store'});
-    if(res.ok){
-      const json=await res.json();
-      items=(Array.isArray(json)?json:[]).slice(0,5);
-    }
-  }catch(e){ items=[]; }
-  if(!items.length){
-    items=[
-      {channelName:'식물 병원',title:'토마토 잎 뒷면에 회색 곰팡이가 보여요',summary:'공공정보 확인이 필요한 시연용 질문입니다.'},
-      {channelName:'식물 질문방',title:'화분 잎이 노랗게 변해요',summary:'물주기와 광량을 함께 확인해보는 예시입니다.'},
-      {channelName:'작물 상담방',title:'고추 열매에 반점이 생겼어요',summary:'사진과 재배환경을 함께 남기는 예시입니다.'}
-    ];
-  }
   feed.innerHTML=`<div class="feed-loading">${escHtml(message)}</div>`;
-  items.slice(0,5).forEach(item=>renderFeedCard(feed,{...item,content:item.summary,created_at:null}));
 }
-function filterByChannel(id,name){loadFeed(id);const title=document.querySelector('#recentFeed')?.previousElementSibling?.querySelector('.section-title');if(title)title.textContent=`${name} 질문`;}
+function filterByChannel(id,name){location.href=`channel.html?category=${encodeURIComponent(id||'')}`;}
 const SEARCH_STORAGE_KEY='kfarmai_recent_searches';
-const FEATURE_TRENDING_QUESTIONS = true;
-const FEATURE_SAME_SYMPTOM_REACTION = true;
-const FEATURE_HELPFUL_REACTION = true;
+const FEATURE_TRENDING_QUESTIONS = false;
+const FEATURE_SAME_SYMPTOM_REACTION = false;
+const FEATURE_HELPFUL_REACTION = false;
 const FEATURE_SEARCH_ACTIONS = true;
 let staticSearchIndex = null;
 let staticSearchIndexPromise = null;
@@ -3491,8 +3499,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['잎 말림','생육 저하'],
     tags:['고추','잎 말림','고온'],
     view_count:34,
-    same_symptom_count:12,
-    helpful_count:8,
     url:'q/pepper-leaf-curling.html',
     seasonal:true
   },
@@ -3503,8 +3509,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['흰가루','잎 반점'],
     tags:['토마토','흰가루','시설재배'],
     view_count:29,
-    same_symptom_count:10,
-    helpful_count:7,
     url:'q/tomato-leaf-brown-spots.html',
     seasonal:false
   },
@@ -3515,8 +3519,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['흰 곰팡이','과습'],
     tags:['상토','곰팡이','물관리'],
     view_count:24,
-    same_symptom_count:14,
-    helpful_count:9,
     url:'q/potting-soil-white-mold.html',
     seasonal:false
   },
@@ -3527,8 +3529,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['노란잎','과습 의심'],
     tags:['몬스테라','노란잎','실내식물'],
     view_count:21,
-    same_symptom_count:9,
-    helpful_count:6,
     url:'q/monstera-yellow-leaves.html',
     seasonal:false
   },
@@ -3539,8 +3539,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['과습','뿌리 활력 저하'],
     tags:['장마','과습','배수'],
     view_count:31,
-    same_symptom_count:11,
-    helpful_count:10,
     url:'q/overwatering-signs.html',
     seasonal:true
   },
@@ -3551,8 +3549,6 @@ const HOME_SEARCH_HIGHLIGHTS=[
     symptoms:['잎 말림','시듦'],
     tags:['고온','잎 말림','수분 스트레스'],
     view_count:27,
-    same_symptom_count:13,
-    helpful_count:7,
     url:'q/underwatering-signs.html',
     seasonal:true
   }
@@ -3617,14 +3613,14 @@ const LOCAL_SEARCH_INDEX=[
 ];
 const AGRI_LINKS=[
   {type:'map',label:'농약사',initial:'ㄴㅇㅅ',url:'agri_map.html',text:'농약사 - 지도에서 보기'},
-  {type:'material',label:'상토',initial:'ㅅㅌ',url:'santo.html',text:'상토 정보 보기',badge:'농자재 정보',keywords:['육묘용 상토','분갈이 상토','수도용 상토','원예용 상토','배양토','상토 곰팡이','배수']},
-  {type:'material',label:'종자',initial:'ㅈㅈ',url:'seed.html',text:'종자 정보 보기',badge:'농자재 정보',keywords:['채소종자','곡류종자','모종','육묘','파종시기','품종','봄작기','가을작기']},
-  {type:'material',label:'작물보호제',initial:'ㅈㅁㅂㅎㅈ',url:'cpa.html',text:'작물보호제 공식정보 확인',badge:'작물보호 공식정보',keywords:['작물보호','농약등록정보','안전사용기준','대상 병해충','제품 라벨','NCPMS','병해충 정보']},
-  {type:'material',label:'비료',initial:'ㅂㄹ',url:'fert.html',text:'비료·토양 정보 보기',badge:'비료·토양',keywords:['토양검정','밑거름','웃거름','액비','미량요소','유기질비료','복합비료','토양개량제']},
-  {type:'material',label:'관수·시설자재',initial:'ㄱㅅㅅㅅㅈㅈ',url:'mfg.html?category=irrigation-facility',text:'관수·시설자재 참고 정보 보기',badge:'관수·시설',keywords:['점적관수','분수호스','관수타이머','하우스 필름','차광망','지주대','유인줄','고추 지주대','딸기 관수']},
-  {type:'material',label:'화분·도구',initial:'ㅎㅂㄷㄱ',url:'mfg.html?category=home-gardening-tools',text:'화분·도구 참고 정보 보기',badge:'농자재 정보',keywords:['화분','분갈이','배수망','전지가위','지지대','물조리개','식물등','홈가드닝']},
-  {type:'material',label:'스마트팜',initial:'ㅅㅁㅌㅍ',url:'mfg.html?category=smartfarm',text:'스마트팜 참고 정보 보기',badge:'관수·시설',keywords:['스마트팜 센서','온습도 센서','토양수분 센서','EC 센서','pH 센서','자동관수','환경제어기','양액기']},
-  {type:'material',label:'농기계·안전용품',initial:'ㄴㄱㄱㅇㅈㅇㅍ',url:'mfg.html?category=machinery-safety',text:'농기계·안전용품 참고 정보 보기',badge:'농자재 정보',keywords:['농기계','예초기','분무기','보호안경','방진마스크','장갑','안전용품','농기계 안전']}
+  {type:'material',label:'종자·육묘',initial:'ㅈㅈㅇㅁ',url:'mfg.html?category=seed-nursery',text:'종자·육묘 정보 보기',badge:'농자재·스마트농업',keywords:['종자','채소종자','곡류종자','모종','육묘','파종시기','품종','정식']},
+  {type:'material',label:'토양·영양',initial:'ㅌㅇㅇㅇ',url:'mfg.html?category=soil-nutrition',text:'토양·영양 정보 보기',badge:'농자재·스마트농업',keywords:['상토','배지','토양검정','비료','액비','미량요소','토양개량제','EC','pH']},
+  {type:'material',label:'작물보호',initial:'ㅈㅁㅂㅎ',url:'mfg.html?category=crop-protection',text:'작물보호 공식정보 확인',badge:'농자재·스마트농업',keywords:['작물보호','농약등록정보','안전사용기준','대상 병해충','제품 라벨','NCPMS','병해충 정보','보호장비']},
+  {type:'material',label:'시설·관수',initial:'ㅅㅅㄱㅅ',url:'mfg.html?category=facility-irrigation',text:'시설·관수 정보 보기',badge:'농자재·스마트농업',keywords:['점적관수','분수호스','관수타이머','펌프','하우스 필름','차광망','환기','농기계 안전','시설 안전']},
+  {type:'material',label:'스마트농업',initial:'ㅅㅁㅌㄴㅇ',url:'mfg.html?category=smart-agriculture',text:'스마트팜·육상 아쿠아팜 기술정보 보기',badge:'농자재·스마트농업',keywords:['스마트팜','아쿠아팜','육상양식','센서','모니터링','자동제어','에너지','EMS']},
+  {type:'material',label:'원예·도구',initial:'ㅇㅇㄷㄱ',url:'mfg.html?category=gardening-tools',text:'원예·도구 정보 보기',badge:'농자재·스마트농업',keywords:['화분','분갈이','배수망','전지가위','지지대','물조리개','식물등','홈가드닝']},
+  {type:'material',label:'스마트팜',initial:'ㅅㅁㅌㅍ',url:'mfg.html?category=smart-agriculture&area=smartfarm',text:'시설재배 환경·센서·제어 정보 보기',badge:'스마트농업',keywords:['온도','습도','CO₂','일사','토양수분','EC 센서','pH 센서','자동관수','양액','환경 제어','에너지관리']},
+  {type:'material',label:'육상 아쿠아팜',initial:'ㅇㅅㅇㅋㅇㅍ',url:'mfg.html?category=smart-agriculture&area=land-aquafarm',text:'수질·순환여과·센서 정보 보기',badge:'스마트농업',keywords:['아쿠아팜','육상양식','스마트양식','수온','용존산소','DO','pH','염분','ORP','암모니아','수질','순환여과','RAS','수처리','산소공급','EMS']}
 ];
 const SEARCH_ALIASES=[
   {label:'식물 병원',initial:'ㅅㅂ'},
@@ -3723,7 +3719,7 @@ function renderHomeQuestionSections(){
       note:'공감',
       sort:'symptom',
       className:'same-symptom',
-      items:[...HOME_SEARCH_HIGHLIGHTS].sort((a,b)=>b.same_symptom_count-a.same_symptom_count).slice(0,2)
+      items:[]
     }
   ].filter(section=>section.enabled&&section.items.length);
   wrap.innerHTML=sections.map(section=>`
@@ -3747,13 +3743,9 @@ function renderHomeQuestionCard(item){
   const publicUrl=`public-data.html?q=${encodeURIComponent(item.tags.join(' '))}`;
   return `<article class="insight-card">
     <a href="${safeSearchUrl(item.url)}" style="display:block;color:inherit;text-decoration:none">
-      <div class="insight-card-top"><span class="insight-crop">${escHtml(item.crop)}</span><span class="insight-kind">시제품 추천 질문</span></div>
+      <div class="insight-card-top"><span class="insight-crop">${escHtml(item.crop)}</span><span class="insight-kind">참고 질문</span></div>
       <div class="insight-card-title">${escHtml(item.title)}</div>
       <div class="tag-row">${item.symptoms.map(tag=>`<span class="mini-tag">${escHtml(tag)}</span>`).join('')}</div>
-      <div class="reaction-row">
-        <span class="reaction-pill">나도 같은 증상 ${Number(item.same_symptom_count)||0}</span>
-        <span class="reaction-pill">도움 됐어요 ${Number(item.helpful_count)||0}</span>
-      </div>
     </a>
     <div class="card-actions">
       <a class="primary" href="${diagUrl}">AI 참고 진단</a>
@@ -3763,7 +3755,7 @@ function renderHomeQuestionCard(item){
   </article>`;
 }
 function normalizeQuestionSort(sort){
-  return ['popular','symptom','latest'].includes(sort) ? sort : 'latest';
+  return ['popular','symptom','helpful','unanswered','latest'].includes(sort) ? sort : 'latest';
 }
 function openQuestionList(sort='latest'){
   const safeSort=normalizeQuestionSort(sort);
@@ -3771,21 +3763,29 @@ function openQuestionList(sort='latest'){
 }
 async function loadSortedQuestionPosts(sort,limit=20){
   if(!window._sb)return [];
-  const orderColumn=sort==='popular'||sort==='symptom'?'view_count':'created_at';
+  const safeSort=normalizeQuestionSort(sort);
+  const orderColumn=safeSort==='popular'?'view_count':'created_at';
+  const fetchLimit=Math.min(100,Math.max(limit*6,40));
   try{
     const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
+      .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,region_tag,view_count,image_urls,channels(name, slug),community_categories(name, slug)')
+      .not('category_id','is',null)
       .order(orderColumn,{ascending:false})
-      .limit(limit);
+      .limit(fetchLimit);
     if(error)throw error;
-    return await attachCommentCounts(data||[]);
+    let posts=await attachCommentCounts(data||[]);
+    if(safeSort==='unanswered')posts=posts.filter(post=>Number(post.comment_count)===0);
+    if(safeSort==='helpful')posts.sort((a,b)=>Number(b.helpful_count||0)-Number(a.helpful_count||0)||new Date(b.created_at||0)-new Date(a.created_at||0));
+    if(safeSort==='symptom')posts.sort((a,b)=>Number(b.same_symptom_count||0)-Number(a.same_symptom_count||0)||new Date(b.created_at||0)-new Date(a.created_at||0));
+    return posts.slice(0,limit);
   }catch(e){
     try{
       const {data}=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
+        .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,channels(name, slug),community_categories(name, slug)')
+        .not('category_id','is',null)
         .order('created_at',{ascending:false})
-        .limit(limit);
-      return await attachCommentCounts(data||[]);
+        .limit(fetchLimit);
+      return (await attachCommentCounts(data||[])).slice(0,limit);
     }catch(_){
       return [];
     }
@@ -3805,21 +3805,23 @@ function postImageList(post){
 }
 function questionListLabels(sort){
   const map={
-    popular:{title:'많이 보는 질문',label:'인기순',caption:'인기순 기준으로 질문을 모았습니다.'},
-    symptom:{title:'나도 같은 증상',label:'공감순',caption:'공감순 기준으로 질문을 모았습니다.'},
-    latest:{title:'방금 올라온 질문',label:'최신순',caption:'최신순 기준으로 질문을 모았습니다.'}
+    popular:{title:'많이 보는 이야기',label:'조회순',caption:'많이 확인한 커뮤니티 글을 모았습니다.'},
+    symptom:{title:'같은 증상이 많은 글',label:'같은 증상순',caption:'같은 증상 반응이 많은 글을 모았습니다.'},
+    helpful:{title:'도움된 글',label:'도움됐어요순',caption:'도움됐어요 반응이 많은 글을 모았습니다.'},
+    unanswered:{title:'답변을 기다려요',label:'댓글 없음',caption:'아직 댓글이 없는 글을 모았습니다.'},
+    latest:{title:'최신 글',label:'최신순',caption:'새로 올라온 커뮤니티 글을 모았습니다.'}
   };
   return map[normalizeQuestionSort(sort)]||map.latest;
 }
 function questionKeywordFromParams(params=new URLSearchParams(location.search)){
-  return (params.get('keyword')||params.get('q')||'').trim();
+  return (params.get('tag')||params.get('keyword')||params.get('q')||'').trim();
 }
 function prepareQuestionListShell(){
   const params=new URLSearchParams(location.search);
   if(params.get('view')!=='questions')return false;
   const keyword=questionKeywordFromParams(params);
   const labels=keyword
-    ? {title:keyword,label:'증상',caption:'이 증상과 관련된 질문을 모았습니다.'}
+    ? {title:`#${keyword.replace(/^#/,'')}`,label:'태그·검색',caption:'제목, 본문, 작물, 증상과 태그가 일치하는 글입니다.'}
     : questionListLabels(params.get('sort')||'latest');
   document.querySelector('.phone')?.setAttribute('hidden','');
   const view=document.getElementById('questionListView');
@@ -3838,7 +3840,7 @@ function renderQuestionListCard(post,profileMap={}){
   const content=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
   const meta=[
     displayNameForPost(post,profileMap),
-    displayChannelName(post.channels?.slug,post.channels?.name||post.channelName),
+    displayCommunityCategory(post),
     post.region_tag||'',
     commentCountLabel(post),
     `조회 ${Number(post.view_count||0)}`,
@@ -3850,8 +3852,8 @@ function renderQuestionListCard(post,profileMap={}){
     <div>
       <div class="question-list-card-title">${escHtml(post.title||'제목 없음')}</div>
       ${content?`<div class="question-list-preview">${escHtml(content)}</div>`:''}
-      ${renderPostTags(post.content,'question-list-tag')}
-      <div class="question-list-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}<span>${postLikeButton(post)}</span></div>
+      ${renderPostTags(post.content,'question-list-tag',post.tags)}
+      <div class="question-list-meta">${meta.map(item=>`<span>${escHtml(item)}</span>`).join('')}${postLikeButton(post)}</div>
     </div>
     ${thumb?`<img class="question-list-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" loading="lazy">`:''}
   </a>`;
@@ -3861,7 +3863,7 @@ async function renderQuestionListView(sort='latest'){
   const keyword=questionKeywordFromParams(params);
   const safeSort=normalizeQuestionSort(sort);
   const labels=keyword
-    ? {title:keyword,label:'증상',caption:'이 증상과 관련된 질문을 모았습니다.'}
+    ? {title:`#${keyword.replace(/^#/,'')}`,label:'태그·검색',caption:'제목, 본문, 작물, 증상과 태그가 일치하는 글입니다.'}
     : questionListLabels(safeSort);
   const title=document.getElementById('questionListTitle');
   const caption=document.getElementById('questionListCaption');
@@ -3893,25 +3895,28 @@ async function loadKeywordQuestionPosts(keyword,limit=50){
   const uniqueTerms=[...new Set(terms)].slice(0,8);
   const orQuery=uniqueTerms.flatMap(term=>{
     const safe=term.replace(/^#/,'').replace(/[%_,]/g,'');
-    return [`title.ilike.%${safe}%`,`content.ilike.%${safe}%`,`content.ilike.%#${safe}%`,`region_tag.ilike.%${safe}%`];
+    return [`title.ilike.%${safe}%`,`content.ilike.%${safe}%`,`content.ilike.%#${safe}%`,`crop_tag.ilike.%${safe}%`,`region_tag.ilike.%${safe}%`];
   }).join(',');
   try{
-    const {data,error}=await _sb.from('posts')
-      .select('id,user_id,channel_id,title,content,crop_tag,created_at,region_tag,view_count,image_urls,channels(name, slug)')
-      .or(orQuery)
-      .order('created_at',{ascending:false})
-      .limit(limit);
-    if(error)throw error;
-    return await attachCommentCounts(data||[]);
+    const fields='id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,region_tag,view_count,image_urls,channels(name, slug),community_categories(name, slug)';
+    const normalizedTag=window.KFCommunity.normalizeTags([keyword])[0]||'';
+    const [textResult,tagResult]=await Promise.all([
+      _sb.from('posts').select(fields).not('category_id','is',null).or(orQuery).order('created_at',{ascending:false}).limit(limit),
+      normalizedTag?_sb.from('posts').select(fields).not('category_id','is',null).contains('tags',[normalizedTag]).order('created_at',{ascending:false}).limit(limit):Promise.resolve({data:[]})
+    ]);
+    if(textResult.error)throw textResult.error;
+    const rows=[...(textResult.data||[]),...(tagResult.data||[])].filter((post,index,all)=>all.findIndex(row=>row.id===post.id)===index).slice(0,limit);
+    return await attachCommentCounts(rows);
   }catch(_){
     try{
       const {data}=await _sb.from('posts')
-        .select('id,user_id,channel_id,title,content,crop_tag,created_at,channels(name, slug)')
+        .select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,created_at,channels(name, slug),community_categories(name, slug)')
+        .not('category_id','is',null)
         .order('created_at',{ascending:false})
         .limit(limit);
       const lowered=uniqueTerms.map(term=>term.toLowerCase());
       const filtered=(data||[]).filter(post=>{
-        const text=`${post.title||''} ${post.content||''}`.toLowerCase();
+        const text=`${post.title||''} ${post.content||''} ${post.crop_tag||''} ${(post.tags||[]).join(' ')}`.toLowerCase();
         return lowered.some(term=>text.includes(term));
       });
       return await attachCommentCounts(filtered);
@@ -3950,15 +3955,9 @@ async function renderSearchDropdown(raw){
   dd.classList.add('open');
   dd.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
   const posts=await searchPosts(kw,3);
-  const shopItems=getShopSuggestions(kw,2);
-  const matItems=getMaterialSuggestions(kw,2);
-  const staticItems=await searchStaticIndex(kw,5);
   const recent=getRecentSearches();
   dd.innerHTML=[
-    renderSuggestSection('통합 검색',staticItems.map(item=>staticSuggestHtml(item,kw))),
     renderSuggestSection('커뮤니티 게시글',posts.map(p=>postSuggestHtml(p,kw))),
-    renderSuggestSection('농약사',shopItems.map(item=>linkSuggestHtml(item,kw,'지도'))),
-    renderSuggestSection('농자재',matItems.map(item=>linkSuggestHtml(item,kw,'정보'))),
     renderRecentSection(recent)
   ].filter(Boolean).join('');
 }
@@ -3969,7 +3968,7 @@ function renderSuggestSection(title,items){
 function postSuggestHtml(post,kw){
   const slug=post.channels?.slug||'';
   const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
-    return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name))}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
+    return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post))}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
 }
 function linkSuggestHtml(item,kw,kind){
   const url=`${item.url}?q=${encodeURIComponent(item.query||kw)}`;
@@ -3983,10 +3982,9 @@ function renderSearchActionCards(kw){
   if(!FEATURE_SEARCH_ACTIONS)return '';
   const q=encodeURIComponent(kw);
   const actions=[
-    {title:'AI 참고 진단으로 확인하기',desc:'원인 후보와 확인 포인트를 먼저 정리합니다.',url:`diagnosis.html?q=${q}`},
-    {title:'관련 질문 보기',desc:'비슷한 증상 반응과 질문 흐름을 확인합니다.',url:`channel.html?q=${q}`},
-    {title:'공공정보 확인',desc:'안전사용기준과 공공자료 확인 경로를 봅니다.',url:`public-data.html?q=${q}`},
-    {title:'도구·지도 보기',desc:'농업날씨, 시세, 계산기, 지역 정보를 확인합니다.',url:`agri-weather.html?q=${q}`}
+    {title:'커뮤니티에서 찾기',desc:'제목, 본문과 태그가 일치하는 글을 확인합니다.',url:`channel.html?q=${q}`},
+    {title:'AI로 먼저 확인',desc:'원인 후보와 확인 포인트를 정리합니다.',url:`diagnosis.html?q=${q}`},
+    {title:'농업정보 확인',desc:'날씨, 병해충, 시세와 공식자료를 확인합니다.',url:`agri-info.html?q=${q}`}
   ];
   return `<div class="search-actions">${actions.map(item=>`<a class="search-action" href="${item.url}"><strong>${escHtml(item.title)}</strong><span>${escHtml(item.desc)}</span></a>`).join('')}</div>`;
 }
@@ -3996,8 +3994,8 @@ function renderNoSearchResults(kw){
     검색 결과가 없습니다. 아래 경로로 다음 확인을 이어갈 수 있습니다.
     <div class="empty-actions">
       <a class="primary" href="diagnosis.html?q=${q}">AI 참고 진단으로 확인하기</a>
-      <a href="channel.html?q=${q}">관련 질문 보기</a>
-      <a href="public-data.html?q=${q}">공공정보 확인하기</a>
+      <a href="channel.html?q=${q}">커뮤니티에 질문하기</a>
+      <a href="agri-info.html?q=${q}">농업정보 확인하기</a>
     </div>
   </div>`;
 }
@@ -4013,10 +4011,7 @@ async function runSearch(raw){
   if(!feed)return;
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
   const posts=await searchPosts(kw,30);
-  const shops=getShopSuggestions(kw,20);
-  const materials=getMaterialSuggestions(kw,30);
-  const staticItems=await searchStaticIndex(kw,60);
-  renderSearchResults(kw,posts,shops,materials,staticItems);
+  renderSearchResults(kw,posts);
 }
 async function searchPosts(kw,limit){
   if(!window._sb)return [];
@@ -4024,18 +4019,23 @@ async function searchPosts(kw,limit){
     const cleanKw=String(kw||'').replace(/^#/,'');
     const like=`%${cleanKw.replace(/[%_]/g,'')}%`;
     const hashLike=`%#${cleanKw.replace(/[%_]/g,'')}%`;
-    const {data}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit);
-    let list=data||[];
+    const fields='id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,view_count,created_at,channels(name, slug),community_categories(name, slug)';
+    const normalizedTag=window.KFCommunity.normalizeTags([cleanKw])[0]||'';
+    const [textResult,tagResult]=await Promise.all([
+      _sb.from('posts').select(fields).not('category_id','is',null).or(`title.ilike.${like},content.ilike.${like},content.ilike.${hashLike},crop_tag.ilike.${like},region_tag.ilike.${like}`).order('created_at',{ascending:false}).limit(limit),
+      normalizedTag?_sb.from('posts').select(fields).not('category_id','is',null).contains('tags',[normalizedTag]).order('created_at',{ascending:false}).limit(limit):Promise.resolve({data:[]})
+    ]);
+    let list=[...(textResult.data||[]),...(tagResult.data||[])].filter((post,index,all)=>all.findIndex(row=>row.id===post.id)===index).slice(0,limit);
     if(isInitialQuery(kw)){
-      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,title,content,crop_tag,region_tag,view_count,created_at,channels(name, slug)').order('created_at',{ascending:false}).limit(40);
-      list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
+      const {data:recent}=await _sb.from('posts').select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,view_count,created_at,channels(name, slug),community_categories(name, slug)').not('category_id','is',null).order('created_at',{ascending:false}).limit(40);
+      list=(recent||[]).filter(p=>matchesSearchText(`${p.title||''} ${p.content||''} ${(p.tags||[]).join(' ')} ${p.community_categories?.name||''} ${p.channels?.name||''}`,kw)).slice(0,limit);
     }
     return await attachCommentCounts(list);
   }catch(e){return [];}
 }
-function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
+function renderSearchResults(kw,posts){
   const feed=document.getElementById('recentFeed');
-  const total=posts.length+shops.length+materials.length+staticItems.length;
+  const total=posts.length;
   const head=`<div class="search-result-head"><span>'${escHtml(kw)}' 검색 결과 ${total}개</span><button class="search-close" onclick="clearSearchResults()">×</button></div>`;
   const actionCards=renderSearchActionCards(kw);
   if(!total){feed.innerHTML=head+actionCards+renderNoSearchResults(kw);return;}
@@ -4045,22 +4045,9 @@ function renderSearchResults(kw,posts,shops,materials,staticItems=[]){
     const postUrl=post.id?`post.html?v=20260705d&id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=post.crop_tag||extractCategoryFromContent(post.content);
     const clickAttr=post.id?``:'';
-    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayChannelName(post.channels?.slug,post.channels?.name)||'질문글')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'질문글'}</span><span>${commentCountLabel(post)}</span><span>${postLikeButton(post)}</span><span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post)||'커뮤니티')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'커뮤니티'}</span><span>${commentCountLabel(post)}</span>${postLikeButton(post)}<span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
-  const shopHtml=shops.map(item=>resultLinkCard(item,kw,'지역 정보')).join('');
-  const materialHtml=materials.map(item=>resultLinkCard(item,kw,'농자재')).join('');
-  const grouped=groupStaticResults(staticItems);
-  feed.innerHTML=head+actionCards+
-    renderStaticResultGroup('AI 참고 진단',grouped.ai,kw)+
-    renderStaticResultGroup('관련 질문',grouped.questions,kw)+
-    renderStaticResultGroup('공공자료 기반 참고 콘텐츠',grouped.knowledge,kw)+
-    renderStaticResultGroup('관련 질문',grouped.community,kw)+
-    renderStaticResultGroup('공공정보 확인',grouped.publicData,kw)+
-    renderStaticResultGroup('도구: 농업날씨, 농산물 시세, 계산기',grouped.tools,kw)+
-    renderStaticResultGroup('지역 정보: 농약·비료 판매업체 지도, 관련기관 링크',grouped.materials,kw)+
-    (posts.length?'<div class="search-group-title">관련 질문</div>'+postHtml:'')+
-    (shops.length?'<div class="search-group-title">지역 정보: 농약·비료 판매업체 지도</div>'+shopHtml:'')+
-    (materials.length?'<div class="search-group-title">공공자료 기반 참고 콘텐츠</div>'+materialHtml:'');
+  feed.innerHTML=head+actionCards+(posts.length?'<div class="search-group-title">커뮤니티 결과</div>'+postHtml:'');
 }
 function resultLinkCard(item,kw,badge){
   return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${escHtml(item.badge||badge)}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
@@ -4251,7 +4238,7 @@ function openDiagnosisDemoCase(caseId){
   const body=document.getElementById('diagnosisDemoBody');
   if(!item||!modal||!body)return;
   body.innerHTML=`
-    <div class="demo-case-badge">공공자료 기반 데모 진단사례</div>
+    <div class="demo-case-badge">공공자료 기반 참고 진단사례</div>
     <div class="demo-case-grid">
       <div class="demo-case-section"><strong>작물/식물명</strong><p>${escHtml(item.plant)}</p></div>
       <div class="demo-case-section"><strong>사용자가 올린 증상 예시</strong><p>${escHtml(item.symptom)}</p></div>
@@ -4275,45 +4262,27 @@ function openDiagnosisDemoCase(caseId){
 function closeDiagnosisDemoCase(){document.getElementById('diagnosisDemoModal')?.classList.remove('open');unlockBodyScroll();}
 let selectedPostImages = [];
 let selectedPostTags = [];
-const TAG_LIMIT = 5;
+let communityCategories = window.KFCommunity?.fallbackCategories?.() || [];
+const TAG_LIMIT = 8;
 const CHANNEL_TOPIC_CONFIG = {
   default:{label:'글 주제',helper:'글의 성격에 맞는 주제를 선택해주세요.',options:['질문','정보공유','일상','후기','기타']},
   problem:{label:'대표증상',helper:'가장 가까운 증상을 선택해주세요.',options:['잎마름','잎노랑','잎말림','시들음','벌레','곰팡이','줄기무름','열매이상','생육불량','물관리','분갈이','기타']},
-  plant_showcase:{label:'자랑 유형',helper:'자랑하고 싶은 식물의 모습을 골라주세요.',options:['새잎','꽃핌','열매','폭풍성장','분갈이 성공','회복 성공','희귀식물','오늘의 화분','기타']},
-  farmer_lounge:{label:'이야기 주제',helper:'나누고 싶은 이야기에 가까운 주제를 선택해주세요.',options:['농사일상','농사고민','농번기 이야기','농촌생활','장비·작업','날씨이야기','정보공유','잡담','기타']},
-  market_share:{label:'거래 유형',helper:'나눔, 판매, 교환 등 글의 성격을 선택해주세요.',options:['나눔','판매','교환','구합니다','농산물','모종·씨앗','화분·자재','지역거래','기타']},
-  gardening_class:{label:'수업·정보 유형',helper:'원예 정보나 클래스 성격을 선택해주세요.',options:['초보가이드','분갈이','물주기','가지치기','번식·삽목','흙·상토','병해충기초','실습후기','기타']},
-  plant_people:{label:'모임 주제',helper:'식집사들과 나누고 싶은 주제를 선택해주세요.',options:['반려식물','실내식물','플랜테리어','물주기루틴','식물친구','식물사진','질문나눔','오프모임','기타']},
-  agri_inputs:{label:'관심 자재',helper:'궁금한 농자재 종류를 선택해주세요.',options:['상토','비료','퇴비','농약안전정보','종자·모종','농기계','관수자재','시설자재','기타']},
-  local_info:{label:'정보 유형',helper:'공유하려는 정보 유형을 선택해주세요.',options:['지역소식','지원사업','교육·행사','농업뉴스','시세흐름','기술정보','정책정보','기타']}
+  knowhow:{label:'노하우 주제',helper:'공유하려는 재배 경험에 가까운 항목을 선택해주세요.',options:['파종·육묘','물관리','토양·영양','병해충 관리','시설재배','스마트팜','아쿠아팜','수확·저장','기타']},
+  daily:{label:'일상 주제',helper:'공유하려는 일상에 가까운 항목을 선택해주세요.',options:['새잎','꽃·열매','성장기록','회복기록','농사일상','반려식물','작업기록','기타']},
+  field:{label:'현장정보 유형',helper:'공유하려는 현장정보에 가까운 항목을 선택해주세요.',options:['지역소식','지원사업','교육·행사','농업날씨','시세흐름','기술정보','정책정보','기타']}
 };
-const CHANNEL_TOPIC_ID_MAP = {
-  'd88ba519-68fd-488f-8311-e316838ac4cf':'problem',
-  'c7315bd6-eb60-484c-9c07-6def8f93ddc1':'problem',
-  'f586c6a8-882a-45d0-89e6-6d20fd9675de':'problem',
-  '9191bf52-84b6-42ca-b2c7-c886bde5d450':'plant_showcase',
-  '364c2c71-c313-47fc-a986-3124393bf381':'farmer_lounge',
-  '4619a407-a214-4555-8e63-06fa96ed87a2':'market_share',
-  'a6095ae4-1d7e-4671-a6b1-4277d343e586':'gardening_class',
-  'ae71a389-0723-4e76-b421-789a1474fd49':'plant_people'
-};
-const TAG_SUGGESTIONS = ['고추','딸기','스투키','잎마름','잎노랑','잎말림','벌레','곰팡이','과습','물관리','분갈이','상토','비료','시설재배'];
-function channelTopicKeyByName(name=''){
-  const value=String(name||'');
-  if(value.includes('자랑'))return 'plant_showcase';
-  if(value.includes('사랑방'))return 'farmer_lounge';
-  if(value.includes('나눔')||value.includes('직거래'))return 'market_share';
-  if(value.includes('클래스'))return 'gardening_class';
-  if(value.includes('식집사')||value.includes('모임'))return 'plant_people';
-  if(value.includes('농자재'))return 'agri_inputs';
-  if(value.includes('지역')||value.includes('정보'))return 'local_info';
-  if(value.includes('질문')||value.includes('상담')||value.includes('병원')||value.includes('증상'))return 'problem';
-  return 'default';
+const COMMUNITY_CATEGORY_TOPIC = {'question-help':'problem','cultivation-knowhow':'knowhow','showcase-daily':'daily','agri-field-info':'field'};
+const TAG_SUGGESTIONS = ['고추','토마토','딸기','벼','상추','잎말림','탄저병','과습','총채벌레','홈가드닝','텃밭','노지','시설재배','스마트팜','아쿠아팜','전남','순천'];
+async function hydrateCommunityCategorySelect(){
+  communityCategories=await window.KFCommunity.loadCategories(window._sb);
+  const select=document.getElementById('channelSelect');
+  if(!select)return;
+  const active=select.value;
+  select.innerHTML='<option value="">분류를 선택하세요</option>'+communityCategories.map(item=>`<option value="${escAttr(item.slug)}">${escHtml(item.name)}</option>`).join('');
+  if(communityCategories.some(item=>item.slug===active))select.value=active;
 }
 function getChannelTopicConfigById(channelId){
-  const select=document.getElementById('channelSelect');
-  const selectedName=select?.selectedOptions?.[0]?.textContent||'';
-  const key=CHANNEL_TOPIC_ID_MAP[String(channelId||'')]||channelTopicKeyByName(selectedName);
+  const key=COMMUNITY_CATEGORY_TOPIC[String(channelId||'')]||'default';
   return CHANNEL_TOPIC_CONFIG[key]||CHANNEL_TOPIC_CONFIG.default;
 }
 function renderTopicOptions(select,config,active=''){
@@ -4369,6 +4338,11 @@ function applyWriteTopicConfig(active=''){
   };
   const custom=document.getElementById('customSymptom');
   if(custom)custom.placeholder=`${config.label} 직접 입력`;
+  const isQuestion=channelId==='question-help';
+  const photoField=document.getElementById('questionPhotoField');
+  if(photoField)photoField.classList.toggle('is-emphasized',isQuestion);
+  const submit=document.getElementById('postSubmitBtn');
+  if(submit&&!submit.disabled)submit.textContent=isQuestion?'질문 올리기':'게시하기';
   toggleCustomSymptom();
 }
 function getLocalUserId(){let id=localStorage.getItem('kfarmai_user_id');if(!id){id='local_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);localStorage.setItem('kfarmai_user_id',id);}return id;}
@@ -4409,7 +4383,8 @@ function renderPostImageInfo(files,targetId='postImageInfo'){
 function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
 function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
 function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
-async function uploadPostImages(userId){const urls=[];if(!selectedPostImages.length)return urls;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const ext=getPostImageExt(file);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await window._sb.storage.from('post-images').upload(path,file,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(file)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([file])});throw error;}const {data}=window._sb.storage.from('post-images').getPublicUrl(uploadData?.path||path);if(!data?.publicUrl){postSubmitWarn('storage.public_url.failed');throw new Error('public image url unavailable');}urls.push(data.publicUrl);}postSubmitWarn('storage.upload.done',{uploadedCount:urls.length});return urls;}
+async function uploadPostImages(userId){const result={urls:[],paths:[]};if(!selectedPostImages.length)return result;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file))throw new Error('invalid image file');const safeFile=await window.KFQuestionDraft.prepareForUpload(file);const ext=getPostImageExt(safeFile);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await window._sb.storage.from('post-images').upload(path,safeFile,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(safeFile)});if(error)throw error;const uploadedPath=uploadData?.path||path;const {data}=window._sb.storage.from('post-images').getPublicUrl(uploadedPath);if(!data?.publicUrl)throw new Error('public image url unavailable');result.urls.push(data.publicUrl);result.paths.push(uploadedPath);}postSubmitWarn('storage.upload.done',{uploadedCount:result.urls.length});return result;}
+async function cleanupPostUploads(paths){if(paths?.length){try{await window._sb.storage.from('post-images').remove(paths);}catch(_){}}}
 function cleanPayload(obj){return Object.fromEntries(Object.entries(obj).filter(([,v])=>v!==undefined&&v!==null&&v!==''));}
 function normalizeTag(value){const clean=String(value||'').trim().replace(/^#+/,'').replace(/\s+/g,'').slice(0,12);return clean?`#${clean}`:'';}
 function renderTagSuggestions(){const wrap=document.getElementById('tagSuggestions');if(!wrap)return;wrap.innerHTML=TAG_SUGGESTIONS.map(tag=>`<button class="tag-chip" type="button" onclick="addPostTag('${tag}')">#${tag}</button>`).join('');renderSelectedTags();}
@@ -4432,7 +4407,7 @@ function showPostFieldError(fieldId,message){
 }
 function validatePostForm({channelId,category,title,content}){
   clearPostValidationErrors();
-  if(!channelId){showPostFieldError('channelSelect','채널을 선택해주세요.');showToast('채널을 선택해주세요.');return false;}
+  if(!channelId){showPostFieldError('channelSelect','분류를 선택해주세요.');showToast('분류를 선택해주세요.');return false;}
   if(!category){showPostFieldError('postCategory',`${getChannelTopicConfigById(channelId).label}을 선택해주세요.`);showToast(`${getChannelTopicConfigById(channelId).label}을 선택해주세요.`);return false;}
   if(!title){showPostFieldError('postTitle','제목을 입력해주세요.');showToast('제목을 입력해주세요.');return false;}
   if(!content){showPostFieldError('postContent','내용을 입력해주세요.');showToast('내용을 입력해주세요.');return false;}
@@ -4442,8 +4417,10 @@ function contentWithCategory(content,category,channelName='',region='',tags=[],a
   const clean=String(content||'').trim();
   const prefix=[
     authorName?`[작성자: ${authorName}]`:'',
-    channelName?`[채널: ${channelName}]`:'',
-    region?`[지역: ${region}]`:''
+    channelName?`[분류: ${channelName}]`:'',
+    category?`[주제: ${category}]`:'',
+    region?`[지역: ${region}]`:'',
+    tags.length?`[태그: ${window.KFCommunity.normalizeTags(tags).map(tag=>`#${tag}`).join(' ')}]`:''
   ].filter(Boolean).join('\n');
   return prefix?`${prefix}\n\n${clean}`:clean;
 }
@@ -4460,23 +4437,28 @@ function classifyPostUploadError(err){
 async function submitPost(){
   if(!window._sb){showToast('인증 준비 중입니다. 잠시 후 다시 시도해주세요.');return;}
   const channelSelect=document.getElementById('channelSelect');
-  const channelId=channelSelect.value;
-  const channelName=channelSelect.options[channelSelect.selectedIndex]?.textContent?.replace(/^✂️\s*/,'')||'';
+  const categorySlug=channelSelect.value;
+  const categoryRecord=window.KFCommunity.categoryBySlug(communityCategories,categorySlug);
+  const channelName=categoryRecord?.name||'';
   const category=selectedSymptom();
+  const crop=document.getElementById('postCrop')?.value.trim()||'';
+  const cultivation=document.getElementById('cultivationSelect')?.value||'';
   const region=document.getElementById('regionSelect')?.value||'';
   const title=document.getElementById('postTitle').value.trim();
   const content=document.getElementById('postContent').value.trim();
-  if(!validatePostForm({channelId,category,title,content}))return;
+  if(!validatePostForm({channelId:categoryRecord?.id,category,title,content}))return;
   const btn=document.getElementById('postSubmitBtn');
   if(btn){btn.dataset.originalText=btn.textContent;btn.textContent='등록 중...';btn.disabled=true;}
-  const allowedPayloadKeys=['channel_id','title','content','user_id','crop_tag','region_tag','image_urls'];
+  const allowedPayloadKeys=['category_id','title','content','user_id','crop_tag','region_tag','image_urls','tags'];
+  let uploaded={urls:[],paths:[]};
   try{
     const {data:{session}}=await window._sb.auth.getSession();
     const userId=session?.user?.id;
     if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openMyPanel();return;}
     localStorage.setItem('kfarmai_user_id',userId);
-    const imageUrls=await uploadPostImages(userId);
-    const payload=cleanPayload({channel_id:channelId,title,content:contentWithCategory(content,'',channelName,region,[],displayNameForUser(session.user)),user_id:userId,crop_tag:category||undefined,region_tag:region||undefined,image_urls:imageUrls});
+    uploaded=await uploadPostImages(userId);const imageUrls=uploaded.urls;
+    const tags=window.KFCommunity.normalizeTags([...selectedPostTags,crop,category,cultivation,region]);
+    const payload=cleanPayload({category_id:categoryRecord.id,title,content:contentWithCategory(content,category,channelName,region,tags,displayNameForUser(session.user)),user_id:userId,crop_tag:crop||category||undefined,region_tag:region||undefined,image_urls:imageUrls,tags});
     const payloadKeys=Object.keys(payload);
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
@@ -4487,7 +4469,7 @@ async function submitPost(){
     showToast('질문이 등록되었습니다.');
     clearPostValidationErrors();
     closeModal();
-    ['postTitle','postContent','postCategory','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    ['postTitle','postContent','postCategory','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     window.autoResizeTextarea?.(document.getElementById('postContent'),220);
     selectedPostImages=[];
     selectedPostTags=[];
@@ -4497,8 +4479,8 @@ async function submitPost(){
     toggleCustomSymptom();
     await loadFeed();
     await loadMyCounts(userId);
-  }catch(err){showToast(friendlyPostError(err));}
-  finally{if(btn){btn.textContent=btn.dataset.originalText||'질문 등록하기';btn.disabled=false;}}
+  }catch(err){await cleanupPostUploads(uploaded.paths);showToast(friendlyPostError(err));}
+  finally{if(btn){btn.textContent=btn.dataset.originalText||'게시하기';btn.disabled=false;}}
 }
 function lockBodyScroll(){document.body.style.overflow='hidden';}
 function unlockBodyScroll(){if(!document.querySelector('.modal-overlay.open,.my-panel-overlay.open'))document.body.style.overflow='';}
@@ -4581,18 +4563,27 @@ function openMyPanel(){
 }
 function closeMyPanel(){document.body.classList.remove('my-panel-active');document.getElementById('myPanel')?.classList.remove('open');const fab=document.querySelector('.fab');if(fab)fab.hidden=false;closeMySubview();unlockBodyScroll();}
 let accountDeleteModalHistory = false;
+let accountDeletionRequestPending = false;
 function openAccountDeleteModal(){
   if(!currentUser){
     showToast('로그인이 필요합니다.');
     openMyPanel();
     return;
   }
+  const acknowledge=document.getElementById('accountDeleteAcknowledge');
+  if(acknowledge)acknowledge.checked=false;
+  updateAccountDeleteConfirmState();
   document.getElementById('accountDeleteModal')?.classList.add('open');
   lockBodyScroll();
   if(!accountDeleteModalHistory){
     history.pushState({accountDeleteModal:true}, '', location.href);
     accountDeleteModalHistory = true;
   }
+}
+function updateAccountDeleteConfirmState(){
+  const btn=document.getElementById('accountDeleteConfirmBtn');
+  const acknowledged=document.getElementById('accountDeleteAcknowledge')?.checked===true;
+  if(btn)btn.disabled=accountDeletionRequestPending||!acknowledged;
 }
 function closeAccountDeleteModal(syncHistory=true){
   const modal=document.getElementById('accountDeleteModal');
@@ -4611,11 +4602,16 @@ window.addEventListener('popstate',()=>{
   }
 });
 async function requestAccountDeletion(){
-  if(!_sb){
+  if(!_sb||accountDeletionRequestPending){
     showToast('탈퇴 요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
     return;
   }
   const btn=document.getElementById('accountDeleteConfirmBtn');
+  if(document.getElementById('accountDeleteAcknowledge')?.checked!==true){
+    showToast('최종 확인 항목을 선택해주세요.');
+    return;
+  }
+  accountDeletionRequestPending=true;
   if(btn){
     btn.dataset.originalText=btn.textContent;
     btn.textContent='처리 중...';
@@ -4623,34 +4619,37 @@ async function requestAccountDeletion(){
   }
   try{
     const {data:{session}}=await _sb.auth.getSession();
-    const user=session?.user||currentUser;
-    if(!user?.id){
+    if(!session?.access_token||!session?.user?.id){
       showToast('로그인이 필요합니다.');
       closeAccountDeleteModal();
       openMyPanel();
       return;
     }
-    const requestedAt=new Date().toISOString();
-    localStorage.setItem('kfarmai_account_delete_requested_at', requestedAt);
-    localStorage.setItem('kfarmai_account_delete_requested_user', user.id);
-    if(user.email)localStorage.setItem('kfarmai_account_delete_requested_email', user.email);
-    console.warn('account deletion request stored locally; server table or edge function is required for final deletion.', {user_id:user.id, requested_at:requestedAt});
+    const endpoint=window.KFAIDiagnosisClient.functionUrl(window.KFAIDiagnosisClient.config.accountDeletionFunction);
+    const response=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
+      body:JSON.stringify({confirmation:'DELETE_MY_ACCOUNT'})
+    });
+    const result=await response.json().catch(()=>({ok:false}));
+    if(!response.ok||result.ok!==true||result.status!=='pending')throw new Error(result.error||`HTTP_${response.status}`);
     await _sb.auth.signOut();
     setMyState(null);
     resetUserUI();
     accountDeleteModalHistory = false;
     closeAccountDeleteModal(false);
     closeMyPanel();
-    showToast('탈퇴 요청이 접수되었습니다. 로그아웃 후 홈으로 이동합니다.');
+    showToast('계정 삭제 요청이 서버에 접수되었습니다.');
     setTimeout(()=>{ location.href='index.html'; }, 900);
   }catch(error){
     console.error('account deletion request failed', error);
     showToast('탈퇴 요청 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }finally{
+    accountDeletionRequestPending=false;
     if(btn){
       btn.textContent=btn.dataset.originalText||'탈퇴 요청';
-      btn.disabled=false;
     }
+    updateAccountDeleteConfirmState();
   }
 }
 function openLogin(){openMyPanel();}

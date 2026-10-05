@@ -15,10 +15,10 @@
       const issues = await fetchActiveIssues();
       grid.innerHTML = issues.length
         ? issues.slice(0, 5).map(issueCardHtml).join('')
-        : '<div class="agri-empty">오늘의 농업 이슈는 원문 확인 후 순차적으로 반영 예정입니다.</div>';
+        : '<div class="agri-empty">농업 이슈·공고는 발행일과 원문 확인 후 순차적으로 반영합니다.</div>';
     }catch(error){
       console.warn('농업 이슈 데이터를 불러오지 못했습니다.', error?.message);
-      grid.innerHTML = '<div class="agri-empty">오늘의 농업 이슈를 불러오지 못했습니다.</div>';
+      grid.innerHTML = '<div class="agri-empty">농업 이슈·공고를 불러오지 못했습니다.</div>';
     }
   }
 

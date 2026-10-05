@@ -1,0 +1,53 @@
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';import http from 'node:http';import os from 'node:os';import path from 'node:path';import { fileURLToPath } from 'node:url';
+
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');const chromePath='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const widths=[320,360,390,430,768,1024,1280];const pages=['/kb/ras-recirculating-aquaculture.html','/kb/land-aquaculture-water-quality.html'];const port=18792,debugPort=19228;
+const profileDir=fs.mkdtempSync(path.join(os.tmpdir(),'kfarmai-phase5b3-chrome-'));if(!fs.existsSync(chromePath))throw new Error('Chrome executable is required for responsive verification');
+const server=http.createServer((request,response)=>serveStatic(request.url||'/',response));
+const chrome=spawn(chromePath,['--headless=new','--disable-gpu','--no-first-run','--no-default-browser-check','--remote-debugging-port='+debugPort,'--user-data-dir='+profileDir,'about:blank'],{stdio:'ignore',windowsHide:true});let socket;
+
+async function run(){
+  try{
+    await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,'127.0.0.1',resolve)});
+    await waitForDebug();
+    const target=await fetch('http://127.0.0.1:'+debugPort+'/json/new?about:blank',{method:'PUT'}).then(response=>response.json());
+    socket=new CdpSocket(target.webSocketDebuggerUrl);await socket.open();await socket.send('Page.enable');await socket.send('Runtime.enable');
+    const fatal=[];socket.on('Runtime.exceptionThrown',event=>fatal.push(event.params?.exceptionDetails?.text||'runtime exception'));
+    for(const width of widths){
+      for(const page of pages){
+        await socket.send('Emulation.setDeviceMetricsOverride',{width,height:1100,deviceScaleFactor:1,mobile:width<=430});
+        const loaded=socket.once('Page.loadEventFired');await socket.send('Page.navigate',{url:'http://127.0.0.1:'+port+page});await loaded;await delay(200);
+        const result=await evaluate(socket,"(()=>{const links=[...document.querySelectorAll('main a')];const sourceLinks=[...document.querySelectorAll('.source-card a')];return{title:document.querySelector('h1')?.textContent.trim()||'',h1Count:document.querySelectorAll('h1').length,breadcrumb:Boolean(document.querySelector('.breadcrumb')),innerWidth,scrollWidth:document.documentElement.scrollWidth,articleWidth:Math.round(document.querySelector('.knowledge-article')?.getBoundingClientRect().width||0),sourceCount:document.querySelectorAll('.source-card').length,sourceExternal:sourceLinks.every(a=>a.target==='_blank'&&a.rel.includes('noopener')),deadLinks:links.filter(a=>!a.getAttribute('href')||a.getAttribute('href')==='#'||/^javascript:/i.test(a.getAttribute('href'))).length}})()");
+        assert.ok(result.title,width+'px title');assert.equal(result.h1Count,1,width+'px H1');assert.equal(result.breadcrumb,true,width+'px breadcrumb');assert.ok(result.scrollWidth<=result.innerWidth+1,width+'px horizontal overflow');assert.ok(result.articleWidth<=result.innerWidth,width+'px article width');assert.ok(result.sourceCount>=2,width+'px official sources');assert.equal(result.sourceExternal,true,width+'px official link identity');assert.equal(result.deadLinks,0,width+'px dead links');
+      }
+    }
+    assert.deepEqual(fatal,[],'browser fatal errors: '+fatal.join(' | '));
+    process.stdout.write('Phase 5B-3 responsive preview: '+(widths.length*pages.length)+'/'+(widths.length*pages.length)+' page-width checks PASS; local http://127.0.0.1:'+port+'\n');
+  }finally{
+    try{await socket?.send('Browser.close')}catch{}
+    socket?.close();await new Promise(resolve=>server.close(resolve));if(!chrome.killed)chrome.kill();await delay(200);
+    const resolved=path.resolve(profileDir);if(resolved.startsWith(path.resolve(os.tmpdir())+path.sep))fs.rmSync(resolved,{recursive:true,force:true});
+  }
+}
+
+function serveStatic(rawUrl,response){
+  const url=new URL(rawUrl,'http://127.0.0.1:'+port);const relative=decodeURIComponent(url.pathname).replace(/^\/+/, '');const target=path.resolve(root,relative);
+  if(!target.startsWith(root+path.sep)||!fs.existsSync(target)||!fs.statSync(target).isFile()){response.writeHead(404,{'Content-Type':'text/plain'});response.end('not found');return}
+  const extension=path.extname(target).toLowerCase();const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png'}[extension]||'application/octet-stream';
+  response.writeHead(200,{'Content-Type':mime+'; charset=utf-8','Cache-Control':'no-store'});fs.createReadStream(target).pipe(response);
+}
+async function waitForDebug(){for(let attempt=0;attempt<50;attempt++){try{const response=await fetch('http://127.0.0.1:'+debugPort+'/json/version');if(response.ok)return}catch{}await delay(100)}throw new Error('Chrome DevTools endpoint did not start')}
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function evaluate(client,expression){const result=await client.send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(result.exceptionDetails.exception?.description||result.exceptionDetails.text||'browser evaluation failed');return result.result.value}
+class CdpSocket{
+  constructor(url){this.url=url;this.id=0;this.pending=new Map();this.listeners=new Map()}
+  open(){return new Promise((resolve,reject)=>{this.socket=new WebSocket(this.url);this.socket.addEventListener('open',resolve,{once:true});this.socket.addEventListener('error',reject,{once:true});this.socket.addEventListener('message',event=>this.receive(JSON.parse(event.data)))})}
+  send(method,params={}){const id=++this.id;const promise=new Promise((resolve,reject)=>this.pending.set(id,{resolve,reject}));this.socket.send(JSON.stringify({id,method,params}));return promise}
+  on(method,callback){const rows=this.listeners.get(method)||[];rows.push(callback);this.listeners.set(method,rows)}
+  once(method){return new Promise(resolve=>{const callback=params=>{const rows=this.listeners.get(method)||[];this.listeners.set(method,rows.filter(item=>item!==callback));resolve(params)};this.on(method,callback)})}
+  receive(message){if(message.id){const pending=this.pending.get(message.id);if(!pending)return;this.pending.delete(message.id);if(message.error)pending.reject(new Error(message.error.message));else pending.resolve(message.result);return}for(const callback of this.listeners.get(message.method)||[])callback(message)}
+  close(){this.socket?.close()}
+}
+await run();

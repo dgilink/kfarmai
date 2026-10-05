@@ -14,7 +14,18 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>농자재·관리정보 허브 - kFarmAI</title>
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
+<title>농자재·스마트농업 - kFarmAI</title>
+<meta name="description" content="종자·육묘, 토양·영양, 작물보호, 시설·관수, 스마트농업, 원예·도구 정보를 목적별로 확인합니다.">
+<link rel="canonical" href="https://kfarmai.com/mfg.html">
+<script>
+  if (new URLSearchParams(location.search).has('category') || new URLSearchParams(location.search).has('area')) {
+    const robots = document.createElement('meta');
+    robots.name = 'robots';
+    robots.content = 'noindex,follow';
+    document.head.appendChild(robots);
+  }
+</script>
 <link rel="stylesheet" href="style.css">
 <style>
   .hub-wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
@@ -29,6 +40,7 @@
   .hub-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; }
   .hub-card h2 { margin: 0 0 7px; font-size: 15px; color: #111827; }
   .hub-card p { margin: 0; font-size: 12px; line-height: 1.55; color: #4b5563; }
+  .hub-card.is-active { border-color: #16a34a; box-shadow: 0 8px 22px rgba(22, 163, 74, 0.10); }
   .hub-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
   .hub-link { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 9px; border-radius: 999px; background: #ecfdf5; color: #166534; font-size: 11px; font-weight: 800; text-decoration: none; }
   .flow-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
@@ -74,6 +86,17 @@
   .official-site-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
   .official-site-pill { display: inline-flex; align-items: center; min-height: 24px; padding: 4px 7px; border-radius: 999px; background: #eff6ff; color: #1d4ed8; font-size: 11px; font-weight: 800; }
   .official-site-btn { display: inline-flex; align-items: center; justify-content: center; min-height: 32px; padding: 7px 10px; border-radius: 999px; background: #111827; color: #fff; font-size: 11px; font-weight: 900; text-decoration: none; }
+  .smart-area-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+  .smart-area-card { display: block; padding: 14px; border: 1px solid #bbf7d0; border-radius: 12px; background: #f0fdf4; color: inherit; text-decoration: none; }
+  .smart-area-card h3 { margin: 0 0 6px; font-size: 15px; color: #14532d; }
+  .smart-area-card p { margin: 0; color: #4b5563; font-size: 12px; line-height: 1.55; }
+  .topic-entry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 12px; }
+  .topic-entry { border: 1px solid #e5e7eb; border-radius: 11px; padding: 11px; background: #fff; }
+  .topic-entry h4 { margin: 0 0 5px; font-size: 13px; color: #111827; }
+  .topic-entry p { margin: 0; color: #4b5563; font-size: 11.5px; line-height: 1.55; }
+  .company-directory { max-width: 1100px; margin: 18px auto 24px; border: 1px solid #e5e7eb; border-radius: 14px; background: #fff; overflow: hidden; }
+  .company-directory > summary { cursor: pointer; padding: 14px 16px; color: #14532d; font-size: 14px; font-weight: 900; }
+  .company-directory[open] > summary { border-bottom: 1px solid #e5e7eb; }
   .kf-tag-teal { background: #e0f7f4; color: #0d9488; }
   .support-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .support-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 13px; }
@@ -88,7 +111,7 @@
     .hub-wrap { padding: 12px; }
     .hub-hero { border-radius: 12px; padding: 14px; }
     .hub-hero h1 { font-size: 21px; }
-    .hub-grid, .support-grid, .guide-summary-grid, .guide-detail-grid, .flow-grid, .decision-grid { grid-template-columns: 1fr; }
+    .hub-grid, .support-grid, .guide-summary-grid, .guide-detail-grid, .flow-grid, .decision-grid, .smart-area-grid, .topic-entry-grid { grid-template-columns: 1fr; }
     .hub-card { min-height: auto; }
   }
 </style>
@@ -101,16 +124,16 @@
   <button style="width:40px;height:40px;border-radius:50%;border:none;background:none;cursor:pointer;font-size:20px;" onclick="openMenu()">☰</button>
 </header>
 <div style="padding:14px 16px 0;border-bottom:1px solid #e8e8e8;">
-  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">MANAGEMENT HUB</div>
-  <div style="font-size:20px;font-weight:900;">농자재·관리정보 허브</div>
-  <div style="font-size:12px;color:#666;line-height:1.55;margin-top:5px;">상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배 정보를 문제해결 관점에서 확인합니다.</div>
+  <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">AGRI INPUTS &amp; SMART AGRICULTURE</div>
+  <div style="font-size:20px;font-weight:900;">농자재·스마트농업</div>
+  <div style="font-size:12px;color:#666;line-height:1.55;margin-top:5px;">여섯 가지 분야에서 관리 기준과 공식정보 확인 경로를 살펴봅니다.</div>
 </div>
 <main class="hub-wrap" id="mfgHubMain">
   <section class="hub-hero" id="hubIntroSection">
-    <h1>농자재·관리정보 허브</h1>
-    <p>kFarmAI는 농자재 판매가 아니라, 작물 문제 해결에 필요한 자재 종류와 공식 정보를 확인하는 참고 흐름을 제공합니다. 상토, 종자, 비료, 작물보호, 홈가드닝, 시설재배, 보조사업 정보를 문제해결 흐름에 맞게 연결합니다.</p>
-    <div class="api-status">일부 공공데이터는 실제 API로 연동했으며, 나머지는 공식 데이터 기반으로 단계적 확장 중입니다. 지역 판매점 정보는 위치 기반 확인용이고, 제조사 공식 정보는 제품 정보 확인용입니다.</div>
-    <div class="hub-note">단순 가격 중심이 아니라 사용 목적, 재배환경, 공식 기준, 지역 판매점 정보를 함께 확인하는 구조로 확장 중입니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
+    <h1>농자재·스마트농업</h1>
+    <p>작물 관리에 필요한 자재와 스마트농업 기술을 목적별로 살펴보고, 공식자료와 현장 조건을 함께 확인합니다.</p>
+    <div class="api-status">농업정보는 최신 공식자료, 이 화면은 자재·센서·설비 분야의 구조적 탐색, 커뮤니티는 사용자 질문과 경험을 각각 담당합니다.</div>
+    <div class="hub-note">특정 제품이나 업체를 우선 추천하지 않습니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.</div>
   </section>
 
   <section id="materialFlowSection">
@@ -123,56 +146,15 @@
   </section>
 
   <section id="managementCategorySection">
-    <div class="hub-section-title">관리정보 카테고리</div>
-    <div class="hub-grid">
-      <article class="hub-card">
-        <div><h2>작물보호</h2><p>병해충 정보, 안전사용기준, 방제 전 확인사항을 참고합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="public-data.html">공공정보 확인</a><a class="hub-link" href="tools-pesticide.html">농약 희석 계산기</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>토양·배지</h2><p>상토, 배양토, 분갈이, 토양개량 관련 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="tools-soil.html">상토 계산기</a><a class="hub-link" href="q/potting-soil-white-mold.html">관련 질문 보기</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>비료·액비</h2><p>비료, 액비, 미량요소, 희석 계산 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="tools-fertilizer.html">비료 계산기</a><a class="hub-link" href="fert.html">비료 참고 정보</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>종자·육묘</h2><p>종자, 모종, 육묘, 파종·정식 시기 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="seed.html">종자 참고 정보</a><a class="hub-link" href="crop-calendar.html">재배달력 확인</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>관수·시설환경</h2><p>물관리, 과습·건조, 차광, 환기, 하우스 관리 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="mfg.html?category=irrigation-facility">관수·시설자재 참고</a><a class="hub-link" href="agri-weather.html">농업날씨 확인</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>홈가드닝</h2><p>화분, 분갈이, 식물등, 실내식물 관리 정보를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="mfg.html?category=home-gardening-tools">화분·도구 참고</a><a class="hub-link" href="diagnosis.html">AI 참고 진단</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>스마트팜·시설재배</h2><p>온도, 습도, EC, pH, 관수, 환기 등 시설재배 관리 항목을 참고 정보로 확장할 수 있습니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="mfg.html?category=smartfarm">스마트팜 참고</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>농기계·안전용품</h2><p>작업 전 장비 점검, 보호장비, 세척·보관, 지역 안전교육 경로를 확인합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="mfg.html?category=machinery-safety">안전용품 참고</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>보조사업</h2><p>지자체와 공공기관의 보조사업 공식 공고 확인 경로를 정리합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="subsidy-calendar.html">보조사업 공식 공고 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div>
-      </article>
-      <article class="hub-card">
-        <div><h2>관련기관</h2><p>농업기술센터, 농촌진흥청, 공공데이터 제공처 등 공식 확인 경로를 연결합니다.</p></div>
-        <div class="hub-links"><a class="hub-link" href="links.html">관련기관 확인</a><a class="hub-link" href="public-data.html">공공정보 확인</a></div>
-      </article>
-    </div>
+    <div class="hub-section-title">여섯 가지 분야</div>
+    <div class="hub-grid" id="canonicalCategoryGrid" aria-label="농자재·스마트농업 분류"></div>
   </section>
 
   <section id="inputCategorySection">
     <div class="hub-section-title">카테고리별 참고 정보</div>
     <div id="inputCategoryGuide" class="guide-panel">
-      <h2>농자재·관리 카테고리 정보를 불러오는 중입니다.</h2>
-      <p>관수·시설자재, 화분·도구, 스마트팜 참고 정보를 확인할 수 있습니다.</p>
+      <h2>분야별 정보를 불러오는 중입니다.</h2>
+      <p>자재, 센서와 설비 정보를 공식자료 확인 경로와 함께 제공합니다.</p>
     </div>
   </section>
 
@@ -184,29 +166,30 @@
     </div>
   </section>
 </main>
-<div class="mfg-intro" id="mfgIntroNote">
-  주요 농자재 제조사 정보는 시제품에 일부 반영했으며, 향후 상토·종자·비료·작물보호·시설자재 등 카테고리별로 보완할 계획입니다.
-</div>
-<div class="kf-search-bar" id="companySearchSection">
-  <input type="text" id="keyword" placeholder="회사명·제품·지역 검색" onkeypress="if(event.keyCode==13) search()" style="flex:1;min-width:150px;">
-  <button class="kf-btn kf-btn-primary" onclick="search()">검색</button>
-  <button class="kf-btn kf-btn-gray" onclick="resetSearch()">초기화</button>
-  <span id="count" style="font-size:13px;color:#666;"></span>
-</div>
-<div class="kf-company-grid" id="grid"></div>
-<div id="companySourceNote" style="text-align:center;padding:12px;font-size:11px;color:#aaa;">초기 참고자료 출처: 한국상토협회·한국종자협회·한국작물보호협회·한국비료협회 | © 2026 kfarmai.com</div>
+<details class="company-directory" id="companyDirectorySection">
+  <summary>필요할 때 업체 공식정보 확인</summary>
+  <div class="mfg-intro" id="mfgIntroNote">업체 정보는 기술·분류와 공식 기준을 확인한 다음 참고할 수 있도록 분리했습니다.</div>
+  <div class="kf-search-bar" id="companySearchSection">
+    <input type="text" id="keyword" placeholder="회사명·취급 분야·지역 검색" onkeypress="if(event.keyCode==13) search()" style="flex:1;min-width:150px;">
+    <button class="kf-btn kf-btn-primary" onclick="search()">검색</button>
+    <button class="kf-btn kf-btn-gray" onclick="resetSearch()">초기화</button>
+    <span id="count" style="font-size:13px;color:#666;"></span>
+  </div>
+  <div class="kf-company-grid" id="grid"></div>
+  <div id="companySourceNote" style="text-align:center;padding:12px;font-size:11px;color:#777;">출처: 관련 협회 공개 목록과 제조사 공식 사이트 | © 2026 kfarmai.com</div>
+</details>
 
 <div class="kf-overlay" id="overlay" onclick="closeMenu()"></div>
 <div class="kf-menu" id="menu">
   <div class="kf-menu-header"><a href="index.html" class="kf-menu-brand"><img class="kf-menu-brand-logo" src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><button class="kf-menu-close" onclick="closeMenu()">✕</button></div>
   <a href="index.html" class="kf-menu-item">🏠 홈</a>
-  <a href="agri_map.html" class="kf-menu-item">🗺️ 전국농약사</a>
-  <a href="santo.html" class="kf-menu-item">🌱 상토회사</a>
-  <a href="seed.html" class="kf-menu-item">🌾 종자회사</a>
-  <a href="cpa.html" class="kf-menu-item">🧪 작물보호제회사</a>
-  <a href="fert.html" class="kf-menu-item">🌿 비료회사</a>
-  <a href="news_sub.html" class="kf-menu-item">📰 관련소식</a>
-  <a href="links.html" class="kf-menu-item">🔗 농업관련 사이트</a>
+  <a href="mfg.html?category=seed-nursery" class="kf-menu-item">🌱 종자·육묘</a>
+  <a href="mfg.html?category=soil-nutrition" class="kf-menu-item">🌿 토양·영양</a>
+  <a href="mfg.html?category=crop-protection" class="kf-menu-item">🛡️ 작물보호</a>
+  <a href="mfg.html?category=facility-irrigation" class="kf-menu-item">💧 시설·관수</a>
+  <a href="mfg.html?category=smart-agriculture" class="kf-menu-item">📡 스마트농업</a>
+  <a href="mfg.html?category=gardening-tools" class="kf-menu-item">🪴 원예·도구</a>
+  <a href="agri-info.html" class="kf-menu-item">📚 농업정보</a>
 </div>
 
 <script src="static/santo_data.js"></script>
@@ -216,6 +199,8 @@
 <script>
 let currentTab = 'all';
 let inputCategoryData = [];
+let canonicalCategoryData = [];
+let legacyCategoryMap = [];
 let materialFlowData = [];
 let materialDecisionData = [];
 
@@ -223,18 +208,42 @@ const CATEGORY_ALIASES = {
   cpa: 'crop-protection',
   cropProtection: 'crop-protection',
   crop_protection: 'crop-protection',
-  fert: 'fertilizer',
-  fertilizer: 'fertilizer',
-  soil: 'santo',
-  potting: 'santo',
-  machinery: 'machinery-safety',
-  safety: 'machinery-safety'
+  fert: 'soil-nutrition',
+  fertilizer: 'soil-nutrition',
+  soil: 'soil-nutrition',
+  potting: 'soil-nutrition',
+  santo: 'soil-nutrition',
+  seed: 'seed-nursery',
+  irrigation: 'facility-irrigation',
+  'irrigation-facility': 'facility-irrigation',
+  'home-gardening-tools': 'gardening-tools',
+  smartfarm: 'smart-agriculture',
+  aquafarm: 'smart-agriculture',
+  'land-aquafarm': 'smart-agriculture',
+  machinery: 'facility-irrigation',
+  'machinery-safety': 'facility-irrigation',
+  safety: 'facility-irrigation'
 };
 const OFFICIAL_COMPANY_TAB_COLORS = {
   'irrigation-facility': 'kf-tag-teal',
   'home-gardening-tools': 'kf-tag-green',
   smartfarm: 'kf-tag-blue'
 };
+
+const DEFAULT_CANONICAL_CATEGORIES = [
+  { id: 'seed-nursery', name: '종자·육묘', summary: '종자, 모종, 파종과 육묘 환경을 함께 확인합니다.', legacyIds: ['seed'], topics: ['종자', '모종', '파종', '육묘'] },
+  { id: 'soil-nutrition', name: '토양·영양', summary: '상토·배지, 토양 상태, 비료와 양분 관리 기준을 확인합니다.', legacyIds: ['santo', 'fertilizer'], topics: ['상토', '배지', '비료', '액비', 'EC', 'pH'] },
+  { id: 'crop-protection', name: '작물보호', summary: '병해충 정보와 농약 안전사용기준을 우선 확인합니다.', legacyIds: ['crop-protection'], topics: ['병해충', '안전사용기준', '보호장비'] },
+  { id: 'facility-irrigation', name: '시설·관수', summary: '관수, 배수, 환기와 시설 유지관리 항목을 확인합니다.', legacyIds: ['irrigation-facility', 'machinery-safety'], topics: ['관수', '배수', '펌프', '환기', '시설 안전'] },
+  { id: 'smart-agriculture', name: '스마트농업', summary: '센서와 제어 데이터를 활용하는 스마트팜·육상 스마트양식 기술을 살펴봅니다.', legacyIds: ['smartfarm'], topics: ['센서', '모니터링', '자동제어', '에너지', 'EMS'], children: [
+    { id: 'smartfarm', name: '스마트팜', summary: '시설재배 환경·센서·제어 기술정보', topics: ['온도', '습도', 'CO₂', '일사', '토양수분', 'EC', 'pH', '관수', '양액', '센서', '환경제어', '자동화', '에너지', 'EMS'] },
+    { id: 'land-aquafarm', name: '육상 아쿠아팜', summary: '수질·순환여과·센서·에너지 기반 육상 스마트양식 기술정보', topics: ['수온', '용존산소(DO)', 'pH', '염분', 'ORP', '암모니아', '순환여과(RAS)', '수처리', '펌프', '산소공급', '센서', '자동제어', '에너지', 'EMS'], contentLinks: [
+      { label: 'RAS 순환여과양식 알아보기', url: 'kb/ras-recirculating-aquaculture.html' },
+      { label: '육상양식 수질관리 알아보기', url: 'kb/land-aquaculture-water-quality.html' }
+    ] }
+  ] },
+  { id: 'gardening-tools', name: '원예·도구', summary: '화분, 분갈이와 재배·관리 도구를 사용 목적에 따라 확인합니다.', legacyIds: ['home-gardening-tools'], topics: ['화분', '분갈이', '배수망', '전지가위', '원예 안전'] }
+];
 
 const DEFAULT_MATERIAL_FLOW = [
   { step: 1, name: '문제 확인', description: '식물·작물의 이상 증상, 재배환경, 최근 날씨 조건을 먼저 확인합니다.', next: ['AI 참고 진단', '농업날씨', '커뮤니티 질문'] },
@@ -411,12 +420,25 @@ function getOfficialCompanyGridItems() {
     })));
 }
 
+function normalizeExternalHttpUrl(value) {
+  if(typeof value !== 'string') return '';
+  const text = value.trim();
+  if(!text) return '';
+  try {
+    const url = new URL(text);
+    return (url.protocol === 'http:' || url.protocol === 'https:') && url.hostname ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+
 function renderCards(list) {
   const grid = document.getElementById('grid');
   grid.innerHTML = '';
   list.forEach(item => {
     const tags = item.products ? item.products.split(',').slice(0,5).map(p=>`<span class="kf-tag ${item.tagClass}">${p.trim()}</span>`).join('') : '';
-    const hp = item.homepage ? `<a href="${item.homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>` : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
+    const homepage = normalizeExternalHttpUrl(item.homepage);
+    const hp = homepage ? `<a href="${homepage}" target="_blank" class="kf-homepage-btn">홈페이지 →</a>` : `<span style="font-size:11px;color:#ccc;">홈페이지 없음</span>`;
     const catColor = item.tagClass==='kf-tag-green'?'#1e6b2e':item.tagClass==='kf-tag-blue'?'#4a90d9':item.tagClass==='kf-tag-red'?'#c0392b':item.tagClass==='kf-tag-teal'?'#0d9488':'#e65100';
     grid.innerHTML += `<div class="kf-company-card" style="border-top-color:${catColor}">
       <div style="margin-bottom:6px;"><span class="kf-tag ${item.tagClass}">${item.cat}</span></div>
@@ -455,26 +477,39 @@ renderCards(buildAll());
 
 async function loadInputCategories() {
   try {
-    const res = await fetch('data/agri-input-categories.json', { cache: 'no-store' });
-    if(!res.ok) throw new Error('category_data_unavailable');
-    const data = await res.json();
+    const [legacyResponse, taxonomyResponse] = await Promise.all([
+      fetch('data/agri-input-categories.json', { cache: 'no-store' }),
+      fetch('data/agri-input-taxonomy.json', { cache: 'no-store' })
+    ]);
+    if(!legacyResponse.ok) throw new Error('category_data_unavailable');
+    const data = await legacyResponse.json();
     inputCategoryData = Array.isArray(data) ? data : data.categories;
     if(!Array.isArray(inputCategoryData) || !inputCategoryData.length) throw new Error('category_data_empty');
+    if(!taxonomyResponse.ok) throw new Error('taxonomy_data_unavailable');
+    const taxonomy = await taxonomyResponse.json();
+    canonicalCategoryData = Array.isArray(taxonomy.canonicalCategories) ? taxonomy.canonicalCategories : [];
+    legacyCategoryMap = Array.isArray(taxonomy.legacyMapping) ? taxonomy.legacyMapping : [];
+    if(canonicalCategoryData.length !== 6) throw new Error('taxonomy_data_invalid');
   } catch (err) {
     inputCategoryData = DEFAULT_INPUT_CATEGORIES;
+    canonicalCategoryData = DEFAULT_CANONICAL_CATEGORIES;
+    legacyCategoryMap = [];
   }
   syncCompanyTabFromCategoryUrl();
   renderCards(getFiltered());
+  renderCanonicalCategoryGrid();
   renderInputCategoryGuide();
 }
 
 function syncCompanyTabFromCategoryUrl() {
   const rawSelectedId = new URLSearchParams(window.location.search).get('category');
   const selectedId = CATEGORY_ALIASES[rawSelectedId] || rawSelectedId;
-  if(!OFFICIAL_COMPANY_TAB_COLORS[selectedId]) return;
-  currentTab = selectedId;
+  const category = canonicalCategoryData.find(item => item.id === selectedId);
+  const companyCategory = category?.legacyIds?.find(id => OFFICIAL_COMPANY_TAB_COLORS[id]);
+  if(!companyCategory) return;
+  currentTab = companyCategory;
   document.querySelectorAll('.kf-tab').forEach(tab => {
-    tab.classList.toggle('active', tab.dataset.tab === selectedId);
+    tab.classList.toggle('active', tab.dataset.tab === companyCategory);
   });
 }
 
@@ -483,38 +518,77 @@ function renderInputCategoryGuide() {
   if(!box) return;
   const rawSelectedId = new URLSearchParams(window.location.search).get('category');
   const selectedId = CATEGORY_ALIASES[rawSelectedId] || rawSelectedId;
-  const selected = inputCategoryData.find(item => item.id === selectedId);
+  const selected = canonicalCategoryData.find(item => item.id === selectedId);
   arrangeMfgCategoryLayout(Boolean(selected));
   if(selected) {
-    box.innerHTML = renderGuideDetail(selected);
-    bindOfficialCompanySearch(selected);
-    document.getElementById('companySearchSection')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    box.innerHTML = renderCanonicalDetail(selected, getSelectedSmartArea(rawSelectedId));
     return;
   }
-  box.innerHTML = `<h2>농자재·관리 카테고리 참고 정보</h2>
-    <p>지역 판매점 정보와 제조사 공식 정보는 성격이 다릅니다. 지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 제공합니다.</p>
-    <div class="guide-summary-grid">${inputCategoryData.map(renderGuideSummary).join('')}</div>
-    <div class="guide-notice">세부 회사 DB가 없는 카테고리는 시제품 일부 반영 상태이며, 공식 정보 확인 경로를 우선 보완할 예정입니다.</div>`;
+  box.innerHTML = `<h2>분야를 선택해 확인하세요</h2>
+    <p>여섯 가지 상위분류에서 자재·설비의 용도와 확인 기준을 먼저 살펴볼 수 있습니다. 기존 상세 데이터와 URL은 호환 경로로 유지됩니다.</p>
+    <div class="guide-notice">업체 정보는 기술 분야와 공식 기준을 확인한 뒤 별도 영역에서 제공합니다.</div>`;
 }
 
 function arrangeMfgCategoryLayout(hasSelectedCategory) {
   const main = document.getElementById('mfgHubMain');
   const guideSection = document.getElementById('inputCategorySection');
-  const introSection = document.getElementById('hubIntroSection');
   const supportSection = document.getElementById('supportProgramSection');
-  const companySearch = document.getElementById('companySearchSection');
-  const companyGrid = document.getElementById('grid');
-  const companySource = document.getElementById('companySourceNote');
-  if(!main || !guideSection || !introSection) return;
+  if(!main || !guideSection) return;
   main.classList.toggle('category-detail-mode', hasSelectedCategory);
-  if(hasSelectedCategory) {
-    if(companySearch) main.insertBefore(companySearch, introSection);
-    if(companyGrid) main.insertBefore(companyGrid, introSection);
-    if(companySource) main.insertBefore(companySource, introSection);
-    main.insertBefore(guideSection, introSection);
-    return;
-  }
   if(supportSection) main.insertBefore(guideSection, supportSection);
+}
+
+function getSelectedSmartArea(rawSelectedId) {
+  const params = new URLSearchParams(window.location.search);
+  const explicitArea = params.get('area');
+  if(explicitArea === 'smartfarm' || explicitArea === 'land-aquafarm') return explicitArea;
+  if(rawSelectedId === 'smartfarm') return 'smartfarm';
+  if(rawSelectedId === 'aquafarm' || rawSelectedId === 'land-aquafarm') return 'land-aquafarm';
+  return '';
+}
+
+function renderCanonicalCategoryGrid() {
+  const grid = document.getElementById('canonicalCategoryGrid');
+  if(!grid) return;
+  const rawSelectedId = new URLSearchParams(window.location.search).get('category');
+  const selectedId = CATEGORY_ALIASES[rawSelectedId] || rawSelectedId;
+  grid.innerHTML = canonicalCategoryData.map(item => `<article class="hub-card${selectedId === item.id ? ' is-active' : ''}" data-category-id="${escapeHtml(item.id)}">
+    <div><h2>${escapeHtml(item.name)}</h2><p>${escapeHtml(item.summary)}</p></div>
+    <div class="hub-links"><a class="hub-link" href="mfg.html?category=${encodeURIComponent(item.id)}">${escapeHtml(item.name)} 보기</a></div>
+  </article>`).join('');
+}
+
+function renderCanonicalDetail(item, selectedArea) {
+  const legacyItems = (item.legacyIds || []).map(id => inputCategoryData.find(legacy => legacy.id === id)).filter(Boolean);
+  const topicBlock = renderTagBlock('주요 확인 주제', item.topics || []);
+  const links = (item.links || []).map(link => `<a class="hub-link" href="${escapeHtml(link.url)}">${escapeHtml(link.label)}</a>`).join('');
+  const legacyBlocks = legacyItems.map(legacy => `<div class="guide-block">
+    <h3>${escapeHtml(legacy.title || legacy.name)}</h3>
+    <p>${escapeHtml(legacy.summary || legacy.description || '')}</p>
+    ${(legacy.checkPoints || legacy.checkpoints || []).length ? `<ul class="guide-list" style="margin-top:8px;">${(legacy.checkPoints || legacy.checkpoints).slice(0, 3).map(point => `<li>${escapeHtml(point)}</li>`).join('')}</ul>` : ''}
+  </div>`).join('');
+  return `<h2>${escapeHtml(item.name)}</h2>
+    <p>${escapeHtml(item.summary)}</p>
+    ${item.children ? renderSmartAgricultureAreas(item, selectedArea) : ''}
+    <div class="guide-detail-grid">${topicBlock}${legacyBlocks}</div>
+    ${links ? `<div class="hub-links">${links}</div>` : ''}
+    <div class="guide-notice">제품 순위나 구매 권유가 아니라 분야별 확인 기준과 공식정보 경로를 제공합니다.</div>`;
+}
+
+function renderSmartAgricultureAreas(item, selectedArea) {
+  const areas = item.children || [];
+  const active = areas.find(area => area.id === selectedArea);
+  const cards = areas.map(area => `<a class="smart-area-card" href="mfg.html?category=smart-agriculture&amp;area=${encodeURIComponent(area.id)}">
+    <h3>${escapeHtml(area.name)}</h3><p>${escapeHtml(area.summary)}</p>
+  </a>`).join('');
+  const details = active ? `<section aria-label="${escapeHtml(active.name)} 세부정보" style="margin-top:16px;">
+    <h3 style="margin:0 0 8px;font-size:17px;color:#111827;">${escapeHtml(active.name)}</h3>
+    ${renderTagBlock('기본 주제', active.topics || [])}
+    ${(active.entries || []).length ? `<div class="topic-entry-grid">${active.entries.map(entry => `<article class="topic-entry"><h4>${escapeHtml(entry.title)}</h4><p>${escapeHtml(entry.description)}</p></article>`).join('')}</div>` : ''}
+    ${(active.contentLinks || []).length ? `<nav class="hub-links" aria-label="${escapeHtml(active.name)} 관련 기술정보">${active.contentLinks.map(link => `<a href="${escapeHtml(link.url)}">${escapeHtml(link.label)}</a>`).join('')}</nav>` : ''}
+    ${active.id === 'land-aquafarm' ? '<div class="guide-notice">육상 기반 스마트양식의 중립적인 기술정보를 다룹니다. 해상 가두리나 특정 사업·제품 정보는 포함하지 않습니다.</div>' : ''}
+  </section>` : '';
+  return `<div class="smart-area-grid" aria-label="스마트농업 하위 영역">${cards}</div>${details}`;
 }
 
 function renderGuideSummary(item) {
@@ -632,7 +706,7 @@ function renderOfficialCompanies(items, categoryItem) {
 
 function renderOfficialCompanyCards(items, categoryItem) {
   if(!items || !items.length) {
-    return '<div class="official-site-card"><p>해당 키워드의 공식 사이트 정보는 아직 보완 중입니다. 관련 품목과 공식 정보를 함께 확인하세요.</p></div>';
+    return '<div class="official-site-card"><p>해당 키워드와 일치하는 공식 사이트 정보가 없습니다. 관련 품목과 공식 정보를 함께 확인하세요.</p></div>';
   }
   return items.map(item => {
       const name = item.displayName || item.name || '공식 사이트';
@@ -690,7 +764,7 @@ function renderOfficialSources(items) {
   if(!items || !items.length) return '';
   return `<div class="guide-block"><h3>공공데이터·공식자료 상태</h3><div class="source-list">${items.map(item => {
     const status = item.status ? ` · ${item.status}` : '';
-    const url = item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">출처 확인</a>` : '<span>링크 준비 중</span>';
+    const url = item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">출처 확인</a>` : '<span>출처 링크 미제공</span>';
     return `<div class="source-item"><strong>${escapeHtml(item.name || '공식자료')}${escapeHtml(status)}</strong><p>${escapeHtml(item.note || '공식자료 확인 예정입니다.')}</p><p>${url}</p></div>`;
   }).join('')}</div></div>`;
 }
@@ -774,7 +848,7 @@ function renderTagInline(items) {
 async function loadSupportPrograms() {
   const box = document.getElementById('supportPrograms');
   if(!box) return;
-  const fallback = `<div class="support-card"><h3>관리정보를 불러오지 못했습니다.</h3><p>기본 카테고리와 관련 페이지를 확인해주세요.</p><div class="hub-links"><a class="hub-link" href="subsidy-calendar.html">보조사업 공식 공고 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div></div><div class="support-card"><h3>수집·정리 중</h3><p>현재는 시제품 단계로 일부 보조사업 확인 경로를 수집·정리 중입니다.</p></div>`;
+  const fallback = `<div class="support-card"><h3>지원·공고 정보를 불러오지 못했습니다.</h3><p>공식 공고 또는 관련기관 확인 경로를 이용해주세요.</p><div class="hub-links"><a class="hub-link" href="subsidy-calendar.html">보조사업 공식 공고 확인</a><a class="hub-link" href="links.html">관련기관 확인</a></div></div>`;
   try {
     const res = await fetch('data/support-program-index.json', { cache: 'no-store' });
     if(!res.ok) throw new Error('support index load failed');

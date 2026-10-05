@@ -1,5 +1,14 @@
 'use strict';
 
+import {
+  PROVIDER_CONFIG,
+  PROVIDER_STATUS,
+  buildAgriFeed,
+  fetchProvider,
+  providerCacheControl,
+  providerErrorCode
+} from './agri-contract.js';
+
 const SERVICE_NAME = 'kfarmai-api';
 const KAMIS_ENDPOINT = 'https://www.kamis.or.kr/service/price/xml.do';
 const NCPMS_ENDPOINT = 'http://ncpms.rda.go.kr/npmsAPI/service';
@@ -15,12 +24,16 @@ const ALLOWED_ORIGINS = new Set([
   'http://127.0.0.1:8787',
   'http://localhost:8787'
 ]);
-const KAMIS_CACHE = 'public, max-age=1800';
-const NCPMS_CACHE = 'public, max-age=86400';
-const WEATHER_CACHE = 'public, max-age=900';
-const NONGSARO_CACHE = 'public, max-age=21600';
-const PSIS_CACHE = 'public, max-age=21600';
-const MAFRA_CACHE = 'public, max-age=21600';
+const KAMIS_SUCCESS_CACHE = providerCacheControl('kamis');
+const KAMIS_CACHE = KAMIS_SUCCESS_CACHE;
+const NO_STORE = 'no-store';
+const LOCAL_MARKET_FALLBACK_SOURCE_DATE = '2026-07-02';
+const NCPMS_CACHE = providerCacheControl('ncpms');
+const WEATHER_CACHE = providerCacheControl('kma');
+const NONGSARO_CACHE = providerCacheControl('nongsaro');
+const PSIS_CACHE = providerCacheControl('psis');
+const MAFRA_CACHE = providerCacheControl('mafra');
+const AGRI_FEED_CACHE = 'public, max-age=60, s-maxage=300';
 const SAFE_MARKET_NOTICE = '농산물 시세는 판매·중개 목적이 아니라 시장 흐름 참고자료입니다.';
 const SAFE_NCPMS_NOTICE = '공공정보 확인용 참고자료입니다. 실제 판단은 공식 제공처와 전문가 상담을 함께 확인하세요.';
 const SAFE_WEATHER_NOTICE = '기상청 단기예보 기준 농작업 참고 정보입니다.';
@@ -86,6 +99,10 @@ export default {
         return handleAgriPublicInfo(url, env, cors);
       }
 
+      if (url.pathname === '/api/agri-feed') {
+        return handleAgriFeed(url, env, cors);
+      }
+
       if (url.pathname === '/api/weather/forecast') {
         return handleWeatherForecast(url, env, cors);
       }
@@ -100,6 +117,17 @@ export default {
 
       return json({ ok: false, error: 'not_found' }, 404, cors);
     } catch (error) {
+      if (url.pathname === '/api/agri-feed') {
+        const generatedAt = new Date().toISOString();
+        const unavailable = Object.fromEntries(
+          Object.keys(PROVIDER_CONFIG).map(key => [key, {
+            fetchedAt: generatedAt,
+            items: [],
+            errorCode: 'agri_feed_unexpected_error'
+          }])
+        );
+        return json(buildAgriFeed(unavailable, generatedAt), 200, cors, NO_STORE);
+      }
       return json({
         ok: false,
         fallback: true,
@@ -112,9 +140,18 @@ export default {
 async function handleKamis(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const date = cleanDate(url.searchParams.get('date')) || todayKst();
+  const fetchedAt = new Date().toISOString();
 
   if (!env.KAMIS_API_KEY || !env.KAMIS_API_ID) {
-    return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
+    const fallback = kamisFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, true);
+    return json({
+      ...fallback,
+      ok: false,
+      source: 'local_fallback',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE,
+      fetchedAt,
+      reason: 'missing_kamis_credentials'
+    }, 200, cors, NO_STORE);
   }
 
   try {
@@ -124,9 +161,8 @@ async function handleKamis(url, env, cors) {
     apiUrl.searchParams.set('p_cert_id', env.KAMIS_API_ID);
     apiUrl.searchParams.set('p_returntype', 'json');
 
-    const response = await fetch(apiUrl, {
-      headers: { Accept: 'application/json, text/plain, */*' },
-      cf: { cacheTtl: 1800, cacheEverything: true }
+    const response = await fetchProvider('kamis', apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' }
     });
     if (!response.ok) throw new Error(`kamis_http_${response.status}`);
 
@@ -137,12 +173,29 @@ async function handleKamis(url, env, cors) {
     return json({
       source: 'KAMIS',
       updatedAt: date,
+      sourceDate: sourceDateFromItems(items) || date,
+      fetchedAt,
       items,
       fallback: false,
       notice: SAFE_MARKET_NOTICE
-    }, 200, cors, KAMIS_CACHE);
+    }, 200, cors, KAMIS_SUCCESS_CACHE);
   } catch (error) {
-    return json(kamisFallback(item, date, true), 200, cors, KAMIS_CACHE);
+    const reason = normalizeKamisErrorReason(error);
+    console.error('kamis_prices_failed', {
+      reason,
+      item,
+      requestedDate: date,
+      status: error?.status || null
+    });
+    const fallback = kamisFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, true);
+    return json({
+      ...fallback,
+      ok: false,
+      source: 'local_fallback',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE,
+      fetchedAt,
+      reason
+    }, 200, cors, NO_STORE);
   }
 }
 
@@ -153,7 +206,7 @@ async function handleMafraFacilityVegetables(url, env, cors) {
   const year = cleanYear(firstParam(url, 'year', 'EXAMIN_YEAR')) || '2013';
 
   if (!env.MAFRA_SERVICE_KEY) {
-    return json(mafraFacilityFallback('missing_service_key'), 200, cors, MAFRA_CACHE);
+    return json(mafraFacilityFallback('missing_service_key'), 200, cors, NO_STORE);
   }
 
   try {
@@ -165,9 +218,8 @@ async function handleMafraFacilityVegetables(url, env, cors) {
     if (vegetableKind) apiUrl.searchParams.set('VGETBL_KND', vegetableKind);
     if (item) apiUrl.searchParams.set('PRDLST', item);
 
-    const response = await fetch(apiUrl, {
-      headers: { Accept: 'application/json, text/plain, */*' },
-      cf: { cacheTtl: 21600, cacheEverything: true }
+    const response = await fetchProvider('mafra', apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' }
     });
     if (!response.ok) throw new Error(`mafra_facility_http_${response.status}`);
 
@@ -184,7 +236,7 @@ async function handleMafraFacilityVegetables(url, env, cors) {
       notice: SAFE_MAFRA_FACILITY_NOTICE
     }, 200, cors, MAFRA_CACHE);
   } catch (error) {
-    return json(mafraFacilityFallback('mafra_facility_fetch_failed'), 200, cors, MAFRA_CACHE);
+    return json(mafraFacilityFallback(providerErrorCode('mafra', error, 'facility_fetch_failed')), 200, cors, NO_STORE);
   }
 }
 
@@ -196,7 +248,7 @@ async function handleMafraFlowerPrices(url, env, cors) {
   const date = cleanFlowerAuctionDate(firstParam(url, 'date', 'AUC_DE')) || compactMafraDate(todayKst());
 
   if (!env.MAFRA_SERVICE_KEY) {
-    return json(mafraFlowerFallback('missing_service_key'), 200, cors, MAFRA_CACHE);
+    return json(mafraFlowerFallback('missing_service_key'), 200, cors, NO_STORE);
   }
 
   try {
@@ -209,9 +261,8 @@ async function handleMafraFlowerPrices(url, env, cors) {
     if (speciesCode) apiUrl.searchParams.set('SPCIES_CD', speciesCode);
     if (speciesName) apiUrl.searchParams.set('SPCIES_NM', speciesName);
 
-    const response = await fetch(apiUrl, {
-      headers: { Accept: 'application/json, text/plain, */*' },
-      cf: { cacheTtl: 21600, cacheEverything: true }
+    const response = await fetchProvider('mafra', apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' }
     });
     if (!response.ok) throw new Error(`mafra_flower_http_${response.status}`);
 
@@ -228,7 +279,7 @@ async function handleMafraFlowerPrices(url, env, cors) {
       notice: SAFE_MAFRA_FLOWER_NOTICE
     }, 200, cors, MAFRA_CACHE);
   } catch (error) {
-    return json(mafraFlowerFallback('mafra_flower_fetch_failed'), 200, cors, MAFRA_CACHE);
+    return json(mafraFlowerFallback(providerErrorCode('mafra', error, 'flower_fetch_failed')), 200, cors, NO_STORE);
   }
 }
 
@@ -236,22 +287,42 @@ async function handleKamisPriceSummary(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const date = cleanDate(url.searchParams.get('date')) || todayKst();
   const requestedType = cleanText(url.searchParams.get('type')) || '';
+  const fetchedAt = new Date().toISOString();
 
   try {
     const kamis = await fetchKamisDailySalesList(env, item, date);
-    const summaryItems = buildPriceSummaryItems(item, date, kamis.items, false)
+    const summaryItems = buildPriceSummaryItems(item, date, kamis.items, kamis.fallback)
       .filter(row => !requestedType || row.type === requestedType);
     const fullItems = addMissingPriceTypes(summaryItems, item, date, requestedType);
+    const sourceDate = kamis.fallback ? LOCAL_MARKET_FALLBACK_SOURCE_DATE : (sourceDateFromItems(summaryItems) || kamis.sourceDate || date);
+    if (kamis.fallback) {
+      console.error('kamis_price_summary_failed', {
+        reason: kamis.reason,
+        item,
+        requestedDate: date,
+        status: kamis.status || null
+      });
+    }
     return json({
-      ok: true,
+      ok: !kamis.fallback && summaryItems.some(row => Number.isFinite(row.price)),
       item,
-      source: 'KAMIS/aT',
+      source: kamis.fallback ? 'local_fallback' : 'KAMIS',
+      sourceDate,
+      fetchedAt,
       fallback: kamis.fallback,
-      items: fullItems,
+      reason: kamis.fallback ? kamis.reason : undefined,
+      items: fullItems.map(row => ({ ...row, sourceDate: row.sourceDate || sourceDate })),
       notice: 'KAMIS 및 공공데이터 기반 시장 흐름 참고자료입니다.'
-    }, 200, cors, KAMIS_CACHE);
+    }, 200, cors, kamis.fallback ? NO_STORE : KAMIS_SUCCESS_CACHE);
   } catch (error) {
-    return json(priceSummaryFallback(item, date, requestedType), 200, cors, KAMIS_CACHE);
+    const reason = normalizeKamisErrorReason(error);
+    console.error('kamis_price_summary_failed', {
+      reason,
+      item,
+      requestedDate: date,
+      status: error?.status || null
+    });
+    return json(priceSummaryFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, requestedType, reason, fetchedAt), 200, cors, NO_STORE);
   }
 }
 
@@ -259,29 +330,42 @@ async function handleKamisPriceTrend(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const type = cleanText(url.searchParams.get('type')) || 'retail';
   const period = cleanText(url.searchParams.get('period')) || '30d';
-  const date = todayKst();
+  const fetchedAt = new Date().toISOString();
 
-  return json(priceTrendFallback(item, type, period, date), 200, cors, KAMIS_CACHE);
+  return json(priceTrendFallback(item, type, period, fetchedAt), 200, cors, NO_STORE);
 }
 
 function handleAuctionPrices(url, env, cors) {
   const item = cleanText(url.searchParams.get('item')) || '토마토';
   const date = cleanDate(url.searchParams.get('date')) || todayKst();
+  const fetchedAt = new Date().toISOString();
   return json({
     ok: false,
     item,
     source: 'aT 공영도매시장 경매정보',
+    sourceUrl: PROVIDER_CONFIG.auction.sourceUrl,
+    status: PROVIDER_STATUS.UNAVAILABLE,
+    dataDate: null,
+    fetchedAt,
+    freshness: { state: 'UNKNOWN', ageHours: null, maxAgeHours: PROVIDER_CONFIG.auction.maxAgeHours, checkedAt: fetchedAt },
+    isFallback: true,
+    errorCode: env.AT_AUCTION_KEY ? 'auction_endpoint_unverified' : 'auction_not_integrated',
     fallback: true,
     items: [priceTypeFallback('auction', item, date)],
     notice: env.AT_AUCTION_KEY
       ? 'aT 경매정보 인증 정보는 준비되어 있으나, 정확한 API 엔드포인트 확인 후 연동할 예정입니다.'
       : 'aT 경매정보 연동 전 fallback 참고자료입니다.'
-  }, 200, cors, KAMIS_CACHE);
+  }, 200, cors, NO_STORE);
 }
 
 async function fetchKamisDailySalesList(env, item, date) {
   if (!env.KAMIS_API_KEY || !env.KAMIS_API_ID) {
-    return { items: kamisFallback(item, date, true).items, fallback: true };
+    return {
+      items: kamisFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, true).items,
+      fallback: true,
+      reason: 'missing_kamis_credentials',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE
+    };
   }
 
   const apiUrl = new URL(KAMIS_ENDPOINT);
@@ -290,30 +374,34 @@ async function fetchKamisDailySalesList(env, item, date) {
   apiUrl.searchParams.set('p_cert_id', env.KAMIS_API_ID);
   apiUrl.searchParams.set('p_returntype', 'json');
 
-  const response = await fetch(apiUrl, {
-    headers: { Accept: 'application/json, text/plain, */*' },
-    cf: { cacheTtl: 1800, cacheEverything: true }
+  const response = await fetchProvider('kamis', apiUrl, {
+    headers: { Accept: 'application/json, text/plain, */*' }
   });
-  if (!response.ok) throw new Error(`kamis_http_${response.status}`);
+  if (!response.ok) {
+    const error = new Error('kamis_http_error');
+    error.status = response.status;
+    throw error;
+  }
   const payload = await parseFlexibleResponse(response);
   const items = normalizeKamisItems(payload, item, date);
   if (!items.length) throw new Error('kamis_empty_items');
-  return { items, fallback: false };
+  return { items, fallback: false, sourceDate: sourceDateFromItems(items) || date };
 }
 
 async function handleWeatherForecast(url, env, cors) {
   const region = cleanText(url.searchParams.get('region')) || '';
   const city = cleanText(url.searchParams.get('city')) || '';
+  const fetchedAt = new Date().toISOString();
   const nx = cleanGrid(url.searchParams.get('nx'));
   const ny = cleanGrid(url.searchParams.get('ny'));
   const displayName = [region, city].filter(Boolean).join(' ') || city || region || '선택 지역';
 
   if (!nx || !ny) {
-    return json(weatherFallback('missing_grid', region, city, displayName), 200, cors, WEATHER_CACHE);
+    return json(weatherFallback('missing_grid', region, city, displayName), 200, cors, NO_STORE);
   }
 
   if (!env.KMA_SERVICE_KEY) {
-    return json(weatherFallback('missing_service_key', region, city, displayName), 200, cors, WEATHER_CACHE);
+    return json(weatherFallback('missing_service_key', region, city, displayName), 200, cors, NO_STORE);
   }
 
   const base = kmaBaseDateTime();
@@ -329,9 +417,8 @@ async function handleWeatherForecast(url, env, cors) {
     apiUrl.searchParams.set('ny', ny);
     appendServiceKey(apiUrl, env.KMA_SERVICE_KEY);
 
-    const response = await fetch(apiUrl, {
-      headers: { Accept: 'application/json, text/plain, */*' },
-      cf: { cacheTtl: 900, cacheEverything: true }
+    const response = await fetchProvider('kma', apiUrl, {
+      headers: { Accept: 'application/json, text/plain, */*' }
     });
     if (!response.ok) throw new Error(`kma_http_${response.status}`);
 
@@ -349,11 +436,12 @@ async function handleWeatherForecast(url, env, cors) {
       displayName,
       baseDate: base.baseDate,
       baseTime: base.baseTime,
+      fetchedAt,
       items,
       notice: SAFE_WEATHER_NOTICE
     }, 200, cors, WEATHER_CACHE);
   } catch (error) {
-    return json(weatherFallback('kma_fetch_failed', region, city, displayName, base), 200, cors, WEATHER_CACHE);
+    return json(weatherFallback(providerErrorCode('kma', error, 'fetch_failed'), region, city, displayName, base), 200, cors, NO_STORE);
   }
 }
 
@@ -362,7 +450,7 @@ async function handleNcpms(url, env, cors) {
   const keyword = cleanText(url.searchParams.get('keyword')) || '';
 
   if (!env.NCPMS_API_KEY) {
-    return json(ncpmsFallback(), 200, cors, NCPMS_CACHE);
+    return json(ncpmsFallback('missing_service_key'), 200, cors, NO_STORE);
   }
 
   try {
@@ -386,7 +474,7 @@ async function handleNcpms(url, env, cors) {
       notice: SAFE_NCPMS_NOTICE
     }, 200, cors, NCPMS_CACHE);
   } catch (error) {
-    return json(ncpmsFallback(), 200, cors, NCPMS_CACHE);
+    return json(ncpmsFallback(providerErrorCode('ncpms', error, 'fetch_failed')), 200, cors, NO_STORE);
   }
 }
 
@@ -394,10 +482,10 @@ async function handleNongsaroService(url, env, cors) {
   const service = cleanToken(url.searchParams.get('service'));
   const operation = cleanToken(url.searchParams.get('operation'));
   if (!service || !operation) {
-    return json(nongsaroFallback('missing_service_or_operation'), 200, cors, NONGSARO_CACHE);
+    return json(nongsaroFallback('missing_service_or_operation'), 200, cors, NO_STORE);
   }
   if (!env.NONGSARO_API_KEY) {
-    return json(nongsaroFallback('missing_service_key', service, operation), 200, cors, NONGSARO_CACHE);
+    return json(nongsaroFallback('missing_service_key', service, operation), 200, cors, NO_STORE);
   }
 
   try {
@@ -413,7 +501,7 @@ async function handleNongsaroService(url, env, cors) {
       notice: '농사로 공식 OpenAPI 참고자료입니다.'
     }, 200, cors, NONGSARO_CACHE);
   } catch (error) {
-    return json(nongsaroFallback('nongsaro_fetch_failed', service, operation), 200, cors, NONGSARO_CACHE);
+    return json(nongsaroFallback(providerErrorCode('nongsaro', error, 'fetch_failed'), service, operation), 200, cors, NO_STORE);
   }
 }
 
@@ -421,10 +509,10 @@ async function handlePsisPesticideSafety(url, env, cors) {
   const crop = cleanText(url.searchParams.get('crop')) || '';
   const keyword = cleanText(url.searchParams.get('keyword')) || crop;
   const serviceCode = cleanToken(url.searchParams.get('serviceCode')) || 'SVC01';
-  const apiKey = env.PSIS_API_KEY || env.PEST_FERT_VENDOR_KEY || env.NONGSARO_API_KEY;
+  const apiKey = env.PSIS_API_KEY || env.PEST_FERT_VENDOR_KEY;
 
   if (!apiKey) {
-    return json(psisFallback('missing_service_key', crop, keyword), 200, cors, PSIS_CACHE);
+    return json(psisFallback('missing_service_key', crop, keyword), 200, cors, NO_STORE);
   }
 
   try {
@@ -442,7 +530,7 @@ async function handlePsisPesticideSafety(url, env, cors) {
       notice: '농약안전정보시스템 공식 안전사용기준 확인용 참고자료입니다.'
     }, 200, cors, PSIS_CACHE);
   } catch (error) {
-    return json(psisFallback('psis_fetch_failed', crop, keyword), 200, cors, PSIS_CACHE);
+    return json(psisFallback(providerErrorCode('psis', error, 'fetch_failed'), crop, keyword), 200, cors, NO_STORE);
   }
 }
 
@@ -487,14 +575,14 @@ async function handleAgriPublicInfo(url, env, cors) {
   sections.push(publicSection('농약안전사용지침', 'NONGSARO', safety, '농약 사용 전 안전사용기준을 공식 정보에서 확인하세요.', 'https://psis.rda.go.kr/'));
 
   const psis = await safePublicSection('PSIS_SAFETY', async () => {
-    const apiKey = env.PSIS_API_KEY || env.PEST_FERT_VENDOR_KEY || env.NONGSARO_API_KEY;
+    const apiKey = env.PSIS_API_KEY || env.PEST_FERT_VENDOR_KEY;
     if (!apiKey) throw new Error('missing_psis_key');
     const data = await fetchPsis(apiKey, 'SVC01', { crop, keyword });
     return normalizePsisItems(data.items, crop, keyword).slice(0, 3);
-  }, env.PSIS_API_KEY || env.PEST_FERT_VENDOR_KEY || env.NONGSARO_API_KEY);
+  }, env.PSIS_API_KEY || env.PEST_FERT_VENDOR_KEY);
   sections.push(publicSection('PSIS 안전사용기준', 'PSIS', psis, '농약안전정보시스템에서 등록 작물과 안전사용기준을 확인하세요.', 'https://psis.rda.go.kr/'));
 
-  return json({
+  const body = {
     ok: sections.some(section => !section.fallback),
     source: 'PUBLIC_AGRI_INFO',
     crop,
@@ -502,7 +590,253 @@ async function handleAgriPublicInfo(url, env, cors) {
     fallback: sections.every(section => section.fallback),
     sections,
     notice: SAFE_PUBLIC_INFO_NOTICE
-  }, 200, cors, NONGSARO_CACHE);
+  };
+  return json(body, 200, cors, body.fallback ? NO_STORE : NONGSARO_CACHE);
+}
+
+async function handleAgriFeed(url, env, cors) {
+  const generatedAt = new Date().toISOString();
+  const providerUrls = buildAgriFeedProviderUrls(url);
+  const loaders = {
+    kma: () => responseJson(handleWeatherForecast(providerUrls.kma, env, cors)),
+    kamis: () => responseJson(handleKamisPriceSummary(providerUrls.kamis, env, cors)),
+    ncpms: () => responseJson(handleNcpms(providerUrls.ncpms, env, cors)),
+    psis: () => responseJson(handlePsisPesticideSafety(providerUrls.psis, env, cors)),
+    nongsaro: () => responseJson(handleNongsaroService(providerUrls.nongsaro, env, cors)),
+    mafra: async () => Promise.all([
+      responseJson(handleMafraFacilityVegetables(providerUrls.mafraFacility, env, cors)),
+      responseJson(handleMafraFlowerPrices(providerUrls.mafraFlower, env, cors))
+    ]),
+    auction: () => responseJson(handleAuctionPrices(providerUrls.auction, env, cors))
+  };
+
+  const entries = Object.entries(loaders);
+  const settled = await Promise.allSettled(entries.map(([, loader]) => loader()));
+  const payloads = Object.fromEntries(settled.map((result, index) => {
+    const providerKey = entries[index][0];
+    return [providerKey, result.status === 'fulfilled'
+      ? result.value
+      : { fallback: true, error: providerErrorCode(providerKey, result.reason, 'feed_loader_failed'), items: [] }];
+  }));
+
+  const inputs = {
+    kma: kmaFeedInput(payloads.kma, generatedAt),
+    kamis: kamisFeedInput(payloads.kamis, generatedAt),
+    ncpms: ncpmsFeedInput(payloads.ncpms, generatedAt),
+    psis: genericOfficialFeedInput('psis', payloads.psis, generatedAt),
+    nongsaro: genericOfficialFeedInput('nongsaro', payloads.nongsaro, generatedAt),
+    mafra: mafraFeedInput(payloads.mafra, generatedAt),
+    auction: auctionFeedInput(payloads.auction, generatedAt)
+  };
+  const feed = buildAgriFeed(inputs, generatedAt);
+  const cache = [PROVIDER_STATUS.LIVE, PROVIDER_STATUS.STALE].includes(feed.overallStatus) ? AGRI_FEED_CACHE : NO_STORE;
+  return json(feed, 200, cors, cache);
+}
+
+function buildAgriFeedProviderUrls(url) {
+  const copy = (pathname, names = []) => {
+    const target = new URL(pathname, 'https://local.kfarmai.invalid');
+    for (const name of names) {
+      const value = url.searchParams.get(name);
+      if (value) target.searchParams.set(name, value);
+    }
+    return target;
+  };
+  const cropNames = ['crop', 'keyword'];
+  const marketNames = ['item', 'date', 'type'];
+  const mafraNames = ['item', 'region', 'year', 'vegetableKind', 'categoryCode', 'speciesCode', 'speciesName', 'date'];
+  const nongsaro = copy('/api/nongsaro/service', ['crop']);
+  nongsaro.searchParams.set('service', 'cropEbook');
+  nongsaro.searchParams.set('operation', 'mainCategoryList');
+  const crop = cleanText(url.searchParams.get('crop'));
+  if (crop) nongsaro.searchParams.set('subCategoryNm', crop);
+  return {
+    kma: copy('/api/weather/forecast', ['region', 'city', 'nx', 'ny']),
+    kamis: copy('/api/kamis/price-summary', marketNames),
+    ncpms: copy('/api/ncpms/diseases', cropNames),
+    psis: copy('/api/psis/pesticide-safety', [...cropNames, 'serviceCode']),
+    nongsaro,
+    mafraFacility: copy('/api/mafra/facility-vegetables', mafraNames),
+    mafraFlower: copy('/api/mafra/flower-prices', mafraNames),
+    auction: copy('/api/auction/prices', marketNames)
+  };
+}
+
+async function responseJson(value) {
+  const response = await value;
+  if (!(response instanceof Response)) throw new Error('provider_response_invalid');
+  return response.json();
+}
+
+function kmaFeedInput(payload = {}, fetchedAt) {
+  const dataDate = formatCompactProviderDate(payload.baseDate);
+  const publishedAt = formatKmaPublishedAt(payload.baseDate, payload.baseTime);
+  const values = payload.items && typeof payload.items === 'object' ? payload.items : null;
+  const summary = values
+    ? [
+      Number.isFinite(values.temperature) ? `기온 ${values.temperature}℃` : '',
+      Number.isFinite(values.rainProbability) ? `강수확률 ${values.rainProbability}%` : '',
+      Number.isFinite(values.humidity) ? `습도 ${values.humidity}%` : ''
+    ].filter(Boolean).join(' · ')
+    : '';
+  return {
+    title: `${payload.displayName || '선택 지역'} 기상청 단기예보`,
+    summary,
+    dataDate,
+    publishedAt,
+    fetchedAt,
+    source: 'KMA',
+    sourceUrl: PROVIDER_CONFIG.kma.sourceUrl,
+    isFallback: Boolean(payload.fallback),
+    errorCode: payload.error,
+    items: values ? [{
+      title: `${payload.displayName || '선택 지역'} 단기예보`,
+      summary: summary || SAFE_WEATHER_NOTICE,
+      dataDate,
+      publishedAt,
+      source: 'KMA',
+      sourceUrl: PROVIDER_CONFIG.kma.sourceUrl,
+      extra: values
+    }] : []
+  };
+}
+
+function formatKmaPublishedAt(baseDate, baseTime) {
+  const date = String(baseDate || '').trim();
+  const time = String(baseTime || '').trim().padStart(4, '0');
+  if (!/^\d{8}$/.test(date) || !/^\d{4}$/.test(time)) return null;
+  return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2)}:00+09:00`;
+}
+
+function kamisFeedInput(payload = {}, fetchedAt) {
+  const dataDate = payload.sourceDate || payload.updatedAt || '';
+  return {
+    title: 'KAMIS 최신 공표 시세',
+    summary: payload.notice || SAFE_MARKET_NOTICE,
+    dataDate,
+    fetchedAt: payload.fetchedAt || fetchedAt,
+    source: payload.source || 'KAMIS',
+    sourceUrl: PROVIDER_CONFIG.kamis.sourceUrl,
+    isFallback: Boolean(payload.fallback),
+    errorCode: payload.reason || payload.error,
+    items: (payload.items || []).map(item => ({
+      title: `${item.itemName || item.item || payload.item || '농산물'} ${item.label || item.type || '시세'}`,
+      summary: Number.isFinite(item.price) ? `${item.unit || '단위 확인'} 기준 ${item.price.toLocaleString('ko-KR')}원` : (item.notice || '가격은 공식 제공처에서 확인해주세요.'),
+      dataDate: item.sourceDate || item.date || dataDate,
+      source: item.source || payload.source || 'KAMIS',
+      sourceUrl: PROVIDER_CONFIG.kamis.sourceUrl,
+      isFallback: Boolean(item.fallback ?? payload.fallback),
+      extra: item
+    }))
+  };
+}
+
+function ncpmsFeedInput(payload = {}, fetchedAt) {
+  return {
+    title: 'NCPMS 병해충 정보',
+    summary: payload.notice || SAFE_NCPMS_NOTICE,
+    fetchedAt,
+    source: 'NCPMS',
+    sourceUrl: PROVIDER_CONFIG.ncpms.sourceUrl,
+    isFallback: Boolean(payload.fallback),
+    errorCode: payload.error,
+    items: (payload.items || []).map(item => ({
+      title: item.name || `${item.cropName || '작물'} 병해충 정보`,
+      summary: compactSentence(item.symptoms || item.environment || item.prevention || SAFE_NCPMS_NOTICE),
+      source: 'NCPMS',
+      sourceUrl: item.officialUrl || PROVIDER_CONFIG.ncpms.sourceUrl,
+      extra: item
+    }))
+  };
+}
+
+function genericOfficialFeedInput(providerKey, payload = {}, fetchedAt) {
+  const config = PROVIDER_CONFIG[providerKey];
+  return {
+    title: config.source,
+    summary: payload.notice || `${config.source} 공식 자료입니다.`,
+    dataDate: payload.sourceDate || payload.updatedAt || '',
+    publishedAt: payload.publishedAt || '',
+    fetchedAt,
+    source: payload.source || config.provider,
+    sourceUrl: config.sourceUrl,
+    isFallback: Boolean(payload.fallback),
+    errorCode: payload.error || payload.reason,
+    items: (payload.items || []).map(item => ({
+      title: item.title || config.source,
+      summary: item.summary || `${config.source} 공식 자료를 확인하세요.`,
+      dataDate: item.dataDate || item.sourceDate || item.date || '',
+      publishedAt: item.publishedAt || '',
+      source: payload.source || config.provider,
+      sourceUrl: item.officialUrl || item.sourceUrl || config.sourceUrl,
+      isFallback: Boolean(item.fallback ?? payload.fallback),
+      extra: item
+    }))
+  };
+}
+
+function mafraFeedInput(payloads, fetchedAt) {
+  const rows = Array.isArray(payloads) ? payloads : [payloads || {}];
+  const items = [];
+  const errors = [];
+  for (const payload of rows) {
+    if (payload?.error) errors.push(payload.error);
+    for (const item of payload?.items || []) {
+      const dataDate = item.date || (item.year ? `${item.year}-01-01` : '');
+      items.push({
+        title: `${item.item || payload.dataset || '농림축산식품 자료'}${item.region ? ` · ${item.region}` : ''}`,
+        summary: payload.dataset === '화훼류 시세현황'
+          ? `${item.market || '화훼류'} ${item.unit || '가격'} ${item.price || '확인 필요'}`
+          : `면적 ${item.area || '확인 필요'} · 생산량 ${item.production || '확인 필요'}`,
+        dataDate,
+        source: 'MAFRA',
+        sourceUrl: PROVIDER_CONFIG.mafra.sourceUrl,
+        extra: item
+      });
+    }
+  }
+  return {
+    title: '농림축산식품 시설채소·화훼 자료',
+    summary: '시설채소 생산실적과 화훼 시장 흐름 참고자료입니다.',
+    dataDate: newestProviderDate(items.map(item => item.dataDate)),
+    fetchedAt,
+    source: 'MAFRA',
+    sourceUrl: PROVIDER_CONFIG.mafra.sourceUrl,
+    isFallback: rows.every(payload => Boolean(payload?.fallback)),
+    errorCode: errors.length ? (items.length ? 'mafra_partial_failure' : errors[0]) : null,
+    items
+  };
+}
+
+function auctionFeedInput(payload = {}, fetchedAt) {
+  return {
+    title: '공영도매시장 경매정보',
+    summary: payload.notice || '경매정보 endpoint와 파라미터 검증이 필요합니다.',
+    dataDate: payload.dataDate || null,
+    fetchedAt: payload.fetchedAt || fetchedAt,
+    source: payload.source || 'aT 공영도매시장 경매정보',
+    sourceUrl: payload.sourceUrl || PROVIDER_CONFIG.auction.sourceUrl,
+    isFallback: true,
+    errorCode: payload.errorCode || 'auction_not_integrated',
+    items: (payload.items || []).map(item => ({
+      title: `${item.itemName || payload.item || '농산물'} 경매정보`,
+      summary: item.notice || '공식 경매정보 제공처에서 확인해주세요.',
+      dataDate: null,
+      source: payload.source || 'aT 공영도매시장 경매정보',
+      sourceUrl: payload.sourceUrl || PROVIDER_CONFIG.auction.sourceUrl,
+      isFallback: true,
+      extra: item
+    }))
+  };
+}
+
+function formatCompactProviderDate(value) {
+  const text = String(value || '').replace(/[^\d]/g, '');
+  return text.length >= 8 ? `${text.slice(0, 4)}-${text.slice(4, 6)}-${text.slice(6, 8)}` : '';
+}
+
+function newestProviderDate(values) {
+  return values.filter(Boolean).sort().at(-1) || '';
 }
 
 async function fetchNcpmsList(apiKey, crop) {
@@ -514,9 +848,8 @@ async function fetchNcpmsList(apiKey, crop) {
   apiUrl.searchParams.set('startPoint', '1');
   if (crop) apiUrl.searchParams.set('cropName', crop);
 
-  const response = await fetch(apiUrl, {
-    headers: { Accept: 'application/xml, text/xml, */*' },
-    cf: { cacheTtl: 86400, cacheEverything: true }
+  const response = await fetchProvider('ncpms', apiUrl, {
+    headers: { Accept: 'application/xml, text/xml, */*' }
   });
   if (!response.ok) throw new Error(`ncpms_list_http_${response.status}`);
   return normalizeNcpmsList(await response.text());
@@ -532,9 +865,8 @@ async function fetchNcpmsDetail(apiKey, listRow) {
   apiUrl.searchParams.set('sickKey', listRow.sickKey);
 
   try {
-    const response = await fetch(apiUrl, {
-      headers: { Accept: 'application/xml, text/xml, */*' },
-      cf: { cacheTtl: 86400, cacheEverything: true }
+    const response = await fetchProvider('ncpms', apiUrl, {
+      headers: { Accept: 'application/xml, text/xml, */*' }
     });
     if (!response.ok) throw new Error(`ncpms_detail_http_${response.status}`);
     return normalizeNcpmsDetail(await response.text(), listRow);
@@ -554,9 +886,8 @@ async function fetchNongsaro(apiKey, service, operation, params = {}) {
     if (cleanKey && cleanValue) apiUrl.searchParams.set(cleanKey, cleanValue);
   }
 
-  const response = await fetch(apiUrl, {
-    headers: { Accept: 'application/xml, text/xml, text/html, */*' },
-    cf: { cacheTtl: 21600, cacheEverything: true }
+  const response = await fetchProvider('nongsaro', apiUrl, {
+    headers: { Accept: 'application/xml, text/xml, text/html, */*' }
   });
   if (!response.ok) throw new Error(`nongsaro_http_${response.status}`);
   const text = await response.text();
@@ -584,9 +915,8 @@ async function fetchPsis(apiKey, serviceCode, params = {}) {
     apiUrl.searchParams.set('pestiKorName', params.keyword);
   }
 
-  const response = await fetch(apiUrl, {
-    headers: { Accept: 'application/xml, text/xml, */*' },
-    cf: { cacheTtl: 21600, cacheEverything: true }
+  const response = await fetchProvider('psis', apiUrl, {
+    headers: { Accept: 'application/xml, text/xml, */*' }
   });
   if (!response.ok) throw new Error(`psis_http_${response.status}`);
   const text = await response.text();
@@ -687,31 +1017,61 @@ function priceTypeFallback(type, item, date) {
   };
 }
 
-function priceSummaryFallback(item, date, requestedType) {
+function priceSummaryFallback(item, date, requestedType, reason = 'unknown_error', fetchedAt = new Date().toISOString()) {
   const types = requestedType ? [requestedType] : ['retail', 'middleman', 'auction', 'eco'];
   return {
     ok: false,
     item,
-    source: 'KAMIS/aT',
+    source: 'local_fallback',
+    sourceDate: date,
+    fetchedAt,
     fallback: true,
-    items: types.map(type => priceTypeFallback(type, item, date)),
+    reason,
+    items: types.map(type => ({ ...priceTypeFallback(type, item, date), sourceDate: date })),
     notice: '시세 데이터를 불러오지 못했습니다. 공식 정보를 함께 확인하세요.'
   };
 }
 
-function priceTrendFallback(item, type, period, date) {
+function priceTrendFallback(item, type, period, fetchedAt = new Date().toISOString()) {
+  const config = type === 'auction' ? PROVIDER_CONFIG.auction : PROVIDER_CONFIG.kamis;
   return {
     ok: false,
     item,
     type,
     period,
     source: type === 'auction' ? 'aT 공영도매시장 경매정보' : 'KAMIS',
+    sourceUrl: config.sourceUrl,
+    status: PROVIDER_STATUS.UNAVAILABLE,
+    sourceDate: null,
+    dataDate: null,
+    publishedAt: null,
+    fetchedAt,
+    freshness: { state: 'UNKNOWN', ageHours: null, maxAgeHours: config.maxAgeHours, checkedAt: fetchedAt },
+    implemented: false,
     fallback: true,
+    isFallback: true,
     points: [],
-    summary: { latest: null, min: null, max: null, avg: null, changeFromPrevious: null, changeRateFromPrevious: null },
+    summary: {},
     notice: `${typeNotice(type)} 기간별 가격 동향 API는 공식 파라미터 확인 후 연결할 예정입니다.`,
-    error: type === 'auction' ? 'auction_endpoint_pending' : 'period_api_pending'
+    reason: type === 'auction' ? 'auction_trend_not_implemented' : 'kamis_trend_not_implemented',
+    error: type === 'auction' ? 'auction_endpoint_pending' : 'period_api_pending',
+    errorCode: type === 'auction' ? 'auction_endpoint_pending' : 'period_api_pending'
   };
+}
+
+function sourceDateFromItems(items = []) {
+  const row = items.find(item => cleanDate(item?.date || item?.sourceDate));
+  return row ? cleanDate(row.date || row.sourceDate) : '';
+}
+
+function normalizeKamisErrorReason(error) {
+  if (error?.code) return providerErrorCode('kamis', error, 'request_failed');
+  const message = String(error?.message || '');
+  if (message === 'kamis_http_error') return 'kamis_http_error';
+  if (message.includes('kamis_empty_items')) return 'kamis_empty_items';
+  if (message.includes('parse') || message.includes('json') || message.includes('xml')) return 'kamis_parse_error';
+  if (message.includes('no_data')) return 'kamis_no_data';
+  return 'unknown_error';
 }
 
 function priceTypeLabel(type) {
@@ -857,11 +1217,14 @@ function kamisFallback(item, date, fallback) {
   };
 }
 
-function ncpmsFallback() {
+function ncpmsFallback(error = 'ncpms_unavailable') {
   return {
+    ok: false,
     source: 'NCPMS',
+    sourceUrl: PROVIDER_CONFIG.ncpms.sourceUrl,
     items: [],
     fallback: true,
+    error,
     notice: 'NCPMS 공공정보를 불러오지 못했습니다. 공식 제공처에서 작물명과 증상을 다시 확인해주세요.'
   };
 }
