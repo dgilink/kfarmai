@@ -1,4 +1,3 @@
-\
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import annotations
@@ -154,7 +153,7 @@ def main():
     args=ap.parse_args(); root=Path(args.root).resolve(); out=root/args.output; out.mkdir(parents=True,exist_ok=True)
     cfg=loadj(root/"automation/config.json"); reg=loadj(root/"automation/daily_registry.json",{"items":[]}); seed=loadj(root/"automation/topic_seed.json",{"do_not_repeat":[]}); today=dt.datetime.now(KST).date().isoformat()
     if args.mode in ("self_test","dry_run"): selftest(root,out); return 0
-    if any(x.get("date")==today for x in reg.get("items",[])):
+    if args.mode=="publish" and any(x.get("date")==today for x in reg.get("items",[])):
         x=next(x for x in reg["items"] if x.get("date")==today); savej(out/"outcome.json",{"status":"ALREADY_PUBLISHED","date":today,"title":x.get("title"),"slug":x.get("slug"),"url":x.get("url"),"reason":"today already published","estimated_cost_usd":0}); return 0
     key=os.getenv("OPENAI_API_KEY","").strip()
     if not key: savej(out/"outcome.json",{"status":"FAIL","date":today,"reason":"OPENAI_API_KEY missing","safe_summary":"no publish"}); return 0
