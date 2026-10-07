@@ -1,0 +1,192 @@
+name: KFarmAI Daily AutoPublish
+
+on:
+  schedule:
+    - cron: "0 21 * * *"   # 06:00 KST
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry_run / review_only / publish"
+        required: true
+        default: "dry_run"
+        type: choice
+        options: [dry_run, review_only, publish]
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+
+concurrency:
+  group: kfarmai-daily-autopublish
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: "1"
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      KFARMAI_AUTOPUBLISH_ENABLED: ${{ vars.KFARMAI_AUTOPUBLISH_ENABLED }}
+      KFARMAI_TEXT_MODEL: ${{ vars.KFARMAI_TEXT_MODEL || 'gpt-6-luna' }}
+      KFARMAI_IMAGE_MODEL: ${{ vars.KFARMAI_IMAGE_MODEL || 'gpt-image-2.5-flare' }}
+      KFARMAI_DAILY_BUDGET_USD: ${{ vars.KFARMAI_DAILY_BUDGET_USD || '0.15' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Resolve mode
+        id: mode
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            echo "mode=publish" >> "$GITHUB_OUTPUT"
+            [[ "${KFARMAI_AUTOPUBLISH_ENABLED:-}" == "true" ]] && echo "enabled=true" >> "$GITHUB_OUTPUT" || echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Scheduled run disabled
+        if: steps.mode.outputs.enabled != 'true'
+        run: |
+          echo "## KFarmAI Daily AutoPublish" >> "$GITHUB_STEP_SUMMARY"
+          echo "- status: SKIPPED" >> "$GITHUB_STEP_SUMMARY"
+          echo "- reason: KFARMAI_AUTOPUBLISH_ENABLED != true" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Compile and offline self-test
+        if: steps.mode.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile automation/kfarmai_daily_autopublish.py
+          rm -rf automation/run-output
+          python automation/kfarmai_daily_autopublish.py --root . --mode self_test --output automation/run-output >/tmp/kf-selftest.log 2>&1
+          python - <<'PY'
+          import json
+          x=json.load(open("automation/run-output/outcome.json",encoding="utf-8"))
+          assert x["status"]=="DRY_RUN_PASS", x
+          PY
+
+      - name: Generate and QA
+        if: steps.mode.outputs.enabled == 'true'
+        id: generate
+        shell: bash
+        run: |
+          set +e
+          rm -rf automation/run-output
+          mkdir -p automation/run-output
+          python automation/kfarmai_daily_autopublish.py --root . --mode "${{ steps.mode.outputs.mode }}" --output automation/run-output >/tmp/kf-daily.log 2>&1
+          [[ -f automation/run-output/outcome.json ]] || printf '{"status":"FAIL","reason":"missing outcome"}\n' > automation/run-output/outcome.json
+          status="$(python - <<'PY'
+          import json
+          print(json.load(open("automation/run-output/outcome.json",encoding="utf-8")).get("status","FAIL"))
+          PY
+          )"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload review/failure artifact
+        if: steps.mode.outputs.enabled == 'true' && steps.generate.outputs.status != 'PUBLISH_READY' && steps.generate.outputs.status != 'ALREADY_PUBLISHED' && steps.generate.outputs.status != 'DRY_RUN_PASS'
+        uses: actions/upload-artifact@v4
+        with:
+          name: kfarmai-daily-${{ github.run_id }}
+          path: automation/run-output/
+          retention-days: 14
+
+      - name: Report REVIEW/BLOCK/FAIL
+        if: steps.mode.outputs.enabled == 'true' && (steps.generate.outputs.status == 'REVIEW' || steps.generate.outputs.status == 'BLOCK' || steps.generate.outputs.status == 'FAIL')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          python - <<'PY' > /tmp/report.md
+          import json
+          x=json.load(open("automation/run-output/outcome.json",encoding="utf-8"))
+          print("자동 게시하지 않았습니다.\n")
+          for k in ("status","date","title","reason","safe_summary"):
+              if x.get(k) not in (None,""):
+                  print(f"- {k}: {x.get(k)}")
+          PY
+          title="$(python - <<'PY'
+          import json
+          x=json.load(open("automation/run-output/outcome.json",encoding="utf-8"))
+          print(f"[KFarmAI Daily] {x.get('date','unknown')} {x.get('status','FAIL')}")
+          PY
+          )"
+          gh issue create --title "$title" --body-file /tmp/report.md
+
+      - name: Commit exact LOW-risk files
+        if: steps.mode.outputs.enabled == 'true' && steps.generate.outputs.status == 'PUBLISH_READY'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "kfarmai-autopublish"
+          git config user.email "actions@users.noreply.github.com"
+          while IFS= read -r f; do
+            [[ -n "$f" ]] || continue
+            test -e "$f"
+            git add -- "$f"
+          done < automation/run-output/files_to_commit.txt
+          expected="$(sort automation/run-output/files_to_commit.txt)"
+          actual="$(git diff --cached --name-only | sort)"
+          [[ "$actual" == "$expected" ]]
+          git diff --cached --check
+          slug="$(python - <<'PY'
+          import json
+          print(json.load(open("automation/run-output/outcome.json",encoding="utf-8"))["slug"])
+          PY
+          )"
+          git commit -m "feat: daily autopublish ${slug}"
+          git push origin HEAD:main
+
+      - name: Dispatch Pages
+        if: steps.mode.outputs.enabled == 'true' && steps.generate.outputs.status == 'PUBLISH_READY'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
+
+      - name: Verify production URL
+        if: steps.mode.outputs.enabled == 'true' && steps.generate.outputs.status == 'PUBLISH_READY'
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="$(python - <<'PY'
+          import json
+          print(json.load(open("automation/run-output/outcome.json",encoding="utf-8"))["url"])
+          PY
+          )"
+          title="$(python - <<'PY'
+          import json
+          print(json.load(open("automation/run-output/outcome.json",encoding="utf-8"))["title"])
+          PY
+          )"
+          ok=0
+          for i in $(seq 1 25); do
+            body="$(curl -LfsS --max-time 20 "$url" 2>/dev/null || true)"
+            if [[ "$body" == *"$title"* ]] && [[ "$body" == *'name="robots" content="index, follow"'* ]]; then
+              ok=1; break
+            fi
+            sleep 12
+          done
+          [[ "$ok" == "1" ]]
+
+      - name: Final summary
+        if: always() && steps.mode.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json, os
+          p="automation/run-output/outcome.json"
+          if os.path.exists(p):
+              x=json.load(open(p,encoding="utf-8"))
+              print("## KFarmAI Daily AutoPublish")
+              for k in ("status","date","title","url","reason","estimated_cost_usd"):
+                  if x.get(k) not in (None,""):
+                      print(f"- {k}: {x.get(k)}")
+          PY

@@ -1,0 +1,47 @@
+{
+  "site_url": "https://kfarmai.com",
+  "text_model": "gpt-6-luna",
+  "image_model": "gpt-image-2.5-flare",
+  "daily_budget_usd": 0.15,
+  "auto_publish_categories": [
+    "재배노하우",
+    "농자재",
+    "스마트팜",
+    "아쿠아팜"
+  ],
+  "review_categories": [
+    "식물병"
+  ],
+  "official_domains": [
+    "rda.go.kr",
+    "nongsaro.go.kr",
+    "ncpms.rda.go.kr",
+    "psis.rda.go.kr",
+    "weather.rda.go.kr",
+    "kamis.or.kr",
+    "mafra.go.kr",
+    "data.go.kr"
+  ],
+  "review_terms": [
+    "농약",
+    "약제",
+    "방제",
+    "병해충",
+    "병징",
+    "진단",
+    "살균제",
+    "살충제",
+    "희석배수",
+    "시세",
+    "가격",
+    "태풍",
+    "호우",
+    "폭우",
+    "한파",
+    "재해",
+    "지원사업",
+    "보조사업",
+    "정책",
+    "공고"
+  ]
+}
