@@ -74,10 +74,11 @@ test('rollback preserves legacy posts comments and channels', () => {
   assert.doesNotMatch(rollback, /drop table if exists public\.(?:posts|comments|channels)/);
   assert.match(rollback, /drop column if exists category_id/);
 });
-test('home exposes only four purpose categories', () => {
-  assert.match(index, /4개 분류/);
-  assert.doesNotMatch(index, /8개 채널/);
-  for (const label of ['질문·문제해결','재배·노하우','자랑·일상','농업·현장정보']) assert.match(index, new RegExp(label));
+test('Design-1 home exposes eight channels mapped to canonical purposes', () => {
+  const channelGrid = index.match(/<nav class="v3-category-grid design1-channel-grid"[\s\S]*?<\/nav>/)?.[0] || '';
+  assert.equal((channelGrid.match(/class="v3-category-card"/g) || []).length, 8);
+  for (const label of ['식물질문','병해충','성장기록','식물자랑','삽목·분갈이','나눔·분양','지역모임','자유이야기']) assert.match(channelGrid, new RegExp(label));
+  for (const slug of ['question-help','cultivation-knowhow','showcase-daily','agri-field-info']) assert.match(channelGrid, new RegExp(`category=${slug}`));
 });
 test('post creation writes category_id and tags', () => {
   assert.match(index, /allowedPayloadKeys=\['category_id'.*'tags'\]/);

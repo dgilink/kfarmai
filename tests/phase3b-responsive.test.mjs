@@ -97,9 +97,12 @@ async function run() {
       const metrics = await evaluate(socket, `(() => {
         const phone = document.querySelector('.phone');
         const home = document.querySelector('.page');
-        const categories = [...document.querySelectorAll('.v3-category-card')];
+        const categories = [...document.querySelectorAll('#channelGrid .v3-category-card')];
         const feed = document.querySelector('.community-feed-section');
-        const agri = document.querySelector('.home-agri-summary-section');
+        const agri = document.querySelector('#design1Agriculture');
+        const bottomActions = [...document.querySelectorAll('.design1-bottom-nav > a, .design1-bottom-nav > button')];
+        const greenAction = bottomActions.find(item => item.textContent.includes('초록장터'));
+        const chatAction = bottomActions.find(item => item.textContent.includes('채팅'));
         return {
           innerWidth,
           scrollWidth: document.documentElement.scrollWidth,
@@ -107,22 +110,27 @@ async function run() {
           pageClientWidth: home?.clientWidth || 0,
           phoneWidth: phone ? Math.round(phone.getBoundingClientRect().width) : 0,
           categoryCount: categories.length,
+          categoryLabels: categories.map(card => card.querySelector('strong')?.textContent.trim()),
           categoryColumns: document.querySelector('.v3-category-grid') ? getComputedStyle(document.querySelector('.v3-category-grid')).gridTemplateColumns.split(' ').length : 0,
           feedBeforeAgri: Boolean(feed && agri && (feed.compareDocumentPosition(agri) & Node.DOCUMENT_POSITION_FOLLOWING)),
-          primaryWriteVisible: Boolean(document.querySelector('.community-primary-cta')?.offsetParent),
-          forbiddenCoreCopy: /공모전|MVP|데모|시제품|준비중/i.test(home?.innerText || ''),
+          primaryWriteVisible: Boolean(document.querySelector('#design1Quick button[onclick*="openModal"]')?.offsetParent),
+          bottomActionCount: bottomActions.length,
+          preparedStates: /초록장터는 준비 중입니다/.test(greenAction?.getAttribute('onclick') || '') && /채팅 기능은 준비 중입니다/.test(chatAction?.getAttribute('onclick') || ''),
+          forbiddenCoreCopy: /공모전|MVP|데모|시제품/i.test(home?.innerText || ''),
           coreActionsReady: ['openModal','setHomeFeedSort','safeOpenMyPanel','runSearch'].every(name => typeof window[name] === 'function')
         };
       })()`);
       assert.ok(metrics.scrollWidth <= metrics.innerWidth + 1, `${width}px home horizontal overflow`);
       assert.ok(metrics.pageScrollWidth <= metrics.pageClientWidth + 1, `${width}px home page overflow`);
-      assert.equal(metrics.categoryCount, 4, `${width}px canonical categories`);
+      assert.equal(metrics.categoryCount, 8, `${width}px Design-1 channels`);
+      assert.deepEqual(metrics.categoryLabels, ['식물질문','병해충','성장기록','식물자랑','삽목·분갈이','나눔·분양','지역모임','자유이야기']);
       assert.equal(metrics.feedBeforeAgri, true, `${width}px feed hierarchy`);
       assert.equal(metrics.primaryWriteVisible, true, `${width}px write CTA`);
+      assert.equal(metrics.bottomActionCount, 5, `${width}px bottom actions`);
+      assert.equal(metrics.preparedStates, true, `${width}px prepared states`);
       assert.equal(metrics.forbiddenCoreCopy, false, `${width}px production copy`);
       assert.equal(metrics.coreActionsReady, true, `${width}px core actions`);
-      if (width <= 899) assert.equal(metrics.categoryColumns, 2, `${width}px compact category grid`);
-      if (width >= 900) assert.equal(metrics.categoryColumns, 4, `${width}px desktop category grid`);
+      assert.equal(metrics.categoryColumns, 4, `${width}px channel grid`);
       if (width >= 1024) assert.ok(metrics.phoneWidth > 430, `${width}px home must not use fixed phone width`);
     }
 
