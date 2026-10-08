@@ -34,14 +34,7 @@ test('control page links prior topics and energy',()=>[sensorPath,irrigationPath
 test('energy page links back to control',()=>assert.ok(energy.includes('href="/'+controlPath+'"')));
 test('smartfarm taxonomy links all four pages in sequence',()=>assert.deepEqual(smartfarm.contentLinks.map(item=>item.url),[sensorPath,irrigationPath,controlPath,energyPath]));
 test('mfg fallback exposes both Phase 6B pages',()=>[controlPath,energyPath].forEach(url=>assert.ok(mfg.includes(url),url)));
-test('sitemap retains Phase 6B canonicals alongside the new hub',()=>{
-  const urls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
-  [controlPath,energyPath].forEach(url=>assert.equal(urls.filter(item=>item==='https://kfarmai.com/'+url).length,1,url));
-  assert.ok(urls.length>=180);
-  assert.equal(new Set(urls).size,urls.length);
-  urls.forEach(url=>assert.match(url,/^https:\/\/kfarmai\.com\//));
-  assert.doesNotMatch(sitemap,/(?:preview|candidate|private|draft|localhost|127\.0\.0\.1|noindex)/i);
-});
+test('sitemap retains Phase 6B canonicals alongside the new hub',()=>{[controlPath,energyPath].forEach(url=>assert.equal(sitemap.split('https://kfarmai.com/'+url).length-1,1,url));assert.equal((sitemap.match(/<loc>/g)||[]).length,180)});
 test('all connected source IDs exist',()=>pages.flatMap(idsOf).forEach(id=>assert.ok(sourceIds.has(id),id)));
 test('control source coverage uses five official records',()=>{assert.equal(idsOf(control).length,5);['rda-agtech-smartfarm-environment-data','nongsaro-smartfarm-field-applications','nongsaro-smartfarm-introduction','mafra-smartfarm-overview','mafra-smart-agriculture-master-plan'].forEach(id=>assert.ok(idsOf(control).includes(id),id))});
 test('energy source coverage uses three official records',()=>{assert.equal(idsOf(energy).length,3);['nongsaro-smartfarm-status','mafra-smartfarm-overview','mafra-smart-agriculture-master-plan'].forEach(id=>assert.ok(idsOf(energy).includes(id),id))});

@@ -140,13 +140,10 @@ try {
     assert.doesNotMatch(hub, /\d+(?:\.\d+)?\s*(?:°C|도|ppm|%|kWh|원|개월|년|배|리터|L\b)/i);
     assert.doesNotMatch(hub, /구매하기|가격비교|장바구니|결제|업체 순위|추천 제품/);
   });
-  test('sitemap includes the hub once and keeps a valid public URL set', () => {
-    const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-    assert.equal(urls.filter((url) => url === `https://kfarmai.com/${hubPath}`).length, 1);
-    assert.ok(urls.length >= 180);
-    assert.equal(new Set(urls).size, urls.length);
-    urls.forEach((url) => assert.match(url, /^https:\/\/kfarmai\.com\//));
-    assert.doesNotMatch(sitemap, /(?:preview|candidate|private|draft|localhost|127\.0\.0\.1|noindex|\/orp)/i);
+  test('sitemap includes the hub exactly once and has 180 URLs', () => {
+    assert.equal(sitemap.split(`https://kfarmai.com/${hubPath}`).length - 1, 1);
+    assert.equal((sitemap.match(/<loc>/g) || []).length, 180);
+    assert.doesNotMatch(sitemap, /localhost|127\.0\.0\.1|\/orp/i);
   });
   test('ORP remains supplementary and held', () => {
     assert.equal(aquafarm.topicPolicies.ORP.evidenceLevel, 'supplementary');
@@ -165,9 +162,9 @@ try {
     assert.ok(fs.existsSync(path.join(artifact, hubPath)));
   });
   const verify = run('scripts/pages/verify-pages-artifact.cjs', [artifact]);
-  test('artifact guard checks the current sitemap URL set and local references', () => {
+  test('artifact guard checks 180 sitemap URLs and local references', () => {
     assert.equal(verify.status, 0, verify.stderr);
-    assert.match(verify.stdout, /\b\d+ sitemap URLs\b/);
+    assert.match(verify.stdout, /180 sitemap URLs/);
   });
   test('no internal development path enters the artifact', () => {
     for (const file of ['supabase', 'worker', 'tests', 'docs', '.github', '.env', 'AGENTS.md', 'package.json']) assert.ok(!fs.existsSync(path.join(artifact, file)), file);

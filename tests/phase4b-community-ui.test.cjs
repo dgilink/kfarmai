@@ -23,27 +23,25 @@ function test(name, callback) {
   catch (error) { error.message = `${name}: ${error.message}`; throw error; }
 }
 
-test('home has exactly eight Design-1 channel cards', () => {
-  assert.equal((homeCore.match(/class="v3-category-card"/g) || []).length, 8);
-  for (const label of ['식물질문','병해충','성장기록','식물자랑','삽목·분갈이','나눔·분양','지역모임','자유이야기']) assert.match(homeCore, new RegExp(label));
+test('home has exactly four canonical category cards', () => {
+  assert.equal((homeCore.match(/class="v3-category-card"/g) || []).length, 4);
+  for (const label of ['질문·문제해결','재배·노하우','자랑·일상','농업·현장정보']) assert.match(homeCore, new RegExp(label));
 });
 test('legacy channels are not primary home navigation', () => {
   for (const label of ['식물 병원','식물 질문방','작물 상담방','식집사 모임','나눔·직거래']) assert.doesNotMatch(homeCore, new RegExp(label));
 });
-test('community feed precedes the Design-1 agriculture section', () => assert.ok(homeCore.indexOf('community-feed-section') < homeCore.indexOf('id="design1Agriculture"')));
+test('community feed precedes agricultural summary', () => assert.ok(homeCore.indexOf('community-feed-section') < homeCore.indexOf('home-agri-summary-section')));
 test('home feed offers latest unanswered and helpful', () => {
   for (const sort of ['latest','unanswered','helpful']) assert.match(homeCore, new RegExp(`data-feed-sort="${sort}"`));
 });
-test('home channel navigation carries canonical category or query context', () => {
-  const channelGrid = homeCore.match(/<nav class="v3-category-grid design1-channel-grid"[\s\S]*?<\/nav>/)?.[0] || '';
-  assert.equal((channelGrid.match(/href="channel\.html\?category=/g) || []).length, 8);
-  assert.ok((channelGrid.match(/&amp;q=/g) || []).length >= 6);
+test('home has tag exploration', () => {
+  assert.match(homeCore, /관심 주제/);
+  assert.ok((homeCore.match(/view=questions&amp;tag=|view=questions&tag=/g) || []).length >= 6);
 });
-test('home has primary write call to action', () => assert.match(homeCore, /id="design1Quick"[\s\S]*?openModal\('question-help'\)[\s\S]{0,80}질문하기/));
-test('home AI and agricultural info remain direct Design-1 entries', () => {
-  assert.match(homeCore, /href="diagnosis\.html"[\s\S]{0,100}사진확인/);
-  assert.match(homeCore, /id="design1Agriculture"/);
-  assert.match(homeCore, /href="agri-info\.html">전체보기/);
+test('home has primary write call to action', () => assert.match(homeCore, /openModal\('question-help'\)[\s\S]{0,80}질문하기/));
+test('home AI and agricultural info are compact secondary entries', () => {
+  assert.match(homeCore, /ai-compact-card/);
+  assert.match(homeCore, /오늘의 농업정보/);
 });
 test('home core local links resolve to repository files', () => {
   const links = [...homeCore.matchAll(/href="([^"#?]+)(?:[?#][^"]*)?"/g)].map(match => match[1]);
@@ -51,10 +49,7 @@ test('home core local links resolve to repository files', () => {
     assert.equal(fs.existsSync(path.join(root, link)), true, `missing core link: ${link}`);
   }
 });
-test('home core has no contest or prototype copy and labels unfinished services', () => {
-  assert.doesNotMatch(homeCore, /공모전|MVP|데모|시제품/i);
-  assert.match(homeCore, /초록장터는 준비 중입니다/);
-});
+test('home core has no contest prototype or preparing copy', () => assert.doesNotMatch(homeCore, /공모전|MVP|데모|시제품|준비중/i));
 test('write form exposes content purpose not user type', () => {
   assert.match(index, /무엇을 올리시나요\?/);
   assert.doesNotMatch(index.match(/<!-- WRITE MODAL -->[\s\S]*?<!-- DIAGNOSIS/)?.[0] || '', /식집사|전문농업인/);
