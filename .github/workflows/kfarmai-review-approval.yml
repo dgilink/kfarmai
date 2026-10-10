@@ -1,0 +1,72 @@
+name: KFarmAI Gate C REVIEW approval
+
+on:
+  repository_dispatch:
+    types: [kfarmai-gate-c-approval-canary]
+
+permissions:
+  contents: read
+
+# Hard-locked offline template. A separately approved main commit must replace
+# the zero Issue/commit placeholders with the exact canary identities.
+concurrency:
+  group: kfarmai-gate-c-approval-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  approve:
+    if: >-
+      github.repository == 'dgilink/kfarmai' &&
+      github.event.action == 'kfarmai-gate-c-approval-canary' &&
+      github.actor == github.repository_owner &&
+      github.actor_id == '293838055'
+    environment: kfarmai-gate-c-approval
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    env:
+      PYTHONUTF8: '1'
+      GATE_C_APPROVAL_TEST_COMMIT: b2e70b709254e393ce18d1684fe6f389febef0af
+      GATE_C_TEST_ISSUE_ID: '3'
+      GATE_C_OWNER_COMMENT_ID: '6098383420'
+      GATE_C_OWNER_ACTOR_ID: '293838055'
+      GATE_C_RUN_ID: '38055669124'
+      GATE_C_ARTIFACT_ID: '11672110118'
+      GATE_C_MANIFEST_SHA256: 87ab0c8eec36818ec236506fde351f0d7f7b32979e47c6c1d4bef27f575e1633
+    steps:
+      - name: Reject unregistered test commit
+        shell: bash
+        run: |
+          test "$GATE_C_APPROVAL_TEST_COMMIT" != '0000000000000000000000000000000000000000'
+          printf '%s' "$GATE_C_APPROVAL_TEST_COMMIT" | grep -Eq '^[a-f0-9]{40}$'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.GATE_C_APPROVAL_TEST_COMMIT }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            automation/gate_c_approval.py
+            automation/gate_c_approval_workflow.py
+            automation/gate_c_artifact_verify.py
+            automation/kfarmai_review_approval.py
+            automation/kfarmai_post_publish_audit.py
+            automation/source_policy.py
+      - name: Verify exact isolated source
+        shell: bash
+        run: |
+          test "$(git rev-parse HEAD)" = "$GATE_C_APPROVAL_TEST_COMMIT"
+          test -z "$(git status --porcelain)"
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Compile approval-only executor
+        run: python -m py_compile automation/kfarmai_review_approval.py automation/gate_c_approval.py automation/gate_c_approval_workflow.py
+      - name: Verify owner, exact artifact and stop before publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KFARMAI_GATE_C_APPROVAL_ENABLED: 'true'
+        run: python automation/gate_c_approval_workflow.py --execute
