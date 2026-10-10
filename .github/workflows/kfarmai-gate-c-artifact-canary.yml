@@ -1,0 +1,72 @@
+name: KFarmAI Gate C Artifact TEST CANARY
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Type GATE-C-ARTIFACT-TEST-ONLY"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kfarmai-gate-c-artifact-canary
+  cancel-in-progress: false
+
+jobs:
+  upload-synthetic-review-fixture:
+    if: >-
+      github.event.inputs.confirmation == 'GATE-C-ARTIFACT-TEST-ONLY' &&
+      github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      # Replaced once, after the isolated test commit is created and before this
+      # workflow is committed to main. The zero value always fails closed.
+      GATE_C_TEST_COMMIT: d0fad706558f33753e041694ce003605114a58c3
+    steps:
+      - name: Require the approved immutable test commit
+        run: |
+          printf '%s' "$GATE_C_TEST_COMMIT" | grep -Eq '^[a-f0-9]{40}$'
+          test "$GATE_C_TEST_COMMIT" != 'd0fad706558f33753e041694ce003605114a58c3'
+
+      - name: Check out only the approved test files
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.GATE_C_TEST_COMMIT }}
+          fetch-depth: 1
+          persist-credentials: false
+          sparse-checkout: |
+            automation/gate_c_artifact_verify.py
+            automation/gate-c-artifact-fixture
+          sparse-checkout-cone-mode: false
+
+      - name: Confirm checked out commit identity
+        run: test "$(git rev-parse HEAD)" = "$GATE_C_TEST_COMMIT"
+
+      - name: Verify immutable synthetic REVIEW fixture
+        run: >-
+          python automation/gate_c_artifact_verify.py
+          automation/gate-c-artifact-fixture
+
+      - name: Upload synthetic REVIEW fixture
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: kfarmai-gate-c-review-fixture-87ab0c8e
+          path: automation/gate-c-artifact-fixture/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+
+      - name: Record non-secret Artifact identity
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          test -n "$ARTIFACT_ID"
+          printf '%s' "$ARTIFACT_DIGEST" | grep -Eq '^[a-f0-9]{64}$'
