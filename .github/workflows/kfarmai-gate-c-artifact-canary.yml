@@ -30,7 +30,8 @@ jobs:
       - name: Require the approved immutable test commit
         run: |
           printf '%s' "$GATE_C_TEST_COMMIT" | grep -Eq '^[a-f0-9]{40}$'
-          test "$GATE_C_TEST_COMMIT" != 'd0fad706558f33753e041694ce003605114a58c3'
+          test "$GATE_C_TEST_COMMIT" != '0000000000000000000000000000000000000000'
+          test "$GATE_C_TEST_COMMIT" = 'd0fad706558f33753e041694ce003605114a58c3'
 
       - name: Check out only the approved test files
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
