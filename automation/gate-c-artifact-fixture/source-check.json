@@ -1,0 +1,1 @@
+{"checks":["official_domain","http_status","nonempty_extracted_text","unique_urls"],"facts_require_human_review":true,"mode":"fixture","status":"PASS","urls":["https://www.rda.go.kr/","https://www.nongsaro.go.kr/"]}
