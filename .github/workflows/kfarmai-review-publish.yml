@@ -27,8 +27,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "${GATE_D_TEST_COMMIT}" != '1e009564bee1777683ee31c7520c1dc52b039d05'
-          [[ "${GATE_D_TEST_COMMIT}" =~ ^[0-9a-f]{40}$ ]]
+          printf '%s' "$GATE_D_TEST_COMMIT" | grep -Eq '^[a-f0-9]{40}$'
+          test "$GATE_D_TEST_COMMIT" != '0000000000000000000000000000000000000000'
+          test "$GATE_D_TEST_COMMIT" = '1e009564bee1777683ee31c7520c1dc52b039d05'
 
       - name: Check out fixed dry-run verifier
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
