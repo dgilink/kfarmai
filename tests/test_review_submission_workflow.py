@@ -35,6 +35,11 @@ class ReviewSubmissionWorkflowTests(unittest.TestCase):
                           "git push", "deploy-pages", "secrets.",
                           "KFARMAI_REVIEW_SUBMIT_ENABLED"):
             self.assertNotIn(forbidden, text)
+        self.assertTrue(all("runner.temp" not in value for value in job["env"].values()))
+        build = next(step for step in job["steps"]
+                     if step.get("name") == "Build run-bound immutable REVIEW package")
+        self.assertEqual("${{ runner.temp }}/kfarmai-review-package",
+                         build["env"]["PACKAGE_DIR"])
 
     def test_issue_follows_download_and_no_create_retry(self):
         text = WORKFLOW.read_text(encoding="utf-8")

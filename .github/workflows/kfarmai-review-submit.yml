@@ -40,8 +40,6 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       SOURCE_DIR: automation/review-submissions/greenhouse-irrigation-precheck-20261011-r1
-      PACKAGE_DIR: ${{ runner.temp }}/kfarmai-review-package
-      RESULT_JSON: ${{ runner.temp }}/kfarmai-review-build.json
       ARTIFACT_NAME: kfarmai-review-greenhouse-irrigation-precheck-2c67ec8d4c65
     steps:
       - name: Check out exact dispatch head
@@ -100,6 +98,9 @@ jobs:
         id: build
         if: steps.find.outputs.artifact_id == ''
         shell: bash
+        env:
+          PACKAGE_DIR: ${{ runner.temp }}/kfarmai-review-package
+          RESULT_JSON: ${{ runner.temp }}/kfarmai-review-build.json
         run: |
           set -euo pipefail
           test ! -e "$PACKAGE_DIR"
@@ -114,6 +115,8 @@ jobs:
         id: upload
         if: steps.find.outputs.artifact_id == ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        env:
+          PACKAGE_DIR: ${{ runner.temp }}/kfarmai-review-package
         with:
           name: ${{ steps.build.outputs.artifact_name }}
           path: ${{ env.PACKAGE_DIR }}/
@@ -125,6 +128,7 @@ jobs:
 
       - name: Download and verify GitHub Artifact identity
         env:
+          PACKAGE_DIR: ${{ runner.temp }}/kfarmai-review-package
           EXISTING_ARTIFACT_ID: ${{ steps.find.outputs.artifact_id }}
           ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
           ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
