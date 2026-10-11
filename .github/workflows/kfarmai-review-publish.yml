@@ -1,0 +1,64 @@
+name: KFarmAI Gate D Publish Dry-run
+
+on:
+  repository_dispatch:
+    types: [kfarmai-gate-d-dry-run]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kfarmai-gate-d-dry-run
+  cancel-in-progress: false
+
+jobs:
+  production-safe-dry-run:
+    if: ${{ github.repository == 'dgilink/kfarmai' && github.actor_id == 293838055 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      issues: read
+    env:
+      GATE_D_TEST_COMMIT: 1e009564bee1777683ee31c7520c1dc52b039d05
+    steps:
+      - name: Validate immutable test ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${GATE_D_TEST_COMMIT}" != '1e009564bee1777683ee31c7520c1dc52b039d05'
+          [[ "${GATE_D_TEST_COMMIT}" =~ ^[0-9a-f]{40}$ ]]
+
+      - name: Check out fixed dry-run verifier
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ env.GATE_D_TEST_COMMIT }}
+          persist-credentials: false
+          sparse-checkout: |
+            automation/approval_package.py
+            automation/config.json
+            automation/gate_c_approval.py
+            automation/gate_d_dry_run.py
+            automation/gate_d_publish.py
+            automation/kfarmai_post_publish_audit.py
+            automation/kfarmai_review_approval.py
+            automation/source_policy.py
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Compile isolated verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile automation/*.py
+
+      - name: Verify Gate D without publication capability
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/gate_d_dry_run.py --execute-dry-run
