@@ -1,1 +1,4 @@
 automation/gate-c-artifact-fixture/manifest.sha256 -text
+automation/review-submissions/greenhouse-irrigation-precheck-20261011-r1/source.json text eol=lf
+automation/review-submissions/greenhouse-irrigation-precheck-20261011-r1/publish/kb/greenhouse-irrigation-precheck.html text eol=lf
+automation/review-submissions/greenhouse-irrigation-precheck-20261011-r1/publish/static/kb/greenhouse-irrigation-precheck-infographic.svg text eol=lf
