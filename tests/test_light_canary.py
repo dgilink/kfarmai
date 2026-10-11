@@ -102,10 +102,10 @@ class CanaryTests(unittest.TestCase):
         p=Provider();self.run_canary(p)
         self.assertEqual(128,p.calls[0]["max_output_tokens"])
         self.assertEqual(212,ceiling_microusd())
-        self.assertEqual(1024,plan()["max_input_tokens"])
+        self.assertEqual(512,plan()["max_input_tokens"])
     def test_G_usage_settled_actual_not_reservation(self):
         result=self.run_canary()
-        self.assertEqual(20,result["actual_microusd"])
+        self.assertEqual(33,result["actual_microusd"])
         self.assertEqual("SETTLED",next(iter(self.ledger.rows.values()))["state"])
     def test_H_missing_usage_freezes_and_holds_full_cap(self):
         r=response();r.pop("usage")
@@ -147,9 +147,9 @@ class CanaryTests(unittest.TestCase):
         self.assertEqual(1,len(p.calls))
     def test_cache_cost_and_long_context(self):
         r=response();r["usage"]["input_tokens_details"]={"cached_tokens":40,"cache_write_tokens":20}
-        self.assertEqual(17,self.run_canary(Provider(r))["actual_microusd"])
+        self.assertEqual(30,self.run_canary(Provider(r))["actual_microusd"])
     def test_invalid_usage_cases_freeze(self):
-        for field,value in [("input_tokens",True),("input_tokens",-1),("input_tokens",1025),
+        for field,value in [("input_tokens",True),("input_tokens",-1),("input_tokens",513),
                             ("output_tokens",129),("total_tokens",119)]:
             self.ledger=Ledger();r=response();r["usage"][field]=value
             with self.subTest(field=field,value=value),self.assertRaises(BudgetBlocked):self.run_canary(Provider(r))
@@ -193,8 +193,8 @@ class CanaryPostgresTests(unittest.TestCase):
     def test_actual_rpc_with_mock_light_settlement_and_duplicate(self):
         p=Provider();b=DurableBudget(pg_rpc)
         r=CanaryRunner(b,p,authority,bound()).run("mock-explicit-model-and-budget")
-        self.assertEqual(20,r["actual_microusd"])
-        self.assertEqual(20,pg_rpc("status",{})["settled"])
+        self.assertEqual(33,r["actual_microusd"])
+        self.assertEqual(33,pg_rpc("status",{})["settled"])
         with self.assertRaises(BudgetBlocked):
             CanaryRunner(b,p,authority,bound()).run("mock-explicit-model-and-budget")
         self.assertEqual(1,len(p.calls))

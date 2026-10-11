@@ -45,14 +45,16 @@ def request_payload(env=None):
                                 "strict": True, "schema": copy.deepcopy(SCHEMA)}}}
 
 def ceiling_microusd():
-    # Short input only; reserve the highest applicable input rate (cache write)
-    # and regional premium, even when ordinary uncached billing is cheaper.
-    return int(((Decimal("0.125") * MAX_INPUT + Decimal("0.50") * MAX_OUTPUT)
+    # Reserve two complete input passes: the authoritative count request and
+    # the single Responses request. This remains safe even if the count endpoint
+    # is billed at the highest documented short-input rate. Output exists only
+    # on the Responses request. Apply the regional premium to the whole amount.
+    return int(((Decimal("0.125") * MAX_INPUT * 2 + Decimal("0.50") * MAX_OUTPUT)
                 * Decimal("1.10")).to_integral_value(rounding=ROUND_CEILING))
 
 def plan(env=None):
     spec = contract()
-    require(spec["model"] == MODEL and spec["version"] == "integration10-2026-10-10",
+    require(spec["model"] == MODEL and spec["version"] == "autopublish-v1-canary-2026-10-11",
             "UNVERIFIED_MODEL_CONTRACT")
     # Pin the published billing contract instead of trusting editable rates.
     require(spec["rates_per_million"] == {
@@ -69,7 +71,7 @@ def plan(env=None):
             "max_output_tokens": MAX_OUTPUT, "calls": 1, "retries": 0, "search": 0,
             "images": 0, "payload": payload, "contract_sha256": fingerprint(spec)}
 
-def reconcile(response, billing_multiplier):
+def reconcile(response, billing_multiplier, counter_input_tokens=0):
     plan()  # Revalidate the pinned billing rates before settlement.
     require(response.get("model") == MODEL and response.get("service_tier") == "default"
             and isinstance(response.get("id"), str) and response["id"].startswith("resp_"),
@@ -78,6 +80,7 @@ def reconcile(response, billing_multiplier):
             "RESPONSE_STATUS_UNVERIFIED")
     usage = response["usage"]
     inp = integer(usage["input_tokens"], MAX_INPUT)
+    counted = integer(counter_input_tokens, MAX_INPUT)
     out = integer(usage["output_tokens"], MAX_OUTPUT)
     require(integer(usage["total_tokens"], MAX_INPUT + MAX_OUTPUT) == inp + out, "USAGE_TOTAL_MISMATCH")
     details = usage["input_tokens_details"]
@@ -89,7 +92,10 @@ def reconcile(response, billing_multiplier):
             "UNEXPECTED_TOOL_USAGE")
     require(billing_multiplier in {"1.00", "1.10"}, "BILLING_REGION_UNVERIFIED")
     rates = contract()["rates_per_million"]["long" if inp > 272000 else "short"]
-    cost = ((inp-cached-written)*Decimal(rates["input"]) + cached*Decimal(rates["cached"])
+    # The count endpoint has no listed standalone fee. Do not assume it is
+    # free: charge its exact counted input pessimistically at cache-write rate.
+    cost = (counted*Decimal(rates["cache_write"])
+            + (inp-cached-written)*Decimal(rates["input"]) + cached*Decimal(rates["cached"])
             + written*Decimal(rates["cache_write"]) + out*Decimal(rates["output"]))
     amount = int((cost*Decimal(billing_multiplier)).to_integral_value(rounding=ROUND_CEILING))
     # Never carry provider-added metadata into receipts or user-visible logs.
@@ -97,7 +103,8 @@ def reconcile(response, billing_multiplier):
                    "input_tokens_details": {"cached_tokens": cached, "cache_write_tokens": written},
                    "output_tokens_details": {"reasoning_tokens": reasoning}}
     return amount, {"response_id": response["id"], "model": MODEL,
-                    "usage": clean_usage, "billing_multiplier": billing_multiplier}
+                    "usage": clean_usage, "token_count_input_tokens": counted,
+                    "billing_multiplier": billing_multiplier}
 
 class CanaryRunner:
     """Authorization verifier is host-injected. No JSON boolean enables live I/O.
@@ -131,7 +138,7 @@ class CanaryRunner:
                     contract()["live_enabled"] is True and
                     contract()["account_compatibility"] == "VERIFIED" and
                     contract()["account_billing_context"] == "VERIFIED" and
-                    contract()["token_counter_billing"] == "VERIFIED_ZERO" and
+                    contract()["token_counter_billing"] == "CONSERVATIVE_SECOND_INPUT_PASS" and
                     getattr(self.budget, "scoped_canary", False) is True,
                     "LIVE_ACCOUNT_OR_AUTHORITY_UNVERIFIED")
         require(authority.get("billing_multiplier") in {"1.00", "1.10"},
@@ -142,13 +149,23 @@ class CanaryRunner:
         with self._lock:
             require(not self._used, "CANARY_ALREADY_ATTEMPTED")
             self._used = True
-        proof = self.input_bound.verify(copy.deepcopy(expected["payload"]))
         # Existing RPC accepts a numeric run_id (1..20 digits) and its content
         # operation. The approval fingerprint supplies stable retry identity;
         # REVIEW here is the shared cost channel, never a publishable package.
         run_id = "9" + str(int(fingerprint(approval_id)[:15], 16)).zfill(19)
         reservation = self.budget.reserve(run_id, "content", "REVIEW",
             expected["maximum_microusd"], {"plan": expected, "approval_id": approval_id})
+        try:
+            # The count request is part of the approved spend. Reserve first so
+            # it can never occur outside the durable scope.
+            proof = self.input_bound.verify(copy.deepcopy(expected["payload"]))
+            if getattr(self.budget, "scoped_canary", False):
+                self.budget.assert_dispatch_ready(reservation)
+        except Exception:
+            # Counting may itself be billable. Preserve the reservation and
+            # prohibit a new scope or model request until operator review.
+            self.budget.call("freeze", reservation)
+            raise BudgetBlocked("COUNT_OR_TTL_UNCONFIRMED_NO_RETRY") from None
         def invoke():
             try:
                 self.input_bound.assert_bound(expected["payload"])
@@ -163,7 +180,7 @@ class CanaryRunner:
         def settle(r):
             require(r.get("usage", {}).get("input_tokens") == proof["input_tokens"],
                     "COUNT_USAGE_MISMATCH")
-            amount, receipt = reconcile(r, authority["billing_multiplier"])
+            amount, receipt = reconcile(r, authority["billing_multiplier"], proof["input_tokens"])
             return amount, {**receipt, "input_bound": proof}
         response = self.budget.execute(reservation, invoke, settle)
         if getattr(self.budget, "scoped_canary", False):
@@ -186,7 +203,7 @@ class CanaryRunner:
         except Exception:
             raise BudgetBlocked("CANARY_OUTPUT_INVALID_NO_RETRY") from None
         # No response text is returned/logged or converted into REVIEW artifacts.
-        amount, receipt = reconcile(response, authority["billing_multiplier"])
+        amount, receipt = reconcile(response, authority["billing_multiplier"], proof["input_tokens"])
         return {"mode": "CANARY_ONLY", "publishable": False, "item_count": 3,
                 "output_sha256": fingerprint(value), "usage": receipt["usage"],
                 "actual_microusd": amount, "reservation_id": reservation["id"],

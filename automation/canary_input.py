@@ -7,8 +7,9 @@ import urllib.request
 from durable_budget import BudgetBlocked
 
 MAX_BYTES = 2048
-MAX_INPUT = 1024
+MAX_INPUT = 512
 MAX_OUTPUT = 128
+TOKEN_COUNT_MAXIMUM_MICROUSD = 71
 COUNT_FIELDS = frozenset({'model', 'input', 'instructions', 'reasoning', 'text',
                          'tools', 'tool_choice', 'parallel_tool_calls', 'truncation'})
 
@@ -78,9 +79,9 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 class OfficialTokenCounter:
     """Prepared count-only endpoint. No model inference, fallback or retries.
 
-    Its published price is not established by the model token price table.
-    billing_authority must independently attest a zero incremental charge and
-    explicit approval for this count request before any network I/O.
+    No standalone count-request fee is listed. We still do not assume zero:
+    billing_authority must approve a conservative second-input-pass reservation
+    before any network I/O.
     """
     is_fixture = False
     def __init__(self, api_key, billing_authority):
@@ -92,10 +93,10 @@ class OfficialTokenCounter:
             raise BudgetBlocked('TOKEN_COUNT_APPROVAL_REQUIRED')
         authority = self._authority(request_sha(payload))
         if (not isinstance(authority, dict) or authority.get('approved') is not True
-                or authority.get('billing_verified') is not True
+                or authority.get('conservative_reservation') is not True
                 or type(authority.get('maximum_microusd')) is not int
-                or authority['maximum_microusd'] != 0
-                or not authority.get('billing_evidence_sha256')):
+                or authority['maximum_microusd'] != TOKEN_COUNT_MAXIMUM_MICROUSD
+                or not authority.get('pricing_evidence_sha256')):
             raise BudgetBlocked('TOKEN_COUNT_BILLING_UNVERIFIED')
         if not isinstance(self._key, str) or not self._key:
             raise BudgetBlocked('API_KEY_REQUIRED')

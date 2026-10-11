@@ -1,5 +1,5 @@
 {
-  "version": "integration10-2026-10-10",
+  "version": "autopublish-v1-canary-2026-10-11",
   "model": "gpt-6-luna",
   "api": "responses",
   "reasoning": "none",
@@ -8,9 +8,9 @@
   "retries": 0,
   "search_calls": 0,
   "image_calls": 0,
-  "max_input_tokens": 1024,
+  "max_input_tokens": 512,
   "max_output_tokens": 128,
-  "input_bound_basis": "Exact official input_tokens count of all context-bearing fields, tied to SHA-256 of serialized model request; reject counts above 1024. Bytes alone are not a token bound.",
+  "input_bound_basis": "Exact official input_tokens count of all context-bearing fields, tied to SHA-256 of serialized model request; reject counts above 512. Bytes alone are not a token bound. The reservation pessimistically prices the exact count as a second full input pass.",
   "rates_per_million": {
     "short": {
       "input": "0.10",
@@ -39,6 +39,6 @@
     "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens/methods/count"
   ],
   "max_serialized_bytes": 2048,
-  "token_counter_billing": "UNVERIFIED",
-  "token_counter_maximum_microusd": null
+  "token_counter_billing": "CONSERVATIVE_SECOND_INPUT_PASS",
+  "token_counter_maximum_microusd": 71
 }

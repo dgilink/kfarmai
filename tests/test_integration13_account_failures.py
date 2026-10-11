@@ -46,7 +46,8 @@ class AccountFailureTests(unittest.TestCase):
             with self.subTest(field=field):
                 spec = contract()
                 spec.update(live_enabled=True, account_compatibility='VERIFIED',
-                    account_billing_context='VERIFIED', token_counter_billing='VERIFIED_ZERO')
+                    account_billing_context='VERIFIED',
+                    token_counter_billing='CONSERVATIVE_SECOND_INPUT_PASS')
                 spec[field] = 'UNVERIFIED'
                 ledger = Ledger()
                 budget = DurableBudget(ledger)

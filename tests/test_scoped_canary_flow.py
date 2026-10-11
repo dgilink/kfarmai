@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'automation'))
 from durable_budget import BudgetBlocked
+from canary_input import InputBound
 from light_canary import CanaryRunner
 from scoped_canary import ScopedCanaryBudget, scope_identity
 from test_light_canary import Provider, response, bound
@@ -32,20 +33,55 @@ class ScopedCanaryFlowTests(unittest.TestCase):
         self.events.append(command)
         return invoke(command, payload)
 
-    def runner(self, provider=None, rpc=None):
+    def runner(self, provider=None, rpc=None, input_bound=None):
         budget = ScopedCanaryBudget(rpc or self.rpc, self.approval)
-        return CanaryRunner(budget, provider or Provider(), budget.verify_authorization, bound())
+        return CanaryRunner(budget, provider or Provider(), budget.verify_authorization,
+                            input_bound or bound())
 
     def state(self): return invoke('status', self.identity)
 
     def test_whole_flow_and_verified_post_call_lock(self):
         result = self.runner().run(self.approval)
-        self.assertEqual(20, result['actual_microusd'])
+        self.assertEqual(33, result['actual_microusd'])
         self.assertFalse(result['publishable']); self.assertEqual(1, result['model_calls'])
-        self.assertEqual(['status', 'reserve', 'dispatch', 'settle', 'status'], self.events)
+        self.assertEqual(['status', 'reserve', 'status', 'dispatch', 'settle', 'status'], self.events)
         self.assertEqual('SETTLED', self.state()['state']); self.assertTrue(self.state()['locked'])
         self.assertEqual('f', sql('select enabled from kfarmai_private.budget_policy;'))
         self.assertEqual('0', sql('select daily_microusd from kfarmai_private.budget_policy;'))
+
+    def test_count_runs_only_after_durable_reservation(self):
+        outer = self
+        class Counter:
+            is_fixture = True
+            def __call__(self, _payload):
+                outer.assertEqual('HELD', outer.state()['state'])
+                return {'object': 'response.input_tokens', 'input_tokens': 100}
+        result = self.runner(input_bound=InputBound(Counter())).run(self.approval)
+        self.assertEqual(1, result['token_count_requests'])
+
+    def test_counting_completion_after_expiry_blocks_model_and_locks_scope(self):
+        outer = self
+        class Counter:
+            is_fixture = True
+            def __call__(self, _payload):
+                sql("update kfarmai_private.canary_scopes set expires_at="
+                    "clock_timestamp()-interval '1 second' where approval_id='scoped-runner-fixture';")
+                return {'object': 'response.input_tokens', 'input_tokens': 100}
+        provider = Provider()
+        with self.assertRaisesRegex(BudgetBlocked, 'COUNT_OR_TTL_UNCONFIRMED_NO_RETRY'):
+            self.runner(provider, input_bound=InputBound(Counter())).run(self.approval)
+        self.assertEqual([], provider.calls)
+        self.assertEqual('UNKNOWN', outer.state()['state'])
+
+    def test_one_minute_remaining_after_count_can_dispatch(self):
+        class Counter:
+            is_fixture = True
+            def __call__(self, _payload):
+                sql("update kfarmai_private.canary_scopes set expires_at="
+                    "clock_timestamp()+interval '60 seconds' where approval_id='scoped-runner-fixture';")
+                return {'object': 'response.input_tokens', 'input_tokens': 100}
+        result = self.runner(input_bound=InputBound(Counter())).run(self.approval)
+        self.assertEqual(1, result['model_calls'])
 
     def test_real_concurrent_runners_model_once(self):
         provider = Provider()

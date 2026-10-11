@@ -61,6 +61,21 @@ class ScopedCanaryBudget(DurableBudget):
         require(self._deadline is not None and time.monotonic() < self._deadline,
                 'SCOPE_EXPIRED_BEFORE_SEND')
 
+    def assert_dispatch_ready(self, reservation, minimum_seconds=10):
+        """Recheck the DB clock after token counting and immediately before dispatch."""
+        started = time.monotonic()
+        value = self.call('status', copy.deepcopy(reservation))
+        require(all(value.get(k) == v for k, v in self.identity.items()),
+                'SCOPE_IDENTITY_MISMATCH')
+        remaining = value.get('remaining_seconds')
+        require(value.get('state') == 'HELD' and value.get('can_dispatch') is True
+                and value.get('locked') is False
+                and type(remaining) in (int, float) and math.isfinite(remaining)
+                and minimum_seconds <= remaining <= 300,
+                'SCOPE_EXPIRED_BEFORE_DISPATCH')
+        self._deadline = started + remaining
+        return value
+
     def reserve(self, run_id, operation, channel, maximum, identity):
         require(str(run_id) == self.identity['run_id'] and operation == 'content'
                 and channel == 'REVIEW' and type(maximum) is int

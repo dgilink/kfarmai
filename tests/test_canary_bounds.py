@@ -51,17 +51,18 @@ class InputBoundaryTests(unittest.TestCase):
         self.assertEqual(plan()['request_sha256'], request_sha(payload))
 
     def test_bytes_do_not_claim_token_bound(self):
-        counter = FakeCounter(count=1025)
+        counter = FakeCounter(count=513)
         runner, ledger, provider = self.run_count(counter)
         with self.assertRaises(BudgetBlocked): runner.run('mock-explicit-model-and-budget')
-        self.assertEqual([], ledger.events); self.assertEqual([], provider.calls)
+        self.assertEqual(['reserve', 'freeze'], ledger.events); self.assertEqual([], provider.calls)
 
     def test_bad_counter_and_missing_schema_response_fail_closed(self):
-        for count in [True, 0, -1, '100', 1025, None]:
+        for count in [True, 0, -1, '100', 513, None]:
             with self.subTest(count=count):
                 runner, ledger, provider = self.run_count(FakeCounter(count=count))
                 with self.assertRaises(BudgetBlocked): runner.run('mock-explicit-model-and-budget')
-                self.assertEqual([], provider.calls); self.assertEqual([], ledger.events)
+                self.assertEqual([], provider.calls)
+                self.assertEqual(['reserve', 'freeze'], ledger.events)
 
     def test_unknown_fields_and_oversize_rejected_before_count(self):
         for field, value in [('previous_response_id', 'resp_x'), ('input', 'x' * 4096),
@@ -77,7 +78,7 @@ class InputBoundaryTests(unittest.TestCase):
             with self.assertRaises(BudgetBlocked) as error: runner.run('mock-explicit-model-and-budget')
             self.assertNotIn('sensitive-body', str(error.exception))
         self.assertEqual(1, len(c.calls)); self.assertEqual([], provider.calls)
-        self.assertEqual([], ledger.events)
+        self.assertEqual(['reserve', 'freeze'], ledger.events)
 
     def test_counter_bound_cannot_be_reused_for_changed_request(self):
         clock = [10.0]; b = InputBound(FakeCounter(), clock=lambda: clock[0])
@@ -98,18 +99,18 @@ class InputBoundaryTests(unittest.TestCase):
         self.assertNotIn('actual', row)
 
     def test_maximum_reserves_worst_short_cache_write_and_region(self):
-        r = response(); r['usage'].update(input_tokens=1024, output_tokens=128, total_tokens=1152)
-        r['usage']['input_tokens_details'].update(cached_tokens=0, cache_write_tokens=1024)
-        self.assertEqual(212, reconcile(r, '1.10')[0]); self.assertEqual(212, plan()['maximum_microusd'])
-        r['usage']['input_tokens'] = 1025
+        r = response(); r['usage'].update(input_tokens=512, output_tokens=128, total_tokens=640)
+        r['usage']['input_tokens_details'].update(cached_tokens=0, cache_write_tokens=512)
+        self.assertEqual(212, reconcile(r, '1.10', 512)[0]); self.assertEqual(212, plan()['maximum_microusd'])
+        r['usage']['input_tokens'] = 513
         with self.assertRaises(BudgetBlocked): reconcile(r, '1.10')
 
     def test_token_counter_unverified_billing_never_sends(self):
-        for receipt in [{}, {'approved': True, 'billing_verified': False},
-                        {'approved': True, 'billing_verified': True, 'maximum_microusd': 1}]:
+        for receipt in [{}, {'approved': True, 'conservative_reservation': False},
+                        {'approved': True, 'conservative_reservation': True, 'maximum_microusd': 1}]:
             with self.assertRaisesRegex(BudgetBlocked, 'BILLING_UNVERIFIED'):
                 OfficialTokenCounter('fixture', lambda _: receipt)(count_payload(request_payload()))
-        self.assertEqual('UNVERIFIED', contract()['token_counter_billing'])
+        self.assertEqual('CONSERVATIVE_SECOND_INPUT_PASS', contract()['token_counter_billing'])
         self.assertFalse(contract()['live_enabled'])
 
     def test_provider_metadata_does_not_escape_numeric_usage(self):
