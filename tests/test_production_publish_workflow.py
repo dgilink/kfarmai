@@ -21,8 +21,12 @@ class ProductionPublishWorkflowTests(unittest.TestCase):
         self.assertIn("environments/kfarmai-production-publish", text)
         self.assertIn(".can_admins_bypass == false", text)
         self.assertIn('.type == "required_reviewers"', text)
-        self.assertIn('.reviewer.id == 293838055', text)
-        self.assertIn('.reviewer.login == "dgilink"', text)
+        self.assertIn('.prevent_self_review == true', text)
+        self.assertIn('.reviewer.id != 293838055', text)
+        self.assertIn('.deployment_branch_policy.protected_branches == false', text)
+        self.assertIn('.deployment_branch_policy.custom_branch_policies == true', text)
+        self.assertIn('deployment-branch-policies', text)
+        self.assertIn('.total_count == 1 and .branch_policies[0].name == "main"', text)
         for forbidden in ("pages: write", "deployments: write", "id-token: write",
                           "OPENAI_API_KEY", "SUPABASE_SERVICE_ROLE_KEY"):
             self.assertNotIn(forbidden, text)

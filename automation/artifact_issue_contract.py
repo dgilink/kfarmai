@@ -9,14 +9,14 @@ from durable_budget import fingerprint
 from kfarmai_review_approval import require, metadata, REPOSITORY
 
 
-def validate_upload_identity(outputs, artifact, manifest):
+def validate_upload_identity(outputs, artifact, manifest, *, expected_name=None):
     """Validate upload-artifact outputs against the REST artifact response."""
     require(isinstance(outputs, dict), 'BLOCKED_UPLOAD_FAILED')
     artifact_id = outputs.get('artifact-id')
     require(isinstance(artifact_id, str) and re.fullmatch(r'[1-9][0-9]*', artifact_id), 'BLOCKED_UPLOAD_OUTPUT')
     require(re.fullmatch(r'[a-f0-9]{64}', str(outputs.get('artifact-digest', ''))), 'BLOCKED_UPLOAD_OUTPUT')
     run_id = manifest['source_run_id']
-    expected_name = 'review-' + manifest['approval_id']
+    expected_name = expected_name or 'review-' + manifest['approval_id']
     expected_url = f'https://github.com/{REPOSITORY}/actions/runs/{run_id}/artifacts/{artifact_id}'
     require(outputs.get('artifact-url') == expected_url, 'BLOCKED_UPLOAD_OUTPUT')
     require(isinstance(artifact, dict) and artifact.get('id') == int(artifact_id)

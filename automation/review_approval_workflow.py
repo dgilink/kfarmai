@@ -28,6 +28,10 @@ from kfarmai_post_publish_audit import audit_published_content
 
 
 PAGES_WORKFLOW_PATH = ".github/workflows/pages.yml"
+REVIEW_SOURCE_WORKFLOW_PATHS = frozenset({
+    ".github/workflows/kfarmai-daily-autopublish.yml",
+    ".github/workflows/kfarmai-review-submit.yml",
+})
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -72,6 +76,28 @@ class GitHub:
         require(len(raw) <= LIMIT, "BLOCKED_ARCHIVE_SIZE")
         return raw
 
+    def current(self, number):
+        return self.request(f"issues/{number}")
+
+    def command_current(self, event):
+        comment = self.request(f"issues/comments/{event['comment']['id']}")
+        require(comment.get("body") == event["comment"]["body"]
+                and comment.get("user", {}).get("id") == event["comment"]["user"]["id"],
+                "BLOCKED_COMMENT_CHANGED")
+        page = 1
+        while True:
+            comments = self.request(
+                f"issues/{event['issue']['number']}/comments?per_page=100&page={page}")
+            for item in comments:
+                if (item["id"] > event["comment"]["id"]
+                        and item.get("user", {}).get("id")
+                        == event["repository"]["owner"]["id"]):
+                    require(not item.get("body", "").strip().startswith("/kfarmai "),
+                            "BLOCKED_SUPERSEDED_COMMAND")
+            if len(comments) < 100:
+                break
+            page += 1
+
 
 def wait_for_pages(client, commit_sha, *, attempts=20, delay=12):
     """Require a successful Pages push run bound to the exact release commit."""
@@ -96,24 +122,6 @@ def wait_for_pages(client, commit_sha, *, attempts=20, delay=12):
         if attempt + 1 < attempts:
             time.sleep(delay)
     raise Blocked("BLOCKED_PAGES_TIMEOUT")
-
-    def current(self, number):
-        return self.request(f"issues/{number}")
-
-    def command_current(self, event):
-        comment = self.request(f"issues/comments/{event['comment']['id']}")
-        require(comment.get("body") == event["comment"]["body"]
-                and comment.get("user", {}).get("id") == event["comment"]["user"]["id"], "BLOCKED_COMMENT_CHANGED")
-        page = 1
-        while True:
-            comments = self.request(f"issues/{event['issue']['number']}/comments?per_page=100&page={page}")
-            for item in comments:
-                if item["id"] > event["comment"]["id"] and item.get("user", {}).get("id") == event["repository"]["owner"]["id"]:
-                    require(not item.get("body", "").strip().startswith("/kfarmai "), "BLOCKED_SUPERSEDED_COMMAND")
-            if len(comments) < 100:
-                break
-            page += 1
-
 
 def run(event, root, client):
     root = Path(root).resolve()
@@ -160,7 +168,7 @@ def run(event, root, client):
         source = client.request(f"actions/runs/{initial['run_id']}")
         require(source.get("repository", {}).get("full_name") == REPOSITORY
                 and source.get("head_repository", {}).get("full_name") == REPOSITORY
-                and source.get("path") == ".github/workflows/kfarmai-daily-autopublish.yml"
+                and source.get("path") in REVIEW_SOURCE_WORKFLOW_PATHS
                 and source.get("head_branch") == "main" and source.get("conclusion") == "success"
                 and source.get("head_sha") == artifact.get("workflow_run", {}).get("head_sha"), "BLOCKED_SOURCE_RUN")
         raw = client.archive(initial["artifact_id"])

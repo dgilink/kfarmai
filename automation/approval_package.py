@@ -111,6 +111,18 @@ def render_issue(package, artifact, uploaded_raw=None):
     generation_mode = article.get("generation_mode", "AI_ASSISTED")
     information_label = ("KFarmAI 로컬 작성 참고정보" if generation_mode == "LOCAL_EDITORIAL_NO_AI"
                          else "AI 생성 참고정보")
+    facts = article.get("public_facts", [])
+    checkpoints = article.get("editorial_checkpoints", [])
+    if generation_mode == "LOCAL_EDITORIAL_NO_AI":
+        require(isinstance(facts, list) and facts
+                and all(isinstance(x, str) and x for x in facts), "BLOCKED_REVIEW")
+        require(isinstance(checkpoints, list) and checkpoints
+                and all(isinstance(x, str) and x for x in checkpoints), "BLOCKED_REVIEW")
+    else:
+        # Preserve the already-live legacy fixture contract while the real
+        # local-editorial submission requires explicit fact/checkpoint fields.
+        facts = facts or [article["summary"]]
+        checkpoints = checkpoints or [article["safety_note"]]
     body = "\n".join([
         "[검수 필요]", f"제목: {article['title']}", f"게시 예정 URL: {intent['url']}",
         f"핵심 내용: {review['summary']}", f"REVIEW 사유: {review['reason']}",
@@ -122,11 +134,20 @@ def render_issue(package, artifact, uploaded_raw=None):
         f"생성 시각: {package['manifest'].get('generated_at', '기록 없음')}",
         f"Package 구분: {package['manifest'].get('package_kind', 'LEGACY_UNVERIFIED')}",
         f"이미지 상태: {review['image_status']}",
+        "", "전체 본문 검수:", "공공자료에서 확인한 내용:",
+        *[f"- {value}" for value in facts],
+        "KFarmAI 정리 참고정보:", *[f"- {value}" for value in checkpoints],
+        f"Hero 검수 경로: Artifact/{'publish/' + intent['hero']}",
+        f"Infographic 검수 경로: Artifact/{'publish/' + intent['infographic']}",
         "게시 예정 파일: " + ", ".join(package["manifest"]["expected_publish_files"]),
         f"Approval ID: {meta['approval_id']}", f"Manifest SHA: {meta['manifest_sha256']}",
         "Artifact identity: " + canonical({k: meta[k] for k in ("run_id", "artifact_id", "artifact_name", "artifact_digest")}).decode(),
         f"만료 예정: {artifact['expires_at']}", "",
-        "판단해주세요:", "승인 / 수정 / 보류", "",
+        "판단해주세요: 승인 / 수정 / 보류",
+        f"승인: /kfarmai approve {meta['approval_id']} {meta['manifest_sha256']}",
+        f"수정: /kfarmai edit {meta['approval_id']} {meta['manifest_sha256']}",
+        f"보류: /kfarmai hold {meta['approval_id']} {meta['manifest_sha256']}", "",
+        f"<!-- kfarmai-review-content-sha256 {package['manifest']['article_sha256']} -->",
         "<!-- kfarmai-review", canonical(meta).decode(), "-->",
     ])
     return {"title": "[KFarmAI Daily][REVIEW] " + article["title"], "body": body, "metadata": meta}

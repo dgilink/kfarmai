@@ -472,6 +472,14 @@ class ApprovalTests(unittest.TestCase):
         self.assertFalse(any("commit" in x or "push" in x for x in calls))
         self.assertFalse((self.fx.root / self.fx.intent["html"]).exists())
 
+    def test_live_adapter_has_race_checks_and_allows_only_review_sources(self):
+        self.assertTrue(callable(workflow.GitHub.current))
+        self.assertTrue(callable(workflow.GitHub.command_current))
+        self.assertEqual({
+            ".github/workflows/kfarmai-daily-autopublish.yml",
+            ".github/workflows/kfarmai-review-submit.yml",
+        }, set(workflow.REVIEW_SOURCE_WORKFLOW_PATHS))
+
 
 class FakeGitHub:
     """In-memory API simulation. Never sends an Issue mutation or dispatch."""

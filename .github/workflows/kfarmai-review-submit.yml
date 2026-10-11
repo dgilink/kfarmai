@@ -1,0 +1,188 @@
+name: KFarmAI REVIEW Submission
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: "Approved immutable REVIEW source"
+        required: true
+        type: choice
+        options:
+          - greenhouse-irrigation-precheck-20261011-r1
+      confirmation:
+        description: "Type SUBMIT-REVIEW-ONLY"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kfarmai-review-submit-greenhouse-irrigation-precheck-20261011-r1
+  cancel-in-progress: false
+
+jobs:
+  submit-review:
+    if: >-
+      github.repository == 'dgilink/kfarmai' &&
+      github.actor == github.repository_owner &&
+      github.actor_id == '293838055' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.inputs.source == 'greenhouse-irrigation-precheck-20261011-r1' &&
+      github.event.inputs.confirmation == 'SUBMIT-REVIEW-ONLY' &&
+      vars.KFARMAI_REVIEW_SUBMIT_HEAD_SHA == github.sha
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_DIR: automation/review-submissions/greenhouse-irrigation-precheck-20261011-r1
+      PACKAGE_DIR: ${{ runner.temp }}/kfarmai-review-package
+      RESULT_JSON: ${{ runner.temp }}/kfarmai-review-build.json
+      ARTIFACT_NAME: kfarmai-review-greenhouse-irrigation-precheck-2c67ec8d4c65
+    steps:
+      - name: Check out exact dispatch head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable main identity and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_SHA" = "$(git ls-remote origin refs/heads/main | cut -f1)"
+          python -m py_compile \
+            automation/approval_package.py \
+            automation/artifact_issue_contract.py \
+            automation/kfarmai_review_approval.py \
+            automation/review_submission.py
+
+      - name: Reject an existing submission for the same content
+        shell: bash
+        run: |
+          set -euo pipefail
+          issues="$RUNNER_TEMP/kfarmai-review-existing-issues.json"
+          gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=all&per_page=100" --slurp > "$issues"
+          test "$(jq '[.[][] | select(.pull_request == null) | (.body // "") | select(contains("<!-- kfarmai-review-content-sha256 2c67ec8d4c65cd25433511484280367b4e25d4aaf0bb4b23c4b838354c4b3afd -->"))] | length' "$issues")" = '0'
+
+      - name: Find one recoverable upload
+        id: find
+        shell: bash
+        run: |
+          set -euo pipefail
+          found="$RUNNER_TEMP/kfarmai-review-existing-artifacts.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts?name=$ARTIFACT_NAME&per_page=100" > "$found"
+          count="$(jq --arg head "$GITHUB_SHA" \
+            '[.artifacts[] | select(.expired == false and .workflow_run.head_sha == $head)] | length' \
+            "$found")"
+          test "$count" -le 1
+          if [ "$count" = '1' ]; then
+            jq -r --arg head "$GITHUB_SHA" \
+              '[.artifacts[] | select(.expired == false and .workflow_run.head_sha == $head)][0].id' \
+              "$found" |
+              sed 's/^/artifact_id=/' >> "$GITHUB_OUTPUT"
+          else
+            printf 'artifact_id=\n' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build run-bound immutable REVIEW package
+        id: build
+        if: steps.find.outputs.artifact_id == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$PACKAGE_DIR"
+          python automation/review_submission.py build \
+            --source "$SOURCE_DIR" \
+            --output "$PACKAGE_DIR" \
+            --run-id "$GITHUB_RUN_ID" \
+            --head-sha "$GITHUB_SHA" \
+            --result "$RESULT_JSON"
+
+      - name: Upload immutable REVIEW package
+        id: upload
+        if: steps.find.outputs.artifact_id == ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ steps.build.outputs.artifact_name }}
+          path: ${{ env.PACKAGE_DIR }}/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: false
+
+      - name: Download and verify GitHub Artifact identity
+        env:
+          EXISTING_ARTIFACT_ID: ${{ steps.find.outputs.artifact_id }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+          ARTIFACT_URL: ${{ steps.upload.outputs.artifact-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$EXISTING_ARTIFACT_ID" ]; then
+            ARTIFACT_ID="$EXISTING_ARTIFACT_ID"
+          fi
+          printf '%s' "$ARTIFACT_ID" | grep -Eq '^[1-9][0-9]*$'
+          artifact_json="$RUNNER_TEMP/kfarmai-review-artifact.json"
+          artifact_zip="$RUNNER_TEMP/kfarmai-review-artifact.zip"
+          upload_json="$RUNNER_TEMP/kfarmai-review-upload.json"
+          issue_json="$RUNNER_TEMP/kfarmai-review-issue.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > "$artifact_json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > "$artifact_zip"
+          if [ -n "$EXISTING_ARTIFACT_ID" ]; then
+            python automation/review_submission.py recover-issue \
+              --source "$SOURCE_DIR" \
+              --artifact "$artifact_json" \
+              --archive "$artifact_zip" \
+              --result "$issue_json"
+          else
+            printf '%s' "$ARTIFACT_DIGEST" | grep -Eq '^[a-f0-9]{64}$'
+            jq -n \
+              --arg id "$ARTIFACT_ID" --arg digest "$ARTIFACT_DIGEST" --arg url "$ARTIFACT_URL" \
+              '{"artifact-id":$id,"artifact-digest":$digest,"artifact-url":$url}' > "$upload_json"
+            python automation/review_submission.py issue \
+              --package "$PACKAGE_DIR" \
+              --artifact "$artifact_json" \
+              --archive "$artifact_zip" \
+              --upload-outputs "$upload_json" \
+              --result "$issue_json"
+          fi
+
+      - name: Create exactly one human REVIEW Issue
+        shell: bash
+        run: |
+          set -euo pipefail
+          issue_json="$RUNNER_TEMP/kfarmai-review-issue.json"
+          issue_body="$RUNNER_TEMP/kfarmai-review-issue.md"
+          jq -r .body "$issue_json" > "$issue_body"
+          title="$(jq -r .title "$issue_json")"
+          set +e
+          issue_url="$(gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$issue_body" 2>"$RUNNER_TEMP/kfarmai-review-create-error.log")"
+          create_status=$?
+          set -e
+          if [ "$create_status" -ne 0 ]; then
+            issues="$RUNNER_TEMP/kfarmai-review-reconcile.json"
+            gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=all&per_page=100" --slurp > "$issues"
+            count="$(jq --rawfile expected "$issue_body" '[.[][] | select(.pull_request == null and .body == $expected)] | length' "$issues")"
+            test "$count" = '1'
+          else
+            printf '%s' "$issue_url" | grep -Eq '^https://github.com/dgilink/kfarmai/issues/[1-9][0-9]*$'
+            number="${issue_url##*/}"
+            gh api "repos/$GITHUB_REPOSITORY/issues/$number" |
+              jq -e --arg title "$title" --rawfile body "$issue_body" \
+                '.title == $title and .body == $body and .state == "open" and .user.login == "github-actions[bot]"' \
+                > /dev/null
+          fi
