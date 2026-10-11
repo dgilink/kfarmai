@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">관수 전 세 단계 확인 포인트</title>
+  <desc id="desc">센서, 배관과 밸브, 기록 순서의 일반 점검 안내</desc>
+  <rect width="1200" height="630" rx="32" fill="#eff8f0"/>
+  <text x="70" y="100" font-family="sans-serif" font-size="48" font-weight="700" fill="#183d2a">관수 전 확인 포인트</text>
+  <g font-family="sans-serif" font-size="34" fill="#183d2a">
+    <rect x="70" y="160" width="320" height="320" rx="28" fill="#ffffff" stroke="#5f916d" stroke-width="4"/>
+    <text x="110" y="240" font-weight="700">1. 센서</text><text x="110" y="300">위치·고정 상태</text>
+    <rect x="440" y="160" width="320" height="320" rx="28" fill="#ffffff" stroke="#5f916d" stroke-width="4"/>
+    <text x="480" y="240" font-weight="700">2. 설비</text><text x="480" y="300">배관·밸브·필터</text>
+    <rect x="810" y="160" width="320" height="320" rx="28" fill="#ffffff" stroke="#5f916d" stroke-width="4"/>
+    <text x="850" y="240" font-weight="700">3. 기록</text><text x="850" y="300">시각·양·작물 반응</text>
+  </g>
+  <text x="70" y="560" font-family="sans-serif" font-size="25" fill="#42624d">일반 참고자료 · 시설별 설정은 공식 자료와 장비 설명서를 확인하세요.</text>
+</svg>
