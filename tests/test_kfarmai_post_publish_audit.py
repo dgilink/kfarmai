@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -14,8 +15,10 @@ from kfarmai_post_publish_audit import (  # noqa: E402
     FetchResult,
     audit_published_content,
     build_registry_record,
+    CF_INJECTION,
     sha256_bytes,
     _default_fetch,
+    verify_public_html,
 )
 
 
@@ -264,6 +267,54 @@ class PostPublishAuditTests(unittest.TestCase):
                 artifact_files=[f"kb/{SLUG}.html"],
                 publication_mode="REVIEW",
             )
+
+
+class CloudflareTransformationTests(unittest.TestCase):
+    def setUp(self):
+        self.url = "https://kfarmai.com/kb/greenhouse-irrigation-precheck.html"
+        self.original = subprocess.check_output(
+            ["git", "show", "HEAD:kb/greenhouse-irrigation-precheck.html"], cwd=ROOT)
+        self.offset = self.original.rfind(b"</body>")
+        self.headers = {"server": "cloudflare", "cf-ray": "9abc123def456789-ICN"}
+
+    def live(self, injection=CF_INJECTION):
+        return self.original[:self.offset] + injection + self.original[self.offset:]
+
+    def test_identical_and_exact_single_insertion_pass(self):
+        self.assertTrue(verify_public_html(
+            self.original, self.original, url=self.url)["ok"])
+        evidence = verify_public_html(
+            self.original, self.live(), url=self.url, headers=self.headers)
+        self.assertTrue(evidence["ok"])
+        self.assertEqual(1, evidence["injection_count"])
+        self.assertEqual(sha256_bytes(self.original), evidence["normalized_sha256"])
+
+    def test_content_and_security_mutations_fail_closed(self):
+        cases = {
+            "body": self.live().replace("센서 위치".encode(), "센서 배치".encode(), 1),
+            "title": self.live().replace("온실 관수".encode(), "변경 관수".encode(), 1),
+            "canonical": self.live().replace(b"greenhouse-irrigation-precheck.html", b"greenhouse-irrigation-prechecks.html", 1),
+            "source": self.live().replace(b"rda.go.kr", b"evil.example", 1),
+            "safety": self.live().replace("일반 참고자료".encode(), "광고 참고자료".encode(), 1),
+            "hero": self.live().replace(b"-hero.webp", b"-evil.webp", 1),
+            "infographic": self.live().replace(b"-infographic.svg", b"-evilgraphic.svg", 1),
+            "malicious_script": self.live() + b"<script>alert(1)</script>",
+            "duplicate_beacon": self.live(CF_INJECTION + CF_INJECTION),
+            "unexpected_html": self.live() + b"<!-- injected -->",
+            "cloudflare_other_cdn": self.live().replace(b"static.cloudflareinsights.com", b"cdn.example.invalid", 1),
+        }
+        for name, live in cases.items():
+            with self.subTest(name=name):
+                self.assertFalse(verify_public_html(
+                    self.original, live, url=self.url, headers=self.headers)["ok"])
+
+    def test_manifest_main_scope_and_cloudflare_headers_are_mandatory(self):
+        self.assertFalse(verify_public_html(
+            self.original + b" ", self.live(), url=self.url,
+            headers=self.headers)["ok"])
+        self.assertFalse(verify_public_html(
+            self.original, self.live(), url=self.url,
+            headers={"server": "example", "cf-ray": "9abc123def456789-ICN"})["ok"])
 
 
 if __name__ == "__main__":

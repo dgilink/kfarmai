@@ -236,7 +236,8 @@ def run(event, root, client):
         result = None
         deadline = time.monotonic() + 300
         for attempt in range(20):
-            result = production_checks(plan["record"], approved_fetch)
+            approved_html = (root / "kb" / f"{plan['record']['slug']}.html").read_bytes()
+            result = production_checks(plan["record"], approved_fetch, approved_html)
             if result["production_verified"] or time.monotonic() >= deadline:
                 break
             if attempt < 19:
@@ -263,7 +264,7 @@ def run(event, root, client):
             # The receipt push starts a second Pages build.  Re-check the
             # public bytes after that exact deployment so an older successful
             # response cannot finalize the registry as PUBLISHED.
-            receipt_result = production_checks(plan["record"], approved_fetch)
+            receipt_result = production_checks(plan["record"], approved_fetch, approved_html)
             require(receipt_result["production_verified"], "BLOCKED_PRODUCTION_VERIFY")
             save()
         if state["state"] == "PUBLISHED":

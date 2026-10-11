@@ -9,6 +9,7 @@ workflow may apply after review.
 from __future__ import annotations
 
 import argparse
+import base64
 import datetime as dt
 import hashlib
 import json
@@ -26,6 +27,17 @@ from typing import Any, Callable, Iterable
 KST = dt.timezone(dt.timedelta(hours=9))
 MAX_NETWORK_BYTES = 8 * 1024 * 1024
 SLUG_RE = re.compile(r"[a-z0-9][a-z0-9-]{4,80}\Z")
+CF_RULE_VERSION = "cloudflare-insights-kfarmai-greenhouse-v1"
+CF_TARGET_URL = "https://kfarmai.com/kb/greenhouse-irrigation-precheck.html"
+CF_ORIGINAL_SHA256 = "c552ba13e06f1ff0c411b0c209a5be61d78a325fe204ab98c0a30c0a3c46d63b"
+CF_INJECTION = (
+    b'<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/'
+    b'v4bc70e2c01a94c73b74392e4234840661791215815920" '
+    b'integrity="sha512-L0ha0OXavK/8okipN9F8BtP84dg9DUhPERbBXzwI6dgTA55d2+yweo3pn5CSFYs45/'
+    b'r8md2+xvUPtTdvTNRfjA==" data-cf-beacon=\'{"version":"2024.11.0","token":'
+    b'"ce643155f0b24a86b48b415e61009101","r":1,"spa":2}\' '
+    b'crossorigin="anonymous"></script>\n'
+)
 from source_policy import DEFAULT_OFFICIAL_DOMAINS, load_domains, validate_domains
 
 INTERNAL_MARKERS = (
@@ -118,6 +130,50 @@ def _canonical_json(value: Any) -> bytes:
 
 def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def verify_public_html(original: bytes, live: bytes, *, url: str,
+                       headers: dict[str, str] | None = None) -> dict[str, Any]:
+    """Verify either identical bytes or one exact, scoped Cloudflare insertion."""
+    evidence = {
+        "rule_version": CF_RULE_VERSION,
+        "original_sha256": sha256_bytes(original),
+        "live_sha256": sha256_bytes(live),
+        "normalized_sha256": sha256_bytes(live),
+        "transformation": "none",
+    }
+    if live == original:
+        evidence["ok"] = True
+        return evidence
+    if url != CF_TARGET_URL or evidence["original_sha256"] != CF_ORIGINAL_SHA256:
+        evidence["ok"] = False
+        evidence["reason"] = "CLOUDFLARE_SCOPE_MISMATCH"
+        return evidence
+    marker = original.rfind(b"</body>")
+    if marker < 0 or not original[:marker].endswith(b"</main>"):
+        evidence["ok"] = False
+        evidence["reason"] = "CLOUDFLARE_INSERTION_POINT_INVALID"
+        return evidence
+    expected = original[:marker] + CF_INJECTION + original[marker:]
+    normalized = live[:marker] + live[marker + len(CF_INJECTION):]
+    normalized_hash = sha256_bytes(normalized)
+    lowered = {str(key).lower(): str(value) for key, value in (headers or {}).items()}
+    cf_headers = (lowered.get("server", "").lower() == "cloudflare"
+                  and bool(re.fullmatch(r"[0-9a-f]+-[A-Z]{3}", lowered.get("cf-ray", ""))))
+    evidence.update({
+        "ok": live == expected and normalized == original and cf_headers,
+        "transformation": "cloudflare-insights-single-insertion",
+        "insertion_offset": marker,
+        "injection_count": live.count(CF_INJECTION),
+        "injected_length": len(CF_INJECTION),
+        "injected_sha256": sha256_bytes(CF_INJECTION),
+        "injected_bytes_base64": base64.b64encode(CF_INJECTION).decode("ascii"),
+        "normalized_sha256": normalized_hash,
+        "cloudflare_headers_verified": cf_headers,
+    })
+    if not evidence["ok"]:
+        evidence["reason"] = "PUBLIC_HTML_TRANSFORMATION_MISMATCH"
+    return evidence
 
 
 def build_registry_record(
@@ -390,10 +446,12 @@ def audit_published_content(
         try:
             live = fetch(production_url, method="GET", timeout=timeout)
             live_facts = _parse_html(live.body)
+            transform = verify_public_html(body, live.body, url=production_url,
+                                           headers=live.headers)
             live_ok = (
                 live.status == 200
                 and live.url == production_url
-                and sha256_bytes(live.body) == expected_hash
+                and transform["ok"]
                 and _title_matches(live_facts.title, expected_title)
                 and live_facts.canonical == production_url
                 and {"index", "follow"}.issubset(
@@ -408,6 +466,7 @@ def audit_published_content(
                 "PRODUCTION_CONTENT_MISMATCH",
                 status=live.status,
                 final_url=live.url,
+                transformation=transform,
             )
             if live.status >= 500:
                 network_status = "NETWORK_UNAVAILABLE"

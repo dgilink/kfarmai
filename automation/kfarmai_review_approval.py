@@ -20,7 +20,9 @@ import urllib.error
 import xml.etree.ElementTree as ET
 import zipfile
 
-from kfarmai_post_publish_audit import audit_published_content, SECRET_PATTERNS, _parse_html, _title_matches
+from kfarmai_post_publish_audit import (audit_published_content, SECRET_PATTERNS,
+                                        _parse_html, _title_matches,
+                                        verify_public_html)
 from source_policy import load_domains
 
 REPOSITORY = "dgilink/kfarmai"
@@ -562,13 +564,17 @@ def plan_registry_finalization(root, record, result, *, published_at):
             "before": {REGISTRY: digest(raw)}}
 
 
-def production_checks(record, fetcher):
+def production_checks(record, fetcher, approved_html=None):
     checks = {}
     try:
         page = fetcher(record["url"], method="GET", timeout=15)
         facts = _parse_html(page.body)
         robots = set(re.split(r"[,\s]+", facts.robots.lower()))
-        checks["page"] = (page.status == 200 and page.url == record["url"]
+        byte_ok = (verify_public_html(approved_html, page.body, url=record["url"],
+                                      headers=page.headers)["ok"]
+                   if isinstance(approved_html, bytes)
+                   else digest(page.body) == record["html_sha256"])
+        checks["page"] = (page.status == 200 and page.url == record["url"] and byte_ok
                           and _title_matches(facts.title, record["title"])
                           and facts.canonical == record["url"]
                           and {"index", "follow"} <= robots and not {"noindex", "nofollow", "none"} & robots)
@@ -586,7 +592,8 @@ def production_checks(record, fetcher):
 
 
 def verify_production(root, record, fetcher):
-    result = production_checks(record, fetcher)
+    approved_html = (Path(root) / "kb" / f"{record['slug']}.html").read_bytes()
+    result = production_checks(record, fetcher, approved_html)
     # The shared read-only auditor runs after the production checks, including on failure.
     audit = audit_published_content(root, record, network=True, fetcher=fetcher, allowed_source_domains=load_domains(root))
     return {**result, "audit": audit}
