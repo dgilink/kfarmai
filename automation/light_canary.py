@@ -14,6 +14,9 @@ PROJECT = "xzetqijeucldbfgjuoes"
 CONFIG = Path(__file__).with_name("light-canary-contract.json")
 FIXED_INPUT = "온실 관수 설비를 점검하기 전에 확인할 일반적인 항목 3개를 JSON 배열로 반환하라."
 MODEL = "gpt-6-luna"
+NORMAL_LIVE = "NORMAL_LIVE"
+FIRST_CANARY_BOOTSTRAP = "FIRST_CANARY_BOOTSTRAP"
+BOOTSTRAP_APPROVAL_ID = "gateb-light-canary-20261011-r3"
 SCHEMA = {"type": "object", "properties": {
     "mode": {"type": "string", "enum": ["CANARY_ONLY"]},
     "items": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 3}},
@@ -112,9 +115,13 @@ class CanaryRunner:
     The current Candidate supplies no trusted live verifier. A fixture verifier
     only authorizes transports explicitly marked as fixtures.
     """
-    def __init__(self, budget, transport, authorization_verifier, input_bound=None):
+    def __init__(self, budget, transport, authorization_verifier, input_bound=None,
+                 execution_mode=NORMAL_LIVE):
         self.budget, self.transport, self.verifier = budget, transport, authorization_verifier
         self.input_bound = input_bound
+        require(execution_mode in {NORMAL_LIVE, FIRST_CANARY_BOOTSTRAP},
+                "INVALID_CANARY_EXECUTION_MODE")
+        self.execution_mode = execution_mode
         self._lock, self._used = threading.Lock(), False
 
     def run(self, approval, env=None):
@@ -132,15 +139,31 @@ class CanaryRunner:
                 "INVALID_APPROVAL_ID")
         fixture = getattr(self.transport, "is_fixture", False) is True
         if not fixture:
-            # A trusted verifier must return an independent live grant. The
-            # published Candidate contract is intentionally still UNVERIFIED.
+            spec = contract()
             require(authority.get("live_authorized") is True and
-                    contract()["live_enabled"] is True and
-                    contract()["account_compatibility"] == "VERIFIED" and
-                    contract()["account_billing_context"] == "VERIFIED" and
-                    contract()["token_counter_billing"] == "CONSERVATIVE_SECOND_INPUT_PASS" and
+                    spec["token_counter_billing"] == "CONSERVATIVE_SECOND_INPUT_PASS" and
                     getattr(self.budget, "scoped_canary", False) is True,
                     "LIVE_ACCOUNT_OR_AUTHORITY_UNVERIFIED")
+            if self.execution_mode == NORMAL_LIVE:
+                require(spec["live_enabled"] is True and
+                        spec["account_compatibility"] == "VERIFIED" and
+                        spec["account_billing_context"] == "VERIFIED",
+                        "LIVE_ACCOUNT_OR_AUTHORITY_UNVERIFIED")
+            else:
+                # Only the dedicated, one-shot DB scope may establish the first
+                # Responses permission and billing evidence. Daily remains off.
+                require(approval_id == BOOTSTRAP_APPROVAL_ID and
+                        authority.get("bootstrap_authorized") is True and
+                        spec["live_enabled"] is False and
+                        spec["account_compatibility"] == "UNVERIFIED" and
+                        spec["account_billing_context"] == "UNVERIFIED" and
+                        expected["maximum_microusd"] == 212 and
+                        expected["model"] == MODEL and
+                        expected["max_input_tokens"] == 512 and
+                        expected["max_output_tokens"] == 128 and
+                        expected["calls"] == 1 and expected["retries"] == 0 and
+                        expected["search"] == 0 and expected["images"] == 0,
+                        "BOOTSTRAP_SCOPE_UNVERIFIED")
         require(authority.get("billing_multiplier") in {"1.00", "1.10"},
                 "BILLING_REGION_UNVERIFIED")
         require(self.input_bound is not None and

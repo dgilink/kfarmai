@@ -1,0 +1,94 @@
+name: KFarmAI Gate B one-shot bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      approval_id:
+        description: "Fresh, separately approved Gate B bootstrap ID"
+        required: true
+        type: choice
+        options:
+          - gateb-light-canary-20261011-r3
+      confirmation:
+        description: "Type BOOTSTRAP-R3-ONCE"
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: kfarmai-gateb-bootstrap-r3
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: >-
+      github.repository == 'dgilink/kfarmai' &&
+      github.actor_id == 293838055 &&
+      github.ref == 'refs/heads/main' &&
+      github.run_attempt == 1 &&
+      github.event.inputs.approval_id == 'gateb-light-canary-20261011-r3' &&
+      github.event.inputs.confirmation == 'BOOTSTRAP-R3-ONCE' &&
+      vars.KFARMAI_GATEB_BOOTSTRAP_APPROVAL_ID == 'gateb-light-canary-20261011-r3' &&
+      vars.KFARMAI_GATEB_BOOTSTRAP_HEAD_SHA == github.sha &&
+      vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false' &&
+      vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Verify locked main, environment policy and disabled daily workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_SHA" = "$(git ls-remote https://github.com/$GITHUB_REPOSITORY.git refs/heads/main | cut -f1)"
+          gh api "repos/$GITHUB_REPOSITORY/environments/kfarmai-gateb-canary" > "$RUNNER_TEMP/gateb-environment.json"
+          jq -e '.can_admins_bypass == false and .deployment_branch_policy.custom_branch_policies == true and .deployment_branch_policy.protected_branches == false and ([.protection_rules[]? | select(.type == "wait_timer" and .wait_timer == 1)] | length == 1) and ([.protection_rules[]? | select(.type == "required_reviewers")] | length == 0)' "$RUNNER_TEMP/gateb-environment.json" > /dev/null
+          gh api "repos/$GITHUB_REPOSITORY/environments/kfarmai-gateb-canary/deployment-branch-policies" | jq -e '(.branch_policies | length) == 1 and .branch_policies[0].name == "main"' > /dev/null
+          gh api "repos/$GITHUB_REPOSITORY/actions/workflows/kfarmai-daily-autopublish.yml" | jq -e '.state == "disabled_manually"' > /dev/null
+
+  bootstrap:
+    needs: preflight
+    environment: kfarmai-gateb-canary
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      KFARMAI_GATEB_BOOTSTRAP_APPROVAL_ID: ${{ vars.KFARMAI_GATEB_BOOTSTRAP_APPROVAL_ID }}
+      KFARMAI_GATEB_BOOTSTRAP_HEAD_SHA: ${{ vars.KFARMAI_GATEB_BOOTSTRAP_HEAD_SHA }}
+      KFARMAI_AUTOPUBLISH_ENABLED: ${{ vars.KFARMAI_AUTOPUBLISH_ENABLED }}
+      KFARMAI_REVIEW_PUBLISH_ENABLED: ${{ vars.KFARMAI_REVIEW_PUBLISH_ENABLED }}
+      KFARMAI_GATEB_CANARY_ENV_READY: ${{ vars.KFARMAI_GATEB_CANARY_ENV_READY }}
+    steps:
+      - name: Require separately configured protected environment
+        shell: bash
+        run: test "$KFARMAI_GATEB_CANARY_ENV_READY" = true
+      - name: Check out exact dispatch head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify checkout and install exact database driver
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test "$GITHUB_SHA" = "$(git ls-remote https://github.com/dgilink/kfarmai.git refs/heads/main | cut -f1)"
+          python -m pip install --disable-pip-version-check --only-binary=:all: -r automation/requirements-gateb-bootstrap.txt
+          python -m py_compile automation/gateb_bootstrap_runner.py automation/light_canary.py automation/scoped_canary.py
+      - name: One-shot scoped Canary; no publish path
+        shell: bash
+        env:
+          KFARMAI_CANARY_DB_DSN: ${{ secrets.KFARMAI_CANARY_DB_DSN }}
+          KFARMAI_CANARY_DB_CA_PEM: ${{ secrets.KFARMAI_CANARY_DB_CA_PEM }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          python automation/gateb_bootstrap_runner.py

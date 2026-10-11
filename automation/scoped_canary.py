@@ -10,7 +10,7 @@ import time
 import uuid
 import urllib.request
 from durable_budget import DurableBudget, BudgetBlocked, fingerprint
-from light_canary import PROJECT, plan, require, _NoRedirect
+from light_canary import (PROJECT, BOOTSTRAP_APPROVAL_ID, plan, require, _NoRedirect)
 
 def scope_identity(approval_id):
     require(isinstance(approval_id, str) and approval_id.isascii()
@@ -55,7 +55,14 @@ class ScopedCanaryBudget(DurableBudget):
         return {'approval_id': approval, 'project_id': PROJECT,
                 'plan_sha256': plan_sha256, 'maximum_microusd': self.identity['maximum'],
                 'mode': 'CANARY_ONLY', 'model_approved': True, 'budget_approved': True,
-                'billing_multiplier': value['billing_multiplier'], 'live_authorized': True}
+                'billing_multiplier': value['billing_multiplier'], 'live_authorized': True,
+                'bootstrap_authorized': (
+                    approval == BOOTSTRAP_APPROVAL_ID and
+                    value['model_approval_id'] == 'gateb-model-20261011-r3' and
+                    value['budget_approval_id'] == 'gateb-budget-20261011-r3' and
+                    value['billing_multiplier'] == '1.10' and
+                    value['maximum'] == 212 and
+                    value['daily_microusd'] == 212)}
 
     def assert_call_deadline(self):
         require(self._deadline is not None and time.monotonic() < self._deadline,
