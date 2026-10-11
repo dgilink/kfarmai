@@ -13,9 +13,9 @@ on:
         options: [dry_run, review_only, publish]
 
 permissions:
-  contents: write
-  actions: write
-  issues: write
+  contents: read
+  actions: read
+  issues: read
 
 concurrency:
   group: kfarmai-daily-autopublish
@@ -23,11 +23,13 @@ concurrency:
 
 jobs:
   daily:
+    # Integration-2: literal lock; model compatibility and shared budget remain HOLD.
+    if: ${{ false }}
+    environment: kfarmai-automation-production
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       PYTHONUTF8: "1"
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       KFARMAI_AUTOPUBLISH_ENABLED: ${{ vars.KFARMAI_AUTOPUBLISH_ENABLED }}
       KFARMAI_TEXT_MODEL: ${{ vars.KFARMAI_TEXT_MODEL || 'gpt-6-luna' }}
       KFARMAI_IMAGE_MODEL: ${{ vars.KFARMAI_IMAGE_MODEL || 'gpt-image-2.5-flare' }}
@@ -39,6 +41,8 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - name: Protected activation contract (locked)
+        run: python automation/activation_contract.py --gate D
       - name: Resolve mode
         id: mode
         shell: bash

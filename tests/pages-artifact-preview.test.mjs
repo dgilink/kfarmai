@@ -10,8 +10,8 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const artifactDir = fs.mkdtempSync(path.join(os.tmpdir(), 'kfarmai-pages-artifact-'));
 const profileDir = fs.mkdtempSync(path.join(os.tmpdir(), 'kfarmai-pages-preview-chrome-'));
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const port = 18806;
-const debugPort = 19242;
+let port = 0;
+let debugPort = 0;
 const pages = [
   '/', '/mfg.html', '/seed.html', '/santo.html', '/fert.html', '/cpa.html',
   '/channel.html', '/agri-info.html', '/kb/ras-recirculating-aquaculture.html',
@@ -49,6 +49,9 @@ function delay(milliseconds) {
 async function waitForDebug() {
   for (let attempt = 0; attempt < 60; attempt += 1) {
     try {
+      const portFile = path.join(profileDir, 'DevToolsActivePort');
+      if (!fs.existsSync(portFile)) { await delay(100); continue; }
+      debugPort = Number(fs.readFileSync(portFile, 'utf8').split('\n')[0]);
       const response = await fetch(`http://127.0.0.1:${debugPort}/json/version`);
       if (response.ok) return;
     } catch {}
@@ -79,6 +82,7 @@ async function run() {
     fs.createReadStream(target).pipe(response);
   });
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); });
+  port = server.address().port;
 
   chrome = spawn(chromePath, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', `--remote-debugging-port=${debugPort}`, `--user-data-dir=${profileDir}`, 'about:blank'], { stdio: 'ignore', windowsHide: true });
   await waitForDebug();
@@ -92,9 +96,9 @@ async function run() {
   const fatal = [];
   const missing = [];
   let currentPage = '';
-  socket.on('Runtime.exceptionThrown', (event) => fatal.push(event.params?.exceptionDetails?.text || 'runtime exception'));
+  socket.on('Runtime.exceptionThrown', (event) => fatal.push(event.exceptionDetails?.text || 'runtime exception'));
   socket.on('Network.responseReceived', (event) => {
-    const response = event.params?.response;
+    const response = event.response;
     if (!response?.url.startsWith(`http://127.0.0.1:${port}`) || response.status < 400) return;
     const pathname = new URL(response.url).pathname;
     if (pathname.startsWith('/api/')) return;
@@ -123,8 +127,12 @@ try {
   try { await socket?.send('Browser.close'); } catch {}
   socket?.close();
   if (server) await new Promise((resolve) => server.close(resolve));
-  if (chrome && !chrome.killed) chrome.kill();
-  await delay(150);
-  fs.rmSync(artifactDir, { recursive: true, force: true });
-  fs.rmSync(profileDir, { recursive: true, force: true });
+  if (chrome?.exitCode === null) {
+    const exited = new Promise((resolve) => chrome.once('exit', resolve));
+    if (!chrome.killed) chrome.kill();
+    await Promise.race([exited, delay(3000)]);
+  }
+  await delay(300);
+  fs.rmSync(artifactDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
+  fs.rmSync(profileDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
 }

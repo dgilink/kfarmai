@@ -36,8 +36,8 @@ async function run(){
     assert.deepEqual(fatal,[],`browser fatal errors: ${fatal.join(' | ')}`);
     process.stdout.write(`Phase 5A responsive browser: ${widths.length}/${widths.length} widths PASS\n`);
   }finally{
-    try{await socket?.send('Browser.close')}catch{}socket?.close();await new Promise(resolve=>server.close(resolve));if(!chrome.killed)chrome.kill();await delay(200);
-    const resolved=path.resolve(profileDir);if(resolved.startsWith(path.resolve(os.tmpdir())+path.sep))fs.rmSync(resolved,{recursive:true,force:true});
+    try{await socket?.send('Browser.close')}catch{}socket?.close();await new Promise(resolve=>server.close(resolve));if(chrome.exitCode===null){const exited=new Promise(resolve=>chrome.once('exit',resolve));if(!chrome.killed)chrome.kill();await Promise.race([exited,delay(3000)])}await delay(300);
+    const resolved=path.resolve(profileDir);if(resolved.startsWith(path.resolve(os.tmpdir())+path.sep))fs.rmSync(resolved,{recursive:true,force:true,maxRetries:10,retryDelay:200});
   }
 }
 

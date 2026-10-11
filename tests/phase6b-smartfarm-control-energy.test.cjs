@@ -1,4 +1,5 @@
 'use strict';
+const {assertSitemap}=require('./sitemap-contract.cjs');
 const assert=require('node:assert/strict');const cp=require('node:child_process');const fs=require('node:fs');const os=require('node:os');const path=require('node:path');
 const root=path.resolve(__dirname,'..');const read=file=>fs.readFileSync(path.join(root,file),'utf8');const exists=file=>fs.existsSync(path.join(root,file));
 const controlPath='kb/smartfarm-environment-control-automation.html';const energyPath='kb/smartfarm-energy-management.html';const sensorPath='kb/smartfarm-environment-sensors.html';const irrigationPath='kb/smartfarm-irrigation-fertigation.html';
@@ -34,7 +35,7 @@ test('control page links prior topics and energy',()=>[sensorPath,irrigationPath
 test('energy page links back to control',()=>assert.ok(energy.includes('href="/'+controlPath+'"')));
 test('smartfarm taxonomy links all four pages in sequence',()=>assert.deepEqual(smartfarm.contentLinks.map(item=>item.url),[sensorPath,irrigationPath,controlPath,energyPath]));
 test('mfg fallback exposes both Phase 6B pages',()=>[controlPath,energyPath].forEach(url=>assert.ok(mfg.includes(url),url)));
-test('sitemap retains Phase 6B canonicals alongside the new hub',()=>{[controlPath,energyPath].forEach(url=>assert.equal(sitemap.split('https://kfarmai.com/'+url).length-1,1,url));assert.equal((sitemap.match(/<loc>/g)||[]).length,180)});
+test('sitemap retains published canonicals and valid unique public URLs',()=>assertSitemap(root,[controlPath,energyPath]));
 test('all connected source IDs exist',()=>pages.flatMap(idsOf).forEach(id=>assert.ok(sourceIds.has(id),id)));
 test('control source coverage uses five official records',()=>{assert.equal(idsOf(control).length,5);['rda-agtech-smartfarm-environment-data','nongsaro-smartfarm-field-applications','nongsaro-smartfarm-introduction','mafra-smartfarm-overview','mafra-smart-agriculture-master-plan'].forEach(id=>assert.ok(idsOf(control).includes(id),id))});
 test('energy source coverage uses three official records',()=>{assert.equal(idsOf(energy).length,3);['nongsaro-smartfarm-status','mafra-smartfarm-overview','mafra-smart-agriculture-master-plan'].forEach(id=>assert.ok(idsOf(energy).includes(id),id))});
@@ -53,6 +54,7 @@ const build=run('scripts/pages/build-pages-artifact.cjs',[`--output=${artifact}`
 test('allowlist artifact builder succeeds',()=>assert.equal(build.status,0,build.stderr));
 const verify=run('scripts/pages/verify-pages-artifact.cjs',[artifact]);
 test('artifact security verifier succeeds',()=>assert.equal(verify.status,0,verify.stderr));
+test('artifact sitemap matches the current semantic contract',()=>assertSitemap(root,[controlPath,energyPath],artifact));
 test('both new pages are included in the artifact',()=>[controlPath,energyPath].forEach(file=>assert.ok(fs.existsSync(path.join(artifact,file)),file)));
 test('internal development paths remain absent from artifact',()=>['supabase','worker','tests','docs','.github','AGENTS.md','KFarmAI_HISTORY_HANDOFF_20260919.md','package.json'].forEach(file=>assert.ok(!fs.existsSync(path.join(artifact,file)),file)));
 test('workflow retains builder allowlist and fail-fast guard',()=>{assert.match(workflow,/build-pages-artifact\.cjs/);assert.match(workflow,/verify-pages-artifact\.cjs/);assert.doesNotMatch(workflow,/rsync\s+-av|\.\/\s+_site\//)});

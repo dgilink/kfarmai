@@ -89,5 +89,5 @@ try {
   if (server.listening) await new Promise((resolve) => server.close(resolve));
   if (chrome && !chrome.killed) chrome.kill();
   await delay(250);
-  try { fs.rmSync(profile, { recursive: true, force: true }); } catch {}
+  try { fs.rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 }

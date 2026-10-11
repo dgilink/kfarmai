@@ -1,0 +1,44 @@
+{
+  "version": "integration10-2026-10-10",
+  "model": "gpt-6-luna",
+  "api": "responses",
+  "reasoning": "none",
+  "mode": "CANARY_ONLY",
+  "max_calls": 1,
+  "retries": 0,
+  "search_calls": 0,
+  "image_calls": 0,
+  "max_input_tokens": 1024,
+  "max_output_tokens": 128,
+  "input_bound_basis": "Exact official input_tokens count of all context-bearing fields, tied to SHA-256 of serialized model request; reject counts above 1024. Bytes alone are not a token bound.",
+  "rates_per_million": {
+    "short": {
+      "input": "0.10",
+      "cached": "0.01",
+      "cache_write": "0.125",
+      "output": "0.50"
+    },
+    "long": {
+      "input": "0.20",
+      "cached": "0.02",
+      "cache_write": "0.25",
+      "output": "0.75"
+    }
+  },
+  "long_threshold": 272000,
+  "reservation_region_multiplier": "1.10",
+  "account_compatibility": "UNVERIFIED",
+  "account_billing_context": "UNVERIFIED",
+  "live_enabled": false,
+  "sources": [
+    "https://developers.openai.com/api/docs/models/gpt-6-luna",
+    "https://developers.openai.com/api/docs/pricing",
+    "https://developers.openai.com/api/reference/resources/responses/methods/create",
+    "https://developers.openai.com/api/docs/guides/prompt-caching",
+    "https://developers.openai.com/api/docs/guides/token-counting",
+    "https://developers.openai.com/api/reference/resources/responses/subresources/input_tokens/methods/count"
+  ],
+  "max_serialized_bytes": 2048,
+  "token_counter_billing": "UNVERIFIED",
+  "token_counter_maximum_microusd": null
+}

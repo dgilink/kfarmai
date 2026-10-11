@@ -52,6 +52,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Confirm checked out commit identity
+        shell: bash
+        run: test "$(git rev-parse HEAD)" = "$GATE_D_TEST_COMMIT"
+
       - name: Compile isolated verifier
         shell: bash
         run: |

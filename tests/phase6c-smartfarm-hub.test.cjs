@@ -1,4 +1,5 @@
 'use strict';
+const { assertSitemap } = require('./sitemap-contract.cjs');
 
 const assert = require('node:assert/strict');
 const cp = require('node:child_process');
@@ -140,10 +141,8 @@ try {
     assert.doesNotMatch(hub, /\d+(?:\.\d+)?\s*(?:°C|도|ppm|%|kWh|원|개월|년|배|리터|L\b)/i);
     assert.doesNotMatch(hub, /구매하기|가격비교|장바구니|결제|업체 순위|추천 제품/);
   });
-  test('sitemap includes the hub exactly once and has 180 URLs', () => {
-    assert.equal(sitemap.split(`https://kfarmai.com/${hubPath}`).length - 1, 1);
-    assert.equal((sitemap.match(/<loc>/g) || []).length, 180);
-    assert.doesNotMatch(sitemap, /localhost|127\.0\.0\.1|\/orp/i);
+  test('sitemap includes published hub URLs under the semantic contract', () => {
+    assertSitemap(root, [hubPath, ...detailPaths]);
   });
   test('ORP remains supplementary and held', () => {
     assert.equal(aquafarm.topicPolicies.ORP.evidenceLevel, 'supplementary');
@@ -162,9 +161,10 @@ try {
     assert.ok(fs.existsSync(path.join(artifact, hubPath)));
   });
   const verify = run('scripts/pages/verify-pages-artifact.cjs', [artifact]);
-  test('artifact guard checks 180 sitemap URLs and local references', () => {
+  test('artifact guard checks the current sitemap and local references', () => {
     assert.equal(verify.status, 0, verify.stderr);
-    assert.match(verify.stdout, /180 sitemap URLs/);
+    const count = assertSitemap(root, [hubPath, ...detailPaths], artifact);
+    assert.ok(verify.stdout.includes(`${count} sitemap URLs`));
   });
   test('no internal development path enters the artifact', () => {
     for (const file of ['supabase', 'worker', 'tests', 'docs', '.github', '.env', 'AGENTS.md', 'package.json']) assert.ok(!fs.existsSync(path.join(artifact, file)), file);

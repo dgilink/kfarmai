@@ -1,0 +1,509 @@
+{
+  "baseline": "df111dddd509e43317ba459ecdf2193f94827dbc",
+  "default_activation": "DISABLED",
+  "excluded_count": 41,
+  "files": {
+    ".env.example": {
+      "candidate_sha256": "620c62456a9eadd3a3f8f67ccfb9bebf96846f37ab8b35ab7c8b65078fbcfaf1",
+      "conflict": false,
+      "origin": "CONFIGURATION_CONTRACT",
+      "original_sha256": "2b2070b9c515e5cead3057c7fadac11f80f0c51eb69c37fcfecdba83f73d8328"
+    },
+    ".github/workflows/kfarmai-daily-autopublish.yml": {
+      "candidate_sha256": "60c3224deac6a7596d8161f7091ad2155f1eb1e54557503b81c912cbf715f05f",
+      "conflict": false,
+      "origin": "LIVE_VALIDATED_OR_PRODUCTION_CONTRACT",
+      "original_sha256": "7bc4ff3467b12230bbee2ff313eb72936259365b4838679c888c1cdee8f71eec"
+    },
+    ".github/workflows/kfarmai-review-publish-production.yml": {
+      "candidate_sha256": "3c3686d5f100631cb47ac2f6ec2db0e10dcc9906fc927912902cb1b1537ca04c",
+      "conflict": false,
+      "origin": "LIVE_VALIDATED_OR_PRODUCTION_CONTRACT",
+      "original_sha256": null
+    },
+    ".github/workflows/kfarmai-review-publish.yml": {
+      "candidate_sha256": "c5710afacd4cc467ff006c638e1a1734ef22838b4f93fa4f2a74ea518d304a35",
+      "conflict": false,
+      "origin": "LIVE_VALIDATED_OR_PRODUCTION_CONTRACT",
+      "original_sha256": "137265009900e6f7a94117f4953e33edd02a56d833502a39c3ea38af1be91875"
+    },
+    "automation/activation_contract.py": {
+      "candidate_sha256": "2f280a7bd9a4f105405defc469a53438eca1ea37c921d0b42b513287a6f0ee14",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/approval_package.py": {
+      "candidate_sha256": "d5f9e4d7f45581744a6cb17be1969d270b47d753aaf6a135d783ffbfb1d9c5d3",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/artifact_issue_contract.py": {
+      "candidate_sha256": "261ca980021aac244c93c18c2c626008e5f1fa033c2c7c4f5ba779c63a54b930",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/autopublish_pipeline.py": {
+      "candidate_sha256": "d0aca1d46a048dcb91640ff9cc52e06857cda0c8fe8f0f4e9773c7c6c88f6553",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/canary_gate.py": {
+      "candidate_sha256": "04cca5fb438eb6826d74ff2edddbab1d1b90d2262dba9779c48aef3c83c874ec",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/canary_input.py": {
+      "candidate_sha256": "cf5e85d46f23698320fdc21706b76c65112dad56727c3cdd50b113d912116a9d",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/durable_budget.py": {
+      "candidate_sha256": "53ee38fae8601847792b0f36a79afa006a4a61795eb245ca14d5cc37eb2adcb6",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/article.json": {
+      "candidate_sha256": "10b198ee467b53723f5aec61339526899014925393bd1db6d01ea4016a23ce1a",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/manifest.json": {
+      "candidate_sha256": "87ab0c8eec36818ec236506fde351f0d7f7b32979e47c6c1d4bef27f575e1633",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/manifest.sha256": {
+      "candidate_sha256": "08419d19117480375777d81eafce7e3d570bbc93c098621a9a21b1e4276c2b3a",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/publish-intent.json": {
+      "candidate_sha256": "962c440cb13bb828cce0941d75140b913e9203467ddaeb6d9f97f69351ad250b",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/publish/kb/synthetic-review-check.html": {
+      "candidate_sha256": "d8d3bf358c4d3d20bbbd525c3a9dea0499e8a27f0702e22e62f41f10cb56f0fe",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/publish/static/kb/synthetic-review-check-hero.webp": {
+      "candidate_sha256": "86be52bdb7547413cafb3ed175a806a798c65de98b40849e0b974c47d187de65",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/publish/static/kb/synthetic-review-check-infographic.svg": {
+      "candidate_sha256": "9c3bf09406448feea36c7c71c42aafb202445a2c6de7cb77b02fda22e612eff2",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/review.json": {
+      "candidate_sha256": "8d16c839b3702e7bfce6e98e24b28bcc79c9283711a292bf2c9d7707493bbb85",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate-c-artifact-fixture/source-check.json": {
+      "candidate_sha256": "779b638a5f8acdddb86d9e55d7cb5741c244252cb2fe0c34be111fe3b94cd45c",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate_c_approval.py": {
+      "candidate_sha256": "750c222663b2f83bffb96b15b677155f79cbc50f615fda8750c1646a81d13c45",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate_c_approval_workflow.py": {
+      "candidate_sha256": "8143cacdcda12ca72503688c12e6ca836a6ce6481a944420a89858e3cd9c6044",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate_c_artifact_verify.py": {
+      "candidate_sha256": "4ab8d8158cac2591e74806aba68533e811525afb9a68dcd95e1ddaa3a2776faa",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/gate_d_publish.py": {
+      "candidate_sha256": "81a5fa630771818ea21eee98cba4e66b4a5fdbd5105922748c223ab4c6e47a20",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/kfarmai_daily_autopublish.py": {
+      "candidate_sha256": "2dd9ceb0a6de4ab23434a5779e2c301305c045d97571178107f6beab772f4dfb",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": "d2594994edbd93b1fcee6e23d3d5115d3aadd3f33a248d4bc36f633861c3eec1"
+    },
+    "automation/kfarmai_post_publish_audit.py": {
+      "candidate_sha256": "2204a77f1b11f8919e35b74f4fe8f09a2940665a69e2eb4963dd2ced740a94f3",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/kfarmai_review_approval.py": {
+      "candidate_sha256": "9754f6d236c98f5f891e987894a622e09ef7acdeeeba16e092c70853aaf096a4",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/light-canary-contract.json": {
+      "candidate_sha256": "6712d330b1b7f75f7b84992eafaad7572486b2dca3cb56d4be4610fa16dabf01",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/light_canary.py": {
+      "candidate_sha256": "52ba58b5a4ab6ba6403c90f2906e1351bf2bfbe9a32bd2eb74834c2d811f5a50",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/model-pricing-20261010.json": {
+      "candidate_sha256": "e7c13303217611e9b278807ec72c9509bc95ba91a1c35e8a7118bc77185a3607",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/model_cost_contract.py": {
+      "candidate_sha256": "8bb6c27eb47d35de1351414eca159649e55e58b3cbcacc499a13d75152a300e6",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/model_router.py": {
+      "candidate_sha256": "a6cd5a73f6a3f434b44bc63d78c2a247886f5bc21053cac9dfc71d9a3fd67f6c",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/review_approval_workflow.py": {
+      "candidate_sha256": "e9b9668d5f3ca51ac2deac6cc82460700dadfb292e8ca1d7cd9b2497d315b764",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/scoped_canary.py": {
+      "candidate_sha256": "5ac104814b428c1b030eeeddb8847b7a55b2dea90205abb5cce01223f52e9e01",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "automation/source_policy.py": {
+      "candidate_sha256": "4e7f2cee2b7646b2e782d6bdf1f55e8cce20ee907bcf74902ef8cf04b0aa83f9",
+      "conflict": false,
+      "origin": "OFFLINE_VALIDATED_AUTOMATION",
+      "original_sha256": null
+    },
+    "docs/ai/kfarmai-model-routing-v1.md": {
+      "candidate_sha256": "e161c0136671ebf4d5441b317e1df3ee3058c8e4577d5c9320e1b9ef2956a813",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "docs/ai/model-routing-audit.md": {
+      "candidate_sha256": "7e0c1f42f82ce8fa679a151a81442aa0696a880d592aea0f26f0b3a3cb449f26",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "docs/automation/canary-activation-checklist.md": {
+      "candidate_sha256": "7ec081d134f70eada8f69e8c35674143da32b2efa73719cd990ee915805796d2",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "docs/automation/integration10-scoped-budget-contract.md": {
+      "candidate_sha256": "014c19f59fa2da1450e06821ca17b57fb7a2da18f2c640aa0f176379d80271fe",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "docs/automation/post-publish-audit-reconciliation.md": {
+      "candidate_sha256": "2f413d34ce42f6b9c9a468d435e81c2cb1b7b2c10c6d9f9342520cc0a5ac5923",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "docs/automation/review-approval-v1.md": {
+      "candidate_sha256": "23eed91e54bb6cdb01689ea193d1eebd1d7b43eac3386a5d428bc7c039960880",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "release/kfarmai-automation-rc/approval-request.md": {
+      "candidate_sha256": "355a91670c5ba2b27c67ed85ba1b3ef81320c9b8e9a0a7deff09f699c95ef34e",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "release/kfarmai-automation-rc/emergency-stop.md": {
+      "candidate_sha256": "b6ef650263a883f91eca2cc4dca8147073aa901e3976c952859a33936c00612b",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "release/kfarmai-automation-rc/module-inventory.md": {
+      "candidate_sha256": "62ea82a73addf52b9beb05659b04ccc8d67699b54c57ccdf19aed9503718f3cf",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "release/kfarmai-automation-rc/operations.md": {
+      "candidate_sha256": "f3211e97818fbdf178909bd461d231d01398937ceacbb9338ce17d292744b5c6",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "release/kfarmai-automation-rc/security-verification.md": {
+      "candidate_sha256": "26ce560083f87489fa5a9e5adbdc6217dda5a37a5e78e7835ddd2120f57a0446",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "release/kfarmai-automation-rc/source-review.md": {
+      "candidate_sha256": "ad0d1b87e9759860bf92554dadc3fe803233d07c96eb7c8f1a0f69ca1a8a4f1a",
+      "conflict": false,
+      "origin": "OPERATIONS_DOCUMENTATION",
+      "original_sha256": null
+    },
+    "supabase/migrations/20261010011009_automation_durable_budget.sql": {
+      "candidate_sha256": "a2d9d51b82fdfcf0bffa426d6b77d8331d8d4271907dc9573db20601b06f7519",
+      "conflict": false,
+      "origin": "APPLIED_PRODUCTION_MIGRATION_SOURCE",
+      "original_sha256": null
+    },
+    "supabase/migrations/20261010055244_scoped_canary_budget.sql": {
+      "candidate_sha256": "2749edd0ed819493e51e6d7b147dd81938111ac2f47fa5839935479893e8853c",
+      "conflict": false,
+      "origin": "APPLIED_PRODUCTION_MIGRATION_SOURCE",
+      "original_sha256": null
+    },
+    "supabase/rollback/automation-budget-disable.sql": {
+      "candidate_sha256": "a13d8dd3c19b35e08e772590e7eadcd08d4b857c0961c08680f6598aa26a64c5",
+      "conflict": false,
+      "origin": "CONFIGURATION_CONTRACT",
+      "original_sha256": null
+    },
+    "supabase/tests/automation-budget-postflight.sql": {
+      "candidate_sha256": "7d9ddcdf0d57af48a32e544eba34cc97df40844120ce97d8e978d7b7cd0c8121",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "supabase/tests/automation-budget-preflight.sql": {
+      "candidate_sha256": "70848dc0a8b4821ede2734e20a35a007fb33b5593d0c919de04d0cf4391cca32",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/pages-artifact-preview.test.mjs": {
+      "candidate_sha256": "75f6ccc537fc6536d818241a7babfd6cbf56899ca3336582b4ee99f52f4476eb",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "2cb4bed1973c5277412da28ebfef2404b02d9e3fcd232f7b553365f71d958b03"
+    },
+    "tests/phase3b-responsive.test.mjs": {
+      "candidate_sha256": "288126ab96024f60663a204dce203366c8a7c20ae168ec0b3caafe11791bcbab",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "54c80ef6356a9d9a189b07b3865212409d6d9d232fa1cd1b21523f1d8b8e3919"
+    },
+    "tests/phase4c-image-privacy.test.mjs": {
+      "candidate_sha256": "64cc536f3ac07ae98807b2355135621f5fdc752c50a1f2b9d7238ee3be54aab2",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "cc4589f94fa96144d404eebc0518fd3a0c37e3cfe61c54c1941dc0863ff31651"
+    },
+    "tests/phase5a-responsive.test.mjs": {
+      "candidate_sha256": "91a69b8551fb9ad87ec1beb06704eebba37ca6ef88912c6c70cdc82ee0a291f1",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "c2c827fd3e7968d5b89aed3460eb73c26d2e5a00294c5bf9b6b529a0aa17fe5b"
+    },
+    "tests/phase5b3-responsive.test.mjs": {
+      "candidate_sha256": "5d386c32b8fd3861b5fac613409773a148e242a1d6eccc17dcf617798b926de7",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "adb47eca78a139d201284a8b6ef3772f2104721bb0621f9c8bd9e3b59b061045"
+    },
+    "tests/phase6a-responsive.test.mjs": {
+      "candidate_sha256": "b85328d1a9652a7f60c3309a6350aeb6fcd728a52354f7e8f6ea05aafa0369b9",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "4a262a794e215387a6151cea1ecc5d9a4f8980ecf7074d102258d7a5aa5e58cf"
+    },
+    "tests/phase6b-responsive.test.mjs": {
+      "candidate_sha256": "afad20af0a6c5f789a255806fcc0a4ad4fc0d69c59289714ac2f0ed489299955",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "06fd12dd60da2c3620bbc6598769874a56363a66103d2b9cbb45b31a9d9a0522"
+    },
+    "tests/phase6b-smartfarm-control-energy.test.cjs": {
+      "candidate_sha256": "a1261fd9f19d9d9ab35460c1b10410480e62e9e0ba4d01c30581f748d294ddde",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "db222d8a2c99fe68038e5f28a4b5820aceeb146ed4fca47e3c78cc7c017e71cb"
+    },
+    "tests/phase6c-responsive.test.mjs": {
+      "candidate_sha256": "34551fd7adab4f8244f9bbfc48757b47c70bdda482547010a258ee97ee8405b4",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "94b976b89ef272083ab0fec7d0cabbed316cc22e2f53081a7d75962f36681464"
+    },
+    "tests/phase6c-smartfarm-hub.test.cjs": {
+      "candidate_sha256": "69763b3e63da39d63147c243ec088974de7ed7b9fb7321324d85e1ab64a387ba",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": "378298f9e50aa25954d9a1e99f99471664e53f0718a2bda7b5e6a4fe661593d4"
+    },
+    "tests/postgres_budget_harness.py": {
+      "candidate_sha256": "699c31a62cd8810dc214ec5d9bd80f7f620aff0ce811e9091d17a0a1639514a9",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/sitemap-contract.cjs": {
+      "candidate_sha256": "ab26897de4b4b7bc42e57339a393d180073c7b42b43a7b2a002c9eca527d22e6",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/sitemap-semantic.test.cjs": {
+      "candidate_sha256": "991de6500f9d630c05a1c86c6ea5c2c2ba782c9cf895e35bedd1a7df5194a525",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_autopublish_contract.py": {
+      "candidate_sha256": "592a15ac29b0c7c47405a0c34d69bd1d7b8955325bc145b075dc778de106ef14",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_canary_bounds.py": {
+      "candidate_sha256": "393fc0cbdb376194b675bc49d83b0cadd36c9a3a61fd57b80b55a78aaa1c4f43",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_canary_readiness.py": {
+      "candidate_sha256": "a50dd2300912e8acbcca73a950275403dc2de8f6befcfe8550d26ac3eaaf1dbf",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_durable_budget.py": {
+      "candidate_sha256": "22ceb73ffe6e1b295133bfbe6648cc10f1dc2a5b3ad4f315710f626847ccc4e4",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_gate_c_approval.py": {
+      "candidate_sha256": "6b779d5454fe2b6a55c250cd9a8b60d7853d4ea4124405c6d952066c16b0bbd3",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_gate_c_approval_workflow.py": {
+      "candidate_sha256": "816710fb53b0af4daae1876bd78f8f27fc2529e4ea6640c3d758f6922059fa3e",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_gate_c_artifact_verify.py": {
+      "candidate_sha256": "ccbf84d35039720b0df4833760063238788fb3c994174c6ffb62562b55a4e652",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_gate_d_publish.py": {
+      "candidate_sha256": "e14e1d1c3db60832541602e172f2454be85ef031975175e5e537c9de9734d999",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_integration13_account_failures.py": {
+      "candidate_sha256": "df7271dfcfa7aeaf7bcfc621cca5880fa875c245d6bcf0227b5e1edc17a32020",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_integration4_preflight.py": {
+      "candidate_sha256": "2e6d779e82c6ee1d0e5d52cb3b29f0c08347d4067af1ee16c9dd5359f5c6ad68",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_kfarmai_post_publish_audit.py": {
+      "candidate_sha256": "5e60e6dad061b34e820db6b32688545fa6b4356cb4f749f5ae9c2526983fea61",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_light_canary.py": {
+      "candidate_sha256": "e0d6a1a834a7f26024556d0889cc81f59864fdf279dd1ea50fc3a2aca8714306",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_model_router.py": {
+      "candidate_sha256": "ca4b4f770d553744882e79acd9dc753a1a5ce622bf8b3179acb23d02c104f77a",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_production_publish_workflow.py": {
+      "candidate_sha256": "09af57b89d49c5a84e15af8e086960ac99e79ea82eb4e8ef4f5b98b9b24e108a",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_review_approval.py": {
+      "candidate_sha256": "6d437f3a88dccce45091e916a1d8db28e4a79e5e4f2456cc84af152fd1206b32",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_scoped_budget.py": {
+      "candidate_sha256": "0a73360c712735514f9e8d0094ea55a1f7e074659b2adc07ae43209407c7c0ad",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_scoped_canary_flow.py": {
+      "candidate_sha256": "34934bdf8aa15807fff1f27f7e2b75d9c5e0664b175007bf0c7af1b34aa55cf8",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    },
+    "tests/test_workflow_sha_guards.py": {
+      "candidate_sha256": "519ea44da7ddc4d36220a4f5215a7d6c49485b819cb1d9557b91ec45561f2bd9",
+      "conflict": false,
+      "origin": "REGRESSION_EVIDENCE",
+      "original_sha256": null
+    }
+  },
+  "included_count": 86,
+  "production_write_authorized": false,
+  "repository": "dgilink/kfarmai",
+  "schema_version": 1
+}

@@ -5,6 +5,8 @@ import argparse, base64, datetime as dt, html, json, os, re, urllib.error, urlli
 from pathlib import Path
 from xml.sax.saxutils import escape as xesc
 
+from kfarmai_post_publish_audit import build_registry_record
+
 KST = dt.timezone(dt.timedelta(hours=9))
 API = "https://api.openai.com/v1"
 
@@ -17,13 +19,7 @@ def savej(path,obj):
     p.write_text(json.dumps(obj,ensure_ascii=False,indent=2),encoding="utf-8")
 
 def api(key, endpoint, payload, timeout=180):
-    req=urllib.request.Request(API+endpoint,data=json.dumps(payload,ensure_ascii=False).encode("utf-8"),
-        headers={"Authorization":f"Bearer {key}","Content-Type":"application/json"},method="POST")
-    try:
-        with urllib.request.urlopen(req,timeout=timeout) as r:
-            return json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"OpenAI HTTP {e.code}: {e.read().decode('utf-8',errors='replace')[:1200]}") from e
+    raise RuntimeError("CANDIDATE_PAID_API_DISABLED")
 
 def out_text(resp):
     chunks=[]
@@ -149,44 +145,28 @@ def selftest(root,out):
     savej(out/"outcome.json",{"status":"DRY_RUN_PASS","reason":"offline self-test passed","estimated_cost_usd":0})
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument("--root",default="."); ap.add_argument("--mode",required=True,choices=["self_test","dry_run","review_only","publish"]); ap.add_argument("--output",default="automation/run-output")
-    args=ap.parse_args(); root=Path(args.root).resolve(); out=root/args.output; out.mkdir(parents=True,exist_ok=True)
-    cfg=loadj(root/"automation/config.json"); reg=loadj(root/"automation/daily_registry.json",{"items":[]}); seed=loadj(root/"automation/topic_seed.json",{"do_not_repeat":[]}); today=dt.datetime.now(KST).date().isoformat()
-    if args.mode in ("self_test","dry_run"): selftest(root,out); return 0
-    if args.mode=="publish" and any(x.get("date")==today for x in reg.get("items",[])):
-        x=next(x for x in reg["items"] if x.get("date")==today); savej(out/"outcome.json",{"status":"ALREADY_PUBLISHED","date":today,"title":x.get("title"),"slug":x.get("slug"),"url":x.get("url"),"reason":"today already published","estimated_cost_usd":0}); return 0
-    key=os.getenv("OPENAI_API_KEY","").strip()
-    if not key: savej(out/"outcome.json",{"status":"FAIL","date":today,"reason":"OPENAI_API_KEY missing","safe_summary":"no publish"}); return 0
-
-    recent=existing_titles(root,reg,seed)
-    prompt=("오늘 날짜 "+today+" KST. kFarmAI 블로그 농업 콘텐츠 1편을 작성하라. 최신 공식자료 확인을 위해 web_search를 사용하라. "
-            "계절성·검색성·문제해결가치를 우선하고 기존 주제와 중복하지 마라. 식물병, 농약/방제/진단, 시세, 재해, 지원사업/정책/공고는 risk=REVIEW. "
-            "일반 재배기본기/농자재 일반관리/스마트팜/아쿠아팜 일반관리만 LOW 가능. 근거 부족 또는 상충이면 BLOCK. 특정 농약 처방/제품 판매 유도 금지. "
-            "본문 800~1500자 수준. 최근 주제:\\n" + "\\n".join("- "+x for x in recent[-80:]))
-    payload={"model":os.getenv("KFARMAI_TEXT_MODEL",cfg["text_model"]),"reasoning":{"effort":"none"},"tools":[{"type":"web_search","search_context_size":"low","filters":{"allowed_domains":cfg["official_domains"]}}],"tool_choice":"required","input":prompt,"text":{"format":{"type":"json_schema","name":"kfarmai_article","strict":True,"schema":SCHEMA}}}
-    resp=api(key,"/responses",payload); a=json.loads(out_text(resp)); a["slug"]=slugify(a["slug"])
-    errors=[]
-    if len(a["sources"])<2: errors.append("insufficient_sources")
-    if any(not official(s["url"],cfg["official_domains"]) for s in a["sources"]): errors.append("non_official_source")
-    if a["title"] in recent: errors.append("duplicate_title")
-    if not re.fullmatch(r"[a-z0-9][a-z0-9-]{4,80}",a["slug"]): errors.append("invalid_slug")
-    risk,reason=risk_gate(a,cfg)
-    if errors:
-        savej(out/"draft.json",a); savej(out/"outcome.json",{"status":"BLOCK","date":today,"title":a["title"],"reason":";".join(errors),"safe_summary":"prepublish QA failed","estimated_cost_usd":0.03}); return 0
-    if args.mode=="review_only" or risk!="LOW":
-        savej(out/"draft.json",a); savej(out/"outcome.json",{"status":"REVIEW","date":today,"title":a["title"],"slug":a["slug"],"reason":reason or "review_only","safe_summary":"user approval required; nothing published","estimated_cost_usd":0.03}); return 0
-
-    slug=a["slug"]; hero=f"static/kb/{slug}-hero.webp"; info=f"static/kb/{slug}-infographic.svg"; page=f"kb/{slug}.html"
-    ip={"model":os.getenv("KFARMAI_IMAGE_MODEL",cfg["image_model"]),"prompt":f"KFarmAI 한국 농업정보 블로그 대표 실사사진. 기사 제목: {a['title']}. {a['hero_image_brief']}. 한국 농업현장, 자연광, 스마트폰 현장사진 느낌, 글자/로고/제품광고/확정진단 장면 금지.","n":1,"size":"1536x1024","quality":"low","output_format":"webp","output_compression":82}
-    ir=api(key,"/images/generations",ip); hp=root/hero; hp.parent.mkdir(parents=True,exist_ok=True); hp.write_bytes(base64.b64decode(ir["data"][0]["b64_json"]))
-    render_svg(a,root/info); (root/page).parent.mkdir(parents=True,exist_ok=True); (root/page).write_text(render_html(a,today,hero,info,cfg["site_url"]),encoding="utf-8")
-    url=f"{cfg['site_url']}/kb/{slug}.html"; update_sitemap(root,url,today)
-    reg.setdefault("items",[]).append({"date":today,"title":a["title"],"slug":slug,"url":url,"category":a["category"]}); savej(root/"automation/daily_registry.json",reg)
-    files=[page,hero,info,"sitemap.xml","automation/daily_registry.json"]; (out/"files_to_commit.txt").write_text("\\n".join(files)+"\\n",encoding="utf-8"); savej(out/"article.json",a)
-    est=0.08
-    if est>float(os.getenv("KFARMAI_DAILY_BUDGET_USD",cfg.get("daily_budget_usd",0.15))):
-        savej(out/"outcome.json",{"status":"BLOCK","date":today,"title":a["title"],"reason":"daily budget guard","safe_summary":"nothing published","estimated_cost_usd":est}); return 0
-    savej(out/"outcome.json",{"status":"PUBLISH_READY","date":today,"title":a["title"],"slug":slug,"url":url,"reason":"LOW risk + QA passed","estimated_cost_usd":est}); return 0
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", default=".")
+    ap.add_argument("--mode", required=True, choices=["self_test", "dry_run", "review_only", "publish"])
+    ap.add_argument("--output", default="automation/run-output")
+    args = ap.parse_args()
+    root = Path(args.root).resolve()
+    out = root / args.output
+    out.mkdir(parents=True, exist_ok=True)
+    if args.mode == "publish":
+        savej(out / "outcome.json", {"status": "BLOCK", "reason": "CANDIDATE_PUBLICATION_DISABLED", "published": False})
+        return 2
+    if args.mode == "self_test":
+        selftest(root, out)
+        return 0
+    from synthetic_e2e import run_e2e, FixtureProvider, URLS
+    if args.mode == "dry_run":
+        result = run_e2e(root, out)
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result["status"] == "PASS" else 2
+    from autopublish_pipeline import generate
+    result = generate(root, out, FixtureProvider(review=True), known_sources=URLS, force_review=True)
+    return 0 if result["outcome"]["status"] == "REVIEW" else 2
 
 if __name__=="__main__":
     raise SystemExit(main())

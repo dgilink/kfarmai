@@ -133,12 +133,16 @@ async function run() {
     try { await socket?.send('Browser.close'); } catch (_) {}
     socket?.close();
     await closeServer(server);
-    if (!chrome.killed) chrome.kill();
-    await delay(250);
+    if (chrome.exitCode === null) {
+      const exited = new Promise((resolve) => chrome.once('exit', resolve));
+      if (!chrome.killed) chrome.kill();
+      await Promise.race([exited, delay(3000)]);
+    }
+    await delay(300);
     const tempRoot = path.resolve(os.tmpdir());
     const resolvedProfile = path.resolve(profileDir);
     if (resolvedProfile.startsWith(tempRoot + path.sep) && path.basename(resolvedProfile).startsWith('kfarmai-phase3b-chrome-')) {
-      fs.rmSync(resolvedProfile, { recursive: true, force: true });
+      fs.rmSync(resolvedProfile, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
     }
   }
 }
