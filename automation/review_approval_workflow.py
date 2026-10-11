@@ -20,7 +20,8 @@ import urllib.request
 
 from kfarmai_post_publish_audit import _default_fetch
 from kfarmai_review_approval import (
-    Blocked, LIMIT, REPOSITORY, apply_plan, artifact_identity, authorize, canonical,
+    Blocked, LIMIT, REPOSITORY, apply_plan, artifact_identity, authorize,
+    authorize_solo_publish, canonical,
     exact_stage, issue_body, metadata, parse_json, plan_publication, require,
     transition, verification_states, production_checks, plan_registry_finalization,
 )
@@ -126,7 +127,18 @@ def wait_for_pages(client, commit_sha, *, attempts=20, delay=12):
 def run(event, root, client):
     root = Path(root).resolve()
     issue = client.current(event["issue"]["number"])
-    action, initial = authorize(event, issue)
+    command = event.get("comment", {}).get("body", "").strip()
+    solo_receipt = {}
+    if command.startswith("/kfarmai publish "):
+        match = re.fullmatch(
+            r"/kfarmai publish [A-Za-z0-9_-]+ [a-f0-9]{64} ([1-9][0-9]*)",
+            command)
+        require(match is not None, "BLOCKED_COMMAND")
+        content_comment = client.request(f"issues/comments/{int(match.group(1))}")
+        action, initial, solo_receipt = authorize_solo_publish(
+            event, issue, content_comment)
+    else:
+        action, initial = authorize(event, issue)
     client.command_current(event)
     state = initial
     number = issue["number"]
@@ -175,7 +187,7 @@ def run(event, root, client):
         # Idempotency must reconcile a previously pushed release, not silently
         # treat a stuck GitHub Issue as complete.
         if state["state"] == "REVIEW":
-            move("APPROVED_VERIFYING")
+            move("APPROVED_VERIFYING", **solo_receipt)
         plan = plan_publication(root, raw, state, artifact)
         already = plan["status"] == "ALREADY_PUBLISHED"
         if state["state"] == "APPROVED_VERIFYING":

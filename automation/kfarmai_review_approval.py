@@ -118,6 +118,70 @@ def authorize(event, current_issue=None):
     return action, meta
 
 
+def authorize_solo_publish(event, current_issue, content_comment):
+    """Bind distinct content and publish commands from the solo owner.
+
+    This is operational separation, not independent human review.  Both exact
+    commands remain bound to one Issue, Artifact manifest, actor and timestamp.
+    """
+    repo = event.get("repository", {})
+    owner = repo.get("owner", {})
+    publish = event.get("comment", {})
+    actor = publish.get("user", {})
+    require(event.get("action") == "created" and repo.get("full_name") == REPOSITORY,
+            "BLOCKED_EVENT")
+    require(owner.get("login", "").casefold() == "dgilink"
+            and actor.get("login", "").casefold() == "dgilink"
+            and owner.get("id") and actor.get("id") == owner["id"]
+            and event.get("sender", {}).get("id") == actor["id"],
+            "BLOCKED_COMMENTER")
+    issue = current_issue
+    require(issue.get("number") == event.get("issue", {}).get("number")
+            and issue.get("state") == "open", "BLOCKED_ISSUE_METADATA")
+    author = issue.get("user", {})
+    require(author.get("id") == owner["id"] or
+            (author.get("login") == "github-actions[bot]" and author.get("id") == 41898282),
+            "BLOCKED_ISSUE_AUTHOR")
+    meta = metadata(issue)
+    require(meta == metadata(event["issue"]) and meta["state"] == "REVIEW",
+            "BLOCKED_ISSUE_CHANGED")
+    match = re.fullmatch(
+        r"/kfarmai publish ([A-Za-z0-9_-]+) ([a-f0-9]{64}) ([1-9][0-9]*)",
+        publish.get("body", "").strip())
+    require(match is not None, "BLOCKED_COMMAND")
+    approval_id, manifest_hash, content_id = match.groups()
+    content_id = int(content_id)
+    require(approval_id == meta["approval_id"], "BLOCKED_APPROVAL_ID")
+    require(manifest_hash == meta["manifest_sha256"], "BLOCKED_HASH_MISMATCH")
+    require(content_comment.get("id") == content_id
+            and content_id < publish.get("id", 0), "BLOCKED_APPROVAL_ORDER")
+    content_actor = content_comment.get("user", {})
+    require(content_actor.get("id") == owner["id"]
+            and content_actor.get("login", "").casefold() == "dgilink",
+            "BLOCKED_COMMENTER")
+    require(content_comment.get("issue_url", "").endswith(f"/issues/{issue['number']}"),
+            "BLOCKED_ISSUE_BINDING")
+    expected = f"/kfarmai approve {approval_id} {manifest_hash}"
+    require(content_comment.get("body", "").strip() == expected,
+            "BLOCKED_CONTENT_APPROVAL")
+    content_at = content_comment.get("created_at")
+    publish_at = publish.get("created_at")
+    require(isinstance(content_at, str) and content_at
+            and isinstance(publish_at, str) and publish_at
+            and content_at <= publish_at, "BLOCKED_APPROVAL_ORDER")
+    receipt = {
+        "content_approval_command_id": content_id,
+        "content_approval_actor_id": owner["id"],
+        "content_approved_at": content_at,
+        "publish_approval_command_id": publish["id"],
+        "publish_approval_actor_id": owner["id"],
+        "publish_approved_at": publish_at,
+        "solo_review": True,
+        "independent_human_review": False,
+    }
+    return "approve", meta, receipt
+
+
 def transition(meta, state, **receipt):
     require(state in TRANSITIONS.get(meta["state"], set()), "BLOCKED_STATE_TRANSITION")
     require(not ({"approval_id", "manifest_sha256", "run_id", "artifact_id", "artifact_name", "artifact_digest", "repository", "state"} & receipt.keys()), "BLOCKED_RECEIPT")

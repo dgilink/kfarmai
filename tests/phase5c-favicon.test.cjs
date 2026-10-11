@@ -8,7 +8,7 @@ const oauthPages=['oauth/index.html','oauth/privacy/index.html'];
 const channelPage='channel.html';
 const deployHtmlPages=execFileSync('git',['ls-files','*.html'],{cwd:root,encoding:'utf8'})
   .trim().split(/\r?\n/).filter(Boolean)
-  .filter(file=>!/(^|\/)(worker|node_modules|tests?|backup|archive|private|supabase)(\/|$)/i.test(file))
+  .filter(file=>!/(^|\/)(automation|worker|node_modules|tests?|backup|archive|private|supabase)(\/|$)/i.test(file))
   .filter(file=>/<head(?:\s|>)/i.test(read(file)));
 let passed=0;function test(name,fn){try{fn();passed++}catch(error){error.message=name+': '+error.message;throw error}}
 test('approved favicon asset exists',()=>assert.ok(fs.existsSync(path.join(root,asset))));

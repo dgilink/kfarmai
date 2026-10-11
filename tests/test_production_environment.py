@@ -12,56 +12,41 @@ from production_environment import (  # noqa: E402
 
 
 class ProductionEnvironmentTests(unittest.TestCase):
-    def reviewer(self):
-        return {"id": 700001, "login": "independent-reviewer", "permission": "read"}
-
     def response(self):
-        reviewer = self.reviewer()
         return {
             "name": ENVIRONMENT,
             "can_admins_bypass": False,
             "deployment_branch_policy": {
                 "protected_branches": False, "custom_branch_policies": True,
             },
-            "protection_rules": [{
-                "type": "required_reviewers", "prevent_self_review": True,
-                "reviewers": [{"type": "User", "reviewer": {
-                    "id": reviewer["id"], "login": reviewer["login"],
-                }}],
-            }],
+            "protection_rules": [{"type": "wait_timer", "wait_timer": 1}],
         }
 
     def test_exact_safe_payload_and_live_response(self):
-        reviewer = self.reviewer()
-        payload = environment_update(reviewer)
-        self.assertTrue(payload["prevent_self_review"])
+        payload = environment_update()
+        self.assertEqual(1, payload["wait_timer"])
+        self.assertFalse(payload["prevent_self_review"])
         self.assertFalse(payload["can_admins_bypass"])
-        self.assertEqual([{"type": "User", "id": reviewer["id"]}],
-                         payload["reviewers"])
+        self.assertEqual([], payload["reviewers"])
         branches = {"total_count": 1,
                     "branch_policies": [{"name": "main", "type": "branch"}]}
-        self.assertTrue(verify_environment(self.response(), branches, reviewer))
-
-    def test_owner_or_missing_permission_is_rejected(self):
-        cases = [
-            {"id": 293838055, "login": "dgilink", "permission": "admin"},
-            {"id": 700001, "login": "independent-reviewer", "permission": "none"},
-        ]
-        for reviewer in cases:
-            with self.subTest(reviewer=reviewer), self.assertRaises(Blocked):
-                environment_update(reviewer)
+        self.assertTrue(verify_environment(self.response(), branches))
 
     def test_any_weakened_protection_is_rejected(self):
-        reviewer = self.reviewer()
         branches = {"total_count": 1,
                     "branch_policies": [{"name": "main", "type": "branch"}]}
-        for mutation in ("bypass", "self", "branch", "extra"):
+        for mutation in ("bypass", "self", "wait", "branch", "extra"):
             environment = self.response()
             current_branches = {**branches, "branch_policies": list(branches["branch_policies"])}
             if mutation == "bypass":
                 environment["can_admins_bypass"] = True
             elif mutation == "self":
-                environment["protection_rules"][0]["prevent_self_review"] = False
+                environment["protection_rules"].append({
+                    "type": "required_reviewers", "prevent_self_review": False,
+                    "reviewers": [],
+                })
+            elif mutation == "wait":
+                environment["protection_rules"][0]["wait_timer"] = 0
             elif mutation == "branch":
                 current_branches = {"total_count": 1,
                                     "branch_policies": [{"name": "*", "type": "branch"}]}
@@ -71,7 +56,7 @@ class ProductionEnvironmentTests(unittest.TestCase):
                     {"name": "release/*", "type": "branch"},
                 ]}
             with self.subTest(mutation=mutation), self.assertRaises(Blocked):
-                verify_environment(environment, current_branches, reviewer)
+                verify_environment(environment, current_branches)
 
 
 if __name__ == "__main__":

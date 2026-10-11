@@ -116,6 +116,52 @@ class ApprovalTests(unittest.TestCase):
         self.assertEqual(files, self.fx.files)
         self.assertEqual(manifest, self.fx.manifest)
 
+    def test_solo_publish_requires_distinct_bound_content_approval(self):
+        event = copy.deepcopy(self.fx.event)
+        event["comment"] = {
+            "id": 222, "user": self.fx.owner,
+            "created_at": "2026-10-11T13:05:00Z",
+            "body": f"/kfarmai publish fixture-r1 {self.fx.hash} 111",
+        }
+        content = {
+            "id": 111, "user": self.fx.owner,
+            "created_at": "2026-10-11T13:00:00Z",
+            "issue_url": "https://api.github.com/repos/dgilink/kfarmai/issues/42",
+            "body": f"/kfarmai approve fixture-r1 {self.fx.hash}",
+        }
+        action, meta, receipt = approval.authorize_solo_publish(
+            event, self.fx.issue, content)
+        self.assertEqual("approve", action)
+        self.assertEqual(self.fx.meta, meta)
+        self.assertEqual((111, 222), (receipt["content_approval_command_id"],
+                                     receipt["publish_approval_command_id"]))
+        self.assertFalse(receipt["independent_human_review"])
+
+    def test_solo_publish_replay_order_and_identity_fail_closed(self):
+        event = copy.deepcopy(self.fx.event)
+        event["comment"] = {
+            "id": 222, "user": self.fx.owner,
+            "created_at": "2026-10-11T13:05:00Z",
+            "body": f"/kfarmai publish fixture-r1 {self.fx.hash} 111",
+        }
+        base = {
+            "id": 111, "user": self.fx.owner,
+            "created_at": "2026-10-11T13:00:00Z",
+            "issue_url": "https://api.github.com/repos/dgilink/kfarmai/issues/42",
+            "body": f"/kfarmai approve fixture-r1 {self.fx.hash}",
+        }
+        cases = [
+            ({**base, "id": 222}, "BLOCKED_APPROVAL_ORDER"),
+            ({**base, "body": base["body"].replace("approve", "hold")},
+             "BLOCKED_CONTENT_APPROVAL"),
+            ({**base, "issue_url": base["issue_url"].replace("42", "41")},
+             "BLOCKED_ISSUE_BINDING"),
+        ]
+        for content, code in cases:
+            with self.subTest(code=code):
+                self.blocked(code, lambda c=content: approval.authorize_solo_publish(
+                    event, self.fx.issue, c))
+
     def test_wrong_commenter(self):
         event = copy.deepcopy(self.fx.event)
         event["comment"]["user"] = {"login": "stranger", "id": 1234}
@@ -446,6 +492,38 @@ class ApprovalTests(unittest.TestCase):
         self.assertEqual(2, len([x for x in git_calls if "push" in x]))
         self.assertFalse(any("reset" in x or "revert" in x for x in git_calls))
 
+    def test_full_solo_workflow_persists_both_approval_receipts(self):
+        event = copy.deepcopy(self.fx.event)
+        event["comment"] = {
+            "id": 222, "user": self.fx.owner,
+            "created_at": "2026-10-11T13:05:00Z",
+            "body": f"/kfarmai publish fixture-r1 {self.fx.hash} 111",
+        }
+        client = FakeGitHub(self.fx)
+        git_calls = []
+        def git(args, **kwargs):
+            git_calls.append(args)
+            if args[1:3] == ["status", "--porcelain"]:
+                return b""
+            if args[1] == "ls-remote":
+                return ((("b" if any("commit" in x for x in git_calls) else "a") * 40)
+                        + "\trefs/heads/main").encode()
+            if args[1:3] == ["rev-parse", "HEAD"]:
+                return (("b" if any("commit" in x for x in git_calls) else "a") * 40).encode()
+            return b""
+        with patch.object(workflow.subprocess, "check_output", side_effect=git), \
+             patch.object(workflow.subprocess, "run",
+                          return_value=subprocess.CompletedProcess([], 0)), \
+             patch.object(workflow, "exact_stage", return_value=[]), \
+             patch.object(workflow, "_default_fetch", side_effect=self.fx.fetch):
+            result = workflow.run(event, self.fx.root, client)
+        final = approval.metadata(client.issue)
+        self.assertEqual("PUBLISHED", result["status"])
+        self.assertEqual((111, 222), (final["content_approval_command_id"],
+                                     final["publish_approval_command_id"]))
+        self.assertTrue(final["solo_review"])
+        self.assertFalse(final["independent_human_review"])
+
     def test_workflow_hold_and_edit_do_not_download_or_call_git(self):
         for command, state in (("hold", "HOLD"), ("edit", "EDIT_REQUESTED")):
             event = copy.deepcopy(self.fx.event)
@@ -490,6 +568,12 @@ class FakeGitHub:
         self.downloads = []
         self.calls = []
         self.pages_conclusion = "success"
+        self.content_comment = {
+            "id": 111, "user": fx.owner,
+            "created_at": "2026-10-11T13:00:00Z",
+            "issue_url": "https://api.github.com/repos/dgilink/kfarmai/issues/42",
+            "body": f"/kfarmai approve fixture-r1 {fx.hash}",
+        }
 
     def current(self, number):
         return copy.deepcopy(self.issue)
@@ -508,6 +592,8 @@ class FakeGitHub:
             return self.issue
         if endpoint == "actions/artifacts/456":
             return copy.deepcopy(self.fx.artifact)
+        if endpoint == "issues/comments/111":
+            return copy.deepcopy(self.content_comment)
         if endpoint == "actions/runs/123":
             return {"repository": {"full_name": approval.REPOSITORY}, "head_repository": {"full_name": approval.REPOSITORY},
                     "path": ".github/workflows/kfarmai-daily-autopublish.yml", "head_branch": "main", "conclusion": "success", "head_sha": "a" * 40}
