@@ -61,11 +61,13 @@ class Source:
 class Model:
     def __init__(self, *, missing_usage=False, fail=False):
         self.calls = 0
+        self.last_payload = None
         self.missing_usage = missing_usage
         self.fail = fail
 
     def generate(self, payload):
         self.calls += 1
+        self.last_payload = payload
         if self.fail:
             raise ValueError("provider failed")
         response = {"id": "resp_fixture", "model": MODEL, "status": "completed",
@@ -149,6 +151,9 @@ class RealDailyE2E(unittest.TestCase):
             self.assertTrue(all(x["application_conditions"] and x["checked_at"]
                                 and x["html_sha256"] for x in result["evidence"]))
             self.assertEqual(1, model.calls)
+            self.assertEqual([], model.last_payload["tools"])
+            self.assertEqual("none", model.last_payload["tool_choice"])
+            self.assertNotIn("max_tool_calls", model.last_payload)
             self.assertEqual(1, rpc.calls.count("reserve"))
             self.assertEqual(1, rpc.calls.count("settle"))
             package = load_package(output / "approval-package")

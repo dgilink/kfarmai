@@ -421,7 +421,7 @@ class RealDailyProvider:
                                        "strict": True, "schema": SCHEMA}},
                    "max_output_tokens": MAX_OUTPUT, "reasoning": {"effort": "low"},
                    "service_tier": "default", "store": False, "tools": [],
-                   "tool_choice": "none", "max_tool_calls": 0,
+                   "tool_choice": "none",
                    "truncation": "disabled"}
         require(len(canonical(payload)) <= 24000, "BLOCKED_INPUT_SIZE")
         reservation = self.reserve_budget(date, payload, recovery_from)
