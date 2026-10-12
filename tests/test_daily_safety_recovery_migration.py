@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ROLE = ROOT / "supabase/migrations/20261012053234_gate3_daily_review_rpc_role.sql"
 INCIDENT = ROOT / "supabase/migrations/20261012170000_gate3_daily_incident_recovery_once.sql"
 PRIOR = ROOT / "supabase/migrations/20261012171100_gate3_daily_final_recovery_once.sql"
-CURRENT = ROOT / "supabase/migrations/20261012192000_gate3_daily_safety_recovery_once.sql"
+CURRENT = ROOT / "supabase/migrations/20261012101917_gate3_daily_safety_recovery_once.sql"
 RUN = "20261012777777777777"
 
 
