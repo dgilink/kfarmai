@@ -15,7 +15,7 @@ from daily_review_issue import GitHubIssueIndex, GitHubReviewTransport, load_pac
 from daily_review_runner import verify_context
 from durable_budget import DurableBudget
 from kfarmai_review_approval import canonical, digest, metadata, read_archive
-from real_daily_provider import (MODEL, MAX_RESERVE, TOPICS, RealDailyProvider,
+from real_daily_provider import (MODEL, MAX_INPUT, MAX_RESERVE, TOPICS, RealDailyProvider,
                                  _source_evidence, estimated_cost, OpenAIResponses)
 
 
@@ -67,11 +67,12 @@ class Model:
         if self.fail:
             raise ValueError("provider failed")
         response = {"id": "resp_fixture", "model": MODEL, "status": "completed",
+                    "service_tier": "default",
                     "output": [{"type": "message", "content": [{"type": "output_text",
                     "text": json.dumps(article(), ensure_ascii=False)}]}]}
         if not self.missing_usage:
             response["usage"] = {"input_tokens": 600, "output_tokens": 400}
-        return {"count_tokens": 600, "response": response}
+        return {"count_tokens": 0, "response": response}
 
 
 class RPC:
@@ -209,10 +210,10 @@ class RealDailyE2E(unittest.TestCase):
         self.assertIn("unknown", rpc.calls)
 
     def test_cost_ceiling_and_source_tamper(self):
-        self.assertLessEqual(MAX_RESERVE, 150000)
-        self.assertLessEqual(estimated_cost(600, 600, 400), MAX_RESERVE)
+        self.assertEqual(22528, MAX_RESERVE)
+        self.assertLessEqual(estimated_cost(0, 600, 400), MAX_RESERVE)
         with self.assertRaises(Exception):
-            estimated_cost(8193, 600, 400)
+            estimated_cost(MAX_INPUT + 1, 600, 400)
         source = TOPICS[0]["sources"][0]
         with self.assertRaises(Exception):
             _source_evidence(source, b"<html><title>other</title><body>no claim</body></html>", "2026-10-12")
@@ -221,8 +222,22 @@ class RealDailyE2E(unittest.TestCase):
         model = OpenAIResponses("not-a-live-key")
         with self.assertRaises(Exception):
             model.generate({"model": "other", "tools": []})
-        self.assertFalse(model.count_used)
         self.assertFalse(model.response_used)
+
+    def test_openai_adapter_calls_only_responses_once(self):
+        model = OpenAIResponses("not-a-live-key")
+        paths = []
+        def fake_post(path, payload):
+            paths.append(path)
+            return {"id": "resp_fixture", "model": MODEL, "status": "completed",
+                    "service_tier": "default", "usage": {"input_tokens": 12, "output_tokens": 4}}
+        model._post = fake_post
+        payload = {"model": MODEL, "max_output_tokens": 8192, "tools": [],
+                   "tool_choice": "none", "service_tier": "default"}
+        self.assertEqual(0, model.generate(payload)["count_tokens"])
+        self.assertEqual(["responses"], paths)
+        with self.assertRaises(Exception):
+            model.generate(payload)
 
     def test_daily_context_owner_and_head_guard(self):
         env = {"GITHUB_REPOSITORY": "dgilink/kfarmai", "GITHUB_REF": "refs/heads/main",
@@ -230,7 +245,8 @@ class RealDailyE2E(unittest.TestCase):
                "GITHUB_EVENT_NAME": "workflow_dispatch", "GITHUB_ACTOR_ID": "293838055",
                "GITHUB_WORKFLOW_REF": "dgilink/kfarmai/.github/workflows/kfarmai-daily-autopublish.yml@refs/heads/main",
                "KFARMAI_DAILY_APPROVED_HEAD_SHA": "a"*40,
-               "KFARMAI_AUTOPUBLISH_ENABLED": "true",
+               "KFARMAI_DAILY_REVIEW_GENERATION_ENABLED": "true",
+               "KFARMAI_AUTOPUBLISH_ENABLED": "false",
                "KFARMAI_REVIEW_PUBLISH_ENABLED": "false",
                "KFARMAI_DAILY_REVIEW_ONLY": "true"}
         verify_context(env, "a"*40, phase="generate")
@@ -252,7 +268,8 @@ class RealDailyE2E(unittest.TestCase):
             env = {"GITHUB_REPOSITORY": "dgilink/kfarmai", "GITHUB_REF": "refs/heads/main",
                    "GITHUB_SHA": "a"*40, "GITHUB_RUN_ID": "990006", "GITHUB_RUN_ATTEMPT": "1",
                    "GITHUB_WORKFLOW_REF": "dgilink/kfarmai/.github/workflows/kfarmai-daily-autopublish.yml@refs/heads/main",
-                   "KFARMAI_AUTOPUBLISH_ENABLED": "true",
+                   "KFARMAI_DAILY_REVIEW_GENERATION_ENABLED": "true",
+                   "KFARMAI_AUTOPUBLISH_ENABLED": "false",
                    "KFARMAI_REVIEW_PUBLISH_ENABLED": "false"}
             adapter = GitHubReviewTransport(token="test-only-not-a-secret", repository="dgilink/kfarmai",
                 run_id=990006, head_sha="a"*40, upload_outputs=fixture.find_upload("", 990006),

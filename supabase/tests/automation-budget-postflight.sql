@@ -19,16 +19,16 @@ select jsonb_build_object(
     and (select not prosecdef and proconfig @> array['search_path=""']
            from pg_proc where oid='public.kfarmai_budget(text,jsonb)'::regprocedure)
     and has_function_privilege('service_role','public.kfarmai_budget(text,jsonb)','EXECUTE')
+    and (to_regrole('kfarmai_daily_runner') is null or
+      (has_function_privilege('kfarmai_daily_runner',
+         'kfarmai_private.daily_review_budget(text,jsonb)','EXECUTE')
+       and not has_function_privilege('kfarmai_daily_runner',
+         'kfarmai_private.budget(text,jsonb)','EXECUTE')))
     and not exists (
       select 1 from pg_proc p, lateral aclexplode(coalesce(p.proacl,acldefault('f',p.proowner))) a
       where p.oid in ('public.kfarmai_budget(text,jsonb)'::regprocedure,
                       'kfarmai_private.budget(text,jsonb)'::regprocedure)
         and a.grantee not in (p.proowner, 'service_role'::regrole::oid)
-        -- The optional dedicated Daily role may execute only the private
-        -- budget entry point; the public wrapper remains service-role only.
-        and (p.oid <> 'kfarmai_private.budget(text,jsonb)'::regprocedure
-             or to_regrole('kfarmai_daily_runner') is null
-             or a.grantee <> to_regrole('kfarmai_daily_runner')::oid)
     )
     and not exists (
       select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace,

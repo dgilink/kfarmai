@@ -21,10 +21,17 @@ concurrency:
 
 jobs:
   daily:
-    # Code may ship while the operational policy and dedicated credential are
-    # unapproved. This literal lock is removed only in a separately approved
-    # activation change; setting a variable alone cannot start paid work.
-    if: ${{ false }}
+    # The first LIVE run is owner-dispatched only. A cron event cannot enter
+    # this job even if GitHub's Workflow state is enabled for manual dispatch.
+    if: >-
+      github.repository == 'dgilink/kfarmai' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      github.actor_id == '293838055' &&
+      inputs.mode == 'review_only' &&
+      vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED == 'true' &&
+      vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false' &&
+      vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'
     environment: kfarmai-automation-production
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -34,6 +41,7 @@ jobs:
       issues: write
     env:
       PYTHONUTF8: "1"
+      KFARMAI_DAILY_REVIEW_GENERATION_ENABLED: ${{ vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED }}
       KFARMAI_AUTOPUBLISH_ENABLED: ${{ vars.KFARMAI_AUTOPUBLISH_ENABLED }}
       KFARMAI_REVIEW_PUBLISH_ENABLED: ${{ vars.KFARMAI_REVIEW_PUBLISH_ENABLED }}
       KFARMAI_DAILY_REVIEW_ONLY: ${{ vars.KFARMAI_DAILY_REVIEW_ONLY }}
@@ -89,7 +97,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$KFARMAI_AUTOPUBLISH_ENABLED" = 'true'
+          test "$KFARMAI_DAILY_REVIEW_GENERATION_ENABLED" = 'true'
+          test "$KFARMAI_AUTOPUBLISH_ENABLED" = 'false'
           test "$KFARMAI_REVIEW_PUBLISH_ENABLED" = 'false'
           test "$KFARMAI_DAILY_REVIEW_ONLY" = 'true'
           test "$KFARMAI_DAILY_APPROVED_HEAD_SHA" = "$GITHUB_SHA"

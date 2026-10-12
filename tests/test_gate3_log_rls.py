@@ -7,7 +7,7 @@ from postgres_budget_harness import CONTAINER, sql
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MIGRATION = ROOT / "supabase/migrations/20261012035433_gate3_log_rls_least_privilege.sql"
+MIGRATION = ROOT / "supabase/migrations/20261012052816_gate3_log_rls_least_privilege.sql"
 
 
 @unittest.skipUnless(CONTAINER, "requires isolated PostgreSQL fixture")

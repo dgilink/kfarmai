@@ -68,7 +68,8 @@ class GitHubReviewTransport:
                 and str(self.run_id) == str(self.env.get("GITHUB_RUN_ID"))
                 and self.env.get("GITHUB_RUN_ATTEMPT") == "1"
                 and self.run_id == manifest["source_run_id"]
-                and self.env.get("KFARMAI_AUTOPUBLISH_ENABLED") == "true"
+                and self.env.get("KFARMAI_DAILY_REVIEW_GENERATION_ENABLED") == "true"
+                and self.env.get("KFARMAI_AUTOPUBLISH_ENABLED") == "false"
                 and self.env.get("KFARMAI_REVIEW_PUBLISH_ENABLED") == "false"
                 and self.env.get("GITHUB_WORKFLOW_REF") ==
                     "dgilink/kfarmai/.github/workflows/kfarmai-daily-autopublish.yml@refs/heads/main"

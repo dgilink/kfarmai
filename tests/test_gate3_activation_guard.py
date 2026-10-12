@@ -19,7 +19,10 @@ from activation_contract import validate_approval
 class Gate3ActivationGuard(unittest.TestCase):
     def test_legacy_schedule_stays_hard_locked(self):
         workflow = (ROOT / ".github/workflows/kfarmai-daily-autopublish.yml").read_text(encoding="utf-8")
-        self.assertIn("if: ${{ false }}", workflow)
+        self.assertIn("github.event_name == 'workflow_dispatch'", workflow)
+        self.assertIn("vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED == 'true'", workflow)
+        self.assertIn("vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false'", workflow)
+        self.assertIn("vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'", workflow)
         self.assertIn('cron: "0 21 * * *"', workflow)
         self.assertIn("options: [dry_run, review_only]", workflow)
         self.assertIn("KFARMAI_DAILY_APPROVED_HEAD_SHA", workflow)

@@ -57,7 +57,7 @@ class DailyBudgetDatabase:
     def __call__(self, command, payload):
         require(command in COMMANDS and isinstance(payload, dict), "DAILY_RPC_DENIED")
         with self.connection.cursor() as cursor:
-            cursor.execute("select kfarmai_private.budget(%s,%s::jsonb)",
+            cursor.execute("select kfarmai_private.daily_review_budget(%s,%s::jsonb)",
                            (command, json.dumps(payload, sort_keys=True)))
             value = cursor.fetchone()[0]
         require(isinstance(value, dict), "DAILY_RPC_UNCONFIRMED")
@@ -73,7 +73,8 @@ def verify_context(env, head_sha, *, phase):
             and env.get("GITHUB_RUN_ATTEMPT") == "1"
             and env.get("GITHUB_EVENT_NAME") in {"schedule", "workflow_dispatch"}
             and env.get("KFARMAI_DAILY_APPROVED_HEAD_SHA") == head_sha
-            and env.get("KFARMAI_AUTOPUBLISH_ENABLED") == "true"
+            and env.get("KFARMAI_DAILY_REVIEW_GENERATION_ENABLED") == "true"
+            and env.get("KFARMAI_AUTOPUBLISH_ENABLED") == "false"
             and env.get("KFARMAI_REVIEW_PUBLISH_ENABLED") == "false"
             and env.get("KFARMAI_DAILY_REVIEW_ONLY") == "true",
             "DAILY_GITHUB_CONTEXT_MISMATCH")

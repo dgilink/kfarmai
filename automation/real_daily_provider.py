@@ -25,10 +25,12 @@ from source_policy import load_domains
 
 
 MODEL = "gpt-6-luna"
-MAX_INPUT = 8192
-MAX_OUTPUT = 3072
+MAX_INPUT = 65536
+MAX_OUTPUT = 8192
 # Micro-USD per token: official short-context Standard price, including the
 # highest cache-write input rate. 1.10 also bounds eligible regional uplift.
+# The request is limited to 24 KB, but we reserve for two 65,536-token inputs
+# to cover formatting overhead without calling an unpriced counting endpoint.
 INPUT_RATE = Decimal("0.125")
 OUTPUT_RATE = Decimal("0.50")
 MULTIPLIER = Decimal("1.10")
@@ -151,11 +153,11 @@ def estimated_cost(count_tokens, input_tokens, output_tokens):
 
 
 class OpenAIResponses:
-    """Exact one count and one Responses request, with no redirect or retry."""
+    """Exactly one bounded Responses request, with no redirect or retry."""
     def __init__(self, key):
         require(isinstance(key, str) and bool(key), "BLOCKED_OPENAI_KEY")
         self.key = key
-        self.count_used = self.response_used = False
+        self.response_used = False
 
     def _post(self, path, payload):
         request = urllib.request.Request("https://api.openai.com/v1/" + path,
@@ -171,22 +173,20 @@ class OpenAIResponses:
 
     def generate(self, payload):
         require(payload.get("model") == MODEL and payload.get("max_output_tokens") == MAX_OUTPUT
-                and payload.get("tools") == [] and payload.get("tool_choice") == "none",
+                and payload.get("tools") == [] and payload.get("tool_choice") == "none"
+                and payload.get("service_tier") == "default"
+                and len(canonical(payload)) <= 24000,
                 "BLOCKED_MODEL_CONTRACT")
-        require(not self.count_used and not self.response_used, "BLOCKED_MODEL_RETRY")
-        self.count_used = True
-        counted = self._post("responses/input_tokens", payload)
-        count = counted.get("input_tokens")
-        require(counted.get("object") == "response.input_tokens" and type(count) is int
-                and 0 < count <= MAX_INPUT, "BLOCKED_INPUT_LIMIT")
+        require(not self.response_used, "BLOCKED_MODEL_RETRY")
         self.response_used = True
         response = self._post("responses", payload)
-        return {"count_tokens": count, "response": response}
+        return {"count_tokens": 0, "response": response}
 
 
 def _response_usage(result):
     response = result["response"]
     require(response.get("model") == MODEL and response.get("status") == "completed"
+            and response.get("service_tier") == "default"
             and isinstance(response.get("id"), str), "BLOCKED_MODEL_RESPONSE")
     usage = response.get("usage")
     require(isinstance(usage, dict), "BLOCKED_USAGE")

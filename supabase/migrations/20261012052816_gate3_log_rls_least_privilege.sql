@@ -1,4 +1,4 @@
--- Gate 3 security candidate. The official application does not read or write
+-- Applied to production as migration 20261012052816. The official application does not read or write
 -- either log table from a browser or Edge Function. Preserve the server-only
 -- service_role grant while removing broad browser access to potentially
 -- sensitive search terms, image URLs and AI response text.
