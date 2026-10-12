@@ -103,7 +103,7 @@ def render_svg(a,path):
     )
     path.parent.mkdir(parents=True,exist_ok=True); path.write_text(svg,encoding="utf-8")
 
-def render_html(a,date,hero,info,site):
+def render_html(a,date,hero,info,site,*,hero_caption=None):
     url=f"{site}/kb/{a['slug']}.html"; hero_url=f"{site}/{hero}"
     ld={"@context":"https://schema.org","@type":"Article","headline":a["title"],"description":a["meta_description"],"author":{"@type":"Organization","name":"kFarmAI"},"publisher":{"@type":"Organization","name":"kFarmAI"},"datePublished":date,"dateModified":date,"mainEntityOfPage":url,"image":hero_url,"citation":[s["url"] for s in a["sources"]]}
     sections="".join("<h2>"+html.escape(s["heading"])+"</h2><p>"+html.escape(s["body"])+"</p>" for s in a["sections"])
@@ -121,7 +121,7 @@ def render_html(a,date,hero,info,site):
       '<script type="application/ld+json">'+json.dumps(ld,ensure_ascii=False,separators=(",",":"))+'</script></head><body>',
       '<header class="site-header"><a href="/index.html">kFarmAI</a></header><main>',
       '<article class="knowledge-article"><h1>'+html.escape(a["title"])+'</h1><p>게시일: <time datetime="'+date+'">'+date+'</time></p>',
-      '<figure><img style="width:100%;height:auto;border-radius:16px" src="/'+hero+'" alt="'+html.escape(a["title"],quote=True)+' 대표 이미지"><figcaption>AI로 생성한 참고 이미지입니다. 실제 재배환경과 다를 수 있습니다.</figcaption></figure>',
+      '<figure><img style="width:100%;height:auto;border-radius:16px" src="/'+hero+'" alt="'+html.escape(a["title"],quote=True)+' 대표 이미지"><figcaption>'+html.escape(hero_caption or 'AI로 생성한 참고 이미지입니다. 실제 재배환경과 다를 수 있습니다.')+'</figcaption></figure>',
       '<p>'+html.escape(a["summary"])+'</p>'+sections,
       '<figure><img style="width:100%;height:auto" src="/'+info+'" alt="'+html.escape(a["infographic_title"],quote=True)+'"><figcaption>'+html.escape(a["infographic_title"])+'</figcaption></figure>',
       '<h2>kFarmAI 연결</h2><p>'+html.escape(a["kfarmai_connection"])+'</p><p>'+html.escape(a["safety_note"])+'</p>',

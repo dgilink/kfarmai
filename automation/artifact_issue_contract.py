@@ -1,7 +1,7 @@
 """Upload output -> downloaded immutable bytes -> durable Issue outbox.
 
-Only injectable fixture transports are accepted in this Candidate. There is no
-GitHub upload or Issue mutation adapter and this module never publishes content.
+Fixtures remain injectable; the live REVIEW adapter requires an exact protected
+Daily workflow identity. Neither path publishes content.
 """
 import re
 from approval_package import render_issue
@@ -29,8 +29,12 @@ def validate_upload_identity(outputs, artifact, manifest, *, expected_name=None)
 
 
 def review_report(package, transport, budget):
-    require(getattr(transport, 'is_fixture', False) is True, 'LIVE_GITHUB_WRITE_DISABLED')
     manifest = package['manifest']
+    if getattr(transport, 'is_fixture', False) is not True:
+        from daily_review_issue import GitHubReviewTransport
+        require(isinstance(transport, GitHubReviewTransport)
+                and transport.live_authorized(manifest) is True,
+                'LIVE_GITHUB_WRITE_DISABLED')
     name = 'review-' + manifest['approval_id']
     # Transport uploads these exact nine files at the archive root, not package.zip.
     outputs = transport.find_upload(name, manifest['source_run_id'])

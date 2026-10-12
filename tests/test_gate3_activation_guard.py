@@ -22,8 +22,10 @@ class Gate3ActivationGuard(unittest.TestCase):
         self.assertIn("if: ${{ false }}", workflow)
         self.assertIn('cron: "0 21 * * *"', workflow)
         self.assertIn("options: [dry_run, review_only]", workflow)
-        self.assertIn("KFARMAI_DAILY_BUDGET_USD: '0'", workflow)
-        self.assertIn('echo "mode=review_only"', workflow)
+        self.assertIn("KFARMAI_DAILY_APPROVED_HEAD_SHA", workflow)
+        self.assertIn("daily_review_runner.py generate", workflow)
+        self.assertIn("daily_review_runner.py finalize", workflow)
+        self.assertNotIn("git push", workflow)
 
     def test_legacy_paid_transport_stays_disabled(self):
         with self.assertRaisesRegex(RuntimeError, "CANDIDATE_PAID_API_DISABLED"):

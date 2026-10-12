@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import io
+import json
 from pathlib import Path
 import zipfile
 
@@ -123,6 +124,8 @@ def render_issue(package, artifact, uploaded_raw=None):
         # local-editorial submission requires explicit fact/checkpoint fields.
         facts = facts or [article["summary"]]
         checkpoints = checkpoints or [article["safety_note"]]
+    cost = json.loads(package["files"]["source-check.json"]).get("cost_evidence")
+    cost_lines = (["비용/사용량 추정: " + canonical(cost).decode()] if cost else [])
     body = "\n".join([
         "[검수 필요]", f"제목: {article['title']}", f"게시 예정 URL: {intent['url']}",
         f"핵심 내용: {review['summary']}", f"REVIEW 사유: {review['reason']}",
@@ -131,6 +134,7 @@ def render_issue(package, artifact, uploaded_raw=None):
         f"정보 구분: 본문·요약은 {information_label}이며, 위 공공자료 출처와 구분하여 검수합니다.",
         f"위험요소: {review['risks']}", f"주의사항: {review['cautions']}",
         f"위험도: {review['risk']}",
+        *cost_lines,
         f"생성 시각: {package['manifest'].get('generated_at', '기록 없음')}",
         f"Package 구분: {package['manifest'].get('package_kind', 'LEGACY_UNVERIFIED')}",
         f"이미지 상태: {review['image_status']}",

@@ -24,6 +24,11 @@ select jsonb_build_object(
       where p.oid in ('public.kfarmai_budget(text,jsonb)'::regprocedure,
                       'kfarmai_private.budget(text,jsonb)'::regprocedure)
         and a.grantee not in (p.proowner, 'service_role'::regrole::oid)
+        -- The optional dedicated Daily role may execute only the private
+        -- budget entry point; the public wrapper remains service-role only.
+        and (p.oid <> 'kfarmai_private.budget(text,jsonb)'::regprocedure
+             or to_regrole('kfarmai_daily_runner') is null
+             or a.grantee <> to_regrole('kfarmai_daily_runner')::oid)
     )
     and not exists (
       select 1 from pg_class c join pg_namespace n on n.oid=c.relnamespace,
