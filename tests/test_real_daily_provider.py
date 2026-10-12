@@ -17,7 +17,7 @@ from daily_review_issue import GitHubIssueIndex, GitHubReviewTransport, load_pac
 from daily_review_runner import verify_context
 from durable_budget import DurableBudget
 from kfarmai_review_approval import canonical, digest, metadata, read_archive
-from real_daily_provider import (MODEL, MAX_INPUT, MAX_RESERVE, SAFETY_NOTE, TOPICS, RealDailyProvider,
+from real_daily_provider import (MODEL, MAX_INPUT, MAX_OUTPUT, MAX_RESERVE, SAFETY_NOTE, TOPICS, RealDailyProvider,
                                  _source_evidence, estimated_cost, OpenAIResponses)
 
 
@@ -59,21 +59,27 @@ class Source:
 
 
 class Model:
-    def __init__(self, *, missing_usage=False, fail=False):
+    def __init__(self, *, missing_usage=False, fail=False, status="completed", article_value=None,
+                 output_text=None):
         self.calls = 0
         self.last_payload = None
         self.missing_usage = missing_usage
         self.fail = fail
+        self.status = status
+        self.article_value = article_value
+        self.output_text = output_text
 
     def generate(self, payload):
         self.calls += 1
         self.last_payload = payload
         if self.fail:
             raise ValueError("provider failed")
-        response = {"id": "resp_fixture", "model": MODEL, "status": "completed",
+        response = {"id": "resp_fixture", "model": MODEL, "status": self.status,
                     "service_tier": "default",
                     "output": [{"type": "message", "content": [{"type": "output_text",
-                    "text": json.dumps(article(), ensure_ascii=False)}]}]}
+                    "text": self.output_text if self.output_text is not None else
+                    json.dumps(self.article_value if self.article_value is not None else article(),
+                               ensure_ascii=False)}]}]}
         if not self.missing_usage:
             response["usage"] = {"input_tokens": 600, "output_tokens": 400}
         return {"count_tokens": 0, "response": response}
@@ -227,6 +233,50 @@ class RealDailyE2E(unittest.TestCase):
         self.assertIn("freeze", rpc.calls)
         self.assertNotIn("settle", rpc.calls)
 
+    def test_incomplete_with_valid_usage_settles_then_holds_content(self):
+        provider, model, rpc = self.make(model=Model(status="incomplete"))
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / "out"
+            with self.assertRaisesRegex(Exception, "BLOCKED_MODEL_INCOMPLETE"):
+                provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
+                             run_id=990044, head_sha="a" * 40, output=output)
+            self.assertFalse(output.exists())
+        self.assertEqual(1, model.calls)
+        self.assertEqual(1, rpc.calls.count("settle"))
+        self.assertNotIn("freeze", rpc.calls)
+
+    def test_bad_json_and_safety_failure_still_settle(self):
+        unsafe = article()
+        unsafe["sections"][0]["body"] = "오늘 방제하세요"
+        for model, expected in ((Model(output_text="{invalid"), "BLOCKED_ARTICLE_SCHEMA"),
+                                (Model(article_value=unsafe), "BLOCKED_UNSAFE_CONTENT")):
+            with self.subTest(expected=expected):
+                provider, _, rpc = self.make(model=model)
+                with tempfile.TemporaryDirectory() as temp:
+                    output = Path(temp) / "out"
+                    with self.assertRaisesRegex(Exception, expected):
+                        provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
+                                     run_id=990045, head_sha="a" * 40, output=output)
+                    self.assertFalse(output.exists())
+                self.assertEqual(1, rpc.calls.count("settle"))
+
+    def test_article_length_and_repetition_fail_closed_after_settlement(self):
+        values = []
+        too_long = article(); too_long["summary"] = "설명" * 200; values.append(too_long)
+        too_long = article(); too_long["sections"][0]["body"] = "설명" * 300; values.append(too_long)
+        repeated = article(); repeated["sections"][1]["body"] = repeated["sections"][0]["body"]
+        values.append(repeated)
+        for value in values:
+            with self.subTest(value=value["summary"][:10]):
+                provider, _, rpc = self.make(model=Model(article_value=value))
+                with tempfile.TemporaryDirectory() as temp:
+                    output = Path(temp) / "out"
+                    with self.assertRaisesRegex(Exception, "BLOCKED_ARTICLE_LENGTH"):
+                        provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
+                                     run_id=990046, head_sha="a" * 40, output=output)
+                    self.assertFalse(output.exists())
+                self.assertEqual(1, rpc.calls.count("settle"))
+
     def test_model_error_no_retry_and_unknown(self):
         provider, model, rpc = self.make(model=Model(fail=True))
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
@@ -237,6 +287,7 @@ class RealDailyE2E(unittest.TestCase):
 
     def test_cost_ceiling_and_source_tamper(self):
         self.assertEqual(22528, MAX_RESERVE)
+        self.assertEqual(4096, MAX_OUTPUT)
         self.assertLessEqual(estimated_cost(0, 600, 400), MAX_RESERVE)
         with self.assertRaises(Exception):
             estimated_cost(MAX_INPUT + 1, 600, 400)
@@ -258,7 +309,7 @@ class RealDailyE2E(unittest.TestCase):
             return {"id": "resp_fixture", "model": MODEL, "status": "completed",
                     "service_tier": "default", "usage": {"input_tokens": 12, "output_tokens": 4}}
         model._post = fake_post
-        payload = {"model": MODEL, "max_output_tokens": 8192, "tools": [],
+        payload = {"model": MODEL, "max_output_tokens": MAX_OUTPUT, "tools": [],
                    "tool_choice": "none", "service_tier": "default"}
         self.assertEqual(0, model.generate(payload)["count_tokens"])
         self.assertEqual(["responses"], paths)
@@ -286,7 +337,7 @@ class RealDailyE2E(unittest.TestCase):
 
     def test_openai_telemetry_no_secret_or_body(self):
         model = OpenAIResponses("secret-that-must-not-log")
-        payload = {"model": MODEL, "max_output_tokens": 8192, "tools": [],
+        payload = {"model": MODEL, "max_output_tokens": MAX_OUTPUT, "tools": [],
                    "tool_choice": "none", "service_tier": "default"}
         error = urllib.error.HTTPError("https://api.openai.com/v1/responses", 400,
             "bad request with secret-that-must-not-log",
@@ -304,6 +355,42 @@ class RealDailyE2E(unittest.TestCase):
         self.assertIn('"http_status": 400', log)
         self.assertIn('"error_code": "invalid_request_error"', log)
         self.assertNotIn("secret-that-must-not-log", log)
+
+    def test_incomplete_telemetry_records_metadata_not_generated_text(self):
+        model = OpenAIResponses("secret-that-must-not-log")
+        payload = {"model": MODEL, "max_output_tokens": MAX_OUTPUT, "tools": [],
+                   "tool_choice": "none", "service_tier": "default"}
+        response = {"id": "resp_fixture", "model": MODEL, "status": "incomplete",
+                    "incomplete_details": {"reason": "max_output_tokens"},
+                    "service_tier": "default", "output": [{"type": "message",
+                    "content": [{"type": "output_text", "text": "private generated text"}]}],
+                    "usage": {"input_tokens": 1170, "output_tokens": MAX_OUTPUT,
+                              "output_tokens_details": {"reasoning_tokens": 3000}}}
+        body = json.dumps(response).encode()
+        transport = mock.MagicMock()
+        transport.status = 200
+        transport.headers = {"x-request-id": "req_fixture"}
+        transport.read.return_value = body
+        transport.__enter__.return_value = transport
+        with mock.patch("urllib.request.build_opener") as opener, \
+             mock.patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            opener.return_value.open.return_value = transport
+            result = model.generate(payload)
+        log = stderr.getvalue()
+        self.assertEqual("incomplete", result["response"]["status"])
+        self.assertIn('"response_status": "incomplete"', log)
+        self.assertIn('"incomplete_reason": "max_output_tokens"', log)
+        self.assertIn('"reasoning_tokens": 3000', log)
+        self.assertIn('"output_text_bytes": 22', log)
+        self.assertNotIn("private generated text", log)
+        self.assertNotIn("secret-that-must-not-log", log)
+
+    def test_old_output_limit_cannot_be_dispatched(self):
+        model = OpenAIResponses("not-a-live-key")
+        with self.assertRaises(Exception):
+            model.generate({"model": MODEL, "max_output_tokens": 8192,
+                            "tools": [], "tool_choice": "none", "service_tier": "default"})
+        self.assertFalse(model.response_used)
 
     def test_daily_context_owner_and_head_guard(self):
         env = {"GITHUB_REPOSITORY": "dgilink/kfarmai", "GITHUB_REF": "refs/heads/main",
