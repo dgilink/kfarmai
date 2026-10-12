@@ -92,12 +92,15 @@ class BootstrapDatabase:
         self.connection = connection
 
     def check_role(self):
+        # pg_stat_ssl describes the pooler -> Postgres hop, not this client's TLS.
+        # The connection is opened with verify-full by verified_connection_info().
+        require(self.connection.pgconn.ssl_in_use is True,
+                "DEDICATED_DATABASE_ROLE_OR_TLS_REQUIRED")
         with self.connection.cursor() as cursor:
-            cursor.execute("select session_user, current_user, current_database(), "
-                           "(select ssl from pg_stat_ssl where pid=pg_backend_pid())")
-            role, effective, database, tls = cursor.fetchone()
-        require(role == DB_ROLE and effective == DB_ROLE and database == "postgres" and
-                tls is True, "DEDICATED_DATABASE_ROLE_OR_TLS_REQUIRED")
+            cursor.execute("select session_user, current_user, current_database()")
+            role, effective, database = cursor.fetchone()
+        require(role == DB_ROLE and effective == DB_ROLE and database == "postgres",
+                "DEDICATED_DATABASE_ROLE_OR_TLS_REQUIRED")
 
     def control(self, command, payload):
         require(command in {"preflight", "arm"} and payload == arm_payload(),

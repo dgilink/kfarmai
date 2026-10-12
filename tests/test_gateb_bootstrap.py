@@ -102,6 +102,23 @@ class BootstrapUnitTests(unittest.TestCase):
             with self.subTest(bad=bad.rsplit('@', 1)[-1]), self.assertRaises(BudgetBlocked):
                 verified_connection_info(psycopg, bad, '/tmp/project-ca.crt')
 
+    def test_client_tls_is_checked_not_pooler_backend_tls(self):
+        class Cursor:
+            def __enter__(self): return self
+            def __exit__(self, *_): return False
+            def execute(self, query):
+                if 'pg_stat_ssl' in query:
+                    raise AssertionError('Pooler backend TLS is not client TLS')
+            def fetchone(self):
+                return ('kfarmai_canary_runner', 'kfarmai_canary_runner', 'postgres')
+        class Connection:
+            def __init__(self, ssl_in_use):
+                self.pgconn = type('PGconn', (), {'ssl_in_use': ssl_in_use})()
+            def cursor(self): return Cursor()
+        BootstrapDatabase(Connection(True)).check_role()
+        with self.assertRaisesRegex(BudgetBlocked, 'DEDICATED_DATABASE_ROLE_OR_TLS_REQUIRED'):
+            BootstrapDatabase(Connection(False)).check_role()
+
 
 @unittest.skipUnless(CONTAINER, 'Isolated PostgreSQL 17 fixture required')
 class BootstrapPostgresTests(unittest.TestCase):
