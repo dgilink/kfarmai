@@ -12,11 +12,11 @@ on:
         type: choice
         options: [dry_run, review_only]
       recovery:
-        description: "One approved 2026-10-12 incident recovery, otherwise none"
+        description: "Approved one-shot 2026-10-12 recovery, otherwise none"
         required: true
         default: none
         type: choice
-        options: [none, incident_38209820550]
+        options: [none, incident_38209820550, incident_38218191801]
 
 permissions:
   contents: read

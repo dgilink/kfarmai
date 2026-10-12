@@ -324,14 +324,14 @@ class RealDailyProvider:
         return evidence
 
     def reserve_budget(self, date, payload, recovery_from=None):
-        # One incident-only second reservation. The fixed key is deliberately
-        # non-reusable; a failed recovery cannot authorize a third call.
+        # Fixed incident identities cannot be reused or expanded by dispatch.
         if recovery_from is None:
             budget_run_id = date.replace("-", "")
         else:
-            require(date == "2026-10-12" and recovery_from == "38209820550",
-                    "BLOCKED_RECOVERY_IDENTITY")
-            budget_run_id = "20261012999999999999"
+            require(date == "2026-10-12" and recovery_from in
+                    {"38209820550", "38218191801"}, "BLOCKED_RECOVERY_IDENTITY")
+            budget_run_id = ("20261012999999999999" if recovery_from == "38209820550"
+                             else "20261012888888888888")
         return self.budget.reserve(budget_run_id, "content", "REVIEW",
                                    MAX_RESERVE, {"model": MODEL, "request": payload,
                                                  "budget_date_kst": date,
@@ -427,6 +427,12 @@ class RealDailyProvider:
         reservation = self.reserve_budget(date, payload, recovery_from)
         article, _, receipt = self.generate_article(reservation, payload)
         self.reconcile_budget(receipt)
+        print("BUDGET_TELEMETRY " + json.dumps({
+            "execution_id": str(run_id),
+            "settlement_id": _safe_response_id(reservation.get("id")),
+            "receipt_sha256": digest(canonical(receipt)),
+            "estimated_microusd": receipt["estimated_microusd"],
+        }, sort_keys=True), file=sys.stderr, flush=True)
         article = self.classify_content(article, topic, evidence)
         package = self.create_artifacts(article, evidence, date, run_id, head_sha, output, now, receipt)
         outcome = {"status": "REVIEW_PENDING_UPLOAD", "date": date, "title": article["title"],

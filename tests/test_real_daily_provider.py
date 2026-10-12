@@ -255,6 +255,9 @@ class RealDailyE2E(unittest.TestCase):
         rpc.reserved = False
         recovery = provider.reserve_budget("2026-10-12", payload, "38209820550")
         self.assertEqual("20261012999999999999", recovery["run_id"])
+        rpc.reserved = False
+        final_recovery = provider.reserve_budget("2026-10-12", payload, "38218191801")
+        self.assertEqual("20261012888888888888", final_recovery["run_id"])
         with self.assertRaises(Exception):
             provider.reserve_budget("2026-10-12", payload, "other")
         with self.assertRaises(Exception):
