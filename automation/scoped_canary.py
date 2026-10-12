@@ -58,8 +58,8 @@ class ScopedCanaryBudget(DurableBudget):
                 'billing_multiplier': value['billing_multiplier'], 'live_authorized': True,
                 'bootstrap_authorized': (
                     approval == BOOTSTRAP_APPROVAL_ID and
-                    value['model_approval_id'] == 'gateb-model-20261011-r3' and
-                    value['budget_approval_id'] == 'gateb-budget-20261011-r3' and
+                    value['model_approval_id'] == 'gateb-model-20261012-r4' and
+                    value['budget_approval_id'] == 'gateb-budget-20261012-r4' and
                     value['billing_multiplier'] == '1.10' and
                     value['maximum'] == 212 and
                     value['daily_microusd'] == 212)}

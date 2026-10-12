@@ -23,8 +23,8 @@ from scoped_canary import ScopedCanaryBudget, scope_identity
 REPOSITORY = "dgilink/kfarmai"
 DB_ROLE = "kfarmai_canary_runner"
 PROJECT_REF = "xzetqijeucldbfgjuoes"
-MODEL_APPROVAL = "gateb-model-20261011-r3"
-BUDGET_APPROVAL = "gateb-budget-20261011-r3"
+MODEL_APPROVAL = "gateb-model-20261012-r4"
+BUDGET_APPROVAL = "gateb-budget-20261012-r4"
 ALLOWED_COMMANDS = frozenset({"status", "reserve", "dispatch", "settle", "unknown", "freeze"})
 
 

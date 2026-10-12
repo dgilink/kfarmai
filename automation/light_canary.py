@@ -16,7 +16,7 @@ FIXED_INPUT = "온실 관수 설비를 점검하기 전에 확인할 일반적�
 MODEL = "gpt-6-luna"
 NORMAL_LIVE = "NORMAL_LIVE"
 FIRST_CANARY_BOOTSTRAP = "FIRST_CANARY_BOOTSTRAP"
-BOOTSTRAP_APPROVAL_ID = "gateb-light-canary-20261011-r3"
+BOOTSTRAP_APPROVAL_ID = "gateb-light-canary-20261012-r4"
 SCHEMA = {"type": "object", "properties": {
     "mode": {"type": "string", "enum": ["CANARY_ONLY"]},
     "items": {"type": "array", "items": {"type": "string"}, "minItems": 3, "maxItems": 3}},

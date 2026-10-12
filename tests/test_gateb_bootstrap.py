@@ -126,6 +126,9 @@ class BootstrapPostgresTests(unittest.TestCase):
     def setUpClass(cls):
         if sql("select to_regprocedure('kfarmai_private.bootstrap_canary_control(text,jsonb)') is null;") == 't':
             sql((ROOT/'supabase/migrations/20261011104645_gateb_one_shot_bootstrap_runner.sql').read_text())
+        if sql("select position('gateb-light-canary-20261012-r4' in prosrc)>0 "
+               "from pg_proc where oid='kfarmai_private.bootstrap_canary_control(text,jsonb)'::regprocedure;") != 't':
+            sql((ROOT/'supabase/migrations/20261012020132_gateb_one_shot_r4_contract.sql').read_text())
 
     def setUp(self):
         sql('truncate kfarmai_private.canary_scopes, kfarmai_private.reservations; '
@@ -173,6 +176,13 @@ class BootstrapPostgresTests(unittest.TestCase):
         with self.assertRaises(RuntimeError): self.control('arm')
         with self.assertRaises(RuntimeError): self.control('preflight')
 
+    def test_old_r3_identity_rejected_after_forward_migration(self):
+        old = dict(arm_payload(), approval_id='gateb-light-canary-20261011-r3')
+        with self.assertRaises(RuntimeError): self.control('preflight', old)
+        with self.assertRaises(RuntimeError): self.scoped('status', old)
+        self.assertEqual('0', sql("select count(*) from kfarmai_private.canary_scopes "
+                                  "where approval_id='gateb-light-canary-20261011-r3';"))
+
     def test_no_broad_db_grants(self):
         for statement in ["select kfarmai_private.canary_budget('status','{}');",
                           "select kfarmai_private.manage_canary('arm','{}');",
@@ -186,7 +196,7 @@ class BootstrapPostgresTests(unittest.TestCase):
         sql('truncate kfarmai_private.canary_scopes;')
         self.seed_r1(yesterday=False)
         with self.assertRaises(RuntimeError): self.control()
-        self.assertEqual('0', sql("select count(*) from kfarmai_private.canary_scopes where approval_id='gateb-light-canary-20261011-r3';"))
+        self.assertEqual('0', sql("select count(*) from kfarmai_private.canary_scopes where approval_id='gateb-light-canary-20261012-r4';"))
 
     def test_unknown_scope_blocks_bootstrap(self):
         sql("update kfarmai_private.canary_scopes set state='UNKNOWN',actual=null "

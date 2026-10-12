@@ -8,9 +8,9 @@ on:
         required: true
         type: choice
         options:
-          - gateb-light-canary-20261011-r3
+          - gateb-light-canary-20261012-r4
       confirmation:
-        description: "Type BOOTSTRAP-R3-ONCE"
+        description: "Type BOOTSTRAP-R4-ONCE"
         required: true
         type: string
 
@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: kfarmai-gateb-bootstrap-r3
+  group: kfarmai-gateb-bootstrap-r4
   cancel-in-progress: false
 
 jobs:
@@ -29,9 +29,9 @@ jobs:
       github.actor_id == 293838055 &&
       github.ref == 'refs/heads/main' &&
       github.run_attempt == 1 &&
-      github.event.inputs.approval_id == 'gateb-light-canary-20261011-r3' &&
-      github.event.inputs.confirmation == 'BOOTSTRAP-R3-ONCE' &&
-      vars.KFARMAI_GATEB_BOOTSTRAP_APPROVAL_ID == 'gateb-light-canary-20261011-r3' &&
+      github.event.inputs.approval_id == 'gateb-light-canary-20261012-r4' &&
+      github.event.inputs.confirmation == 'BOOTSTRAP-R4-ONCE' &&
+      vars.KFARMAI_GATEB_BOOTSTRAP_APPROVAL_ID == 'gateb-light-canary-20261012-r4' &&
       vars.KFARMAI_GATEB_BOOTSTRAP_HEAD_SHA == github.sha &&
       vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false' &&
       vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'
