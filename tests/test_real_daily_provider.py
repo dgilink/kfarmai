@@ -17,7 +17,7 @@ from daily_review_issue import GitHubIssueIndex, GitHubReviewTransport, load_pac
 from daily_review_runner import verify_context
 from durable_budget import DurableBudget
 from kfarmai_review_approval import canonical, digest, metadata, read_archive
-from real_daily_provider import (MODEL, MAX_INPUT, MAX_RESERVE, TOPICS, RealDailyProvider,
+from real_daily_provider import (MODEL, MAX_INPUT, MAX_RESERVE, SAFETY_NOTE, TOPICS, RealDailyProvider,
                                  _source_evidence, estimated_cost, OpenAIResponses)
 
 
@@ -176,6 +176,18 @@ class RealDailyE2E(unittest.TestCase):
                          run_id=990002, head_sha="a"*40, output="unused")
         self.assertEqual(0, model.calls)
         self.assertNotIn("reserve", rpc.calls)
+
+    def test_standard_safety_notice_is_inserted_after_unsafe_content_check(self):
+        provider, _, _ = self.make()
+        a = article()
+        a["safety_note"] = "현장을 살펴보세요."
+        evidence = [{"title": x["title"], "url": x["url"], "claim": x["claim"]}
+                    for x in TOPICS[0]["sources"]]
+        self.assertEqual(SAFETY_NOTE, provider.classify_content(a, TOPICS[0], evidence)["safety_note"])
+        a = article()
+        a["sections"][0]["body"] = "오늘 방제하세요"
+        with self.assertRaises(Exception):
+            provider.classify_content(a, TOPICS[0], evidence)
 
     def test_existing_review_issue_blocks_new_day_before_paid_work(self):
         rpc, model = RPC(), Model()

@@ -43,6 +43,9 @@ MAX_RESERVE = int(((2 * MAX_INPUT * INPUT_RATE + MAX_OUTPUT * OUTPUT_RATE)
 PUBLIC_HERO = "static/kb/usda-greenhouse-heating-photo.jpg"
 PUBLIC_HERO_SHA256 = "ed890320694246ca381e34a886243be423fba45ffbddf4f1cceae1da8daf3db7"
 PUBLIC_HERO_SOURCE = "https://commons.wikimedia.org/wiki/File:20090915-USDA-OC-PSD-0002_-_54674579668_Agriculture_in_the_United_States.jpg"
+SAFETY_NOTE = ("이 글은 AI가 편집한 일반 참고자료이며 공공정보 원문을 대체하지 않습니다. "
+               "현장 조건과 공식자료를 확인하고, 농약 사용 전 등록 작물·병해충·사용시기·"
+               "희석배수·안전사용기준을 확인하세요.")
 
 # Editorial seed, not a source of asserted facts. The exact phrases below are
 # rechecked in the current official HTML response before any model reservation.
@@ -359,8 +362,9 @@ class RealDailyProvider:
         require(not any(term in text for term in ("정확한 진단", "최종 처방", "추천 농약",
                                                 "이 농약을 쓰세요", "오늘 방제하세요", "결제")),
                 "BLOCKED_UNSAFE_CONTENT")
-        require("참고" in article["safety_note"] and "공공" in article["safety_note"],
-                "BLOCKED_SAFETY_NOTICE")
+        # A standard non-factual safety disclaimer is deterministic; never
+        # depend on the model to include both mandatory terms verbatim.
+        article["safety_note"] = SAFETY_NOTE
         article["risk"] = "REVIEW"
         article["risk_reason"] = "공식자료 인용과 현장 적용 표현에 대한 사용자 검수 필요"
         article["public_facts"] = [x["claim"] for x in evidence]
