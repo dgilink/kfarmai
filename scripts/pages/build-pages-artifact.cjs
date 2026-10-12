@@ -82,6 +82,24 @@ for (const [directory, extensions] of publicDirectories) {
   walkFiles(directory, extensions);
 }
 
+// The private operational registry is never published. Emit only a minimal,
+// reviewed-content discovery projection after verifying local article paths.
+const registry = JSON.parse(fs.readFileSync(path.join(repoRoot, 'automation/daily_registry.json'), 'utf8'));
+if (!Array.isArray(registry.items)) throw new Error('Invalid KB registry.');
+const kbItems = registry.items.map((item) => {
+  const slug = String(item.slug || '');
+  const date = String(item.date || '');
+  if (!/^[a-z0-9-]+$/.test(slug) || !/^\d{4}-\d{2}-\d{2}$/.test(date)
+      || item.url !== `https://kfarmai.com/kb/${slug}.html`
+      || !fs.existsSync(path.join(outputDir, 'kb', `${slug}.html`))) {
+    throw new Error('KB registry entry is not a published local article.');
+  }
+  return { title: String(item.title || ''), category: String(item.category || ''),
+    date, path: `/kb/${slug}.html` };
+}).sort((a, b) => b.date.localeCompare(a.date));
+fs.writeFileSync(path.join(outputDir, 'data/kb-index.json'),
+  `${JSON.stringify({items: kbItems})}\n`, 'utf8');
+
 function countFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).reduce(
     (count, entry) => count + (entry.isDirectory() ? countFiles(path.join(directory, entry.name)) : 1),

@@ -8,11 +8,15 @@ from __future__ import annotations
 import datetime as dt
 from decimal import Decimal, ROUND_CEILING
 from html.parser import HTMLParser
+import hashlib
 import io
 import json
 import os
 from pathlib import Path
 import re
+import sys
+import uuid
+import urllib.error
 import urllib.request
 from urllib.parse import urlsplit
 
@@ -36,8 +40,9 @@ OUTPUT_RATE = Decimal("0.50")
 MULTIPLIER = Decimal("1.10")
 MAX_RESERVE = int(((2 * MAX_INPUT * INPUT_RATE + MAX_OUTPUT * OUTPUT_RATE)
                    * MULTIPLIER).to_integral_value(rounding=ROUND_CEILING))
-BRAND_HERO = "static/kfarmai-logo-horizontal.png"
-BRAND_HERO_SHA256 = "b6fadfad5d04d8d5c9c3c1997dc7a7d028becbea707011245a0a1d75419a51eb"
+PUBLIC_HERO = "static/kb/usda-greenhouse-heating-photo.jpg"
+PUBLIC_HERO_SHA256 = "ed890320694246ca381e34a886243be423fba45ffbddf4f1cceae1da8daf3db7"
+PUBLIC_HERO_SOURCE = "https://commons.wikimedia.org/wiki/File:20090915-USDA-OC-PSD-0002_-_54674579668_Agriculture_in_the_United_States.jpg"
 
 # Editorial seed, not a source of asserted facts. The exact phrases below are
 # rechecked in the current official HTML response before any model reservation.
@@ -152,6 +157,14 @@ def estimated_cost(count_tokens, input_tokens, output_tokens):
                 * MULTIPLIER).to_integral_value(rounding=ROUND_CEILING))
 
 
+def _safe_request_id(value):
+    return value if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,128}", value) else None
+
+
+def _safe_response_id(value):
+    return value if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_-]{1,128}", value) else None
+
+
 class OpenAIResponses:
     """Exactly one bounded Responses request, with no redirect or retry."""
     def __init__(self, key):
@@ -160,15 +173,56 @@ class OpenAIResponses:
         self.response_used = False
 
     def _post(self, path, payload):
+        client_request_id = str(uuid.uuid4())
+        safe_payload = canonical(payload)
+        event = {"client_request_id": client_request_id,
+                 "execution_id": os.environ.get("GITHUB_RUN_ID", "local") if
+                 re.fullmatch(r"[0-9]{1,20}", os.environ.get("GITHUB_RUN_ID", "")) else "local",
+                 "payload_sha256": hashlib.sha256(safe_payload).hexdigest(),
+                 "attempted_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+                 "model": payload.get("model"),
+                 "max_output_tokens": payload.get("max_output_tokens")}
+        def emit(**fields):
+            print("MODEL_TELEMETRY " + json.dumps({**event, **fields},
+                sort_keys=True, ensure_ascii=True), file=sys.stderr, flush=True)
+        emit(phase="before_dispatch", request_dispatched="unconfirmed")
         request = urllib.request.Request("https://api.openai.com/v1/" + path,
-            data=canonical(payload), method="POST",
-            headers={"Authorization": "Bearer " + self.key, "Content-Type": "application/json"})
+            data=safe_payload, method="POST",
+            headers={"Authorization": "Bearer " + self.key, "Content-Type": "application/json",
+                     "X-Client-Request-Id": client_request_id})
+        response_headers_seen = False
         try:
             with urllib.request.build_opener(_NoRedirect).open(request, timeout=60) as response:
+                response_headers_seen = True
                 raw = response.read(1048577)
+                emit(phase="http_response", http_status=response.status,
+                     openai_request_id=_safe_request_id(response.headers.get("x-request-id")),
+                     request_dispatched=True)
                 require(response.status == 200 and len(raw) <= 1048576, "BLOCKED_MODEL_RESPONSE")
-                return json.loads(raw)
+                parsed = json.loads(raw)
+                usage = parsed.get("usage")
+                emit(phase="response_parsed", response_id=_safe_response_id(parsed.get("id")),
+                     response_model=parsed.get("model") if parsed.get("model") == MODEL else "UNEXPECTED",
+                     usage_present=isinstance(usage, dict),
+                     input_tokens=usage.get("input_tokens") if isinstance(usage, dict) and type(usage.get("input_tokens")) is int else None,
+                     output_tokens=usage.get("output_tokens") if isinstance(usage, dict) and type(usage.get("output_tokens")) is int else None)
+                return parsed
+        except urllib.error.HTTPError as error:
+            # The provider's error body may contain user data; log only a bounded code.
+            try:
+                detail = json.loads(error.read(4096))
+                code = detail.get("error", {}).get("code")
+                code = code if isinstance(code, str) and re.fullmatch(r"[A-Za-z0-9_.-]{1,80}", code) else None
+            except (ValueError, TypeError, AttributeError):
+                code = None
+            emit(phase="http_error", http_status=error.code,
+                 openai_request_id=_safe_request_id(error.headers.get("x-request-id") if error.headers else None),
+                 error_code=code, request_dispatched=True)
+            raise Blocked("BLOCKED_MODEL_CALL_NO_RETRY") from None
         except Exception:
+            emit(phase="network_or_parse_error", exception_class=sys.exc_info()[0].__name__,
+                 request_dispatched=True if response_headers_seen else "unconfirmed",
+                 response_headers_present=response_headers_seen)
             raise Blocked("BLOCKED_MODEL_CALL_NO_RETRY") from None
 
     def generate(self, payload):
@@ -213,21 +267,25 @@ def _response_article(result):
 
 
 def _static_hero(root):
-    # Repository-owned branding, not a crop photograph or generated field evidence.
-    source = root / BRAND_HERO
+    # Verified USDAgov public-domain photograph. Illustrative U.S. greenhouse,
+    # not photographic evidence for the Korean RDA claims in this article.
+    source = root / PUBLIC_HERO
     require(source.is_file(), "BLOCKED_STATIC_HERO_MISSING")
-    require(digest(source.read_bytes()) == BRAND_HERO_SHA256, "BLOCKED_STATIC_HERO_CHANGED")
+    require(digest(source.read_bytes()) == PUBLIC_HERO_SHA256, "BLOCKED_STATIC_HERO_CHANGED")
     try:
         from PIL import Image
         with Image.open(source) as img:
-            require(img.format == "PNG" and img.width >= 800 and img.height >= 250,
+            require(img.format == "JPEG" and img.width >= 800 and img.height >= 450,
                     "BLOCKED_STATIC_HERO_INVALID")
             out = io.BytesIO()
             img.convert("RGB").save(out, format="WEBP", quality=82, method=6)
         data = out.getvalue()
         require(data[:4] == b"RIFF" and data[8:12] == b"WEBP", "BLOCKED_STATIC_HERO_INVALID")
-        return data, {"source": BRAND_HERO, "source_sha256": BRAND_HERO_SHA256,
-                      "kind": "KFarmAI brand graphic; not a field photograph"}
+        return data, {"source": PUBLIC_HERO, "source_sha256": PUBLIC_HERO_SHA256,
+                      "source_url": PUBLIC_HERO_SOURCE, "author": "USDAgov / Holly Hess",
+                      "license": "U.S. federal government public domain",
+                      "kind": "illustrative U.S. greenhouse photograph; not Korean field evidence",
+                      "image_model": None, "image_cost_microusd": 0}
     except (OSError, ImportError):
         raise Blocked("BLOCKED_STATIC_HERO_INVALID") from None
 
@@ -265,10 +323,19 @@ class RealDailyProvider:
                 "BLOCKED_SOURCES")
         return evidence
 
-    def reserve_budget(self, date, payload):
-        return self.budget.reserve(date.replace("-", ""), "content", "REVIEW",
+    def reserve_budget(self, date, payload, recovery_from=None):
+        # One incident-only second reservation. The fixed key is deliberately
+        # non-reusable; a failed recovery cannot authorize a third call.
+        if recovery_from is None:
+            budget_run_id = date.replace("-", "")
+        else:
+            require(date == "2026-10-12" and recovery_from == "38209820550",
+                    "BLOCKED_RECOVERY_IDENTITY")
+            budget_run_id = "20261012999999999999"
+        return self.budget.reserve(budget_run_id, "content", "REVIEW",
                                    MAX_RESERVE, {"model": MODEL, "request": payload,
-                                                 "budget_date_kst": date})
+                                                 "budget_date_kst": date,
+                                                 "recovery_from": recovery_from})
 
     def generate_article(self, reservation, payload):
         # A lost response or missing usage is not a free call; DurableBudget
@@ -306,7 +373,7 @@ class RealDailyProvider:
         html_path = f"static/kb/{slug}-hero.webp"
         svg_path = f"static/kb/{slug}-infographic.svg"
         page = render_html(article, date, html_path, svg_path, "https://kfarmai.com",
-                           hero_caption="KFarmAI 브랜드 정적 이미지입니다. 현장 사진이 아닙니다.").encode("utf-8")
+                           hero_caption="온실 참고 사진: USDAgov/Holly Hess, 미국 연방정부 퍼블릭 도메인. 한국 현장 진단 증거가 아닙니다.").encode("utf-8")
         from tempfile import TemporaryDirectory
         with TemporaryDirectory(prefix="kfarmai-daily-svg-") as temp:
             path = Path(temp) / "infographic.svg"
@@ -332,7 +399,7 @@ class RealDailyProvider:
         require(receipt["estimated_microusd"] <= MAX_RESERVE, "BLOCKED_BUDGET_SETTLEMENT")
         return receipt
 
-    def run(self, *, date, run_id, head_sha, output, now=None):
+    def run(self, *, date, run_id, head_sha, output, now=None, recovery_from=None):
         now = now or dt.datetime.now(dt.timezone.utc)
         require(now.tzinfo is not None and date == now.astimezone(KST).date().isoformat(),
                 "BLOCKED_BUDGET_DATE")
@@ -357,7 +424,7 @@ class RealDailyProvider:
                    "tool_choice": "none", "max_tool_calls": 0,
                    "truncation": "disabled"}
         require(len(canonical(payload)) <= 24000, "BLOCKED_INPUT_SIZE")
-        reservation = self.reserve_budget(date, payload)
+        reservation = self.reserve_budget(date, payload, recovery_from)
         article, _, receipt = self.generate_article(reservation, payload)
         self.reconcile_budget(receipt)
         article = self.classify_content(article, topic, evidence)

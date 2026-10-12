@@ -1592,6 +1592,13 @@
     border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 8px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .home-kb-section { margin: 16px 16px 8px; padding: 18px; background:#f1f8f3; border:1px solid #d5e8d9; border-radius:18px; }
+  .home-kb-section .section-head { margin:0 0 12px; }
+  .home-kb-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+  .home-kb-cards .kb-card { display:block; min-width:0; padding:14px; background:#fff; border:1px solid #dce9df; border-radius:12px; color:#22302a; text-decoration:none; }
+  .home-kb-cards .kb-card strong { display:block; margin:5px 0; line-height:1.45; }
+  .home-kb-cards .kb-card small { display:block; color:#617066; }
+  .home-kb-cards .kb-card span { color:#176c43; font-weight:700; }
 </style>
 <link rel="stylesheet" href="static/css/agri-info.css?v=20260706-news2">
 <script>
@@ -1914,6 +1921,11 @@
             <p>농업과 식물에 관한 질문부터 현장 이야기까지 한곳에서 확인하세요.</p>
           </div>
           <button class="community-primary-cta" type="button" onclick="openModal('question-help')">질문하기</button>
+        </section>
+
+        <section class="home-kb-section" aria-labelledby="homeKbTitle">
+          <div class="section-head"><div><h2 class="section-title" id="homeKbTitle">농업정보 · 지금 필요한 정보</h2><p class="section-copy">공식 출처와 확인일을 함께 살펴보세요.</p></div><a class="section-more-btn" href="/kb/index.html">농업정보 전체보기 &gt;</a></div>
+          <div class="home-kb-cards" id="homeKbCards" aria-live="polite"><a class="kb-card" href="/kb/greenhouse-irrigation-precheck.html"><small>스마트팜 · 2026-10-11</small><strong>온실 관수 설비 가동 전 확인 포인트</strong><span>내용과 출처 확인 →</span></a></div>
         </section>
 
         <div class="community-home-layout">
@@ -2315,6 +2327,7 @@
 <script src="static/fert_data.js"></script>
 <script src="static/crop-pages.js?v=20260706-regional"></script>
 <script src="static/js/agri-info/agri-feed-ui.js"></script>
+<script src="static/js/kb-discovery.js" defer></script>
 <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <script>
 (function(){

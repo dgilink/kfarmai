@@ -83,21 +83,32 @@ def risk_gate(a,cfg):
 
 def render_svg(a,path):
     items=a["infographic_items"][:5]
-    height=260+len(items)*105+90
+    def lines(value, width):
+        value=" ".join(value.split())
+        if not value or len(value)>width*2:
+            raise ValueError("INFOGRAPHIC_TEXT_OVERFLOW")
+        return [value[i:i+width] for i in range(0,len(value),width)]
+    title_lines=lines(a["infographic_title"],24)
+    title_height=60*len(title_lines)
+    row_start=150+title_height
+    height=row_start+len(items)*140+75
     rows=[]
     for i,t in enumerate(items,1):
-        y=220+(i-1)*105
+        y=row_start+(i-1)*140
+        body=lines(t,30)
         rows += [
-            f'<rect x="60" y="{y}" width="1080" height="84" rx="16" fill="#fff" stroke="#d8e4d4"/>',
-            f'<circle cx="108" cy="{y+42}" r="25" fill="#2e7d4f"/>',
-            f'<text x="108" y="{y+51}" text-anchor="middle" font-size="25" font-family="Arial,sans-serif" fill="#fff">{i}</text>',
-            f'<text x="155" y="{y+51}" font-size="28" font-weight="700" font-family="Arial,Noto Sans KR,sans-serif" fill="#22302a">{xesc(t)}</text>'
+            f'<rect x="60" y="{y}" width="1080" height="124" rx="16" fill="#fff" stroke="#d8e4d4"/>',
+            f'<circle cx="108" cy="{y+62}" r="25" fill="#2e7d4f"/>',
+            f'<text x="108" y="{y+71}" text-anchor="middle" font-size="25" font-family="Arial,sans-serif" fill="#fff">{i}</text>',
+            *[f'<text x="155" y="{y+56+j*38}" font-size="28" font-weight="700" font-family="Arial,Noto Sans KR,sans-serif" fill="#22302a">{xesc(line)}</text>'
+              for j,line in enumerate(body)]
         ]
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="{height}" viewBox="0 0 1200 {height}">'
         f'<rect width="1200" height="{height}" fill="#f4f8f2"/>'
-        f'<text x="60" y="85" font-size="42" font-weight="700" font-family="Arial,Noto Sans KR,sans-serif" fill="#173c2a">{xesc(a["infographic_title"])}</text>'
-        f'<text x="60" y="128" font-size="21" font-family="Arial,Noto Sans KR,sans-serif" fill="#617066">KFarmAI 현장 체크</text>'
+        + "".join(f'<text x="60" y="{85+j*55}" font-size="42" font-weight="700" font-family="Arial,Noto Sans KR,sans-serif" fill="#173c2a">{xesc(line)}</text>'
+                  for j,line in enumerate(title_lines))
+        + f'<text x="60" y="{95+title_height}" font-size="21" font-family="Arial,Noto Sans KR,sans-serif" fill="#617066">KFarmAI 현장 체크</text>'
         + "".join(rows) +
         f'<text x="60" y="{height-35}" font-size="17" font-family="Arial,Noto Sans KR,sans-serif" fill="#6b746f">AI 정보는 참고용입니다. 최신 공식자료와 현장 상태를 함께 확인하세요.</text></svg>'
     )
@@ -126,6 +137,7 @@ def render_html(a,date,hero,info,site,*,hero_caption=None):
       '<figure><img style="width:100%;height:auto" src="/'+info+'" alt="'+html.escape(a["infographic_title"],quote=True)+'"><figcaption>'+html.escape(a["infographic_title"])+'</figcaption></figure>',
       '<h2>kFarmAI 연결</h2><p>'+html.escape(a["kfarmai_connection"])+'</p><p>'+html.escape(a["safety_note"])+'</p>',
       '<h2>공식 참고자료</h2><ul>'+sources+'</ul><p>공식자료 확인일: '+date+'. 공공자료와 kFarmAI 정리 내용을 구분해 작성했습니다.</p>',
+      '<nav aria-label="다음 확인 경로"><h2>다음 확인 경로</h2><ul><li><a href="/kb/index.html">농업정보 더 보기</a></li><li><a href="/index.html?view=questions">관련 질문 보기</a></li><li><a href="/diagnosis.html">AI 참고 진단으로 확인하기</a></li></ul></nav>',
       '</article></main><footer class="site-footer"><a href="/oauth/privacy/">개인정보처리방침</a></footer></body></html>'
     ]
     return "".join(parts)

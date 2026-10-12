@@ -6,6 +6,8 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+import urllib.error
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "automation"))
@@ -152,7 +154,8 @@ class RealDailyE2E(unittest.TestCase):
             package = load_package(output / "approval-package")
             self.assertEqual(9, len(package["files"]))
             self.assertIn("RIFF", package["files"]["publish/" + package["intent"]["hero"]][:4].decode())
-            self.assertIn("브랜드 정적 이미지", package["files"]["publish/" + package["intent"]["html"]].decode())
+            self.assertIn("USDAgov/Holly Hess", package["files"]["publish/" + package["intent"]["html"]].decode())
+            self.assertEqual(0, result["evidence"][0].get("image_cost_microusd", 0))
             github = GitHubFixture(package)
             issued = provider.create_review_issue(package, github)
             self.assertEqual("REVIEW", issued["state"])
@@ -238,6 +241,40 @@ class RealDailyE2E(unittest.TestCase):
         self.assertEqual(["responses"], paths)
         with self.assertRaises(Exception):
             model.generate(payload)
+
+    def test_recovery_uses_one_fixed_new_budget_identity(self):
+        provider, _, rpc = self.make()
+        payload = {"model": MODEL}
+        normal = provider.reserve_budget("2026-10-12", payload)
+        self.assertEqual("20261012", normal["run_id"])
+        rpc.reserved = False
+        recovery = provider.reserve_budget("2026-10-12", payload, "38209820550")
+        self.assertEqual("20261012999999999999", recovery["run_id"])
+        with self.assertRaises(Exception):
+            provider.reserve_budget("2026-10-12", payload, "other")
+        with self.assertRaises(Exception):
+            provider.reserve_budget("2026-10-13", payload, "38209820550")
+
+    def test_openai_telemetry_no_secret_or_body(self):
+        model = OpenAIResponses("secret-that-must-not-log")
+        payload = {"model": MODEL, "max_output_tokens": 8192, "tools": [],
+                   "tool_choice": "none", "service_tier": "default"}
+        error = urllib.error.HTTPError("https://api.openai.com/v1/responses", 400,
+            "bad request with secret-that-must-not-log",
+            {"x-request-id": "req_safe123"}, io.BytesIO(b'{"error":{"code":"invalid_request_error","message":"secret-that-must-not-log"}}'))
+        with mock.patch("urllib.request.build_opener") as opener, \
+             mock.patch("sys.stderr", new_callable=io.StringIO) as stderr:
+            opener.return_value.open.side_effect = error
+            with self.assertRaises(Exception):
+                model.generate(payload)
+            request = opener.return_value.open.call_args.args[0]
+        log = stderr.getvalue()
+        self.assertEqual(1, opener.return_value.open.call_count)
+        self.assertIn("X-client-request-id", request.headers)
+        self.assertIn("req_safe123", log)
+        self.assertIn('"http_status": 400', log)
+        self.assertIn('"error_code": "invalid_request_error"', log)
+        self.assertNotIn("secret-that-must-not-log", log)
 
     def test_daily_context_owner_and_head_guard(self):
         env = {"GITHUB_REPOSITORY": "dgilink/kfarmai", "GITHUB_REF": "refs/heads/main",

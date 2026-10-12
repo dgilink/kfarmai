@@ -11,6 +11,12 @@ on:
         default: dry_run
         type: choice
         options: [dry_run, review_only]
+      recovery:
+        description: "One approved 2026-10-12 incident recovery, otherwise none"
+        required: true
+        default: none
+        type: choice
+        options: [none, incident_38209820550]
 
 permissions:
   contents: read
@@ -46,6 +52,7 @@ jobs:
       KFARMAI_REVIEW_PUBLISH_ENABLED: ${{ vars.KFARMAI_REVIEW_PUBLISH_ENABLED }}
       KFARMAI_DAILY_REVIEW_ONLY: ${{ vars.KFARMAI_DAILY_REVIEW_ONLY }}
       KFARMAI_DAILY_APPROVED_HEAD_SHA: ${{ vars.KFARMAI_DAILY_APPROVED_HEAD_SHA }}
+      KFARMAI_DAILY_RECOVERY: ${{ inputs.recovery || 'none' }}
       KFARMAI_DAILY_DB_DSN: ${{ secrets.KFARMAI_DAILY_DB_DSN }}
       KFARMAI_DAILY_DB_CA_PEM: ${{ secrets.KFARMAI_DAILY_DB_CA_PEM }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

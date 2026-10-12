@@ -82,6 +82,8 @@ def verify_context(env, head_sha, *, phase):
             "DAILY_GITHUB_CONTEXT_MISMATCH")
     if env.get("GITHUB_EVENT_NAME") == "workflow_dispatch":
         require(env.get("GITHUB_ACTOR_ID") == "293838055", "DAILY_ACTOR_MISMATCH")
+    require(env.get("KFARMAI_DAILY_RECOVERY", "none") in
+            {"none", "incident_38209820550"}, "DAILY_RECOVERY_INVALID")
 
 
 def run_command(args, env):
@@ -116,8 +118,10 @@ def run_command(args, env):
                 provider = RealDailyProvider(root, OfficialSourceClient(load_domains(root)),
                                              OpenAIResponses(key), budget,
                                              GitHubIssueIndex(env.get("GH_TOKEN")))
+                recovery = env.get("KFARMAI_DAILY_RECOVERY", "none")
                 result = provider.run(date=args.date, run_id=args.run_id, head_sha=head_sha,
-                                      output=args.output)
+                                      output=args.output,
+                                      recovery_from="38209820550" if recovery == "incident_38209820550" else None)
                 return result["outcome"]
             package = load_package(Path(args.output) / "approval-package")
             artifact = json.loads(Path(args.artifact_json).read_bytes())

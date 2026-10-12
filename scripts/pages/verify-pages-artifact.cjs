@@ -15,6 +15,7 @@ const mustExist = [
   'channel.html',
   'agri-info.html',
   'kb/index.html',
+  'data/kb-index.json',
   'kb/ras-recirculating-aquaculture.html',
   'kb/land-aquaculture-water-quality.html',
   'oauth/index.html',
@@ -121,6 +122,15 @@ for (const required of mustExist) {
 }
 
 const files = walk(artifactDir);
+if (exists('data/kb-index.json')) {
+  const kbIndex = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-index.json'), 'utf8'));
+  if (!Array.isArray(kbIndex.items) || kbIndex.items.some((item) =>
+    Object.keys(item).sort().join(',') !== 'category,date,path,title'
+    || !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path)
+    || !exists(item.path.slice(1)))) {
+    errors.push('KB index is not a safe published-content projection');
+  }
+}
 for (const relativePath of files) {
   const forbiddenSegment = relativePath.split('/').find((segment) => forbiddenTopLevel.has(segment));
   if (forbiddenSegment) errors.push(`forbidden directory published: ${forbiddenSegment}/`);
