@@ -16,7 +16,7 @@ on:
         required: true
         default: none
         type: choice
-        options: [none, incident_38209820550, incident_38218191801]
+        options: [none, incident_38209820550, incident_38218191801, incident_38222769553]
 
 permissions:
   contents: read

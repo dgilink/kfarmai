@@ -158,6 +158,7 @@ class RealDailyE2E(unittest.TestCase):
             self.assertEqual(1, rpc.calls.count("settle"))
             package = load_package(output / "approval-package")
             self.assertEqual(9, len(package["files"]))
+            self.assertIn(SAFETY_NOTE, package["files"]["publish/" + package["intent"]["html"]].decode())
             self.assertIn("RIFF", package["files"]["publish/" + package["intent"]["hero"]][:4].decode())
             self.assertIn("USDAgov/Holly Hess", package["files"]["publish/" + package["intent"]["html"]].decode())
             self.assertEqual(0, result["evidence"][0].get("image_cost_microusd", 0))
@@ -184,8 +185,13 @@ class RealDailyE2E(unittest.TestCase):
         evidence = [{"title": x["title"], "url": x["url"], "claim": x["claim"]}
                     for x in TOPICS[0]["sources"]]
         self.assertEqual(SAFETY_NOTE, provider.classify_content(a, TOPICS[0], evidence)["safety_note"])
+        self.assertIn("제품 라벨", SAFETY_NOTE)
         a = article()
         a["sections"][0]["body"] = "오늘 방제하세요"
+        with self.assertRaises(Exception):
+            provider.classify_content(a, TOPICS[0], evidence)
+        a = article()
+        a["safety_note"] = "이 농약을 쓰세요"
         with self.assertRaises(Exception):
             provider.classify_content(a, TOPICS[0], evidence)
 
@@ -270,6 +276,9 @@ class RealDailyE2E(unittest.TestCase):
         rpc.reserved = False
         final_recovery = provider.reserve_budget("2026-10-12", payload, "38218191801")
         self.assertEqual("20261012888888888888", final_recovery["run_id"])
+        rpc.reserved = False
+        safety_recovery = provider.reserve_budget("2026-10-12", payload, "38222769553")
+        self.assertEqual("20261012777777777777", safety_recovery["run_id"])
         with self.assertRaises(Exception):
             provider.reserve_budget("2026-10-12", payload, "other")
         with self.assertRaises(Exception):

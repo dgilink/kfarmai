@@ -83,7 +83,8 @@ def verify_context(env, head_sha, *, phase):
     if env.get("GITHUB_EVENT_NAME") == "workflow_dispatch":
         require(env.get("GITHUB_ACTOR_ID") == "293838055", "DAILY_ACTOR_MISMATCH")
     require(env.get("KFARMAI_DAILY_RECOVERY", "none") in
-            {"none", "incident_38209820550", "incident_38218191801"}, "DAILY_RECOVERY_INVALID")
+            {"none", "incident_38209820550", "incident_38218191801",
+             "incident_38222769553"}, "DAILY_RECOVERY_INVALID")
 
 
 def run_command(args, env):
@@ -123,6 +124,7 @@ def run_command(args, env):
                                       output=args.output,
                                       recovery_from=("38209820550" if recovery == "incident_38209820550"
                                                      else "38218191801" if recovery == "incident_38218191801"
+                                                     else "38222769553" if recovery == "incident_38222769553"
                                                      else None))
                 return result["outcome"]
             package = load_package(Path(args.output) / "approval-package")
