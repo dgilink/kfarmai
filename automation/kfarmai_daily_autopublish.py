@@ -159,14 +159,14 @@ def main():
     if args.mode == "self_test":
         selftest(root, out)
         return 0
-    from synthetic_e2e import run_e2e, FixtureProvider, URLS
     if args.mode == "dry_run":
-        result = run_e2e(root, out)
-        print(json.dumps(result, ensure_ascii=False))
-        return 0 if result["status"] == "PASS" else 2
-    from autopublish_pipeline import generate
-    result = generate(root, out, FixtureProvider(review=True), known_sources=URLS, force_review=True)
-    return 0 if result["outcome"]["status"] == "REVIEW" else 2
+        selftest(root, out)
+        return 0
+    # There is no live provider or source-evidence adapter for the legacy
+    # workflow. Never substitute synthetic content for a real REVIEW Issue.
+    savej(out / "outcome.json", {"status": "BLOCK", "reason": "LIVE_REVIEW_GENERATION_NOT_IMPLEMENTED",
+                                  "synthetic": False, "published": False})
+    return 2
 
 if __name__=="__main__":
     raise SystemExit(main())

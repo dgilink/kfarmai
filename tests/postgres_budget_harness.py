@@ -17,12 +17,15 @@ def sql(statement):
             or any(m['Type'] != 'tmpfs' for m in config['Mounts'])
             or config['HostConfig'].get('PortBindings')):
         raise RuntimeError('DB fixture isolation not verified')
+    # Binary stdin preserves LF on Windows. Text-mode subprocess pipes turn
+    # each LF into CRLF, changing PL/pgSQL prosrc hashes and invalidating the
+    # forward migration's exact-body guard in an isolated fixture.
     result = subprocess.run(['docker', 'exec', '-i', CONTAINER, 'psql', '-X', '-qAt',
                              '-v', 'ON_ERROR_STOP=1', '-U', 'postgres'],
-                            input=statement, text=True, capture_output=True, timeout=40)
+                            input=statement.encode('utf-8'), capture_output=True, timeout=40)
     if result.returncode:
-        raise RuntimeError(result.stderr)
-    return result.stdout.strip()
+        raise RuntimeError(result.stderr.decode('utf-8', errors='replace'))
+    return result.stdout.decode('utf-8').strip()
 
 
 def rpc(command, payload):
