@@ -1253,3 +1253,10 @@ URL, 이메일, 파일명, 긴 영문, 코드성 텍스트:
 overflow-wrap: anywhere;
 word-break: break-word;
 ```
+
+### 12.10 KFarmAI 03 운영 기준선
+
+- Daily 농업콘텐츠 자동화의 현재 상태는 `CLOSED / OPERATIONS`이다.
+- 다음 작업 시작 전 `KFarmAI_HISTORY_HANDOFF_20260919.md`의 **2026-10-19 KFarmAI 03 운영 기준선**을 읽는다. 별도 `handoff.md`가 없으면 이 문서를 최신 handoff로 사용한다.
+- Daily workflow는 REVIEW-only다. AUTO publication, 유료 자동 retry, 사용자 미승인 게시를 활성화하거나 실행하지 않는다.
+- 현재 OPEN REVIEW의 사용자 검수 결정은 별도 작업이다. 새 기능 개발은 V4 UI/UX Phase에서만 시작한다.

@@ -967,3 +967,90 @@ AI가 원인 후보를 정리하고,
 
 이 원칙을 지키면 과거 대화의 서로 다른 설계가 섞여
 운영 서비스를 다시 흔드는 문제를 크게 줄일 수 있다.
+
+---
+
+## 25. 2026-10-19 KFarmAI 03 운영 기준선
+
+### 상태
+
+```text
+Project state: CLOSED / OPERATIONS
+Repository: dgilink/kfarmai (ID 1270079933)
+Baseline main: cdc258b24411dde2494329625d2696e5f966e01c
+V4_READY=true
+```
+
+`dgilink/kfarmai-private`는 이 기준선 작업에서 변경하지 않았다.
+
+### Daily Automation
+
+Daily workflow `377121327`은 active 상태이며, cron은 `0 21 * * *` (06:00 KST)다.
+
+```text
+Daily REVIEW
+→ immutable Artifact
+→ GitHub REVIEW Issue
+→ Resend review email
+→ CONTENT approval (POST)
+→ separate PUBLISH approval (POST)
+→ existing Gate C/D
+→ Pages
+→ Post-publish Audit / Registry
+```
+
+- REVIEW-only 유지
+- AUTO publication: OFF
+- paid automatic retry: OFF
+- daily maximum: 1
+- AI 콘텐츠는 참고자료이며 확정 진단·자동 농약 처방으로 표현하거나 사용하지 않는다. 공식자료와 현장 조건을 함께 확인한다.
+
+### Budget and Email
+
+- Daily budget: USD 0.15 / KST day, fail-closed
+- Global budget at rest: `false / 0`
+- email provider: Resend
+- sending domain: `notify.kfarmai.com`
+- approval token은 DB에 hash만 저장하며 expiry, replay 차단, CSRF, scanner-safe GET을 유지한다.
+
+### Current pending REVIEW
+
+Issue #5는 정상적인 사용자 검수 대기 상태다.
+
+```text
+Approval ID: review-39202263746-r1-3c9cc026df02
+Artifact: 12164561335
+Manifest: 9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30
+State: OPEN REVIEW / published=false
+```
+
+이 Issue는 사용자 결정 전 approve, publish, close, hold 하지 않는다.
+
+### Operations runbook
+
+정상 흐름은 매일 06:00 KST에 REVIEW 1건을 만들고, Artifact·Issue·검수 이메일을 생성한 뒤 사용자의 CONTENT 승인과 별도 PUBLISH 승인을 거쳐 기존 Gate C/D와 Pages/Audit/Registry를 통과하는 것이다.
+
+실패 시 자동 유료 retry를 하지 않는다. HOLD로 두고 ledger와 budget을 확인한 뒤 처리하며, 다음날 무조건 재시도하지 않는다. OPEN REVIEW는 새 Daily와 충돌할 수 있으므로 사용자가 승인·보류·종료를 결정한다. 완료된 과거 Issue는 current Production과 Audit을 재확인한 뒤에만 Close한다.
+
+### Completed history
+
+Issue #4는 publish commit, Pages, Production URL, Registry, Sitemap, Audit을 재확인한 완료 REVIEW다. 과거 `BLOCKED_PAGES_TIMEOUT`은 실제 Production 실패가 아닌 poll/wait timeout으로 판정했고 Close했다.
+
+### Technical debt
+
+MEDIUM: Production migration history에는 remote-only/local-only 기존 버전 불일치가 있다. 현재 운영을 막지 않으므로 `supabase db push`, repair, reset을 무리하게 수행하지 않는다. 다음 DB 정리 Phase에서 별도로 다룬다.
+
+LOW: isolated clone test artifact 및 actionlint/Docker가 없는 로컬 환경의 일부 검증 skip 가능성이 있다.
+
+### V4 transition
+
+다음 개발 Phase는 **KFarmAI V4 UI/UX**다.
+
+1. Home
+2. 질문/커뮤니티
+3. AI 참고진단
+4. 농업정보
+5. 주변 농약사
+6. MY
+
+Daily automation은 V4에서 불필요하게 재설계하지 않는다.
