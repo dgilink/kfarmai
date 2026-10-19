@@ -16,6 +16,17 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("grant execute on function public.daily_review_approval_review(text) to service_role", SQL)
         self.assertIn("grant execute on function public.daily_review_approval_apply(text,text,text,text) to service_role", SQL)
 
+    def test_resend_transport_is_server_side_and_oidc_bound(self):
+        transport = (ROOT / "supabase/migrations/20261019060000_daily_review_resend_transport.sql").read_text(encoding="utf-8")
+        self.assertIn("daily_review_email_issue", transport)
+        self.assertIn("idempotency_key", transport)
+        self.assertIn("daily_review_email_outbox", transport)
+        self.assertIn("api.resend.com/emails", EDGE)
+        self.assertIn("token.actions.githubusercontent.com", EDGE)
+        self.assertIn("workflow_ref", EDGE)
+        self.assertIn("Idempotency-Key", EDGE)
+        self.assertNotIn("RESEND_API_KEY", (ROOT / ".github/workflows/kfarmai-daily-autopublish.yml").read_text(encoding="utf-8"))
+
     def test_separate_one_time_content_and_publish_tokens(self):
         for value in ("'CONTENT','PUBLISH'", "CONTENT_APPROVED", "PUBLISH_APPROVED", "APPROVAL_REPLAY_BLOCKED", "CONTENT_APPROVAL_REQUIRED", "APPROVAL_BINDING_MISMATCH"):
             self.assertIn(value, SQL)

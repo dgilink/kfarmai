@@ -17,9 +17,10 @@ from activation_contract import validate_approval
 
 
 class Gate3ActivationGuard(unittest.TestCase):
-    def test_legacy_schedule_stays_hard_locked(self):
+    def test_schedule_is_review_only_and_not_actor_blocked(self):
         workflow = (ROOT / ".github/workflows/kfarmai-daily-autopublish.yml").read_text(encoding="utf-8")
-        self.assertIn("github.event_name == 'workflow_dispatch'", workflow)
+        self.assertIn("github.event_name == 'schedule'", workflow)
+        self.assertIn("github.event_name == 'workflow_dispatch' && github.actor_id == '293838055'", workflow)
         self.assertIn("vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED == 'true'", workflow)
         self.assertIn("vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false'", workflow)
         self.assertIn("vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'", workflow)
@@ -28,6 +29,8 @@ class Gate3ActivationGuard(unittest.TestCase):
         self.assertIn("KFARMAI_DAILY_APPROVED_HEAD_SHA", workflow)
         self.assertIn("daily_review_runner.py generate", workflow)
         self.assertIn("daily_review_runner.py finalize", workflow)
+        self.assertIn("daily_review_email_dispatch.py", workflow)
+        self.assertIn("id-token: write", workflow)
         self.assertNotIn("git push", workflow)
 
     def test_legacy_paid_transport_stays_disabled(self):

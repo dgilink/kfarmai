@@ -1,0 +1,32 @@
+from pathlib import Path
+import json
+import sys
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "automation"))
+
+from approval_package import prepare_package, write_package  # noqa: E402
+from daily_review_email_dispatch import build_request  # noqa: E402
+from kfarmai_review_approval import digest  # noqa: E402
+
+
+class DispatchTests(unittest.TestCase):
+    def test_request_binds_artifact_issue_and_manifest(self):
+        article = {"risk":"REVIEW","slug":"mail-fixture","title":"검수 메일 fixture","category":"스마트팜","summary":"핵심 내용","sources":[{"url":"https://www.rda.go.kr/"}],"safety_note":"참고자료"}
+        source = {"status":"PASS","evidence":[],"checked_at":"2026-10-19T00:00:00Z"}
+        package = prepare_package(article=article, review_reason="사람 검수 필요", source_check=source,
+            html_bytes=b"<html></html>", hero_bytes=b"hero", svg_bytes=b"<svg/>", date="2026-10-19", run_id=777001, head_sha="a" * 40)
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td) / "package"; write_package(root, package)
+            artifact = {"id": 777001, "digest": "sha256:" + digest(b"artifact")}
+            outcome = {"status":"REVIEW","published":False,"approval_id":package["manifest"]["approval_id"],"manifest_sha256":package["manifest_sha256"],"issue_url":"https://github.com/dgilink/kfarmai/issues/77","model_usage":{"input_tokens":1,"output_tokens":2,"estimated_microusd":3}}
+            result = build_request(root, artifact, outcome)
+        self.assertEqual(package["manifest_sha256"], result["manifest_sha256"])
+        self.assertEqual(777001, result["artifact_id"])
+        self.assertEqual("gpt-6-luna", result["email_context"]["model"])
+
+
+if __name__ == "__main__":
+    unittest.main()

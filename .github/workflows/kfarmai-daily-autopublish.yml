@@ -31,10 +31,9 @@ jobs:
     # this job even if GitHub's Workflow state is enabled for manual dispatch.
     if: >-
       github.repository == 'dgilink/kfarmai' &&
-      github.event_name == 'workflow_dispatch' &&
       github.ref == 'refs/heads/main' &&
-      github.actor_id == '293838055' &&
-      inputs.mode == 'review_only' &&
+      (github.event_name == 'schedule' ||
+       (github.event_name == 'workflow_dispatch' && github.actor_id == '293838055' && inputs.mode == 'review_only')) &&
       vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED == 'true' &&
       vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false' &&
       vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'
@@ -45,6 +44,7 @@ jobs:
       actions: read
       contents: read
       issues: write
+      id-token: write
     env:
       PYTHONUTF8: "1"
       KFARMAI_DAILY_REVIEW_GENERATION_ENABLED: ${{ vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED }}
@@ -155,6 +155,28 @@ jobs:
             --artifact-json "$RUNNER_TEMP/daily-artifact.json" \
             --artifact-zip "$RUNNER_TEMP/daily-artifact.zip" \
             --upload-outputs "$RUNNER_TEMP/daily-upload.json"
+
+      - name: Send bound KFarmAI REVIEW email
+        if: steps.upload.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$RUNNER_TEMP/daily-review"
+          request="$RUNNER_TEMP/daily-review-email-request.json"
+          response="$RUNNER_TEMP/daily-review-email-response.json"
+          python automation/daily_review_email_dispatch.py \
+            --package "$output/approval-package" \
+            --artifact "$RUNNER_TEMP/daily-artifact.json" \
+            --outcome "$output/outcome.json" \
+            --output "$request"
+          audience='https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/daily-review-approval'
+          oidc="$(curl --fail-with-body --silent --show-error \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${audience}" | jq -er .value)"
+          curl --fail-with-body --silent --show-error \
+            -H "Authorization: Bearer $oidc" -H 'Content-Type: application/json' \
+            --data-binary @"$request" "$audience" > "$response"
+          jq -e '.state == "SENT" and .published == false and (.provider_message_id | type == "string")' "$response" > /dev/null
 
       - name: REVIEW only summary
         if: always() && steps.generate.outcome == 'success'
