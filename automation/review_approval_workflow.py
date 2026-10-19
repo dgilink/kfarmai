@@ -31,6 +31,7 @@ from kfarmai_post_publish_audit import audit_published_content
 PAGES_WORKFLOW_PATH = ".github/workflows/pages.yml"
 REVIEW_SOURCE_WORKFLOW_PATHS = frozenset({
     ".github/workflows/kfarmai-daily-autopublish.yml",
+    ".github/workflows/kfarmai-review-content-revision.yml",
     ".github/workflows/kfarmai-review-submit.yml",
 })
 

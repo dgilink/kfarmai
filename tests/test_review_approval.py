@@ -555,6 +555,7 @@ class ApprovalTests(unittest.TestCase):
         self.assertTrue(callable(workflow.GitHub.command_current))
         self.assertEqual({
             ".github/workflows/kfarmai-daily-autopublish.yml",
+            ".github/workflows/kfarmai-review-content-revision.yml",
             ".github/workflows/kfarmai-review-submit.yml",
         }, set(workflow.REVIEW_SOURCE_WORKFLOW_PATHS))
 

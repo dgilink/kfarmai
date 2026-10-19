@@ -8,6 +8,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ProductionPublishWorkflowTests(unittest.TestCase):
+    def test_revised_review_artifacts_are_valid_publish_sources(self):
+        adapter = (ROOT / "automation" / "review_approval_workflow.py").read_text(encoding="utf-8")
+        self.assertIn(
+            '".github/workflows/kfarmai-review-content-revision.yml"',
+            adapter,
+        )
+
     def test_publish_job_is_scoped_and_environment_fail_closed(self):
         path = ROOT / ".github/workflows/kfarmai-review-publish-production.yml"
         text = path.read_text(encoding="utf-8")
