@@ -104,14 +104,14 @@ class GitHub:
 def wait_for_pages(client, commit_sha, *, attempts=20, delay=12):
     """Require a successful Pages push run bound to the exact release commit."""
     require(re.fullmatch(r"[a-f0-9]{40}", commit_sha or ""), "BLOCKED_PAGES_RECEIPT")
-    endpoint = ("actions/workflows/pages.yml/runs?event=push&head_sha="
+    endpoint = ("actions/workflows/pages.yml/runs?head_sha="
                 f"{commit_sha}&per_page=20")
     for attempt in range(attempts):
         payload = client.request(endpoint)
         runs = payload.get("workflow_runs", []) if isinstance(payload, dict) else []
         matching = [item for item in runs if
                     item.get("head_sha") == commit_sha
-                    and item.get("event") == "push"
+                    and item.get("event") in {"push", "workflow_dispatch"}
                     and item.get("path") == PAGES_WORKFLOW_PATH]
         require(len(matching) <= 1, "BLOCKED_PAGES_RECEIPT")
         if matching:

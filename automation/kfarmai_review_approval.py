@@ -145,7 +145,7 @@ def authorize_solo_publish(event, current_issue, content_comment):
             (author.get("login") == "github-actions[bot]" and author.get("id") == 41898282),
             "BLOCKED_ISSUE_AUTHOR")
     meta = metadata(issue)
-    require(meta == metadata(event["issue"]) and meta["state"] == "REVIEW",
+    require(meta == metadata(event["issue"]) and meta["state"] in {"REVIEW", "PUBLISHED_PENDING_VERIFY"},
             "BLOCKED_ISSUE_CHANGED")
     match = re.fullmatch(
         r"/kfarmai publish ([A-Za-z0-9_-]+) ([a-f0-9]{64}) ([1-9][0-9]*)",
