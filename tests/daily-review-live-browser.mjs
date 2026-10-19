@@ -100,7 +100,8 @@ try {
       reasoning: document.querySelector('#review-usage')?.textContent.includes('335'),
       fullArticle: document.querySelectorAll('#review-sections h3').length >= 4 && document.body.innerText.includes('난방기 관리'),
       hero: document.querySelector('#review-hero')?.complete && document.querySelector('#review-hero')?.naturalWidth > 0,
-      infographic: document.querySelector('#review-infographic')?.complete && document.querySelector('#review-infographic')?.naturalWidth > 0,
+      infographic: document.querySelector('#review-infographic')?.complete && document.querySelector('#review-infographic')?.naturalWidth === 1200 && document.querySelector('#review-infographic')?.naturalHeight === 845,
+      infographicLayout: (() => { const image=document.querySelector('#review-infographic'); const box=image?.getBoundingClientRect(); return !!box && box.width > 300 && box.height > 200 && box.right <= document.documentElement.clientWidth + 1; })(),
       safety: document.querySelector('#review-safety')?.textContent.includes('제조사 설명서') && !document.querySelector('#review-safety')?.textContent.includes('농약 사용 전'),
       binding: document.querySelector('#review-binding')?.textContent.includes(${JSON.stringify(expectedArtifact)}) && document.querySelector('#review-binding')?.textContent.includes(${JSON.stringify(expectedManifest.slice(0, 8))}),
       sources: document.querySelectorAll('#review-sources a[href^="https://www.rda.go.kr/"]').length === 2,
@@ -123,6 +124,7 @@ try {
   assert.equal(value.fullArticle, true);
   assert.equal(value.hero, true);
   assert.equal(value.infographic, true);
+  assert.equal(value.infographicLayout, true);
   assert.equal(value.safety, true);
   assert.equal(value.binding, true);
   assert.equal(value.sources, true);

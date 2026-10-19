@@ -7,6 +7,7 @@ SQL = (ROOT / "supabase/migrations/20261014010926_daily_email_approvals.sql").re
 EDGE = (ROOT / "supabase/functions/daily-review-approval/index.ts").read_text(encoding="utf-8")
 PREVIEW_SQL = (ROOT / "supabase/migrations/20261019074353_daily_review_full_preview.sql").read_text(encoding="utf-8")
 REVISION_SQL = (ROOT / "supabase/migrations/20261019100628_daily_review_revision_supersede.sql").read_text(encoding="utf-8")
+INFOGRAPHIC_SQL = (ROOT / "supabase/migrations/20261019111706_daily_review_infographic_png_preview.sql").read_text(encoding="utf-8")
 
 
 class DailyEmailApprovalContractTests(unittest.TestCase):
@@ -97,6 +98,22 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("id-token: write", workflow)
         self.assertIn("actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", workflow)
         self.assertNotIn("OPENAI_API_KEY", workflow)
+
+    def test_infographic_png_preview_is_private_bound_and_preview_only(self):
+        workflow = (ROOT / ".github/workflows/kfarmai-review-infographic-preview-fix.yml").read_text(encoding="utf-8")
+        helper = (ROOT / "automation/daily_review_infographic_preview.py").read_text(encoding="utf-8")
+        for value in ("daily_review_infographic_preview_store", "source_svg_sha256", "image/png",
+                      "INFOGRAPHIC_PREVIEW_BINDING", "INFOGRAPHIC_PREVIEW_IMMUTABLE"):
+            self.assertIn(value, INFOGRAPHIC_SQL)
+        self.assertIn('value.content_type==="image/png"', EDGE)
+        self.assertIn("infographicPreviewWorkflow", EDGE)
+        self.assertIn('raw.operation==="INFOGRAPHIC_PREVIEW"', EDGE)
+        self.assertIn("github.actor_id == '293838055'", workflow)
+        self.assertIn("google-chrome --headless=new", workflow)
+        self.assertNotIn("OPENAI_API_KEY", workflow)
+        self.assertIn("verify_package", helper)
+        self.assertIn("BLOCKED_PREVIEW_SVG_UNSAFE", helper)
+        self.assertIn("preview_png_sha256", helper)
 
 
 if __name__ == "__main__":
