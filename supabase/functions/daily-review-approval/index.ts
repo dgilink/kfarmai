@@ -12,7 +12,7 @@ let jwksCache: { expiresAt: number; keys: JsonWebKey[] } | undefined;
 
 function baseHeaders() { return new Headers({"Cache-Control":"no-store","Content-Security-Policy":"default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'","Referrer-Policy":"no-referrer","X-Content-Type-Options":"nosniff"}); }
 function plain(body: string, status = 200, extra: Record<string,string> = {}) { const h=baseHeaders(); h.set("Content-Type","text/plain; charset=UTF-8"); for(const [key,value] of Object.entries(extra)) h.set(key,value); return new Response(body,{status,headers:h}); }
-function htmlResponse(body: string, status = 200, csrfCookie?: string) { const h=baseHeaders(); h.set("Content-Type","text/html; charset=UTF-8"); if(csrfCookie) h.append("Set-Cookie",csrfCookie); return new Response(new TextEncoder().encode(body),{status,headers:h}); }
+function htmlResponse(body: string, status = 200, csrfCookie?: string) { const h=baseHeaders(); h.set("Content-Type","text/html; charset=UTF-8"); if(csrfCookie) h.append("Set-Cookie",csrfCookie); return new Response(body,{status,headers:h}); }
 function jsonResponse(value: Record<string,unknown>) { const h=baseHeaders(); h.set("Content-Type","application/json; charset=UTF-8"); return new Response(JSON.stringify(value),{headers:h}); }
 function escape(value: unknown) { return String(value ?? "").replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]!)); }
 function b64url(bytes: ArrayBuffer) { return btoa(String.fromCharCode(...new Uint8Array(bytes))).replaceAll("+","-").replaceAll("/","_").replaceAll("=",""); }
