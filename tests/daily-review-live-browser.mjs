@@ -43,6 +43,11 @@ try {
   await socket.open();
   await socket.send('Page.enable');
   await socket.send('Runtime.enable');
+  if (process.env.KFARMAI_REVIEW_VIEWPORT === 'mobile') {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  } else {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
+  }
   const loaded = socket.once('Page.loadEventFired');
   await socket.send('Page.navigate', { url });
   await loaded;
