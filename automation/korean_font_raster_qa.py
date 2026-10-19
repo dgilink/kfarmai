@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -33,6 +34,8 @@ def cmap(path: Path) -> set[int]:
 
 
 def prepare(source: Path, font_path: Path, output: Path, report_path: Path) -> dict:
+    if re.fullmatch(r"NotoSansCJK(?:-[A-Za-z0-9]+)?\.(?:ttc|otf)", font_path.name) is None:
+        raise SystemExit("BLOCKED_KOREAN_FONT_IDENTITY")
     raw = source.read_bytes()
     text = raw.decode("utf-8")
     if "\ufffd" in text or "\u25a1" in text:

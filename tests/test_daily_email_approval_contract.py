@@ -128,6 +128,7 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("fc-match", workflow)
         self.assertIn("korean_font_raster_qa.py", workflow)
         self.assertIn("BLOCKED_KOREAN_FONT_GLYPHS", font_qa)
+        self.assertIn("BLOCKED_KOREAN_FONT_IDENTITY", font_qa)
         self.assertIn('"source_svg_changed": False', font_qa)
         self.assertNotIn("OPENAI_API_KEY", workflow)
 
