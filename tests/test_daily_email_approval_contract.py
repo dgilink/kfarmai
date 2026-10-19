@@ -8,6 +8,7 @@ EDGE = (ROOT / "supabase/functions/daily-review-approval/index.ts").read_text(en
 PREVIEW_SQL = (ROOT / "supabase/migrations/20261019074353_daily_review_full_preview.sql").read_text(encoding="utf-8")
 REVISION_SQL = (ROOT / "supabase/migrations/20261019100628_daily_review_revision_supersede.sql").read_text(encoding="utf-8")
 INFOGRAPHIC_SQL = (ROOT / "supabase/migrations/20261019111706_daily_review_infographic_png_preview.sql").read_text(encoding="utf-8")
+KOREAN_FONT_SQL = (ROOT / "supabase/migrations/20261019114158_daily_review_infographic_korean_font_replace.sql").read_text(encoding="utf-8")
 
 
 class DailyEmailApprovalContractTests(unittest.TestCase):
@@ -114,6 +115,21 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("verify_package", helper)
         self.assertIn("BLOCKED_PREVIEW_SVG_UNSAFE", helper)
         self.assertIn("preview_png_sha256", helper)
+
+    def test_infographic_korean_font_fix_is_fail_closed_and_derivative_only(self):
+        workflow = (ROOT / ".github/workflows/kfarmai-review-infographic-preview-fix.yml").read_text(encoding="utf-8")
+        font_qa = (ROOT / "automation/korean_font_raster_qa.py").read_text(encoding="utf-8")
+        for value in ("daily_review_infographic_preview_replace", "p_previous_preview_sha256",
+                      "INFOGRAPHIC_FONT_PREVIEW_BINDING", "Noto Sans CJK KR",
+                      "SIL Open Font License 1.1", "PREVIEW_REPLACED"):
+            self.assertIn(value, KOREAN_FONT_SQL)
+        self.assertIn("daily_review_infographic_preview_replace", EDGE)
+        self.assertIn("fonts-noto-cjk", workflow)
+        self.assertIn("fc-match", workflow)
+        self.assertIn("korean_font_raster_qa.py", workflow)
+        self.assertIn("BLOCKED_KOREAN_FONT_GLYPHS", font_qa)
+        self.assertIn('"source_svg_changed": False', font_qa)
+        self.assertNotIn("OPENAI_API_KEY", workflow)
 
 
 if __name__ == "__main__":

@@ -56,11 +56,23 @@ def request(args) -> dict:
     require(png[:8] == b"\x89PNG\r\n\x1a\n" and len(png) >= 33, "BLOCKED_PREVIEW_PNG")
     png_width, png_height = struct.unpack(">II", png[16:24])
     require((png_width, png_height) == (width, height), "BLOCKED_PREVIEW_PNG_DIMENSIONS")
+    font = parse_json(Path(args.font_report).read_bytes())
+    require(font.get("font_family") == "Noto Sans CJK KR"
+            and font.get("font_license") == "SIL Open Font License 1.1"
+            and font.get("missing_codepoint_count") == 0
+            and isinstance(font.get("korean_codepoint_count"), int)
+            and font["korean_codepoint_count"] > 0
+            and font.get("source_svg_changed") is False
+            and font.get("raster_input_only") is True, "BLOCKED_PREVIEW_FONT")
     value = {"operation": "INFOGRAPHIC_PREVIEW", "approval_id": APPROVAL_ID,
              "artifact_id": ARTIFACT_ID, "manifest_sha256": MANIFEST_SHA256,
              "source_svg_sha256": digest(svg), "preview_png_sha256": digest(png),
              "preview_png_base64": base64.b64encode(png).decode("ascii"),
-             "width": width, "height": height}
+             "width": width, "height": height,
+             "replace_preview_sha256": args.replace_preview_sha256,
+             "font_family": font["font_family"], "font_file": font["font_file"],
+             "font_license": font["font_license"],
+             "korean_codepoint_count": font["korean_codepoint_count"]}
     Path(args.output).write_bytes(canonical(value) + b"\n")
     return value
 
@@ -71,6 +83,8 @@ def main() -> int:
     parser.add_argument("--artifact-json", required=True)
     parser.add_argument("--artifact-zip", required=True)
     parser.add_argument("--png", required=True)
+    parser.add_argument("--font-report", required=True)
+    parser.add_argument("--replace-preview-sha256", required=True)
     parser.add_argument("--output", required=True)
     request(parser.parse_args())
     return 0

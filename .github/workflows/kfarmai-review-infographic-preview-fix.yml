@@ -42,7 +42,11 @@ jobs:
           python-version: "3.12"
 
       - name: Install bounded verification runtime
-        run: python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-cache -f
+          python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt -r automation/requirements-infographic-preview.txt
 
       - name: Download and verify immutable Artifact
         env:
@@ -66,14 +70,24 @@ jobs:
         run: |
           set -euo pipefail
           svg="$RUNNER_TEMP/package/publish/static/kb/greenhouse-heating-preflight-notes-infographic.svg"
+          raster_svg="$RUNNER_TEMP/infographic-raster-input.svg"
           png="$RUNNER_TEMP/infographic-preview.png"
+          font_file="$(fc-match -f '%{file}' ':family=Noto Sans CJK KR:lang=ko')"
+          font_family="$(fc-match -f '%{family[0]}' ':family=Noto Sans CJK KR:lang=ko')"
+          test -f "$font_file"
+          test "$font_family" = "Noto Sans CJK KR"
+          python automation/korean_font_raster_qa.py \
+            --source-svg "$svg" --font-file "$font_file" \
+            --output-svg "$raster_svg" --report "$RUNNER_TEMP/font-report.json"
           google-chrome --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
             --user-data-dir="$RUNNER_TEMP/chrome-profile" --window-size=1200,845 \
-            --screenshot="$png" "file://$svg"
+            --screenshot="$png" "file://$raster_svg"
           test -s "$png"
           python automation/daily_review_infographic_preview.py \
             --package "$RUNNER_TEMP/package" --artifact-json "$RUNNER_TEMP/artifact.json" \
             --artifact-zip "$RUNNER_TEMP/artifact.zip" --png "$png" \
+            --font-report "$RUNNER_TEMP/font-report.json" \
+            --replace-preview-sha256 "4e4df17e0b33c82d2364e8d277c9c031dc399f3c1a7d7f0bba06b80c7883064d" \
             --output "$RUNNER_TEMP/preview-request.json"
 
       - name: Store private preview without publishing
@@ -87,4 +101,4 @@ jobs:
           curl --fail-with-body -sS -X POST "$AUDIENCE" \
             -H "Authorization: Bearer $oidc" -H 'Content-Type: application/json' \
             --data-binary @"$RUNNER_TEMP/preview-request.json" > "$RUNNER_TEMP/preview-response.json"
-          jq -e '.state == "PREVIEW_READY" and .published == false' "$RUNNER_TEMP/preview-response.json" > /dev/null
+          jq -e '.state == "PREVIEW_REPLACED" and .published == false' "$RUNNER_TEMP/preview-response.json" > /dev/null
