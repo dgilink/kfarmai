@@ -977,7 +977,7 @@ AI가 원인 후보를 정리하고,
 ```text
 Project state: CLOSED / OPERATIONS
 Repository: dgilink/kfarmai (ID 1270079933)
-Baseline main: cdc258b24411dde2494329625d2696e5f966e01c
+Automation activation baseline main: cdc258b24411dde2494329625d2696e5f966e01c
 V4_READY=true
 ```
 
