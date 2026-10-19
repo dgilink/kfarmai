@@ -26,9 +26,9 @@ jobs:
       github.ref == 'refs/heads/main' &&
       github.actor_id == '293838055' &&
       github.run_attempt == 1 &&
-      inputs.approval_id == 'review-39202263746-r1-3c9cc026df02' &&
-      inputs.artifact_id == '12164561335' &&
-      inputs.manifest_sha256 == '9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30'
+      inputs.approval_id == 'review-39236736411-r2-fb2cfdd0ee4c' &&
+      inputs.artifact_id == '12179407364' &&
+      inputs.manifest_sha256 == '127932cab29cd6659947fda744e312a7f90c0042c6ed6600e1b9233ccec73d3a'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -43,7 +43,12 @@ jobs:
           python-version: "3.12"
 
       - name: Install bounded runtime
-        run: python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-cache -f
+          grep -qi 'Open Font License' /usr/share/doc/fonts-noto-cjk/copyright
+          python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt -r automation/requirements-infographic-preview.txt
 
       - name: Verify revision source and build deterministic package
         id: build
@@ -54,14 +59,33 @@ jobs:
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12164561335" > "$RUNNER_TEMP/old-artifact.json"
-          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12164561335/zip" > "$RUNNER_TEMP/old-artifact.zip"
-          python automation/daily_review_content_revision.py build \
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12179407364" > "$RUNNER_TEMP/old-artifact.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12179407364/zip" > "$RUNNER_TEMP/old-artifact.zip"
+          python automation/daily_review_infographic_polish.py build \
             --old-artifact-json "$RUNNER_TEMP/old-artifact.json" \
             --old-artifact-zip "$RUNNER_TEMP/old-artifact.zip" \
             --output "$RUNNER_TEMP/revision-package" \
             --result "$RUNNER_TEMP/revision-result.json" \
             --run-id "$GITHUB_RUN_ID" --head-sha "$GITHUB_SHA"
+
+      - name: Rasterize polished SVG with verified Korean font
+        shell: bash
+        run: |
+          set -euo pipefail
+          svg="$RUNNER_TEMP/revision-package/publish/static/kb/greenhouse-heating-preflight-notes-infographic.svg"
+          raster_svg="$RUNNER_TEMP/infographic-raster-input.svg"
+          png="$RUNNER_TEMP/infographic-preview.png"
+          font_file="$(fc-match -f '%{file}' ':family=Noto Sans CJK KR:lang=ko')"
+          font_family="$(fc-match -f '%{family[0]}' ':family=Noto Sans CJK KR:lang=ko')"
+          test -f "$font_file"
+          test "$font_family" = "Noto Sans CJK KR"
+          python automation/korean_font_raster_qa.py \
+            --source-svg "$svg" --font-file "$font_file" \
+            --output-svg "$raster_svg" --report "$RUNNER_TEMP/font-report.json"
+          google-chrome --headless=new --disable-gpu --hide-scrollbars --no-sandbox \
+            --user-data-dir="$RUNNER_TEMP/chrome-profile" --window-size=1200,805 \
+            --screenshot="$png" "file://$raster_svg"
+          test -s "$png"
 
       - name: Upload immutable revision package
         id: upload
@@ -84,9 +108,11 @@ jobs:
           printf '%s' "$ARTIFACT_ID" | grep -Eq '^[1-9][0-9]*$'
           gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > "$RUNNER_TEMP/new-artifact.json"
           gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > "$RUNNER_TEMP/new-artifact.zip"
-          python automation/daily_review_content_revision.py request \
+          python automation/daily_review_infographic_polish.py request \
             --package "$RUNNER_TEMP/revision-package" \
             --artifact-json "$RUNNER_TEMP/new-artifact.json" \
+            --png "$RUNNER_TEMP/infographic-preview.png" \
+            --font-report "$RUNNER_TEMP/font-report.json" \
             --output "$RUNNER_TEMP/revision-request.json"
 
       - name: Supersede old package and send new CONTENT REVIEW email
@@ -108,7 +134,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python automation/daily_review_content_revision.py issue \
+          python automation/daily_review_infographic_polish.py issue \
             --package "$RUNNER_TEMP/revision-package" \
             --artifact-json "$RUNNER_TEMP/new-artifact.json" \
             --artifact-zip "$RUNNER_TEMP/new-artifact.zip" \
@@ -117,5 +143,7 @@ jobs:
           gh issue edit 5 --repo "$GITHUB_REPOSITORY" \
             --title "$(jq -r .title "$RUNNER_TEMP/revision-issue.json")" \
             --body-file "$RUNNER_TEMP/revision-issue.md"
+          new_artifact="$(jq -r .artifact_id "$RUNNER_TEMP/revision-issue.json")"
+          new_manifest="$(jq -r .manifest_sha256 "$RUNNER_TEMP/revision-issue.json")"
           gh issue comment 5 --repo "$GITHUB_REPOSITORY" --body \
-            "기존 Artifact 12164561335 / Manifest 9f5da97d…는 공개 콘텐츠와 내부 검수정보 분리 전 package이므로 superseded 처리했습니다. 새 revision package로 CONTENT/PUBLISH 검수를 처음부터 다시 진행합니다. published=false"
+            "기존 Artifact 12179407364 / Manifest 127932ca…는 인포그래픽 최종 시각 수정으로 superseded 처리했습니다. 새 Artifact ${new_artifact} / Manifest ${new_manifest} 기준으로 CONTENT/PUBLISH 검수를 처음부터 다시 진행합니다. published=false"

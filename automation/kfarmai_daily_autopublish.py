@@ -81,7 +81,15 @@ def risk_gate(a,cfg):
         risk="REVIEW"; reasons.append("not_auto_category")
     return risk, "; ".join(reasons) or a.get("risk_reason","")
 
+INFOGRAPHIC_PALETTE = {
+    "blue": "#0f62fe", "blue_60": "#0043ce", "blue_80": "#002d9c",
+    "canvas": "#ffffff", "surface_1": "#f4f4f4", "hairline": "#e0e0e0",
+    "ink": "#161616", "ink_muted": "#525252", "ink_subtle": "#8c8c8c",
+}
+
+
 def render_svg(a,path):
+    """Render the publication SVG with centered cards and a restrained Carbon palette."""
     items=a["infographic_items"][:5]
     def lines(value, width):
         value=" ".join(value.split())
@@ -91,26 +99,27 @@ def render_svg(a,path):
     title_lines=lines(a["infographic_title"],24)
     title_height=60*len(title_lines)
     row_start=150+title_height
-    height=row_start+len(items)*140+75
+    height=row_start+len(items)*140+35
     rows=[]
     for i,t in enumerate(items,1):
         y=row_start+(i-1)*140
         body=lines(t,30)
+        center=y+62
         rows += [
-            f'<rect x="60" y="{y}" width="1080" height="124" rx="16" fill="#fff" stroke="#d8e4d4"/>',
-            f'<circle cx="108" cy="{y+62}" r="25" fill="#2e7d4f"/>',
-            f'<text x="108" y="{y+71}" text-anchor="middle" font-size="25" font-family="Arial,sans-serif" fill="#fff">{i}</text>',
-            *[f'<text x="155" y="{y+56+j*38}" font-size="28" font-weight="700" font-family="Arial,Noto Sans KR,sans-serif" fill="#22302a">{xesc(line)}</text>'
+            f'<rect x="60" y="{y}" width="1080" height="124" rx="12" fill="#ffffff" stroke="#e0e0e0"/>',
+            f'<circle cx="108" cy="{center}" r="25" fill="#0f62fe"/>',
+            f'<text x="108" y="{center}" text-anchor="middle" dominant-baseline="middle" font-size="25" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#ffffff">{i}</text>',
+            *[f'<text x="160" y="{center+(j-(len(body)-1)/2)*38:g}" dominant-baseline="middle" font-size="28" font-weight="700" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#161616">{xesc(line)}</text>'
               for j,line in enumerate(body)]
         ]
     svg = (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="{height}" viewBox="0 0 1200 {height}">'
-        f'<rect width="1200" height="{height}" fill="#f4f8f2"/>'
-        + "".join(f'<text x="60" y="{85+j*55}" font-size="42" font-weight="700" font-family="Arial,Noto Sans KR,sans-serif" fill="#173c2a">{xesc(line)}</text>'
+        f'<rect width="1200" height="{height}" fill="#f4f4f4"/>'
+        f'<rect x="60" y="38" width="8" height="{max(48,title_height-5)}" fill="#0f62fe"/>'
+        + "".join(f'<text x="84" y="{85+j*55}" font-size="42" font-weight="700" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#161616">{xesc(line)}</text>'
                   for j,line in enumerate(title_lines))
-        + f'<text x="60" y="{95+title_height}" font-size="21" font-family="Arial,Noto Sans KR,sans-serif" fill="#617066">KFarmAI 현장 체크</text>'
-        + "".join(rows) +
-        f'<text x="60" y="{height-35}" font-size="17" font-family="Arial,Noto Sans KR,sans-serif" fill="#6b746f">일반 참고정보입니다. 최신 공식자료와 현장 상태를 함께 확인하세요.</text></svg>'
+        + f'<text x="84" y="{95+title_height}" font-size="21" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#525252">KFarmAI 현장 체크</text>'
+        + "".join(rows) + '</svg>'
     )
     path.parent.mkdir(parents=True,exist_ok=True); path.write_text(svg,encoding="utf-8")
 

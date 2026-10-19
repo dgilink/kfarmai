@@ -19,6 +19,7 @@ ALLOWED_SVG_TAGS = {"svg", "rect", "circle", "text"}
 ALLOWED_SVG_ATTRS = {
     "xmlns", "width", "height", "viewBox", "x", "y", "rx", "r", "cx", "cy",
     "fill", "stroke", "font-size", "font-weight", "font-family", "text-anchor",
+    "dominant-baseline",
 }
 
 

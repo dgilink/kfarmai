@@ -9,6 +9,7 @@ PREVIEW_SQL = (ROOT / "supabase/migrations/20261019074353_daily_review_full_prev
 REVISION_SQL = (ROOT / "supabase/migrations/20261019100628_daily_review_revision_supersede.sql").read_text(encoding="utf-8")
 INFOGRAPHIC_SQL = (ROOT / "supabase/migrations/20261019111706_daily_review_infographic_png_preview.sql").read_text(encoding="utf-8")
 KOREAN_FONT_SQL = (ROOT / "supabase/migrations/20261019114158_daily_review_infographic_korean_font_replace.sql").read_text(encoding="utf-8")
+FONT_STORE_SQL = (ROOT / "supabase/migrations/20261019121638_daily_review_infographic_font_store.sql").read_text(encoding="utf-8")
 
 
 class DailyEmailApprovalContractTests(unittest.TestCase):
@@ -98,6 +99,19 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("내부 검수 정보", page)
         self.assertIn("id-token: write", workflow)
         self.assertIn("actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", workflow)
+        self.assertNotIn("OPENAI_API_KEY", workflow)
+
+    def test_polished_revision_stores_font_verified_preview_before_email(self):
+        workflow = (ROOT / ".github/workflows/kfarmai-review-content-revision.yml").read_text(encoding="utf-8")
+        polish = (ROOT / "automation/daily_review_infographic_polish.py").read_text(encoding="utf-8")
+        for value in ("daily_review_infographic_preview_store_font", "INFOGRAPHIC_FONT_STORE_BINDING",
+                      "Noto Sans CJK KR", "SIL Open Font License 1.1"):
+            self.assertIn(value, FONT_STORE_SQL)
+        self.assertIn("daily_review_infographic_preview_store_font", EDGE)
+        self.assertIn("infographic_preview", EDGE)
+        self.assertIn("daily_review_infographic_polish.py", workflow)
+        self.assertIn("korean_font_raster_qa.py", workflow)
+        self.assertIn("BLOCKED_POLISH_SCOPE", polish)
         self.assertNotIn("OPENAI_API_KEY", workflow)
 
     def test_infographic_png_preview_is_private_bound_and_preview_only(self):
