@@ -41,6 +41,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install bounded verification runtime
+        run: python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt
+
       - name: Download and verify immutable Artifact
         env:
           GH_TOKEN: ${{ github.token }}
