@@ -44,6 +44,17 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertNotIn("console.log", EDGE)
         self.assertIn("{32,255}", EDGE)
 
+    def test_review_html_is_explicit_utf8_and_rotation_is_server_only(self):
+        rotation = (ROOT / "supabase/migrations/20261019065147_daily_review_email_token_rotation.sql").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github/workflows/kfarmai-review-email-reissue.yml").read_text(encoding="utf-8")
+        self.assertIn('Content-Type","text/html; charset=UTF-8', EDGE)
+        self.assertIn('<meta charset="UTF-8">', EDGE)
+        self.assertIn("daily_review_email_rotate", EDGE)
+        self.assertIn("TOKEN_REVOKED", rotation)
+        self.assertIn("TOKEN_ROTATED", rotation)
+        self.assertIn("id-token: write", workflow)
+        self.assertNotIn("RESEND_API_KEY", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()

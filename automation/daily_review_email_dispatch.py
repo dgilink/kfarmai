@@ -32,6 +32,12 @@ def build_request(package_dir: str | Path, artifact: dict, outcome: dict) -> dic
     usage = outcome.get("model_usage")
     require(isinstance(usage, dict) and isinstance(source, dict)
             and isinstance(source.get("evidence"), list), "EMAIL_USAGE_INVALID")
+    token_usage = usage.get("usage") if isinstance(usage.get("usage"), dict) else usage
+    display_usage = {
+        "input_tokens": token_usage.get("input_tokens"),
+        "output_tokens": token_usage.get("output_tokens"),
+        "reasoning_tokens": (token_usage.get("output_tokens_details") or {}).get("reasoning_tokens"),
+    }
     return {
         "approval_id": manifest["approval_id"],
         "artifact_id": artifact_id,
@@ -50,8 +56,7 @@ def build_request(package_dir: str | Path, artifact: dict, outcome: dict) -> dic
             "hero": intent["hero"],
             "infographic": intent["infographic"],
             "model": "gpt-6-luna",
-            "input_output_usage": json.dumps({k: usage.get(k) for k in ("input_tokens", "output_tokens")},
-                                               ensure_ascii=False, sort_keys=True),
+            "input_output_usage": json.dumps(display_usage, ensure_ascii=False, sort_keys=True),
             "cost_microusd": usage.get("estimated_microusd"),
         },
     }

@@ -21,11 +21,12 @@ class DispatchTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td) / "package"; write_package(root, package)
             artifact = {"id": 777001, "digest": "sha256:" + digest(b"artifact")}
-            outcome = {"status":"REVIEW","published":False,"approval_id":package["manifest"]["approval_id"],"manifest_sha256":package["manifest_sha256"],"issue_url":"https://github.com/dgilink/kfarmai/issues/77","model_usage":{"input_tokens":1,"output_tokens":2,"estimated_microusd":3}}
+            outcome = {"status":"REVIEW","published":False,"approval_id":package["manifest"]["approval_id"],"manifest_sha256":package["manifest_sha256"],"issue_url":"https://github.com/dgilink/kfarmai/issues/77","model_usage":{"usage":{"input_tokens":1,"output_tokens":2,"output_tokens_details":{"reasoning_tokens":3}},"estimated_microusd":3}}
             result = build_request(root, artifact, outcome)
         self.assertEqual(package["manifest_sha256"], result["manifest_sha256"])
         self.assertEqual(777001, result["artifact_id"])
         self.assertEqual("gpt-6-luna", result["email_context"]["model"])
+        self.assertIn('"input_tokens": 1', result["email_context"]["input_output_usage"])
 
 
 if __name__ == "__main__":
