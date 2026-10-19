@@ -14,6 +14,7 @@ on:
         type: string
 
 permissions:
+  actions: read
   contents: read
   id-token: write
 
@@ -28,8 +29,29 @@ jobs:
       inputs.artifact_id == '12164561335' &&
       inputs.manifest_sha256 == '9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30'
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
+      - name: Checkout exact public main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Verify immutable Artifact and build full preview request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONUTF8: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12164561335" > artifact.json
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12164561335/zip" > artifact.zip
+          python automation/daily_review_preview.py \
+            --artifact-json artifact.json \
+            --artifact-zip artifact.zip \
+            --approval-id review-39202263746-r1-3c9cc026df02 \
+            --artifact-id 12164561335 \
+            --manifest-sha256 9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30 \
+            --output request.json
+
       - name: Rotate tokens and reissue CONTENT REVIEW email
         env:
           AUDIENCE: https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/daily-review-approval
@@ -38,6 +60,5 @@ jobs:
           set -euo pipefail
           oidc="$(curl --fail-with-body -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}" | jq -r '.value')"
           test -n "$oidc" && test "$oidc" != null
-          printf '%s' '{"operation":"ROTATE","approval_id":"review-39202263746-r1-3c9cc026df02","artifact_id":12164561335,"manifest_sha256":"9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30"}' > request.json
           curl --fail-with-body -sS -X POST "$AUDIENCE" -H "Authorization: Bearer $oidc" -H 'Content-Type: application/json' --data-binary @request.json > response.json
           jq -e '.state == "SENT" and .approval_id == "review-39202263746-r1-3c9cc026df02" and .published == false and (.provider_message_id | type == "string")' response.json > /dev/null

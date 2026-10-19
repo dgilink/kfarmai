@@ -54,6 +54,13 @@ try {
       summary: document.querySelector('#review-summary')?.textContent || '',
       korean: document.body.innerText.includes('공식 출처') && document.body.innerText.includes('실제 AI usage·비용'),
       usage: document.querySelector('#review-usage')?.textContent.includes('1243') && document.querySelector('#review-usage')?.textContent.includes('1064'),
+      reasoning: document.querySelector('#review-usage')?.textContent.includes('335'),
+      fullArticle: document.querySelectorAll('#review-sections h3').length >= 4 && document.body.innerText.includes('난방기 관리'),
+      hero: document.querySelector('#review-hero')?.complete && document.querySelector('#review-hero')?.naturalWidth > 0,
+      infographic: document.querySelector('#review-infographic')?.complete && document.querySelector('#review-infographic')?.naturalWidth > 0,
+      safety: document.querySelector('#review-safety')?.textContent.includes('공공정보 원문을 대체하지 않습니다'),
+      binding: document.querySelector('#review-binding')?.textContent.includes('12164561335') && document.querySelector('#review-binding')?.textContent.includes('9f5da97d'),
+      sources: document.querySelectorAll('#review-sources a[href^="https://www.rda.go.kr/"]').length === 2,
       button: document.querySelector('#review-button')?.textContent === '콘텐츠 검수 승인' && !document.querySelector('#review-button')?.disabled,
       raw: document.body.innerText.includes('<!doctype html>'),
       error: !document.querySelector('#review-error')?.hidden
@@ -63,14 +70,21 @@ try {
   }
   const value = result.result.value;
   assert.equal(value.host, 'kfarmai.com');
-  assert.equal(value.title, '겨울철 온실 난방 전 확인 포인트');
-  assert.equal(value.summary, '브라우저 카드 UI 검증');
+  assert.equal(value.title, '겨울철 온실 난방 전 틈새·난방기·배관 확인 포인트');
+  assert.match(value.summary, /겨울철 온실 난방 전 배관 누수/);
   assert.equal(value.korean, true);
   assert.equal(value.usage, true);
+  assert.equal(value.reasoning, true);
+  assert.equal(value.fullArticle, true);
+  assert.equal(value.hero, true);
+  assert.equal(value.infographic, true);
+  assert.equal(value.safety, true);
+  assert.equal(value.binding, true);
+  assert.equal(value.sources, true);
   assert.equal(value.button, true);
   assert.equal(value.raw, false);
   assert.equal(value.error, false);
-  process.stdout.write('Daily REVIEW live browser: rendered UTF-8 card; CONTENT button active; raw source hidden.\n');
+  process.stdout.write('Daily REVIEW live browser: full UTF-8 article, Hero and Infographic rendered; CONTENT button active.\n');
 } finally {
   try { await socket?.send('Browser.close'); } catch {}
   socket?.close();

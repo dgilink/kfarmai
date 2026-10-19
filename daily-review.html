@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://xzetqijeucldbfgjuoes.supabase.co; form-action https://xzetqijeucldbfgjuoes.supabase.co; base-uri 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src https://xzetqijeucldbfgjuoes.supabase.co; connect-src https://xzetqijeucldbfgjuoes.supabase.co; form-action https://xzetqijeucldbfgjuoes.supabase.co; base-uri 'none'; frame-ancestors 'none'">
   <title>KFarmAI REVIEW</title>
   <link rel="stylesheet" href="/static/daily-review.css">
 </head>
@@ -13,20 +13,42 @@
     <article id="review-card" aria-busy="true">
       <p class="eyebrow">KFarmAI REVIEW 전용 · published=false</p>
       <h1 id="review-title">검수 내용을 불러오는 중입니다</h1>
-      <p id="review-summary"></p>
       <section hidden id="review-content">
+        <dl class="review-meta">
+          <div><dt>REVIEW 사유</dt><dd id="review-reason"></dd></div>
+          <div><dt>공식자료 확인일</dt><dd id="review-checked-at"></dd></div>
+        </dl>
+        <figure>
+          <img id="review-hero" class="preview-image" alt="게시 예정 Hero 이미지">
+          <figcaption>Artifact에 포함된 게시 예정 Hero</figcaption>
+        </figure>
+        <section class="article-preview" aria-labelledby="article-heading">
+          <h2 id="article-heading">전체 게시 예정 본문</h2>
+          <p id="review-summary" class="lead"></p>
+          <div id="review-sections"></div>
+          <h3>KFarmAI 연결</h3>
+          <p id="review-connection"></p>
+        </section>
+        <figure>
+          <img id="review-infographic" class="preview-image" alt="게시 예정 Infographic 이미지">
+          <figcaption>Artifact에 포함된 게시 예정 Infographic</figcaption>
+        </figure>
         <h2>공식 출처</h2>
         <ul id="review-sources"></ul>
+        <h2>AI 생성·공공자료 구분</h2>
+        <p id="review-classification"></p>
+        <h2>안전 안내문</h2>
+        <p id="review-safety" class="safety"></p>
         <h2>실제 AI usage·비용</h2>
         <pre id="review-usage"></pre>
-        <p id="review-binding"></p>
+        <pre id="review-binding"></pre>
         <p><a id="review-issue" rel="noreferrer">GitHub REVIEW Issue</a></p>
         <form id="review-form" method="post">
           <input id="review-token" type="hidden" name="token">
           <input id="review-csrf" type="hidden" name="csrf">
           <input id="review-manifest" type="hidden" name="manifest_sha256">
           <input id="review-action" type="hidden" name="action">
-          <button id="review-button" type="submit" disabled>검수 정보를 확인하는 중입니다</button>
+          <button id="review-button" type="submit" disabled>전체 검수 자료를 확인하는 중입니다</button>
         </form>
       </section>
       <p id="review-error" role="alert" hidden>검수 링크를 확인할 수 없습니다. 새 이메일의 링크를 사용해 주세요.</p>

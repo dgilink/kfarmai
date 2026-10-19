@@ -5,6 +5,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 SQL = (ROOT / "supabase/migrations/20261014010926_daily_email_approvals.sql").read_text(encoding="utf-8")
 EDGE = (ROOT / "supabase/functions/daily-review-approval/index.ts").read_text(encoding="utf-8")
+PREVIEW_SQL = (ROOT / "supabase/migrations/20261019074353_daily_review_full_preview.sql").read_text(encoding="utf-8")
 
 
 class DailyEmailApprovalContractTests(unittest.TestCase):
@@ -59,6 +60,26 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("TOKEN_ROTATED", rotation)
         self.assertIn("id-token: write", workflow)
         self.assertNotIn("RESEND_API_KEY", workflow)
+
+    def test_full_preview_is_artifact_bound_and_active_svg_is_rejected(self):
+        page = (ROOT / "daily-review.html").read_text(encoding="utf-8")
+        script = (ROOT / "static/daily-review.js").read_text(encoding="utf-8")
+        for value in ("daily_review_preview_store", "daily_review_preview_get", "daily_review_preview_asset"):
+            self.assertIn(value, PREVIEW_SQL)
+            self.assertIn(value, EDGE)
+        for value in ("script|foreignobject|image|use|iframe|object|embed|style|a", "APPROVAL_NOT_AVAILABLE", "enable row level security"):
+            self.assertIn(value, PREVIEW_SQL)
+        self.assertIn("CONTENT_REVIEW_RESET", PREVIEW_SQL)
+        self.assertIn("c.state not in ('PENDING','CONTENT_APPROVED')", PREVIEW_SQL)
+        self.assertIn("pub.state<>'PENDING'", PREVIEW_SQL)
+        self.assertIn("hero_url", EDGE)
+        self.assertIn("infographic_url", EDGE)
+        self.assertIn("content_id:\"kfarmai-review-hero\"", EDGE)
+        self.assertIn("전체 게시 예정 본문", page)
+        self.assertIn("review-hero", page)
+        self.assertIn("review-infographic", page)
+        self.assertIn("naturalWidth", script)
+        self.assertNotIn("innerHTML", script)
 
 
 if __name__ == "__main__":

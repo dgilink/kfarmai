@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 
 from daily_review_issue import load_package
+from daily_review_preview import from_package_directory
 from kfarmai_review_approval import Blocked, canonical, require
 
 
@@ -49,6 +50,7 @@ def build_request(package_dir: str | Path, artifact: dict, outcome: dict) -> dic
         "summary": review["summary"],
         "official_sources": intent["source_urls"],
         "usage": usage,
+        "preview": from_package_directory(package_dir),
         "email_context": {
             "category": article["category"],
             "review_reason": review["reason"],
