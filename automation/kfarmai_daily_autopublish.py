@@ -110,7 +110,7 @@ def render_svg(a,path):
                   for j,line in enumerate(title_lines))
         + f'<text x="60" y="{95+title_height}" font-size="21" font-family="Arial,Noto Sans KR,sans-serif" fill="#617066">KFarmAI 현장 체크</text>'
         + "".join(rows) +
-        f'<text x="60" y="{height-35}" font-size="17" font-family="Arial,Noto Sans KR,sans-serif" fill="#6b746f">AI 정보는 참고용입니다. 최신 공식자료와 현장 상태를 함께 확인하세요.</text></svg>'
+        f'<text x="60" y="{height-35}" font-size="17" font-family="Arial,Noto Sans KR,sans-serif" fill="#6b746f">일반 참고정보입니다. 최신 공식자료와 현장 상태를 함께 확인하세요.</text></svg>'
     )
     path.parent.mkdir(parents=True,exist_ok=True); path.write_text(svg,encoding="utf-8")
 
@@ -118,6 +118,7 @@ def render_html(a,date,hero,info,site,*,hero_caption=None):
     url=f"{site}/kb/{a['slug']}.html"; hero_url=f"{site}/{hero}"
     ld={"@context":"https://schema.org","@type":"Article","headline":a["title"],"description":a["meta_description"],"author":{"@type":"Organization","name":"kFarmAI"},"publisher":{"@type":"Organization","name":"kFarmAI"},"datePublished":date,"dateModified":date,"mainEntityOfPage":url,"image":hero_url,"citation":[s["url"] for s in a["sources"]]}
     sections="".join("<h2>"+html.escape(s["heading"])+"</h2><p>"+html.escape(s["body"])+"</p>" for s in a["sections"])
+    public_facts="".join("<li>"+html.escape(value)+"</li>" for value in a.get("public_facts", []))
     sources="".join('<li><a href="'+html.escape(s["url"],quote=True)+'" target="_blank" rel="noopener noreferrer">'+html.escape(s["title"])+'</a><br>'+html.escape(s["claim"])+'</li>' for s in a["sources"])
     parts=[
       '<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">',
@@ -133,10 +134,12 @@ def render_html(a,date,hero,info,site,*,hero_caption=None):
       '<header class="site-header"><a href="/index.html">kFarmAI</a></header><main>',
       '<article class="knowledge-article"><h1>'+html.escape(a["title"])+'</h1><p>게시일: <time datetime="'+date+'">'+date+'</time></p>',
       '<figure><img style="width:100%;height:auto;border-radius:16px" src="/'+hero+'" alt="'+html.escape(a["title"],quote=True)+' 대표 이미지"><figcaption>'+html.escape(hero_caption or 'AI로 생성한 참고 이미지입니다. 실제 재배환경과 다를 수 있습니다.')+'</figcaption></figure>',
-      '<p>'+html.escape(a["summary"])+'</p>'+sections,
+      '<p>'+html.escape(a["summary"])+'</p>',
+      ('<section aria-labelledby="official-facts"><h2 id="official-facts">공식자료에서 확인한 내용</h2><ul>'+public_facts+'</ul></section>' if public_facts else ''),
+      '<section aria-labelledby="reference-summary"><h2 id="reference-summary">참고 정리</h2>'+sections+'</section>',
       '<figure><img style="width:100%;height:auto" src="/'+info+'" alt="'+html.escape(a["infographic_title"],quote=True)+'"><figcaption>'+html.escape(a["infographic_title"])+'</figcaption></figure>',
-      '<h2>kFarmAI 연결</h2><p>'+html.escape(a["kfarmai_connection"])+'</p><p>'+html.escape(a["safety_note"])+'</p>',
-      '<h2>공식 참고자료</h2><ul>'+sources+'</ul><p>공식자료 확인일: '+date+'. 공공자료와 kFarmAI 정리 내용을 구분해 작성했습니다.</p>',
+      '<h2>참고 안내</h2><p>'+html.escape(a["kfarmai_connection"])+'</p><p>'+html.escape(a["safety_note"])+'</p>',
+      '<h2>공식 참고자료</h2><ul>'+sources+'</ul><p>최근 확인: '+date+'. 공공자료와 kFarmAI 정리 내용을 구분해 작성했습니다.</p>',
       '<nav aria-label="다음 확인 경로"><h2>다음 확인 경로</h2><ul><li><a href="/kb/index.html">농업정보 더 보기</a></li><li><a href="/index.html?view=questions">관련 질문 보기</a></li><li><a href="/diagnosis.html">AI 참고 진단으로 확인하기</a></li></ul></nav>',
       '</article></main><footer class="site-footer"><a href="/oauth/privacy/">개인정보처리방침</a></footer></body></html>'
     ]

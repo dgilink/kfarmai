@@ -1,0 +1,121 @@
+name: KFarmAI REVIEW Content Revision
+
+on:
+  workflow_dispatch:
+    inputs:
+      approval_id:
+        required: true
+        type: string
+      artifact_id:
+        required: true
+        type: string
+      manifest_sha256:
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  id-token: write
+
+jobs:
+  revise-and-reissue:
+    if: >-
+      github.repository == 'dgilink/kfarmai' &&
+      github.ref == 'refs/heads/main' &&
+      github.actor_id == '293838055' &&
+      github.run_attempt == 1 &&
+      inputs.approval_id == 'review-39202263746-r1-3c9cc026df02' &&
+      inputs.artifact_id == '12164561335' &&
+      inputs.manifest_sha256 == '9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact public main
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      - name: Install bounded runtime
+        run: python -m pip install --no-cache-dir -r automation/requirements-daily-review.txt
+
+      - name: Verify revision source and build deterministic package
+        id: build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONUTF8: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12164561335" > "$RUNNER_TEMP/old-artifact.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/12164561335/zip" > "$RUNNER_TEMP/old-artifact.zip"
+          python automation/daily_review_content_revision.py build \
+            --old-artifact-json "$RUNNER_TEMP/old-artifact.json" \
+            --old-artifact-zip "$RUNNER_TEMP/old-artifact.zip" \
+            --output "$RUNNER_TEMP/revision-package" \
+            --result "$RUNNER_TEMP/revision-result.json" \
+            --run-id "$GITHUB_RUN_ID" --head-sha "$GITHUB_SHA"
+
+      - name: Upload immutable revision package
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: ${{ steps.build.outputs.artifact_name }}
+          path: ${{ runner.temp }}/revision-package/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+          overwrite: false
+
+      - name: Verify uploaded Artifact and build revision request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' "$ARTIFACT_ID" | grep -Eq '^[1-9][0-9]*$'
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID" > "$RUNNER_TEMP/new-artifact.json"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" > "$RUNNER_TEMP/new-artifact.zip"
+          python automation/daily_review_content_revision.py request \
+            --package "$RUNNER_TEMP/revision-package" \
+            --artifact-json "$RUNNER_TEMP/new-artifact.json" \
+            --output "$RUNNER_TEMP/revision-request.json"
+
+      - name: Supersede old package and send new CONTENT REVIEW email
+        env:
+          AUDIENCE: https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/daily-review-approval
+        shell: bash
+        run: |
+          set -euo pipefail
+          oidc="$(curl --fail-with-body -sS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}" | jq -r '.value')"
+          test -n "$oidc" && test "$oidc" != null
+          curl --fail-with-body -sS -X POST "$AUDIENCE" \
+            -H "Authorization: Bearer $oidc" -H 'Content-Type: application/json' \
+            --data-binary @"$RUNNER_TEMP/revision-request.json" > "$RUNNER_TEMP/revision-response.json"
+          jq -e '.state == "SENT" and .published == false and (.provider_message_id | type == "string")' "$RUNNER_TEMP/revision-response.json" > /dev/null
+
+      - name: Rebind Issue 5 to revision package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python automation/daily_review_content_revision.py issue \
+            --package "$RUNNER_TEMP/revision-package" \
+            --artifact-json "$RUNNER_TEMP/new-artifact.json" \
+            --artifact-zip "$RUNNER_TEMP/new-artifact.zip" \
+            --output "$RUNNER_TEMP/revision-issue.json"
+          jq -r .body "$RUNNER_TEMP/revision-issue.json" > "$RUNNER_TEMP/revision-issue.md"
+          gh issue edit 5 --repo "$GITHUB_REPOSITORY" \
+            --title "$(jq -r .title "$RUNNER_TEMP/revision-issue.json")" \
+            --body-file "$RUNNER_TEMP/revision-issue.md"
+          gh issue comment 5 --repo "$GITHUB_REPOSITORY" --body \
+            "기존 Artifact 12164561335 / Manifest 9f5da97d…는 공개 콘텐츠와 내부 검수정보 분리 전 package이므로 superseded 처리했습니다. 새 revision package로 CONTENT/PUBLISH 검수를 처음부터 다시 진행합니다. published=false"

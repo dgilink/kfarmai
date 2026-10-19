@@ -13,44 +13,50 @@
   <main>
     <article id="review-card" aria-busy="true">
       <p class="eyebrow">KFarmAI REVIEW 전용 · published=false</p>
-      <h1 id="review-title">검수 내용을 불러오는 중입니다</h1>
+      <h1>콘텐츠 검수</h1>
       <section hidden id="review-content">
-        <dl class="review-meta">
-          <div><dt>REVIEW 사유</dt><dd id="review-reason"></dd></div>
-          <div><dt>공식자료 확인일</dt><dd id="review-checked-at"></dd></div>
-        </dl>
-        <figure>
-          <img id="review-hero" class="preview-image" alt="게시 예정 Hero 이미지">
-          <figcaption>Artifact에 포함된 게시 예정 Hero</figcaption>
-        </figure>
-        <section class="article-preview" aria-labelledby="article-heading">
-          <h2 id="article-heading">전체 게시 예정 본문</h2>
+        <section class="public-preview" aria-labelledby="public-preview-heading">
+          <h2 id="public-preview-heading">게시 예정 화면</h2>
+          <h3 id="review-title">검수 내용을 불러오는 중입니다</h3>
           <p id="review-summary" class="lead"></p>
+          <figure>
+            <img id="review-hero" class="preview-image" alt="게시 예정 Hero 이미지">
+            <figcaption>게시 예정 Hero</figcaption>
+          </figure>
+          <h3>공식자료에서 확인한 내용</h3>
+          <ul id="review-public-facts"></ul>
+          <h3>참고 정리</h3>
           <div id="review-sections"></div>
-          <h3>KFarmAI 연결</h3>
+          <figure>
+            <img id="review-infographic" class="preview-image" alt="게시 예정 Infographic 이미지">
+            <figcaption>게시 예정 Infographic</figcaption>
+          </figure>
+          <h3>참고 안내</h3>
           <p id="review-connection"></p>
+          <p id="review-safety" class="safety"></p>
+          <h3>공식 출처</h3>
+          <ul id="review-sources"></ul>
+          <p>최근 확인: <span id="review-checked-at"></span></p>
         </section>
-        <figure>
-          <img id="review-infographic" class="preview-image" alt="게시 예정 Infographic 이미지">
-          <figcaption>Artifact에 포함된 게시 예정 Infographic</figcaption>
-        </figure>
-        <h2>공식 출처</h2>
-        <ul id="review-sources"></ul>
-        <h2>AI 생성·공공자료 구분</h2>
-        <p id="review-classification"></p>
-        <h2>안전 안내문</h2>
-        <p id="review-safety" class="safety"></p>
-        <h2>실제 AI usage·비용</h2>
-        <pre id="review-usage"></pre>
-        <pre id="review-binding"></pre>
-        <p><a id="review-issue" rel="noreferrer">GitHub REVIEW Issue</a></p>
-        <form id="review-form" method="post">
-          <input id="review-token" type="hidden" name="token">
-          <input id="review-csrf" type="hidden" name="csrf">
-          <input id="review-manifest" type="hidden" name="manifest_sha256">
-          <input id="review-action" type="hidden" name="action">
-          <button id="review-button" type="submit" disabled>전체 검수 자료를 확인하는 중입니다</button>
-        </form>
+        <section class="internal-review" aria-labelledby="internal-review-heading">
+          <h2 id="internal-review-heading">내부 검수 정보</h2>
+          <dl class="review-meta">
+            <div><dt>REVIEW 사유</dt><dd id="review-reason"></dd></div>
+          </dl>
+          <h3>AI 생성·공공자료 구분</h3>
+          <p id="review-classification"></p>
+          <h3>실제 AI usage·비용</h3>
+          <pre id="review-usage"></pre>
+          <pre id="review-binding"></pre>
+          <p><a id="review-issue" rel="noreferrer">GitHub REVIEW Issue</a></p>
+          <form id="review-form" method="post">
+            <input id="review-token" type="hidden" name="token">
+            <input id="review-csrf" type="hidden" name="csrf">
+            <input id="review-manifest" type="hidden" name="manifest_sha256">
+            <input id="review-action" type="hidden" name="action">
+            <button id="review-button" type="submit" disabled>전체 검수 자료를 확인하는 중입니다</button>
+          </form>
+        </section>
       </section>
       <p id="review-error" role="alert" hidden>검수 링크를 확인할 수 없습니다. 새 이메일의 링크를 사용해 주세요.</p>
     </article>

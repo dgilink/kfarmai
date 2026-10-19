@@ -46,9 +46,29 @@ MAX_RESERVE = int(((2 * MAX_INPUT * INPUT_RATE + RESERVED_OUTPUT * OUTPUT_RATE)
 PUBLIC_HERO = "static/kb/usda-greenhouse-heating-photo.jpg"
 PUBLIC_HERO_SHA256 = "ed890320694246ca381e34a886243be423fba45ffbddf4f1cceae1da8daf3db7"
 PUBLIC_HERO_SOURCE = "https://commons.wikimedia.org/wiki/File:20090915-USDA-OC-PSD-0002_-_54674579668_Agriculture_in_the_United_States.jpg"
-SAFETY_NOTE = ("이 글은 AI가 편집한 일반 참고자료이며 공공정보 원문을 대체하지 않습니다. "
-               "현장 조건과 공식자료를 확인하고, 농약 사용 전 등록 작물·병해충·사용시기·"
-               "희석배수·안전사용기준과 제품 라벨을 확인하세요.")
+FACILITY_SAFETY_NOTE = ("이 내용은 일반 참고정보입니다. 시설 구조와 장비 사양에 따라 점검 방법이 "
+                        "달라질 수 있으므로 제조사 설명서와 관련 공식자료를 함께 확인하세요.")
+PESTICIDE_SAFETY_NOTE = ("이 내용은 일반 참고정보입니다. 농약 사용 전 등록 작물, 대상 병해충, "
+                         "희석배수, 사용시기, 사용횟수, 안전사용기준과 제품 라벨을 확인하세요.")
+DIAGNOSIS_SAFETY_NOTE = ("이 내용은 가능성을 정리한 참고정보이며 확정 진단이 아닙니다. "
+                         "공식 병해충 자료와 현장 상태를 함께 확인하세요.")
+GENERAL_SAFETY_NOTE = ("이 내용은 공식자료를 바탕으로 정리한 일반 참고정보입니다. "
+                       "현장 조건에 따라 적용 방법이 달라질 수 있으므로 관련 공식자료를 함께 확인하세요.")
+# Compatibility alias for callers that import the standard note.
+SAFETY_NOTE = FACILITY_SAFETY_NOTE
+
+
+def topic_safety_notice(article, topic):
+    text = " ".join([str(topic.get("category", "")), str(topic.get("subject", "")),
+                     str(article.get("title", "")), *article.get("keywords", []),
+                     *article.get("tags", [])])
+    if any(term in text for term in ("농약", "방제", "희석배수", "안전사용기준")):
+        return PESTICIDE_SAFETY_NOTE
+    if any(term in text for term in ("병해충 진단", "증상", "원인 후보")):
+        return DIAGNOSIS_SAFETY_NOTE
+    if any(term in text for term in ("시설", "온실", "난방", "관수", "스마트팜", "장비")):
+        return FACILITY_SAFETY_NOTE
+    return GENERAL_SAFETY_NOTE
 
 # Editorial seed, not a source of asserted facts. The exact phrases below are
 # rechecked in the current official HTML response before any model reservation.
@@ -430,7 +450,7 @@ class RealDailyProvider:
                 "BLOCKED_UNSAFE_CONTENT")
         # A standard non-factual safety disclaimer is deterministic; never
         # depend on the model to include both mandatory terms verbatim.
-        article["safety_note"] = SAFETY_NOTE
+        article["safety_note"] = topic_safety_notice(article, topic)
         article["risk"] = "REVIEW"
         article["risk_reason"] = "공식자료 인용과 현장 적용 표현에 대한 사용자 검수 필요"
         article["public_facts"] = [x["claim"] for x in evidence]

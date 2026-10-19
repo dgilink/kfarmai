@@ -1260,3 +1260,12 @@ word-break: break-word;
 - 다음 작업 시작 전 `KFarmAI_HISTORY_HANDOFF_20260919.md`의 **2026-10-19 KFarmAI 03 운영 기준선**을 읽는다. 별도 `handoff.md`가 없으면 이 문서를 최신 handoff로 사용한다.
 - Daily workflow는 REVIEW-only다. AUTO publication, 유료 자동 retry, 사용자 미승인 게시를 활성화하거나 실행하지 않는다.
 - 현재 OPEN REVIEW의 사용자 검수 결정은 별도 작업이다. 새 기능 개발은 V4 UI/UX Phase에서만 시작한다.
+
+### 12.11 REVIEW metadata와 Production content 분리
+
+- REVIEW 화면은 전체 게시 예정 본문·이미지·공식 출처와 함께 AI model, token usage, 비용, Approval/Artifact/Manifest, REVIEW 사유, 상태와 만료시간을 내부 검수 정보로 표시한다.
+- Production HTML에는 AI model, token usage, 비용, approval/artifact/manifest/source-run metadata, 내부 REVIEW 사유, debug/audit 상태를 출력하거나 HTML comment로 남기지 않는다.
+- Production에는 제목, 사용자용 본문, 이미지, 공식 출처, 최근 확인일, 주제별 안전 안내만 표시한다.
+- 공식자료에서 확인한 내용과 KFarmAI 참고 정리는 구분하되, AI 작성 사실을 본문에서 반복 강조하지 않는다.
+- 게시 바이트가 바뀌면 기존 Manifest를 재사용하지 않고 새 immutable Artifact와 새 승인 identity를 발급한다.
+- 시설·난방 글에는 장비 사양·제조사 설명서 확인 문구를 사용하고, 농약 안전사용 문구는 농약 주제에만 사용한다.

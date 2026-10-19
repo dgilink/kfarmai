@@ -1054,3 +1054,11 @@ LOW: isolated clone test artifact 및 actionlint/Docker가 없는 로컬 환경�
 6. MY
 
 Daily automation은 V4에서 불필요하게 재설계하지 않는다.
+
+# 2026-10-19 REVIEW / Production 표시 분리 기준
+
+- REVIEW 화면은 게시 예정 화면과 내부 검수 정보를 분리한다.
+- 공개 HTML에는 model/usage/cost, approval/artifact/manifest, REVIEW 사유·상태·만료 및 audit/debug metadata를 넣지 않는다.
+- 공개 글은 공식자료에서 확인한 내용과 KFarmAI 참고 정리를 구분하고 최근 확인일과 주제별 안전 안내만 제공한다.
+- 공개 바이트 변경은 새 immutable Artifact/Manifest 및 새 CONTENT/PUBLISH 승인으로 처리한다. 기존 package 재사용은 금지한다.
+- AI 모델·이미지 재호출 없이 기존 승인 package를 결정론적으로 변환할 수 있으며, Hero/Infographic 원본 hash는 그대로 유지한다.

@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SQL = (ROOT / "supabase/migrations/20261014010926_daily_email_approvals.sql").read_text(encoding="utf-8")
 EDGE = (ROOT / "supabase/functions/daily-review-approval/index.ts").read_text(encoding="utf-8")
 PREVIEW_SQL = (ROOT / "supabase/migrations/20261019074353_daily_review_full_preview.sql").read_text(encoding="utf-8")
+REVISION_SQL = (ROOT / "supabase/migrations/20261019100628_daily_review_revision_supersede.sql").read_text(encoding="utf-8")
 
 
 class DailyEmailApprovalContractTests(unittest.TestCase):
@@ -75,11 +76,27 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("hero_url", EDGE)
         self.assertIn("infographic_url", EDGE)
         self.assertIn("content_id:\"kfarmai-review-hero\"", EDGE)
-        self.assertIn("전체 게시 예정 본문", page)
+        self.assertIn("게시 예정 화면", page)
+        self.assertIn("참고 정리", page)
         self.assertIn("review-hero", page)
         self.assertIn("review-infographic", page)
         self.assertIn("naturalWidth", script)
         self.assertNotIn("innerHTML", script)
+
+    def test_revision_supersedes_old_identity_and_separates_review_ui(self):
+        page = (ROOT / "daily-review.html").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github/workflows/kfarmai-review-content-revision.yml").read_text(encoding="utf-8")
+        self.assertIn("daily_review_email_revision_issue", REVISION_SQL)
+        self.assertIn("PACKAGE_SUPERSEDED", REVISION_SQL)
+        self.assertIn("old_content.state not in ('PENDING','CONTENT_APPROVED')", REVISION_SQL)
+        self.assertIn("old_publish.state<>'PENDING'", REVISION_SQL)
+        self.assertIn("revisionWorkflow", EDGE)
+        self.assertIn('raw.operation==="REVISION"', EDGE)
+        self.assertIn("게시 예정 화면", page)
+        self.assertIn("내부 검수 정보", page)
+        self.assertIn("id-token: write", workflow)
+        self.assertIn("actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", workflow)
+        self.assertNotIn("OPENAI_API_KEY", workflow)
 
 
 if __name__ == "__main__":

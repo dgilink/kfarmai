@@ -66,6 +66,8 @@ try {
       safety: document.querySelector('#review-safety')?.textContent.includes('공공정보 원문을 대체하지 않습니다'),
       binding: document.querySelector('#review-binding')?.textContent.includes('12164561335') && document.querySelector('#review-binding')?.textContent.includes('9f5da97d'),
       sources: document.querySelectorAll('#review-sources a[href^="https://www.rda.go.kr/"]').length === 2,
+      separated: document.querySelector('#public-preview-heading')?.textContent === '게시 예정 화면' && document.querySelector('#internal-review-heading')?.textContent === '내부 검수 정보',
+      states: document.querySelector('#review-binding')?.textContent.includes('CONTENT 상태: PENDING') && document.querySelector('#review-binding')?.textContent.includes('PUBLISH 상태: PENDING'),
       button: document.querySelector('#review-button')?.textContent === '콘텐츠 검수 승인' && !document.querySelector('#review-button')?.disabled,
       raw: document.body.innerText.includes('<!doctype html>'),
       error: !document.querySelector('#review-error')?.hidden
@@ -86,6 +88,8 @@ try {
   assert.equal(value.safety, true);
   assert.equal(value.binding, true);
   assert.equal(value.sources, true);
+  assert.equal(value.separated, true);
+  assert.equal(value.states, true);
   assert.equal(value.button, true);
   assert.equal(value.raw, false);
   assert.equal(value.error, false);

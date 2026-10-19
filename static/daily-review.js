@@ -27,6 +27,12 @@
       byId("review-summary").textContent = String(article.summary || "");
       byId("review-reason").textContent = String(reviewMeta.reason || "");
       byId("review-checked-at").textContent = String(sourceCheck.checked_at || "");
+      const publicFacts = Array.isArray(article.public_facts) ? article.public_facts : [];
+      for (const fact of publicFacts) {
+        const item = document.createElement("li");
+        item.textContent = String(fact || "");
+        byId("review-public-facts").append(item);
+      }
       const sections = Array.isArray(article.sections) ? article.sections : [];
       for (const section of sections) {
         const heading = document.createElement("h3");
@@ -56,7 +62,7 @@
       const usage = evidence.usage && typeof evidence.usage === "object" ? evidence.usage : review.usage || {};
       const reasoning = usage.output_tokens_details && typeof usage.output_tokens_details === "object" ? usage.output_tokens_details.reasoning_tokens : null;
       byId("review-usage").textContent = `Model: ${evidence.model || ""}\nInput: ${usage.input_tokens ?? ""}\nOutput: ${usage.output_tokens ?? ""}\nReasoning: ${reasoning ?? ""}\n실제 비용: ${evidence.estimated_microusd ?? ""} micro-USD`;
-      byId("review-binding").textContent = `Artifact ID: ${review.artifact_id}\nManifest SHA: ${review.manifest_sha256}\nArticle SHA: ${review.article_sha256}\nHTML SHA: ${review.html_sha256}\nHero SHA: ${review.hero_sha256}\nInfographic SHA: ${review.infographic_sha256}\n상태: ${review.state}\n만료: ${review.expires_at}\npublished=false`;
+      byId("review-binding").textContent = `Approval ID: ${review.approval_id}\nArtifact ID: ${review.artifact_id}\nManifest SHA: ${review.manifest_sha256}\nArticle SHA: ${review.article_sha256}\nHTML SHA: ${review.html_sha256}\nHero SHA: ${review.hero_sha256}\nInfographic SHA: ${review.infographic_sha256}\nCONTENT 상태: ${review.content_state}\nPUBLISH 상태: ${review.publish_state}\n현재 링크 상태: ${review.state}\n만료: ${review.expires_at}\npublished=false`;
       byId("review-issue").href = String(review.review_url || "https://github.com/dgilink/kfarmai/issues/5");
       byId("review-form").action = String(review.review_endpoint || endpoint);
       byId("review-token").value = token;

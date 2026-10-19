@@ -17,7 +17,7 @@ from daily_review_issue import GitHubIssueIndex, GitHubReviewTransport, load_pac
 from daily_review_runner import verify_context
 from durable_budget import DurableBudget
 from kfarmai_review_approval import canonical, digest, metadata, read_archive
-from real_daily_provider import (MODEL, MAX_INPUT, MAX_OUTPUT, MAX_RESERVE, SAFETY_NOTE, TOPICS, RealDailyProvider,
+from real_daily_provider import (MODEL, MAX_INPUT, MAX_OUTPUT, MAX_RESERVE, SAFETY_NOTE, PESTICIDE_SAFETY_NOTE, TOPICS, RealDailyProvider,
                                  _source_evidence, estimated_cost, OpenAIResponses)
 
 
@@ -191,7 +191,9 @@ class RealDailyE2E(unittest.TestCase):
         evidence = [{"title": x["title"], "url": x["url"], "claim": x["claim"]}
                     for x in TOPICS[0]["sources"]]
         self.assertEqual(SAFETY_NOTE, provider.classify_content(a, TOPICS[0], evidence)["safety_note"])
-        self.assertIn("제품 라벨", SAFETY_NOTE)
+        self.assertNotIn("농약", SAFETY_NOTE)
+        self.assertIn("제조사 설명서", SAFETY_NOTE)
+        self.assertIn("제품 라벨", PESTICIDE_SAFETY_NOTE)
         a = article()
         a["sections"][0]["body"] = "오늘 방제하세요"
         with self.assertRaises(Exception):
