@@ -39,7 +39,7 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertNotIn("{32,256}", fix)
 
     def test_edge_requires_get_token_and_post_csrf(self):
-        for value in ("request.method===\"GET\"", "request.method!==\"POST\"", "csrfValue!==readCookie", "csrfValue!==await csrf(token)", "HttpOnly; Secure; SameSite=Strict", "no-store"):
+        for value in ("request.method===\"GET\"", "request.method!==\"POST\"", "csrfValue!==readCookie", "csrfValue!==await csrf(token)", "HttpOnly; Secure; SameSite=None", "no-store"):
             self.assertIn(value, EDGE)
         self.assertNotIn("console.log", EDGE)
         self.assertIn("{32,255}", EDGE)
@@ -47,8 +47,13 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
     def test_review_html_is_explicit_utf8_and_rotation_is_server_only(self):
         rotation = (ROOT / "supabase/migrations/20261019065147_daily_review_email_token_rotation.sql").read_text(encoding="utf-8")
         workflow = (ROOT / ".github/workflows/kfarmai-review-email-reissue.yml").read_text(encoding="utf-8")
+        review_page = (ROOT / "daily-review.html").read_text(encoding="utf-8")
+        review_script = (ROOT / "static/daily-review.js").read_text(encoding="utf-8")
         self.assertIn('Content-Type","text/html; charset=UTF-8', EDGE)
         self.assertIn('<meta charset="UTF-8">', EDGE)
+        self.assertIn('redirectToReview(token,value)', EDGE)
+        self.assertIn('<meta charset="UTF-8">', review_page)
+        self.assertIn('콘텐츠 검수 승인', review_script)
         self.assertIn("daily_review_email_rotate", EDGE)
         self.assertIn("TOKEN_REVOKED", rotation)
         self.assertIn("TOKEN_ROTATED", rotation)

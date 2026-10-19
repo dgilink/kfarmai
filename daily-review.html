@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://xzetqijeucldbfgjuoes.supabase.co; form-action https://xzetqijeucldbfgjuoes.supabase.co; base-uri 'none'; frame-ancestors 'none'">
+  <title>KFarmAI REVIEW</title>
+  <link rel="stylesheet" href="/static/daily-review.css">
+</head>
+<body>
+  <main>
+    <article id="review-card" aria-busy="true">
+      <p class="eyebrow">KFarmAI REVIEW 전용 · published=false</p>
+      <h1 id="review-title">검수 내용을 불러오는 중입니다</h1>
+      <p id="review-summary"></p>
+      <section hidden id="review-content">
+        <h2>공식 출처</h2>
+        <ul id="review-sources"></ul>
+        <h2>실제 AI usage·비용</h2>
+        <pre id="review-usage"></pre>
+        <p id="review-binding"></p>
+        <p><a id="review-issue" rel="noreferrer">GitHub REVIEW Issue</a></p>
+        <form id="review-form" method="post">
+          <input id="review-token" type="hidden" name="token">
+          <input id="review-csrf" type="hidden" name="csrf">
+          <input id="review-manifest" type="hidden" name="manifest_sha256">
+          <input id="review-action" type="hidden" name="action">
+          <button id="review-button" type="submit" disabled>검수 정보를 확인하는 중입니다</button>
+        </form>
+      </section>
+      <p id="review-error" role="alert" hidden>검수 링크를 확인할 수 없습니다. 새 이메일의 링크를 사용해 주세요.</p>
+    </article>
+  </main>
+  <script src="/static/daily-review.js" defer></script>
+</body>
+</html>
