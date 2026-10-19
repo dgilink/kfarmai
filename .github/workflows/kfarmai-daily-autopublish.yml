@@ -27,8 +27,8 @@ concurrency:
 
 jobs:
   daily:
-    # The first LIVE run is owner-dispatched only. A cron event cannot enter
-    # this job even if GitHub's Workflow state is enabled for manual dispatch.
+    # Manual runs require the repository owner. Scheduled runs are allowed only
+    # through the same review-only, budget-gated path and never auto-publish.
     if: >-
       github.repository == 'dgilink/kfarmai' &&
       github.ref == 'refs/heads/main' &&
