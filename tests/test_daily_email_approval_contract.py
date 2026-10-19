@@ -42,6 +42,7 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         for value in ("request.method===\"GET\"", "request.method!==\"POST\"", "csrfValue!==readCookie", "csrfValue!==await csrf(token)", "HttpOnly; Secure; SameSite=Strict", "no-store"):
             self.assertIn(value, EDGE)
         self.assertNotIn("console.log", EDGE)
+        self.assertIn("{32,255}", EDGE)
 
 
 if __name__ == "__main__":

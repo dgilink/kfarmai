@@ -1,6 +1,6 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 
-const TOKEN = /^[A-Za-z0-9_-]{32,256}$/;
+const TOKEN = /^[A-Za-z0-9_-]{32,255}$/;
 const SHA = /^[a-f0-9]{64}$/;
 const APPROVAL_ID = /^review-[A-Za-z0-9_-]{1,96}$/;
 const GITHUB_ISSUE = /^https:\/\/github\.com\/dgilink\/kfarmai\/issues\/[1-9][0-9]*$/;
