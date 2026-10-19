@@ -131,6 +131,7 @@ jobs:
       - name: Rebind Issue 5 to revision package
         env:
           GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact-id }}
         shell: bash
         run: |
           set -euo pipefail
@@ -143,7 +144,9 @@ jobs:
           gh issue edit 5 --repo "$GITHUB_REPOSITORY" \
             --title "$(jq -r .title "$RUNNER_TEMP/revision-issue.json")" \
             --body-file "$RUNNER_TEMP/revision-issue.md"
-          new_artifact="$(jq -r .artifact_id "$RUNNER_TEMP/revision-issue.json")"
-          new_manifest="$(jq -r .manifest_sha256 "$RUNNER_TEMP/revision-issue.json")"
+          printf '%s' "$ARTIFACT_ID" | grep -Eq '^[1-9][0-9]*$'
+          new_artifact="$ARTIFACT_ID"
+          new_manifest="$(tr -d '\r\n' < "$RUNNER_TEMP/revision-package/manifest.sha256")"
+          printf '%s' "$new_manifest" | grep -Eq '^[a-f0-9]{64}$'
           gh issue comment 5 --repo "$GITHUB_REPOSITORY" --body \
             "기존 Artifact 12179407364 / Manifest 127932ca…는 인포그래픽 최종 시각 수정으로 superseded 처리했습니다. 새 Artifact ${new_artifact} / Manifest ${new_manifest} 기준으로 CONTENT/PUBLISH 검수를 처음부터 다시 진행합니다. published=false"

@@ -9,6 +9,7 @@ const url = process.env.KFARMAI_REVIEW_FIXTURE_URL || '';
 const packageDir = process.env.KFARMAI_REVIEW_PACKAGE_DIR || '';
 const expectedArtifact = process.env.KFARMAI_REVIEW_ARTIFACT_ID || '12164561335';
 const expectedManifest = process.env.KFARMAI_REVIEW_MANIFEST_SHA256 || '9f5da97da769967a1f68cb95ddb3287288e300d3af347be35d837cdfd0144d30';
+const expectedInfographicHeight = Number(process.env.KFARMAI_REVIEW_INFOGRAPHIC_HEIGHT || '845');
 const chromePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'kfarmai-review-browser-'));
 let chrome;
@@ -100,7 +101,7 @@ try {
       reasoning: document.querySelector('#review-usage')?.textContent.includes('335'),
       fullArticle: document.querySelectorAll('#review-sections h3').length >= 4 && document.body.innerText.includes('난방기 관리'),
       hero: document.querySelector('#review-hero')?.complete && document.querySelector('#review-hero')?.naturalWidth > 0,
-      infographic: document.querySelector('#review-infographic')?.complete && document.querySelector('#review-infographic')?.naturalWidth === 1200 && document.querySelector('#review-infographic')?.naturalHeight === 845,
+      infographic: document.querySelector('#review-infographic')?.complete && document.querySelector('#review-infographic')?.naturalWidth === 1200 && document.querySelector('#review-infographic')?.naturalHeight === ${expectedInfographicHeight},
       infographicLayout: (() => { const image=document.querySelector('#review-infographic'); const box=image?.getBoundingClientRect(); return !!box && box.width > 300 && box.height > 200 && box.right <= document.documentElement.clientWidth + 1; })(),
       safety: document.querySelector('#review-safety')?.textContent.includes('제조사 설명서') && !document.querySelector('#review-safety')?.textContent.includes('농약 사용 전'),
       binding: document.querySelector('#review-binding')?.textContent.includes(${JSON.stringify(expectedArtifact)}) && document.querySelector('#review-binding')?.textContent.includes(${JSON.stringify(expectedManifest.slice(0, 8))}),
