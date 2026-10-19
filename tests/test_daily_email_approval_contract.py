@@ -33,6 +33,11 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("token_hash", SQL)
         self.assertNotIn("raw_token", SQL.lower())
 
+    def test_postgres_token_regex_stays_within_postgres_bound(self):
+        fix = (ROOT / "supabase/migrations/20261019062000_fix_daily_review_token_regex.sql").read_text(encoding="utf-8")
+        self.assertIn("{32,255}", fix)
+        self.assertNotIn("{32,256}", fix)
+
     def test_edge_requires_get_token_and_post_csrf(self):
         for value in ("request.method===\"GET\"", "request.method!==\"POST\"", "csrfValue!==readCookie", "csrfValue!==await csrf(token)", "HttpOnly; Secure; SameSite=Strict", "no-store"):
             self.assertIn(value, EDGE)
