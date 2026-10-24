@@ -3,6 +3,7 @@
   const indexGrid = document.getElementById('kbGrid');
   const homeGrid = document.getElementById('homeKbCards');
   if (!indexGrid && !homeGrid) return;
+  if (!indexGrid && homeGrid?.dataset.kbStatic === '1') return;
   const search = document.getElementById('kbSearch');
   const category = document.getElementById('kbCategory');
   const status = document.getElementById('kbStatus');

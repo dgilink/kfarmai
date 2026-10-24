@@ -35,11 +35,17 @@ test('AI draft does not upload before navigation',()=>{const flow=diagnosis.matc
 test('channel consumes crop symptoms tags and image draft',()=>{for(const token of ['pending.crop','pending.symptoms','pending.suggestedTags','pending.imageDraftId','KFQuestionDraft.loadImage'])assert.match(channel,new RegExp(token.replace(/[.]/g,'\\.')))});
 test('AI wording separates observations and reference',()=>{assert.match(channel,/관찰한 증상:/);assert.match(channel,/AI 참고 확인에서 정리된 내용:/)});
 test('draft is never auto published',()=>{const flow=channel.match(/async function applyPendingQuestionQuery[\s\S]*?function makePendingQuestionPreset/)?.[0]||'';assert.doesNotMatch(flow,/from\('posts'\)|\.insert\(/)});
-test('cancel removes local image draft',()=>assert.match(channel,/closeWriteModal[\s\S]*KFQuestionDraft\.removeImage/));
+test('closing composition preserves the account-scoped draft',()=>assert.match(channel,/async function closeWriteModal\(skipDraftSave=false\)[^\n]*composeDraft\.saveNow\(\)/));
 test('draft expires within one day',()=>assert.match(draft,/24 \* 60 \* 60 \* 1000/));
 test('image is canvas re-encoded before upload',()=>{assert.match(draft,/drawImage/);assert.match(draft,/canvasBlob/);assert.match(channel,/prepareForUpload\(file\)/);assert.match(index,/prepareForUpload\(file\)/)});
 test('original image filename is not uploaded',()=>{assert.match(draft,/genericName/);assert.doesNotMatch(channel,/file\.name[^\n]*\.upload/)});
-test('failed post insert removes uploaded objects',()=>{assert.match(channel,/cleanupPostUploads\(uploaded\.paths\)/);assert.match(index,/cleanupPostUploads\(uploaded\.paths\)/)});
+test('failed post insert preserves the draft and never attempts unauthorized client Storage cleanup',()=>{
+  for(const html of [channel,index]){
+    assert.match(html,/beginSubmission\(payload\)/);
+    assert.match(html,/composeDraft\.reconcile\(/);
+    assert.doesNotMatch(html,/cleanupPostUploads\(uploaded\.paths\)/);
+  }
+});
 test('post deletion cleans associated storage',()=>assert.match(post,/storagePaths[\s\S]*from\('post-images'\)\.remove/));
 test('legacy Render endpoint is removed',()=>assert.doesNotMatch(legacy,/onrender\.com|\/api\/search/));
 test('legacy search redirects query to V3 search',()=>{assert.match(legacy,/location\.replace/);assert.match(legacy,/target\.searchParams\.set\('q',query\)/)});

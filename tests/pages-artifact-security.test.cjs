@@ -39,6 +39,17 @@ try {
     for (const file of mustExist) assert.ok(fs.existsSync(path.join(artifactDir, file)), file);
   });
 
+  test('home KB cards are rendered from the approved registry projection', () => {
+    const home = fs.readFileSync(path.join(artifactDir, 'index.html'), 'utf8');
+    const discovery = fs.readFileSync(path.join(artifactDir, 'static/js/kb-discovery.js'), 'utf8');
+    const items = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-index.json'), 'utf8')).items;
+    assert.ok(home.includes('id="homeKbCards" aria-live="polite" data-kb-static="1"'));
+    for (const item of items.slice(0, 4)) {
+      assert.ok(home.includes(`href="${item.path}"`), item.path);
+    }
+    assert.ok(discovery.includes("homeGrid?.dataset.kbStatic === '1'"));
+  });
+
   const mustNotExist = [
     'supabase/config.toml',
     'supabase/migrations/20261004133000_v3_production_rls_hardening.sql',

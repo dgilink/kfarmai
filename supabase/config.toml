@@ -61,6 +61,11 @@ import_map = "./functions/daily-review-approval/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
 entrypoint = "./functions/daily-review-approval/index.ts"
+[functions.secure-image-upload]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/secure-image-upload/index.ts"
+static_files = ["./functions/secure-image-upload/magick.wasm"]
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/daily-review-approval/*.html" ]

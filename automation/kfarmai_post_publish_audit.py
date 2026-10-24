@@ -28,6 +28,10 @@ KST = dt.timezone(dt.timedelta(hours=9))
 MAX_NETWORK_BYTES = 8 * 1024 * 1024
 SLUG_RE = re.compile(r"[a-z0-9][a-z0-9-]{4,80}\Z")
 CF_RULE_VERSION = "cloudflare-insights-kfarmai-greenhouse-v1"
+KB_PRESENTATION_VERSION = "v4-1"
+KB_PRESENTATION_HEAD = (b'<link rel="stylesheet" href="/static/css/v4-shell.css" '
+                        b'data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js" '
+                        b'defer data-kfarmai-presentation="v4-1"></script>')
 CF_TARGET_URL = "https://kfarmai.com/kb/greenhouse-irrigation-precheck.html"
 CF_ORIGINAL_SHA256 = "c552ba13e06f1ff0c411b0c209a5be61d78a325fe204ab98c0a30c0a3c46d63b"
 CF_INJECTION = (
@@ -132,9 +136,17 @@ def sha256_bytes(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
 
 
+def render_kb_presentation_v1(original: bytes) -> bytes:
+    """Exact, additive Pages-only rendering of an immutable approved source."""
+    marker = b"</head>"
+    if original.count(marker) != 1 or KB_PRESENTATION_HEAD in original:
+        raise ValueError("KB presentation source has no unique head boundary")
+    return original.replace(marker, KB_PRESENTATION_HEAD + marker, 1)
+
+
 def verify_public_html(original: bytes, live: bytes, *, url: str,
                        headers: dict[str, str] | None = None) -> dict[str, Any]:
-    """Verify either identical bytes or one exact, scoped Cloudflare insertion."""
+    """Verify legacy source bytes or the exact V4 Pages presentation contract."""
     evidence = {
         "rule_version": CF_RULE_VERSION,
         "original_sha256": sha256_bytes(original),
@@ -145,34 +157,52 @@ def verify_public_html(original: bytes, live: bytes, *, url: str,
     if live == original:
         evidence["ok"] = True
         return evidence
+    if re.fullmatch(r"https://kfarmai\.com/kb/[a-z0-9-]+\.html", url):
+        try:
+            rendered = render_kb_presentation_v1(original)
+        except ValueError:
+            rendered = b""
+        if live == rendered:
+            evidence.update({"ok": True, "rule_version": KB_PRESENTATION_VERSION,
+                             "transformation": "kb-v4-presentation-v1",
+                             "rendered_sha256": sha256_bytes(rendered),
+                             "normalized_sha256": sha256_bytes(original)})
+            return evidence
     if url != CF_TARGET_URL or evidence["original_sha256"] != CF_ORIGINAL_SHA256:
         evidence["ok"] = False
         evidence["reason"] = "CLOUDFLARE_SCOPE_MISMATCH"
         return evidence
-    marker = original.rfind(b"</body>")
-    if marker < 0 or not original[:marker].endswith(b"</main>"):
-        evidence["ok"] = False
-        evidence["reason"] = "CLOUDFLARE_INSERTION_POINT_INVALID"
-        return evidence
-    expected = original[:marker] + CF_INJECTION + original[marker:]
-    normalized = live[:marker] + live[marker + len(CF_INJECTION):]
-    normalized_hash = sha256_bytes(normalized)
     lowered = {str(key).lower(): str(value) for key, value in (headers or {}).items()}
     cf_headers = (lowered.get("server", "").lower() == "cloudflare"
                   and bool(re.fullmatch(r"[0-9a-f]+-[A-Z]{3}", lowered.get("cf-ray", ""))))
-    evidence.update({
-        "ok": live == expected and normalized == original and cf_headers,
-        "transformation": "cloudflare-insights-single-insertion",
-        "insertion_offset": marker,
-        "injection_count": live.count(CF_INJECTION),
-        "injected_length": len(CF_INJECTION),
-        "injected_sha256": sha256_bytes(CF_INJECTION),
-        "injected_bytes_base64": base64.b64encode(CF_INJECTION).decode("ascii"),
-        "normalized_sha256": normalized_hash,
-        "cloudflare_headers_verified": cf_headers,
-    })
-    if not evidence["ok"]:
-        evidence["reason"] = "PUBLIC_HTML_TRANSFORMATION_MISMATCH"
+    candidates = [("legacy", original)]
+    try:
+        candidates.append((KB_PRESENTATION_VERSION, render_kb_presentation_v1(original)))
+    except ValueError:
+        pass
+    for version, candidate in candidates:
+        marker = candidate.rfind(b"</body>")
+        if marker < 0 or not candidate[:marker].endswith(b"</main>"):
+            continue
+        expected = candidate[:marker] + CF_INJECTION + candidate[marker:]
+        if live != expected or not cf_headers:
+            continue
+        evidence.update({
+            "ok": True,
+            "rule_version": CF_RULE_VERSION if version == "legacy" else f"{KB_PRESENTATION_VERSION}+{CF_RULE_VERSION}",
+            "transformation": "cloudflare-insights-single-insertion" if version == "legacy"
+                              else "kb-v4-presentation-v1+cloudflare-insights-single-insertion",
+            "insertion_offset": marker,
+            "injection_count": 1,
+            "injected_length": len(CF_INJECTION),
+            "injected_sha256": sha256_bytes(CF_INJECTION),
+            "injected_bytes_base64": base64.b64encode(CF_INJECTION).decode("ascii"),
+            "normalized_sha256": sha256_bytes(candidate),
+            "cloudflare_headers_verified": True,
+        })
+        return evidence
+    evidence["ok"] = False
+    evidence["reason"] = "PUBLIC_HTML_TRANSFORMATION_MISMATCH"
     return evidence
 
 
@@ -368,10 +398,14 @@ def audit_published_content(
         reasons.append("TARGET_OUTSIDE_ROOT")
     exists = valid_slug and target.is_file() and not target_is_symlink
     _add(checks, reasons, "target_exists", exists, "TARGET_HTML_MISSING", path=str(target))
-    body = target.read_bytes() if exists else b""
-    facts = _parse_html(body) if body else PageFacts()
-
+    raw_body = target.read_bytes() if exists else b""
     expected_hash = str(record.get("html_sha256", ""))
+    body = raw_body
+    if expected_hash and raw_body and sha256_bytes(raw_body) != expected_hash:
+        canonical = raw_body.replace(b"\r\n", b"\n")
+        if sha256_bytes(canonical) == expected_hash:
+            body = canonical
+    facts = _parse_html(body) if body else PageFacts()
     actual_hash = sha256_bytes(body) if body else ""
     _add(
         checks,

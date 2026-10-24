@@ -4,6 +4,19 @@ const path = require('node:path');
 const repoRoot = path.resolve(__dirname, '..', '..');
 const outputArg = process.argv.find((arg) => arg.startsWith('--output='));
 const outputDir = path.resolve(repoRoot, outputArg ? outputArg.slice('--output='.length) : '_site');
+const crypto = require('node:crypto');
+
+// V4 presentation v1 changes only the deployed copy. Approved source bytes and
+// registry html_sha256 remain immutable; the audit verifies this exact transform.
+const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js" defer data-kfarmai-presentation="v4-1"></script>');
+function renderKbV4(source) {
+  const marker = Buffer.from('</head>');
+  const at = source.indexOf(marker);
+  if (at < 0 || source.indexOf(marker, at + marker.length) >= 0 || source.includes(kbPresentationV1)) {
+    throw new Error('KB presentation source has no unique head boundary.');
+  }
+  return Buffer.concat([source.subarray(0, at), kbPresentationV1, source.subarray(at)]);
+}
 
 const publicRootFiles = new Set([
   '.nojekyll',
@@ -94,11 +107,51 @@ const kbItems = registry.items.map((item) => {
       || !fs.existsSync(path.join(outputDir, 'kb', `${slug}.html`))) {
     throw new Error('KB registry entry is not a published local article.');
   }
+  if (item.html_sha256) {
+    let source = fs.readFileSync(path.join(repoRoot, 'kb', `${slug}.html`));
+    let hash = crypto.createHash('sha256').update(source).digest('hex');
+    // Windows text checkout can add CRLF to an approved Git blob. Only restore
+    // its canonical LF bytes when the registry hash proves they are identical.
+    if (hash !== item.html_sha256) {
+      const canonical = Buffer.from(source.toString('utf8').replace(/\r\n/g, '\n'));
+      if (crypto.createHash('sha256').update(canonical).digest('hex') === item.html_sha256) {
+        source = canonical;
+        hash = item.html_sha256;
+      }
+    }
+    if (hash !== item.html_sha256) throw new Error(`Approved KB source hash mismatch: ${slug}`);
+    fs.writeFileSync(path.join(outputDir, 'kb', `${slug}.html`), source);
+  }
   return { title: String(item.title || ''), category: String(item.category || ''),
     date, path: `/kb/${slug}.html` };
 }).sort((a, b) => b.date.localeCompare(a.date));
+for (const entry of fs.readdirSync(path.join(outputDir, 'kb'), { withFileTypes: true })) {
+  if (!entry.isFile() || !entry.name.endsWith('.html') || entry.name === 'index.html') continue;
+  const destination = path.join(outputDir, 'kb', entry.name);
+  fs.writeFileSync(destination, renderKbV4(fs.readFileSync(destination)));
+}
 fs.writeFileSync(path.join(outputDir, 'data/kb-index.json'),
   `${JSON.stringify({items: kbItems})}\n`, 'utf8');
+
+// Render the already-approved registry projection into the public home copy.
+// This avoids a late client-side card replacement becoming the LCP element.
+// The source home file and every approved KB article remain byte-identical.
+const homePath = path.join(outputDir, 'index.html');
+const homeSource = fs.readFileSync(homePath, 'utf8');
+const homeStart = '<div class="home-kb-cards" id="homeKbCards" aria-live="polite">';
+const startAt = homeSource.indexOf(homeStart);
+if (startAt < 0 || homeSource.indexOf(homeStart, startAt + homeStart.length) >= 0) {
+  throw new Error('Home KB card boundary is not unique.');
+}
+const endAt = homeSource.indexOf('</div>', startAt + homeStart.length);
+if (endAt < 0) throw new Error('Home KB card boundary is incomplete.');
+const escapeHtml = value => String(value).replace(/[&<>"']/g, char =>
+  ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
+const cards = kbItems.slice(0, 4).map(item =>
+  `<a class="kb-card" href="${item.path}"><small>${escapeHtml(item.category)} · ${item.date} · 공식 출처는 글에서 확인</small><strong>${escapeHtml(item.title)}</strong><span>내용과 출처 확인 →</span></a>`).join('');
+fs.writeFileSync(homePath,
+  `${homeSource.slice(0, startAt)}<div class="home-kb-cards" id="homeKbCards" aria-live="polite" data-kb-static="1">${cards}${homeSource.slice(endAt)}`,
+  'utf8');
 
 function countFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).reduce(

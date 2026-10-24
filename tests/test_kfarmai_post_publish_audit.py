@@ -19,6 +19,7 @@ from kfarmai_post_publish_audit import (  # noqa: E402
     sha256_bytes,
     _default_fetch,
     verify_public_html,
+    render_kb_presentation_v1,
 )
 
 
@@ -39,6 +40,29 @@ def page_html(*, title: str = TITLE, canonical: str = URL, extra: str = "") -> b
 <h2>공식 참고자료</h2>
 <a href="{SOURCES[0]}">농촌진흥청</a><a href="{SOURCES[1]}">농사로</a>
 {extra}</article></main></body></html>""".encode("utf-8")
+
+
+class KbPresentationContractTests(unittest.TestCase):
+    def test_legacy_exact_and_v4_render_are_both_verified(self):
+        source = page_html()
+        rendered = render_kb_presentation_v1(source)
+        self.assertTrue(verify_public_html(source, source, url=URL)["ok"])
+        result = verify_public_html(source, rendered, url=URL)
+        self.assertTrue(result["ok"])
+        self.assertEqual("v4-1", result["rule_version"])
+        self.assertEqual(sha256_bytes(source), result["normalized_sha256"])
+        self.assertEqual(sha256_bytes(rendered), result["rendered_sha256"])
+        self.assertFalse(verify_public_html(source, rendered.replace(b"<h1>", b"<h1>changed"), url=URL)["ok"])
+        self.assertFalse(verify_public_html(source, rendered + b"<!--extra-->", url=URL)["ok"])
+
+    def test_presentation_is_not_accepted_on_unrelated_route(self):
+        source = page_html()
+        rendered = render_kb_presentation_v1(source)
+        self.assertFalse(verify_public_html(source, rendered, url="https://kfarmai.com/index.html")["ok"])
+
+    def test_invalid_injection_boundary_fails_closed(self):
+        with self.assertRaises(ValueError):
+            render_kb_presentation_v1(b"<html><head></head></head></html>")
 
 
 class AuditFixture:
@@ -106,6 +130,13 @@ class PostPublishAuditTests(unittest.TestCase):
         self.assertEqual("LOCAL_PASS_NETWORK_NOT_RUN", result["status"])
         self.assertEqual("NOT_RUN", result["network_status"])
         self.assertEqual([], result["reasons"])
+
+    def test_windows_crlf_checkout_only_passes_when_canonical_hash_matches(self):
+        source = self.fx.html_path.read_bytes()
+        self.fx.html_path.write_bytes(source.replace(b"\n", b"\r\n"))
+        self.assertEqual("LOCAL_PASS_NETWORK_NOT_RUN", self.audit()["status"])
+        self.fx.html_path.write_bytes(self.fx.html_path.read_bytes() + b"<!-- changed -->")
+        self.assertIn("HTML_SHA256_MISMATCH", self.audit()["reasons"])
 
     def test_tampered_html_requires_review(self):
         self.fx.html_path.write_bytes(self.fx.html_path.read_bytes() + b"<!-- tampered -->")
@@ -288,6 +319,17 @@ class CloudflareTransformationTests(unittest.TestCase):
         self.assertTrue(evidence["ok"])
         self.assertEqual(1, evidence["injection_count"])
         self.assertEqual(sha256_bytes(self.original), evidence["normalized_sha256"])
+
+    def test_v4_presentation_plus_exact_cloudflare_insertion_pass(self):
+        rendered = render_kb_presentation_v1(self.original)
+        offset = rendered.rfind(b"</body>")
+        live = rendered[:offset] + CF_INJECTION + rendered[offset:]
+        evidence = verify_public_html(self.original, live, url=self.url, headers=self.headers)
+        self.assertTrue(evidence["ok"])
+        self.assertEqual(sha256_bytes(rendered), evidence["normalized_sha256"])
+        self.assertFalse(verify_public_html(
+            self.original, live.replace(b"rda.go.kr", b"evil.example", 1),
+            url=self.url, headers=self.headers)["ok"])
 
     def test_content_and_security_mutations_fail_closed(self):
         cases = {

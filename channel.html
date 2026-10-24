@@ -151,8 +151,10 @@
   .toast.show { opacity:1; }
 </style>
 <link rel="stylesheet" href="static/css/community-v3.css">
+<link rel="stylesheet" href="/static/css/v4-shell.css">
+<script src="/static/js/v4-shell.js" defer></script>
 </head>
-<body class="community-list-page">
+<body class="community-list-page v4-page">
 <svg width="0" height="0" style="position:absolute">
   <symbol id="nav-home" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" fill="currentColor" opacity=".2"/><path d="m3 11 9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></symbol>
   <symbol id="nav-q" viewBox="0 0 24 24"><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" fill="currentColor" opacity=".2"/><path d="M21 14a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.8" fill="none"/></symbol>
@@ -280,6 +282,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="static/js/community/community-model.js"></script>
 <script src="static/js/community/question-draft.js"></script>
+<script src="static/js/community/compose-draft.js?v=phase7h-r1"></script>
+<script src="static/js/community/secure-image-upload.js?v=phase7h-r1"></script>
 <script>
 const SUPABASE_URL = 'https://xzetqijeucldbfgjuoes.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZXRxaWpldWNsZGJmZ2p1b2VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NjIwODYsImV4cCI6MjA5NTEzODA4Nn0.QAizDLXQC1DrRi5C0sPahK6s_-6X4zkTEjzJZ6CFprw';
@@ -388,6 +392,41 @@ const sortParam = normalizeMoreSort(params.get('sort') || sectionParam || 'lates
 const isMoreListMode = params.has('sort') || params.has('section');
 const PENDING_QUESTION_KEY = 'kfarmai_pending_question';
 let sb, currentUser=null, channels=[], currentChannel=null, activeCategory='', keyword=(params.get('q')||'').trim(), offset=0, isLoading=false, hasMore=true, selectedPostImages=[], selectedPostTags=[], blockedUserIdsSet=new Set(), activeQuestionDraftImageId='';
+let composeDraft=null,composeDraftOwner='';
+async function setupComposeDraft(user){
+  if(!user?.id){
+    if(!composeDraft && !composeDraftOwner)return false;
+    if(composeDraft){await composeDraft.saveNow().catch(()=>{});composeDraft.destroy();composeDraft=null;}
+    composeDraftOwner='';closeWriteModal(true);selectedPostImages=[];selectedPostTags=[];
+    for(const id of ['postTitle','postContent','postCategory','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput']){
+      const field=document.getElementById(id);if(field)field.value='';
+    }
+    renderPostImagePreview();renderSelectedTags();return false;
+  }
+  if(composeDraftOwner===user.id)return false;
+  if(composeDraft){await composeDraft.saveNow().catch(()=>{});composeDraft.destroy();composeDraft=null;}
+  if(composeDraftOwner && composeDraftOwner!==user.id){
+    closeWriteModal(true);selectedPostImages=[];selectedPostTags=[];
+    for(const id of ['postTitle','postContent','postCategory','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput']){
+      const field=document.getElementById(id);if(field)field.value='';
+    }
+    renderPostImagePreview();renderSelectedTags();
+  }
+  try{
+  composeDraft=await window.KFComposeDraft.create({
+    ownerId:user.id,kind:'create',form:document.getElementById('writeModal'),
+    anchor:document.getElementById('submitBtn'),
+    fields:['channelSelect','postCategory','postTitle','postContent','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput'],
+    capture:()=>({files:selectedPostImages,tags:selectedPostTags}),
+    open:()=>openWriteFlow(),
+    apply:row=>{selectedPostImages=Array.from(row.files||[]);selectedPostTags=Array.from(row.tags||[]);
+      applyWriteTopicConfig(row.fields?.postCategory||'');toggleCustomSymptom();renderPostImageInfo(selectedPostImages);
+      renderPostImagePreview();renderSelectedTags();},
+  });
+  composeDraftOwner=user.id;
+  return composeDraft.restore();
+  }catch(_){composeDraft=null;composeDraftOwner='';showToast('이 기기에 초안을 저장할 수 없습니다. 저장 공간을 확인해주세요.');return false;}
+}
 const TAG_LIMIT=8;
 const TAG_SUGGESTIONS=['고추','토마토','딸기','벼','상추','잎말림','탄저병','과습','총채벌레','홈가드닝','텃밭','노지','시설재배','스마트팜','아쿠아팜','전남','순천'];
 let currentProfileNickname='';
@@ -444,14 +483,15 @@ async function init(){
   currentUser=session?.user||null;
   if(currentUser)hydrateCurrentProfile(currentUser);
   await refreshBlockedUsers();
-  sb.auth.onAuthStateChange(async (event,session)=>{currentUser=session?.user||null; await refreshBlockedUsers(); if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();} resetAndLoad();});
+  sb.auth.onAuthStateChange(async (event,session)=>{currentUser=session?.user||null; await refreshBlockedUsers(); if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();if(channels.length)await setupComposeDraft(currentUser);}else await setupComposeDraft(null); resetAndLoad();});
   await loadChannels();
+  const restored=await setupComposeDraft(currentUser);
   document.getElementById('searchInput').value=keyword;
   document.getElementById('searchInput').addEventListener('input', debounce(applyKeywordSearch, 300));
   window.addEventListener('scroll', handleScroll, {passive:true});
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){closeWriteModal();closeLoginModal();} });
   resetAndLoad();
-  applyPendingQuestionQuery();
+  if(!restored)applyPendingQuestionQuery();
 }
 async function loadChannels(){
   channels=await window.KFCommunity.loadCategories(sb);
@@ -756,7 +796,7 @@ function cachePostForDetail(post){
 }
 function handleScroll(){if(!hasMore||isLoading)return;if(window.innerHeight+window.scrollY>=document.body.offsetHeight-260)loadPosts();}
 async function openWriteFlow(preset){renderChannelSelect();renderTagSuggestions();applyWriteTopicConfig();if(preset)fillWritePreset(preset);autoResizeTextarea(document.getElementById('postContent'),240);document.body.classList.add('is-composing');document.getElementById('writeModal').classList.add('open');lockBodyScroll();}
-function closeWriteModal(){document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();if(activeQuestionDraftImageId&&window.KFQuestionDraft){window.KFQuestionDraft.removeImage(activeQuestionDraftImageId).catch(()=>{});activeQuestionDraftImageId='';}}
+async function closeWriteModal(skipDraftSave=false){if(!skipDraftSave&&composeDraft){try{await composeDraft.saveNow();}catch(_){showToast('초안을 저장하지 못했습니다. 이 화면을 닫지 마세요.');return;}}document.getElementById('writeModal').classList.remove('open');document.body.classList.remove('is-composing');unlockBodyScroll();}
 async function applyPendingQuestionQuery(){
   const params=new URLSearchParams(location.search);
   if(params.get('write')!=='1')return;
@@ -888,7 +928,7 @@ function renderTagSuggestions(){const wrap=document.getElementById('tagSuggestio
 function addPostTag(value){const tag=normalizeTag(value);if(!tag)return;if(selectedPostTags.includes(tag))return renderSelectedTags();if(selectedPostTags.length>=TAG_LIMIT){showToast(`태그는 최대 ${TAG_LIMIT}개까지 추가할 수 있습니다.`);return;}selectedPostTags.push(tag);renderSelectedTags();}
 function addTagFromInput(){const input=document.getElementById('tagInput');addPostTag(input?.value||'');if(input)input.value='';}
 function removePostTag(idx){selectedPostTags.splice(idx,1);renderSelectedTags();}
-function renderSelectedTags(){const wrap=document.getElementById('selectedTags');if(!wrap)return;wrap.innerHTML=selectedPostTags.map((tag,idx)=>`<span class="selected-tag">${esc(tag)}<button type="button" onclick="removePostTag(${idx})" aria-label="태그 삭제">×</button></span>`).join('');}
+function renderSelectedTags(){const wrap=document.getElementById('selectedTags');if(!wrap)return;wrap.innerHTML=selectedPostTags.map((tag,idx)=>`<span class="selected-tag">${esc(tag)}<button type="button" onclick="removePostTag(${idx})" aria-label="태그 삭제">×</button></span>`).join('');composeDraft?.schedule();}
 function toggleCustomSymptom(){const select=document.getElementById('postCategory');document.getElementById('customSymptomWrap')?.classList.toggle('show',select?.value==='기타');}
 function selectedSymptom(){const value=document.getElementById('postCategory')?.value||'';if(value==='기타')return (document.getElementById('customSymptom')?.value||'').trim();return value;}
 function getPostImageExt(file){const ext=String(file?.name||'').split('.').pop()?.replace(/[^a-zA-Z0-9]/g,'').toLowerCase()||'jpg';return ['jpg','jpeg','png','webp','gif','heic','heif'].includes(ext)?ext:'jpg';}
@@ -926,10 +966,9 @@ function renderPostImageInfo(files,targetId='postImageInfo'){
   box.textContent=`선택한 사진: ${list.length}장 · 파일 형식: ${exts} · 용량: ${totalMb}MB ${notes.join(' ')}`;
 }
 function postSubmitWarn(step,extra={}){console.warn('[post submit]',{step,fileCount:selectedPostImages.length,...extra});}
-function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
-function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();}
-async function uploadPostImages(userId){const result={urls:[],paths:[]};if(!selectedPostImages.length)return result;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});const draftId=`draft-${Date.now()}-${Math.random().toString(36).slice(2)}`;for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const safeFile=await window.KFQuestionDraft.prepareForUpload(file);const ext=getPostImageExt(safeFile);const safeName=`${Date.now()}_${i}_${Math.random().toString(36).slice(2)}.${ext}`;const path=`${userId}/${draftId}/${safeName}`;const {data:uploadData,error}=await sb.storage.from('post-images').upload(path,safeFile,{cacheControl:'3600',upsert:false,contentType:safePostImageContentType(safeFile)});if(error){postSubmitWarn('storage.upload.failed',{message:error.message,files:postImageLogPayload([safeFile])});throw error;}const uploadedPath=uploadData?.path||path;const {data}=sb.storage.from('post-images').getPublicUrl(uploadedPath);if(!data?.publicUrl)throw new Error('public image url unavailable');result.urls.push(data.publicUrl);result.paths.push(uploadedPath);}postSubmitWarn('storage.upload.done',{uploadedCount:result.urls.length});return result;}
-async function cleanupPostUploads(paths){if(paths?.length)await sb.storage.from('post-images').remove(paths).catch(()=>{});}
+function handlePostImages(input){const files=Array.from(input.files||[]);postSubmitWarn('file.selected',{files:postImageLogPayload(files)});renderPostImageInfo(files);const incoming=files.filter(isPostImageFile);const rejected=files.length-incoming.length;if(rejected>0){postSubmitWarn('file.validation',{rejectedCount:rejected,files:postImageLogPayload(files)});showToast('이미지 파일 형식 또는 용량을 확인해주세요.');}if(!incoming.length){input.value='';return;}if(selectedPostImages.length+incoming.length>3){showToast('최대 3장까지 첨부 가능합니다');input.value='';return;}selectedPostImages=selectedPostImages.concat(incoming).slice(0,3);input.value='';renderPostImageInfo(selectedPostImages);renderPostImagePreview();composeDraft?.schedule();}
+function removePostImage(idx){selectedPostImages.splice(idx,1);renderPostImageInfo(selectedPostImages);renderPostImagePreview();composeDraft?.schedule();}
+async function uploadPostImages(userId){const result={urls:[],paths:[]};if(!selectedPostImages.length)return result;postSubmitWarn('storage.upload.start',{files:postImageLogPayload(selectedPostImages)});for(let i=0;i<selectedPostImages.length;i++){const file=selectedPostImages[i];if(!isPostImageFile(file)){postSubmitWarn('storage.upload.invalid_file',{files:postImageLogPayload([file])});throw new Error('invalid image file');}const safeFile=await window.KFQuestionDraft.prepareForUpload(file);const uploaded=await composeDraft.upload(safeFile,i,'create',null,()=>window.KFSecureImageUpload.upload(sb,safeFile,'create'));result.urls.push(uploaded.url);result.paths.push(uploaded.path);}postSubmitWarn('storage.upload.done',{uploadedCount:result.urls.length});return result;}
 function classifyPostUploadError(err){
   const message=String(err?.message||'').toLowerCase();
   if(message.includes('invalid image file')||message.includes('mime')||message.includes('type')||message.includes('size'))return '이미지 파일 형식 또는 용량을 확인해주세요. 카카오톡 안에서 열린 화면이면 Safari에서 직접 열고 다시 시도해주세요.';
@@ -958,6 +997,14 @@ async function submitPost(){
     const userId=session?.user?.id;
     if(!userId){showToast('로그인 후 글을 등록할 수 있습니다.');openLoginModal();return;}
     localStorage.setItem('kfarmai_user_id',userId);
+    if(!composeDraft || composeDraftOwner!==userId)throw new Error('초안 저장 준비가 필요합니다. 다시 로그인해주세요.');
+    if(await composeDraft.reconcile(sb)){
+      closeWriteModal(true);selectedPostImages=[];selectedPostTags=[];
+      for(const id of ['postTitle','postContent','postCategory','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput']){const field=document.getElementById(id);if(field)field.value='';}
+      renderPostImageInfo([]);renderPostImagePreview();renderSelectedTags();await composeDraft.clearAfterSuccess();
+      showToast('이미 등록된 글을 확인했습니다. 중복 게시하지 않았습니다.');return;
+    }
+    await composeDraft.saveNow();
     uploaded=await uploadPostImages(userId);const imageUrls=uploaded.urls;
     const tags=window.KFCommunity.normalizeTags([...selectedPostTags,crop,category,cultivation,region]);
     const payload={user_id:userId,category_id:categoryId,title,content:contentWithCategory(content,category,channelName,region,tags,displayNameForUser(currentUser||session.user)),crop_tag:crop||category||null,region_tag:region||null,image_urls:imageUrls,tags};
@@ -965,16 +1012,19 @@ async function submitPost(){
     const forbiddenPayloadKeys=payloadKeys.filter(key=>!allowedPayloadKeys.includes(key));
     if(forbiddenPayloadKeys.length)throw new Error(`invalid payload keys: ${forbiddenPayloadKeys.join(',')}`);
     postSubmitWarn('posts.insert.start',{payloadKeys,imageCount:imageUrls.length,hasUser:!!userId});
-    const {error}=await sb.from('posts').insert(payload);
+    await composeDraft.beginSubmission(payload);
+    const {error}=await sb.from('posts').insert(payload).select('id').single();
     if(error)console.warn('post insert error',{message:error.message,payloadKeys});
     if(error)throw error;
     showToast('질문이 등록되었습니다.');
-    closeWriteModal();
+    closeWriteModal(true);
     ['postTitle','postContent','postCategory','postCrop','cultivationSelect','regionSelect','customSymptom','tagInput'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     autoResizeTextarea(document.getElementById('postContent'),240);
-    selectedPostImages=[];selectedPostTags=[];renderPostImageInfo([]);renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();resetAndLoad();
+    selectedPostImages=[];selectedPostTags=[];renderPostImageInfo([]);renderPostImagePreview();renderSelectedTags();toggleCustomSymptom();
+    await composeDraft.clearAfterSuccess();
+    if(activeQuestionDraftImageId&&window.KFQuestionDraft){await window.KFQuestionDraft.removeImage(activeQuestionDraftImageId).catch(()=>{});activeQuestionDraftImageId='';}
+    resetAndLoad();
   }catch(err){
-    await cleanupPostUploads(uploaded.paths);
     const message=String(err?.message||'');
     console.warn('post submit failed',{message});
     showToast(classifyPostUploadError(err));
