@@ -1602,6 +1602,7 @@
 </style>
 <link rel="stylesheet" href="static/css/agri-info.css?v=20260706-news2">
 <link rel="stylesheet" href="/static/css/v4-shell.css">
+<link rel="stylesheet" href="/static/css/v4-1-main.css">
 <script src="/static/js/v4-shell.js" defer></script>
 </head>
 <body class="v3-home v4-page v4-home">
@@ -1890,6 +1891,14 @@
         <div class="bell" id="headerProfile" onclick="safeOpenMyPanel()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
         </div>
+        <div class="v41-top-actions" aria-label="빠른 메뉴">
+          <button class="v41-icon-button" type="button" onclick="document.getElementById('globalSearch')?.focus()" aria-label="검색">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg>
+          </button>
+          <button class="v41-icon-button" type="button" onclick="safeOpenMyPanel()" aria-label="계정">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"></path></svg>
+          </button>
+        </div>
       </div>
     </div>
     <form class="search" id="searchBox" onsubmit="event.preventDefault(); runSearch();">
@@ -1920,7 +1929,11 @@
 
         <section class="home-kb-section" aria-labelledby="homeKbTitle">
           <div class="section-head"><div><h2 class="section-title" id="homeKbTitle">오늘의 발견</h2></div><a class="section-more-btn" href="/kb/index.html">더보기 &gt;</a></div>
-          <div class="home-kb-cards" id="homeKbCards" aria-live="polite"><a class="kb-card" href="/kb/greenhouse-irrigation-precheck.html"><small>스마트팜 · 2026-10-11</small><strong>온실 관수 설비 가동 전 확인 포인트</strong><span>내용과 출처 확인 →</span></a></div>
+          <div class="home-kb-cards" id="homeKbCards" aria-live="polite">
+            <a class="kb-card" href="/kb/greenhouse-heating-preflight-notes.html"><img src="/static/kb/greenhouse-heating-preflight-notes-hero.webp" alt="온실 난방 설비 점검"><span class="v41-kb-copy"><small>스마트팜 · 2026-10-19</small><strong>겨울철 온실 난방 전 점검 포인트</strong></span></a>
+            <a class="kb-card" href="/kb/greenhouse-irrigation-precheck.html"><small>스마트팜</small><strong>온실 관수 설비 가동 전 확인 포인트</strong><span>내용과 출처 확인 →</span></a>
+            <a class="kb-card" href="/kb/strawberry-small-smartfarm.html"><small>재배</small><strong>딸기 소규모 스마트팜</strong><span>내용과 출처 확인 →</span></a>
+          </div>
         </section>
 
         <div class="community-home-layout">

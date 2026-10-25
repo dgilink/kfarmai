@@ -111,6 +111,22 @@ body.v4-kb-article { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
 body.v4-kb-article .site-header { border-bottom: 1px solid var(--v4-line); background: #fff; }
 body.v4-kb-article .knowledge-article { max-width: 820px; margin-inline: auto; }
 body.v4-kb-article .knowledge-article figure img { max-width: 100%; height: auto; }
+/* Keep checklist/diagram assets inside the reading measure.  This deliberately
+   targets only KB assets named as infographics; photo figures retain their
+   source presentation (including wide hero treatment). */
+body.v4-kb-article .knowledge-article figure:has(> img[src*="-infographic."]) {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 20px auto 28px !important;
+}
+body.v4-kb-article .knowledge-article img[src*="-infographic."] {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  margin-inline: auto;
+  object-fit: contain !important;
+}
 body.v4-kb-article .knowledge-article h1 { color: var(--v4-ink); letter-spacing: -.035em; }
 body.v4-kb-article .knowledge-article h2 { color: var(--v4-ink); }
 body.v4-kb-article .knowledge-article a { color: var(--v4-green); }

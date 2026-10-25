@@ -1,0 +1,100 @@
+/* V4.1 main four screens: presentation-only layer.  Content and data bindings stay in their existing pages. */
+:root { --v41-green:#126c43; --v41-ink:#172019; --v41-muted:#68736b; --v41-line:#d8ded9; --v41-gutter:16px; --v41-control:46px; }
+body.v4-page { color:var(--v41-ink); background:#fff; }
+body.v4-page .header, body.v4-page .agri-v3-header { border-color:var(--v41-line); }
+body.v4-page .v41-top-actions { display:flex; align-items:center; gap:4px; }
+body.v4-page .v41-icon-button { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; padding:0; border:0; background:#fff; color:var(--v41-ink); cursor:pointer; text-decoration:none; }
+body.v4-page .v41-icon-button svg { width:21px; height:21px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+/* Home: lead with real public content and keep the working home panels intact. */
+body.v4-home .header { padding:10px var(--v41-gutter) 0; }
+body.v4-home .top-bar { min-height:42px; padding-bottom:8px; }
+body.v4-home .brand img { width:auto !important; height:29px !important; max-width:154px !important; }
+body.v4-home .header-actions > :not(.v41-top-actions), body.v4-home .tabs { display:none !important; }
+body.v4-home .search { height:var(--v41-control); margin:0 0 10px; padding:0 12px; border:1px solid var(--v41-line); border-radius:0; background:#fff; }
+body.v4-home .search-btn { order:2; width:34px; height:42px; } body.v4-home .search input { font-size:14px; }
+body.v4-home .pages-wrap, body.v4-home .pages, body.v4-home .page { height:auto; overflow:visible; }
+body.v4-home .pages { display:block; transform:none !important; }
+body.v4-home .pages > .page:not(:first-child), body.v4-home .page-dots { display:none !important; }
+body.v4-home .page { padding:0 var(--v41-gutter) calc(96px + env(safe-area-inset-bottom)); }
+body.v4-home .v4-quick-actions { margin:14px 0 28px; gap:6px; }
+body.v4-home .v4-quick-actions a, body.v4-home .v4-quick-actions button { min-height:54px; border-color:var(--v41-line); font-size:13px; }
+body.v4-home .v4-quick-write { background:var(--v41-green); border-color:var(--v41-green); color:#fff; }
+body.v4-home .home-kb-section, body.v4-home .community-home-layout { width:100%; max-width:1180px; margin:0 auto 30px; padding:0; background:#fff; border:0; }
+body.v4-home .section-head { align-items:end; margin:0 0 12px; padding-bottom:10px; border-bottom:2px solid var(--v41-ink); }
+body.v4-home .section-title { color:var(--v41-ink); font-size:22px; font-weight:800; letter-spacing:-.045em; }
+body.v4-home .section-more-btn { color:var(--v41-muted); font-size:12px; font-weight:700; }
+body.v4-home .home-kb-cards { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,.8fr); gap:8px; }
+body.v4-home .home-kb-cards .kb-card { position:relative; min-height:132px; padding:16px; overflow:hidden; border:1px solid var(--v41-line); border-radius:0; background:#fff; }
+body.v4-home .home-kb-cards .kb-card:first-child { grid-row:span 2; min-height:272px; padding:0; color:#fff; background:#18261e; }
+body.v4-home .home-kb-cards .kb-card:has(img) { padding:0; color:#fff; background:#18261e; }
+body.v4-home .home-kb-cards .kb-card:not(:has(img)) { display:flex; flex-direction:column; justify-content:center; min-height:112px; }
+body.v4-home .home-kb-cards .kb-card img { position:absolute; inset:0; display:block; width:100%; height:100%; object-fit:cover; opacity:.82; }
+body.v4-home .home-kb-cards .v41-kb-copy { position:absolute; inset:auto 0 0; display:block; padding:44px 16px 16px; background:linear-gradient(transparent 20%,rgba(0,0,0,.86)); color:#fff; }
+body.v4-home .home-kb-cards .v41-kb-copy small, body.v4-home .home-kb-cards .v41-kb-copy strong { color:#fff !important; }
+body.v4-home .home-kb-cards .kb-card small { color:inherit; font-size:11px; } body.v4-home .home-kb-cards .kb-card strong { font-size:16px; line-height:1.38; }
+body.v4-home .home-kb-cards .kb-card span { display:none; }
+body.v4-home .home-kb-cards .kb-card .v41-kb-copy { display:block; }
+body.v4-home .community-home-layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(260px,.7fr); gap:30px; }
+body.v4-home .community-home-main, body.v4-home .community-home-aside { min-width:0; }
+body.v4-home .v3-category-grid { display:none; }
+body.v4-home .community-feed-toolbar { margin:0 0 8px; } body.v4-home .feed-filter { border-radius:0; background:#fff; border:1px solid var(--v41-line); }
+body.v4-home .recent-question-panel { border-top:0; } body.v4-home .recent-question-card, body.v4-home .v3-post-card { border-radius:0; box-shadow:none; }
+body.v4-home .community-side-card { padding:0 0 18px; margin:0 0 22px; border:0; border-bottom:1px solid var(--v41-line); }
+body.v4-home .community-side-copy, body.v4-home .section-copy { display:none; }
+body.v4-home .community-side-title { margin-bottom:10px; font-size:17px; color:var(--v41-ink); }
+body.v4-home .topic-tag-list { gap:5px; } body.v4-home .topic-tag-list a { border-radius:0; }
+body.v4-home .ai-compact-card { display:flex; border-top:2px solid var(--v41-ink); }
+body.v4-home .ai-compact-card strong { color:var(--v41-ink); }
+
+/* List pages share the same simple header, gutters and control geometry. */
+body.community-list-page .header, body.agri-v3-page .agri-v3-header { position:sticky; top:0; z-index:20; }
+body.community-list-page .top, body.agri-v3-page .agri-v3-header-inner { min-height:58px; }
+body.community-list-page .top { grid-template-columns:1fr auto; }
+body.community-list-page .top .v41-top-actions { justify-self:end; }
+body.community-list-page .top a:first-of-type img, body.agri-v3-page .agri-v3-brand img { height:29px !important; width:auto; }
+body.community-list-page .search { margin-bottom:14px; }
+body.community-list-page .v41-page-title { margin:20px var(--v4-gutter) 14px; color:var(--v41-ink); font-size:clamp(27px,4vw,40px); line-height:1.1; letter-spacing:-.055em; }
+body.community-list-page .identity { margin-bottom:14px; }
+body.community-list-page .chips { margin-bottom:14px; }
+body.community-list-page .hub-section { display:none; }
+body.community-list-page .status-line { color:var(--v41-muted); }
+body.community-list-page .post-card .meta { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+body.community-list-page .post-thumb { object-fit:cover; }
+/* The full-width CTA above the feed is the single write entry point. */
+body.community-list-page .fab { display:none !important; }
+
+body.agri-v3-page .agri-v3-header-inner { display:flex; justify-content:space-between; }
+body.agri-v3-page .agri-home-link { display:none; }
+body.agri-v3-page .agri-v3-main { padding-top:20px; }
+body.agri-v3-page .agri-v3-hero { margin-bottom:13px; } body.agri-v3-page .agri-v3-hero h1 { margin:0; }
+body.agri-v3-page .agri-kb-list-section { margin-top:20px; }
+body.agri-v3-page .agri-kb-list { border-top:2px solid var(--v41-ink); }
+body.agri-v3-page .agri-kb-row { display:grid; grid-template-columns:92px minmax(0,1fr) 20px; align-items:center; gap:12px; min-height:92px; padding:10px 0; border-bottom:1px solid var(--v41-line); color:var(--v41-ink); text-decoration:none; }
+body.agri-v3-page .agri-kb-row:not(:has(.agri-kb-thumb)) { grid-template-columns:minmax(0,1fr) 20px; min-height:66px; }
+body.agri-v3-page .agri-kb-thumb { width:92px; height:70px; object-fit:cover; background:#f2f5f2; }
+body.agri-v3-page .agri-kb-copy { min-width:0; display:grid; gap:5px; }
+body.agri-v3-page .agri-kb-copy small { color:var(--v41-green); font-size:11px; font-weight:750; }
+body.agri-v3-page .agri-kb-copy strong { overflow:hidden; color:var(--v41-ink); font-size:15px; line-height:1.42; text-overflow:ellipsis; white-space:nowrap; }
+body.agri-v3-page .agri-kb-arrow { color:var(--v41-muted); font-size:22px; font-weight:400; }
+body.agri-v3-page .agri-v3-section:first-child { margin-top:20px; }
+body.agri-v3-page .agri-v3-section-head h2 { font-size:18px; letter-spacing:-.035em; }
+body.agri-v3-page .agri-summary-card, body.agri-v3-page .agri-data-card, body.agri-v3-page .agri-path-card { position:relative; padding-right:26px; }
+body.agri-v3-page .agri-summary-card::after, body.agri-v3-page .agri-data-card::after, body.agri-v3-page .agri-path-card::after { content:'›'; position:absolute; right:3px; top:50%; transform:translateY(-50%); color:var(--v41-muted); font-size:22px; font-weight:400; }
+body.agri-v3-page .agri-summary-card h3, body.agri-v3-page .agri-data-card h3, body.agri-v3-page .agri-path-card strong { font-weight:750; }
+body.agri-v3-page .agri-v3-section#today { display:none; }
+
+/* Global four-tab menu: a real grouped menu, not an overlay of tiles. */
+.v4-menu { background:#fff; } .v4-menu h2 { letter-spacing:-.045em; }
+.v4-menu h3 { color:var(--v41-muted); border-bottom:1px solid var(--v41-line); font-size:13px; font-weight:800; }
+.v4-menu a { font-weight:700; } .v4-menu a span { font-size:18px; }
+@media (max-width:767px) {
+  body.v4-home .home-kb-cards { grid-template-columns:1fr 1fr; } body.v4-home .home-kb-cards .kb-card:first-child { grid-column:1 / -1; grid-row:auto; min-height:208px; }
+  body.v4-home .community-home-layout { display:block; } body.v4-home .community-home-aside { margin-top:28px; }
+  body.v4-home .home-agri-summary-section { margin-top:28px; }
+  .v4-menu { padding:22px var(--v41-gutter) 28px; }
+}
+@media (min-width:768px) {
+  body.v4-home .header { padding-inline:max(24px,calc((100% - 1180px)/2)); } body.v4-home .page { padding-inline:max(24px,calc((100% - 1180px)/2)); }
+  body.community-list-page .top, body.community-list-page .search, body.community-list-page .v41-page-title, body.community-list-page .identity, body.community-list-page .chips, body.community-list-page .status-line, body.community-list-page .list { width:min(100% - 48px,1120px); margin-left:auto; margin-right:auto; }
+}

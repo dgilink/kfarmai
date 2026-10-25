@@ -7,6 +7,10 @@
   const search = document.getElementById('kbSearch');
   const category = document.getElementById('kbCategory');
   const status = document.getElementById('kbStatus');
+  // Only approved, already-published KB media may be used for the home lead.
+  const homeImages = Object.freeze({
+    '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp'
+  });
   const safePath = (value) => {
     try {
       const url = new URL(value, location.origin);
@@ -24,7 +28,19 @@
     title.textContent = item.title;
     const action = document.createElement('span');
     action.textContent = '내용과 출처 확인 →';
-    link.append(meta, title, action);
+    if (homeGrid && item.image) {
+      const image = document.createElement('img');
+      image.src = item.image;
+      image.alt = '';
+      image.loading = 'eager';
+      image.decoding = 'async';
+      const copy = document.createElement('span');
+      copy.className = 'v41-kb-copy';
+      copy.append(meta, title);
+      link.append(image, copy);
+    } else {
+      link.append(meta, title, action);
+    }
     return link;
   };
   let items = [];
@@ -48,7 +64,8 @@
         title: String(value.title || ''),
         category: String(value.category || ''),
         date: String(value.date || ''),
-        path: safePath(value.path)
+        path: safePath(value.path),
+        image: homeImages[safePath(value.path)] || ''
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
       if (category) {

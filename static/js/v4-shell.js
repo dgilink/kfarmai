@@ -43,17 +43,15 @@
   menu.setAttribute('aria-modal', 'true');
   menu.setAttribute('aria-labelledby', 'v4MenuTitle');
   const groups = [
-    ['내 활동', [['마이페이지', '/index.html?panel=my']]],
-    ['AI · 도구', [
+    ['계정 · 내 활동', [['마이페이지', '/index.html?panel=my']]],
+    ['질문 · 커뮤니티', [['소통', '/channel.html'], ['글쓰기', '/channel.html?write=1']]],
+    ['농업정보', [['농업정보', '/kb/index.html'], ['정책·지원', '/subsidy-calendar.html'], ['공공정보 확인', '/agri-info.html']]],
+    ['AI 참고 · 실용 도구', [
       ['AI 참고 진단', '/diagnosis.html'], ['농업날씨', '/agri-weather.html'],
       ['농산물 시세', '/market-prices.html'], ['주변 농약사', '/agri_map.html'],
       ['재배달력', '/crop-calendar.html'],
     ]],
-    ['정보 · 도움말', [
-      ['농업정보', '/kb/index.html'], ['정책·지원', '/subsidy-calendar.html'],
-      ['공공정보 확인', '/agri-info.html'], ['질문·커뮤니티', '/channel.html'],
-      ['개인정보처리방침', '/oauth/privacy/'],
-    ]],
+    ['설정 · 도움말', [['언어 설정', '/index.html?panel=my'], ['개인정보처리방침', '/oauth/privacy/']]],
   ];
   menu.innerHTML = '<h2 id="v4MenuTitle">전체</h2><div class="v4-menu-groups">' +
     groups.map(([heading, links]) => `<section><h3>${heading}</h3><ul>${links.map(([label, href]) =>

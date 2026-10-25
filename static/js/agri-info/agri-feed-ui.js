@@ -22,6 +22,10 @@
   ]);
 
   let feedPromise;
+  const KB_HOME_MEDIA = Object.freeze({
+    '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
+    '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp'
+  });
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -241,6 +245,49 @@
     return String(node?.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
   }
 
+  function kbCategoryMatches(item, mode) {
+    if (mode === 'all') return true;
+    const text = `${item.category || ''} ${item.title || ''}`.toLowerCase();
+    if (mode === 'smart') return text.includes('스마트');
+    if (mode === 'cultivation') return text.includes('재배') || text.includes('식물') || text.includes('병해충');
+    return text.includes('아쿠아') || text.includes('수산') || text.includes('양식');
+  }
+
+  async function renderApprovedKbList(root) {
+    if (!root) return;
+    try {
+      const response = await global.fetch('/data/kb-index.json', { cache: 'no-store' });
+      if (!response.ok) throw new Error('kb_index_http');
+      const source = await response.json();
+      const items = (Array.isArray(source?.items) ? source.items : []).map(item => ({
+        title: String(item?.title || '').trim(), category: String(item?.category || '').trim(),
+        date: String(item?.date || '').trim(), path: safeUrl(item?.path)
+      })).filter(item => item.title && item.category && /^\d{4}-\d{2}-\d{2}$/.test(item.date)
+        && item.path && new URL(item.path).pathname.startsWith('/kb/'))
+        .sort((a, b) => b.date.localeCompare(a.date));
+      root.replaceChildren(...items.map(item => {
+        const link = element('a', 'agri-kb-row');
+        link.href = new URL(item.path).pathname;
+        const media = KB_HOME_MEDIA[new URL(item.path).pathname];
+        if (media) {
+          const image = element('img', 'agri-kb-thumb');
+          image.src = media;
+          image.alt = '';
+          image.loading = 'lazy';
+          image.addEventListener('error', () => image.remove(), { once: true });
+          link.append(image);
+        }
+        const copy = element('span', 'agri-kb-copy');
+        copy.append(element('small', '', item.category), element('strong', '', item.title));
+        link.append(copy, element('span', 'agri-kb-arrow', '›'));
+        return link;
+      }));
+      if (!items.length) root.textContent = '현재 공개된 농업정보가 없습니다.';
+    } catch (_) {
+      root.textContent = '공개 농업정보를 불러오지 못했습니다.';
+    }
+  }
+
   function applyAgriListFilter() {
     const query = String(document.getElementById('agriSearchInput')?.value || '').trim().toLowerCase();
     const mode = document.querySelector('[data-agri-filter].is-active')?.dataset.agriFilter || 'all';
@@ -253,6 +300,11 @@
         || (mode === 'aqua' && normalizedText(section).includes('아쿠아'));
       const queryMatch = !query || normalizedText(section).includes(query);
       section.hidden = !(modeMatch && queryMatch);
+    });
+    document.querySelectorAll('#agriKbList .agri-kb-row').forEach(row => {
+      const match = kbCategoryMatches({ title: row.querySelector('strong')?.textContent, category: row.querySelector('small')?.textContent }, mode)
+        && (!query || normalizedText(row).includes(query));
+      row.hidden = !match;
     });
   }
 
@@ -397,8 +449,11 @@
     const dashboard = document.getElementById('agriFeedDashboard');
     const home = document.getElementById('homeAgriFeed');
     const tab = document.getElementById('agriTabFeed');
+    const kbList = document.getElementById('agriKbList');
     if (!dashboard && !home && !tab) return;
     bindAgriListControls();
+    await renderApprovedKbList(kbList);
+    applyAgriListFilter();
     try {
       const feed = await loadFeed();
       renderDashboard(dashboard, feed);

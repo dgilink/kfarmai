@@ -153,6 +153,7 @@
 <link rel="stylesheet" href="static/css/community-v3.css">
 <link rel="stylesheet" href="/static/css/v4-shell.css">
 <link rel="stylesheet" href="/static/css/v4-1-lists.css">
+<link rel="stylesheet" href="/static/css/v4-1-main.css">
 <script src="/static/js/v4-shell.js" defer></script>
 </head>
 <body class="community-list-page v4-page">
@@ -170,6 +171,10 @@
       <button class="back" type="button" onclick="location.href='index.html'" aria-label="뒤로가기"><span aria-hidden="true">‹</span></button>
       <a href="index.html" aria-label="kFarmAI 홈"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" style="height:36px;width:auto;"></a>
       <div class="channel-title" id="channelTitle">전체 게시글</div>
+      <div class="v41-top-actions" aria-label="빠른 메뉴">
+        <button class="v41-icon-button" type="button" onclick="document.getElementById('searchInput')?.focus()" aria-label="검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></button>
+        <a class="v41-icon-button" href="index.html?panel=my" aria-label="계정"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"></path></svg></a>
+      </div>
     </div>
     <form class="search" onsubmit="event.preventDefault(); applyKeywordSearch();">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -177,6 +182,13 @@
     </form>
   </header>
 
+  <h1 class="v41-page-title">소통</h1>
+  <div class="chips" id="channelChips" aria-label="커뮤니티 채널">
+    <button class="chip active" type="button" data-slug=""><span>전체</span></button>
+    <button class="chip" type="button" data-slug="question-help"><span>질문</span></button>
+    <button class="chip" type="button" data-slug="showcase-daily"><span>사진</span></button>
+    <button class="chip" type="button" data-slug="cultivation-knowhow"><span>재배</span></button>
+  </div>
   <section class="identity">
     <div class="identity-title" id="hubTitle">질문, AI 참고 진단, 공공정보 확인을 한 흐름으로 연결합니다</div>
     <div class="identity-text" id="hubDescription">식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.</div>
@@ -186,7 +198,6 @@
     </div>
   </section>
 
-  <div class="chips" id="channelChips" aria-label="커뮤니티 채널"></div>
   <div class="status-line"><span id="resultLabel">최신 글</span><span id="resultCount"></span></div>
   <main class="list" id="postList"><div class="loading"><span class="spinner"></span>불러오는 중...</div></main>
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
@@ -562,7 +573,9 @@ function renderChannelSelect(){
 }
 function renderChannelChips(){
   const wrap=document.getElementById('channelChips');
-  wrap.innerHTML=channels.map(ch=>`<button class="chip" data-slug="${esc(ch.slug)}"><span class="chip-icon">${esc(CHANNEL_ICONS[ch.slug]||'•')}</span><span>${esc(ch.name||CHANNEL_CONFIG[ch.slug]||'일반')}</span></button>`).join('');
+  const labels={'question-help':'질문','showcase-daily':'사진','cultivation-knowhow':'재배'};
+  const visible=[{slug:'',label:'전체'},...['question-help','showcase-daily','cultivation-knowhow'].map(slug=>{const ch=channels.find(item=>item.slug===slug);return {slug,label:labels[slug],channel:ch};})];
+  wrap.innerHTML=visible.map(item=>`<button class="chip" data-slug="${esc(item.slug)}"><span>${esc(item.label)}</span></button>`).join('');
   wrap.querySelectorAll('.chip').forEach(btn=>btn.classList.toggle('active',(btn.dataset.slug||'')===(currentChannel?.slug||'')));
   wrap.onclick=e=>{
     const btn=e.target.closest('.chip'); if(!btn)return;

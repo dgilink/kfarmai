@@ -8,6 +8,7 @@ from threading import Thread
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 
 options = Options()
@@ -49,6 +50,28 @@ try:
         driver.get(origin + page)
         WebDriverWait(driver, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
         WebDriverWait(driver, 10).until(lambda d: d.execute_script("return !!document.querySelector('.v4-nav')"))
+        if page == "/agri-info.html":
+            # The approved KB presentation list must render before live public-data sections.
+            WebDriverWait(driver, 10).until(
+                lambda d: len(d.find_elements(By.CSS_SELECTOR, "#agriKbList .agri-kb-row")) > 0
+            )
+            kb_result = driver.execute_script("""
+                const section = document.querySelector('#agriKbListSection');
+                const rows = [...document.querySelectorAll('#agriKbList .agri-kb-row')];
+                const next = section?.nextElementSibling;
+                return {
+                  rows: rows.length,
+                  textOnlyRows: rows.filter(row => !row.querySelector('img')).length,
+                  beforeLiveData: !!next && next.classList.contains('agri-smartfarm-entry'),
+                  brokenImages: rows.filter(row => {
+                    const image = row.querySelector('img');
+                    return image && image.complete && image.naturalWidth === 0;
+                  }).length,
+                };
+            """)
+            if (kb_result["rows"] < 1 or kb_result["textOnlyRows"] < 1
+                    or not kb_result["beforeLiveData"] or kb_result["brokenImages"]):
+                failures.append((page, "kb presentation list", kb_result))
         for width in [320, 360, 390, 430, 768, 1024, 1440]:
             driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {
                 "width": width, "height": 900, "deviceScaleFactor": 1,
@@ -77,6 +100,30 @@ try:
                 failures.append((page, width, "horizontal overflow", result))
             if result["navCount"] != 4 or not result["menuRight"] or not result["navVisible"]:
                 failures.append((page, width, "four-tab navigation", result))
+            if page in ["/kb/strawberry-winter-light-humidity-check.html", "/kb/greenhouse-heating-preflight-notes.html"]:
+                image_result = driver.execute_script("""
+                    const article = document.querySelector('.knowledge-article');
+                    const infographic = article?.querySelector('img[src*="-infographic."]');
+                    const photo = [...(article?.querySelectorAll('img') || [])].find(image => !image.src.includes('-infographic.'));
+                    const infoRect = infographic?.getBoundingClientRect();
+                    const articleRect = article?.getBoundingClientRect();
+                    return {
+                      present: !!infographic,
+                      objectFit: infographic ? getComputedStyle(infographic).objectFit : '',
+                      complete: !!infographic?.complete,
+                      naturalWidth: infographic?.naturalWidth || 0,
+                      clipped: !!infoRect && (infoRect.left < -1 || infoRect.right > innerWidth + 1 || infoRect.width > articleRect.width + 1),
+                      centered: !!infoRect && Math.abs(
+                        (infoRect.left + infoRect.right) / 2 - (articleRect.left + articleRect.right) / 2
+                      ) <= 1,
+                      photoObjectFit: photo ? getComputedStyle(photo).objectFit : '',
+                    };
+                """)
+                if (not image_result["present"] or image_result["objectFit"] != "contain"
+                        or not image_result["complete"] or not image_result["naturalWidth"]
+                        or image_result["clipped"] or not image_result["centered"]
+                        or image_result["photoObjectFit"] == "contain"):
+                    failures.append((page, width, "infographic presentation", image_result))
             print(page, width, result)
             screenshot_dir = os.environ.get("V4_SCREENSHOT_DIR")
             if screenshot_dir:
@@ -119,6 +166,34 @@ try:
                 driver.save_screenshot(str(target / (page.strip("/").replace("/", "-") + "-" + opener.split("(")[0] + f"-{width}.png")))
             driver.execute_script("document.querySelector('#myPanel')?.classList.remove('open'); document.querySelector('#writeModal')?.classList.remove('open')")
         driver.execute_cdp_cmd("Emulation.clearDeviceMetricsOverride", {})
+    # The all menu is a fourth primary screen, so capture and assert it separately.
+    driver.get(origin + "/index.html")
+    WebDriverWait(driver, 10).until(lambda d: d.execute_script("return !!document.querySelector('.v4-nav')"))
+    for width in [390, 1440]:
+        driver.execute_cdp_cmd("Emulation.setDeviceMetricsOverride", {
+            "width": width, "height": 900, "deviceScaleFactor": 1,
+            "mobile": width < 768,
+        })
+        driver.find_element("css selector", ".v4-nav button[aria-controls='v4AllMenu']").click()
+        WebDriverWait(driver, 5).until(lambda d: not d.find_element("id", "v4AllMenu").get_attribute("hidden"))
+        result = driver.execute_script("""
+            const menu = document.querySelector('#v4AllMenu');
+            const labels = [...menu.querySelectorAll('h3')].map(item => item.textContent.trim());
+            const rect = menu.getBoundingClientRect();
+            return {visible: !!menu && !menu.hidden && rect.width >= innerWidth - 1,
+              overflow: document.documentElement.scrollWidth > innerWidth + 1,
+              groups: labels};
+        """)
+        required_groups = ['계정 · 내 활동', '질문 · 커뮤니티', '농업정보', 'AI 참고 · 실용 도구', '설정 · 도움말']
+        if not result["visible"] or result["overflow"] or result["groups"] != required_groups:
+            failures.append(("/index.html", width, "all menu", result))
+        screenshot_dir = os.environ.get("V4_SCREENSHOT_DIR")
+        if screenshot_dir:
+            target = Path(screenshot_dir)
+            target.mkdir(parents=True, exist_ok=True)
+            driver.save_screenshot(str(target / f"all-menu-{width}.png"))
+        driver.execute_script("document.querySelector('.v4-nav button[aria-expanded=true]')?.click()")
+    driver.execute_cdp_cmd("Emulation.clearDeviceMetricsOverride", {})
 finally:
     driver.quit()
     if server:
