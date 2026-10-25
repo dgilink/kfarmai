@@ -1,7 +1,11 @@
-"""Optional Selenium smoke for a local Phase 7 preview server."""
+"""Browser smoke against the final Pages artifact, not immutable KB source bytes."""
 import os
+import shutil
+import subprocess
 import time
 from pathlib import Path
+from threading import Thread
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,16 +15,34 @@ options.add_argument("--headless=new")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-gpu")
 driver = webdriver.Chrome(options=options)
-origin = os.environ.get("V4_PREVIEW_ORIGIN", "http://127.0.0.1:8765").rstrip("/")
+root = Path(__file__).resolve().parents[1]
+artifact_temp = None
+server = None
+
+def artifact_origin():
+    """Build the exact Pages presentation layer used for KB article delivery."""
+    global artifact_temp, server
+    explicit = os.environ.get("V4_PREVIEW_ORIGIN", "").rstrip("/")
+    if explicit:
+        return explicit
+    artifact_temp = root / f"kfarmai-pages-artifact-smoke-{os.getpid()}"
+    artifact_dir = artifact_temp
+    subprocess.run(
+        ["node", "scripts/pages/build-pages-artifact.cjs", f"--output={artifact_dir}"],
+        cwd=root, check=True, capture_output=True, text=True,
+    )
+    handler = lambda *args, **kwargs: SimpleHTTPRequestHandler(*args, directory=str(artifact_dir), **kwargs)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    Thread(target=server.serve_forever, daemon=True).start()
+    return f"http://127.0.0.1:{server.server_port}"
+
+origin = artifact_origin()
 pages = [
-    "/index.html", "/channel.html", "/post.html", "/kb/index.html",
+    "/index.html", "/channel.html", "/post.html", "/agri-info.html", "/kb/index.html",
     "/kb/strawberry-small-smartfarm.html",
     "/kb/strawberry-winter-light-humidity-check.html",
     "/kb/greenhouse-heating-preflight-notes.html",
 ]
-# Release mode is strict by default; preview-only runs may explicitly exclude
-# immutable approved article HTML while that separate gate remains unresolved.
-require_article_nav = os.environ.get("V4_PREVIEW_ONLY") != "1"
 failures = []
 try:
     for page in pages:
@@ -53,9 +75,8 @@ try:
             """)
             if result["scrollWidth"] > result["width"] + 1:
                 failures.append((page, width, "horizontal overflow", result))
-            if require_article_nav or not page.startswith("/kb/") or page.endswith("/index.html"):
-                if result["navCount"] != 4 or not result["menuRight"] or not result["navVisible"]:
-                    failures.append((page, width, "four-tab navigation", result))
+            if result["navCount"] != 4 or not result["menuRight"] or not result["navVisible"]:
+                failures.append((page, width, "four-tab navigation", result))
             print(page, width, result)
             screenshot_dir = os.environ.get("V4_SCREENSHOT_DIR")
             if screenshot_dir:
@@ -100,5 +121,10 @@ try:
         driver.execute_cdp_cmd("Emulation.clearDeviceMetricsOverride", {})
 finally:
     driver.quit()
+    if server:
+        server.shutdown()
+        server.server_close()
+    if artifact_temp:
+        shutil.rmtree(artifact_temp, ignore_errors=True)
 if failures:
     raise AssertionError(failures)

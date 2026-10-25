@@ -152,6 +152,7 @@
 </style>
 <link rel="stylesheet" href="static/css/community-v3.css">
 <link rel="stylesheet" href="/static/css/v4-shell.css">
+<link rel="stylesheet" href="/static/css/v4-1-lists.css">
 <script src="/static/js/v4-shell.js" defer></script>
 </head>
 <body class="community-list-page v4-page">
@@ -180,11 +181,12 @@
     <div class="identity-title" id="hubTitle">질문, AI 참고 진단, 공공정보 확인을 한 흐름으로 연결합니다</div>
     <div class="identity-text" id="hubDescription">식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.</div>
     <div class="identity-actions" id="hubActions">
-      <a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문하기</a>
+      <a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문·경험 올리기</a>
       <a href="diagnosis.html">AI 참고 진단</a>
     </div>
   </section>
 
+  <div class="chips" id="channelChips" aria-label="커뮤니티 채널"></div>
   <div class="status-line"><span id="resultLabel">최신 글</span><span id="resultCount"></span></div>
   <main class="list" id="postList"><div class="loading"><span class="spinner"></span>불러오는 중...</div></main>
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
@@ -220,7 +222,6 @@
     <div class="related-links" id="relatedLinks"></div>
   </section>
 
-  <div class="chips" id="channelChips" aria-label="커뮤니티 채널"></div>
   <button class="fab" type="button" onclick="openWriteFlow()">+ 글쓰기</button>
 </div>
 
@@ -594,7 +595,7 @@ function renderChannelHub(){
   const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?category=${encodeURIComponent(currentChannel.slug)}`:''}`;
   document.getElementById('hubActions').innerHTML=archivedChannel
     ? '<a class="secondary" href="channel.html">현재 커뮤니티 보기</a>'
-    : `<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">글쓰기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
+    : `<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문·경험 올리기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
   const writeButton=document.querySelector('.fab');
   if(writeButton)writeButton.hidden=Boolean(archivedChannel);
   document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');

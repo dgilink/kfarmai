@@ -234,6 +234,37 @@
     support.append(paths);
     fragment.append(support);
     root.replaceChildren(fragment);
+    applyAgriListFilter();
+  }
+
+  function normalizedText(node) {
+    return String(node?.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+
+  function applyAgriListFilter() {
+    const query = String(document.getElementById('agriSearchInput')?.value || '').trim().toLowerCase();
+    const mode = document.querySelector('[data-agri-filter].is-active')?.dataset.agriFilter || 'all';
+    const sections = [...document.querySelectorAll('#agriFeedDashboard .agri-v3-section')];
+    sections.forEach(section => {
+      const id = section.id;
+      const modeMatch = mode === 'all'
+        || (mode === 'smart' && (id === 'cultivation' || normalizedText(section).includes('스마트')))
+        || (mode === 'cultivation' && id === 'cultivation')
+        || (mode === 'aqua' && normalizedText(section).includes('아쿠아'));
+      const queryMatch = !query || normalizedText(section).includes(query);
+      section.hidden = !(modeMatch && queryMatch);
+    });
+  }
+
+  function bindAgriListControls() {
+    const form = document.getElementById('agriSearchForm');
+    const input = document.getElementById('agriSearchInput');
+    form?.addEventListener('submit', event => { event.preventDefault(); applyAgriListFilter(); });
+    input?.addEventListener('search', applyAgriListFilter);
+    document.querySelectorAll('[data-agri-filter]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-agri-filter]').forEach(item => item.classList.toggle('is-active', item === button));
+      applyAgriListFilter();
+    }));
   }
 
   function updatePageStatus(feed) {
@@ -367,6 +398,7 @@
     const home = document.getElementById('homeAgriFeed');
     const tab = document.getElementById('agriTabFeed');
     if (!dashboard && !home && !tab) return;
+    bindAgriListControls();
     try {
       const feed = await loadFeed();
       renderDashboard(dashboard, feed);

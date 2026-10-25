@@ -10,6 +10,7 @@
   <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
   <link rel="stylesheet" href="static/css/agri-info-v3.css">
   <link rel="stylesheet" href="/static/css/v4-shell.css">
+  <link rel="stylesheet" href="/static/css/v4-1-lists.css">
   <script src="/static/js/v4-shell.js" defer></script>
 </head>
 <body class="agri-v3-page v4-page">
@@ -32,13 +33,18 @@
       <div class="agri-last-check" id="agriLastCheck">마지막 확인: 확인 중</div>
     </div>
 
+    <form class="agri-search" id="agriSearchForm" role="search">
+      <label class="agri-sr-only" for="agriSearchInput">농업정보 검색</label>
+      <input id="agriSearchInput" type="search" placeholder="농업정보 검색" autocomplete="off">
+      <button type="submit">검색</button>
+    </form>
+
     <nav class="agri-v3-nav" aria-label="농업정보 분야">
-      <a href="#today">오늘</a>
-      <a href="#weather">날씨·재해</a>
-      <a href="#pest-safety">병해충·농약안전</a>
-      <a href="#market">농산물 시세</a>
-      <a href="#cultivation">재배·기술</a>
-      <a href="#support">지원·공고</a>
+      <span class="agri-sr-only">오늘, 날씨·재해, 병해충·농약안전, 농산물 시세, 재배·기술, 지원·공고 분야를 확인할 수 있습니다.</span>
+      <button type="button" class="is-active" data-agri-filter="all">전체</button>
+      <button type="button" data-agri-filter="smart">스마트</button>
+      <button type="button" data-agri-filter="cultivation">재배</button>
+      <button type="button" data-agri-filter="aqua">아쿠아</button>
     </nav>
 
     <section class="agri-smartfarm-entry" aria-label="스마트팜 가이드">
