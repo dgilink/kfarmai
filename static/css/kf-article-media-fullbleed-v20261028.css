@@ -1,0 +1,45 @@
+/* KFarmAI published KB articles: 2026-10-28 infographic layout baseline.
+   Full viewport width on mobile. No gray or colored backing behind infographic.
+   Local to explicitly marked article figures; does not affect app navigation. */
+.knowledge-article figure.kf-full-media,
+article figure.kf-full-media {
+  position: relative !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: block !important;
+  width: min(100vw, 960px) !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  margin: 24px 0 32px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.knowledge-article figure.kf-full-media > img,
+article figure.kf-full-media > img {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: auto !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.knowledge-article figure.kf-full-media > figcaption,
+article figure.kf-full-media > figcaption {
+  margin: 8px 10px 0 !important;
+  padding: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+@media (max-width: 600px) {
+ .knowledge-article figure.kf-full-media,
+ article figure.kf-full-media { width: 100vw !important; margin: 20px 0 28px !important; }
+}
