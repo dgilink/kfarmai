@@ -123,7 +123,7 @@
 
   const tabIndex = { home: 0, community: 1, knowledge: 2 }[active];
   const swipeIgnoreSelector = [
-    'input', 'textarea', 'select', 'button', 'a', 'label', '[contenteditable="true"]',
+    'input', 'textarea', 'select', 'button', 'label', '[contenteditable="true"]',
     '[role="button"]', '[role="slider"]', '.modal', '.my-panel', '.search-dd',
     '.image-preview-row', '.my-post-edit-images', '.agri-video-strip',
     '.agri-research-chips', '.tools-card', '.topic-chip-row', '.tag-chip-row',
@@ -148,19 +148,9 @@
     return openBlockingLayer() || hasTextSelection() || !!target.closest?.(swipeIgnoreSelector)
       || insideHorizontalScroller(target);
   };
-  const swipeZoneSelector = [
-    '.header', '.agri-v3-header',
-    'body.v4-home .home-kb-section:first-of-type .section-head',
-    'body.community-list-page .v41-page-title',
-    'body.v4-page main > h1',
-    '#v4AllMenu > h2'
-  ].join(',');
-  const insidePrimarySwipeZone = target => {
-    const zone = target.closest?.(swipeZoneSelector);
-    if (!zone || innerWidth > 767) return false;
-    const rect = zone.getBoundingClientRect();
-    return rect.bottom >= 0 && rect.top <= innerHeight && rect.top < 260;
-  };
+  const insidePrimarySwipeSurface = target => innerWidth <= 767
+    && (Number.isInteger(tabIndex) || !menu.hidden)
+    && (menu.hidden ? document.body.contains(target) : !!target.closest?.('#v4AllMenu'));
   const navigateTo = path => {
     if (location.pathname !== path) location.assign(path);
   };
@@ -183,6 +173,7 @@
   let swipeDeltaY = 0;
   let swipeTracking = false;
   let swipeTransitioning = false;
+  let suppressClickUntil = 0;
   const resetSwipe = () => {
     swipeTracking = false;
     swipeDeltaX = 0;
@@ -192,7 +183,7 @@
     const touch = event.touches[0];
     if (swipeTransitioning || event.touches.length !== 1 || !touch
         || touch.clientX <= 28 || touch.clientX >= innerWidth - 28
-        || !insidePrimarySwipeZone(event.target)
+        || !insidePrimarySwipeSurface(event.target)
         || shouldIgnoreSwipe(event.target)) {
       resetSwipe();
       return;
@@ -215,11 +206,18 @@
     const direction = swipeDeltaX < 0 ? 1 : -1;
     const shouldMove = absX >= 64 && absX >= absY * 1.35;
     resetSwipe();
-    if (!shouldMove || !movePrimaryTab(direction)) return;
+    if (!shouldMove) return;
+    suppressClickUntil = performance.now() + 700;
+    if (!movePrimaryTab(direction)) return;
     swipeTransitioning = true;
     window.setTimeout(() => { swipeTransitioning = false; }, 250);
   }, { passive: true, capture: true });
   document.addEventListener('touchcancel', resetSwipe, { passive: true, capture: true });
+  document.addEventListener('click', event => {
+    if (performance.now() >= suppressClickUntil) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, { capture: true });
 
   if (new URLSearchParams(location.search).get('panel') === 'my') {
     window.addEventListener('load', () => {

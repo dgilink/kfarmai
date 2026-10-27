@@ -109,13 +109,16 @@ body.v4-home .section-head,
 body.v4-home .recent-question-panel,
 body.v4-home .v3-community-feed .q-card,
 body.v4-home .recent-question-panel .q-card-thumb,
+body.v4-home .post-tag,
 body.v4-home .feed-filter,
 body.v4-home .community-side-card,
 body.v4-home .topic-tag-list a,
 body.v4-home .ai-compact-arrow,
 body.v4-home .home-agri-summary-section,
 body.v4-home .home-agri-summary-section .agri-summary-card,
-body.v4-home .home-agri-summary-section .agri-section-link { border-radius:0; box-shadow:none; }
+body.v4-home .home-agri-summary-section .agri-section-link,
+body.v4-home .home-agri-summary-section .agri-status,
+body.v4-home .home-agri-summary-section .agri-summary-more { border-radius:0; box-shadow:none; }
 body.v4-home .section-head,
 body.v4-home .section-head.question-section-head { margin:0; padding:0 0 8px; border:0; border-bottom:1px solid var(--v41-ink); background:#fff; }
 body.v4-home .section-head.question-section-head::before { display:none; }
@@ -135,6 +138,7 @@ body.v4-home .home-kb-cards .kb-card .kb-list-copy { display:grid; min-width:0; 
 body.v4-home .home-kb-cards .kb-card .kb-list-arrow { display:block; color:var(--v41-muted); font-size:20px; line-height:1; text-align:right; white-space:nowrap; }
 body.v4-home .community-feed-section { margin-top:16px; }
 body.v4-home .community-feed-toolbar { margin:8px 0 0; padding-bottom:8px; }
+body.v4-home .feed-filter.active { border-color:var(--v41-green); background:var(--v41-green); color:#fff; }
 body.v4-home .recent-question-panel.v3-community-feed { display:block; margin:0; padding:0; border:0; background:#fff; }
 body.v4-home .v3-community-feed .q-card { display:flex; min-height:0; margin:0; padding:12px 0; border:0; border-bottom:1px solid var(--v41-line); background:#fff; }
 body.v4-home .recent-question-panel .q-card-thumb { width:60px; height:60px; flex-basis:60px; }
@@ -148,6 +152,8 @@ body.v4-home .home-agri-summary-section .agri-summary-grid { display:block; }
 body.v4-home .home-agri-summary-section .agri-summary-card { min-height:0; margin:0; padding:12px 0; border:0; border-bottom:1px solid var(--v41-line); background:#fff; }
 body.v4-home .home-agri-summary-section .agri-summary-card:last-child { border-bottom:0; }
 body.v4-home .home-agri-summary-section .agri-section-link { display:inline-flex; min-height:32px; margin-top:8px; padding:0; border:0; background:#fff; color:var(--v41-green); white-space:nowrap; }
+body.v4-home .home-agri-summary-section .agri-status { border:1px solid currentColor; }
+body.v4-home .home-agri-summary-section .agri-summary-more { border:0; }
 @media (max-width:767px) {
   body.v4-home .home-kb-section, body.v4-home .community-home-layout { margin-bottom:24px; }
   body.v4-home .home-kb-cards .kb-card:has(img),

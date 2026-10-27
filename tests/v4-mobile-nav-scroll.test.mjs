@@ -74,28 +74,27 @@ async function touchSwipe(selector, direction = 'down') {
   await delay(140);
 }
 
-async function primarySwipe(direction, expectNavigation = false) {
-  await evaluate(`!v4AllMenu.hidden ? (v4AllMenu.scrollTop=0) : scrollTo(0,0)`);
-  await delay(180);
+async function contentSwipeAt(scrollFraction, direction, expectNavigation = false) {
   const point = await evaluate(`(() => {
-    const candidate=document.querySelector(!v4AllMenu.hidden?'#v4AllMenu>h2':location.pathname==='/index.html'?'.section-title':location.pathname==='/channel.html'?'.v41-page-title':'h1');
-    const rect=candidate?.getBoundingClientRect();
-    return {x:Math.max(110,Math.min(innerWidth-35,rect?rect.left+Math.min(rect.width-8,rect.width*.55):innerWidth*.55)),y:rect?rect.top+rect.height/2:innerHeight/2,width:innerWidth};
+    const scroller=v4AllMenu.hidden?document.scrollingElement:v4AllMenu;
+    scroller.scrollTop=Math.max(0,(scroller.scrollHeight-scroller.clientHeight)*${scrollFraction});
+    const left=${JSON.stringify(direction)}==='left';
+    return {x:left?innerWidth*.72:innerWidth*.28,y:innerHeight*.5,width:innerWidth,target:''};
   })()`);
-  const distance = Math.min(75, point.width - 70);
-  const x1 = point.x;
-  const x2 = direction === 'left' ? x1 - distance : x1 + distance;
+  await delay(180);
+  const distance = Math.min(110, point.width - 90);
+  const x2 = direction === 'left' ? point.x - distance : point.x + distance;
   await evaluate(`window.__swipeTrace=[]; if(!window.__swipeTraceInstalled){window.__swipeTraceInstalled=true; for(const type of ['touchstart','touchmove','touchend','touchcancel']) document.addEventListener(type,event=>window.__swipeTrace.push({type,x:event.touches[0]?.clientX??null,y:event.touches[0]?.clientY??null,target:event.target.tagName+'.'+event.target.className}),{capture:true,passive:true});}`);
   const loaded = expectNavigation ? socket.once('Page.loadEventFired') : null;
-  await socket.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y: point.y, radiusX: 2, radiusY: 2, force: 1 }] });
-  for (let step = 1; step <= 8; step += 1) {
-    await socket.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * step / 8, y: point.y + step % 2, radiusX: 2, radiusY: 2, force: 1 }] });
-    await delay(20);
+  await socket.send('Input.dispatchTouchEvent', { type:'touchStart', touchPoints:[{x:point.x,y:point.y,radiusX:2,radiusY:2,force:1}] });
+  for (let step=1;step<=10;step+=1) {
+    await socket.send('Input.dispatchTouchEvent', { type:'touchMove', touchPoints:[{x:point.x+(x2-point.x)*step/10,y:point.y+(step%2),radiusX:2,radiusY:2,force:1}] });
+    await delay(25);
   }
-  await socket.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+  await socket.send('Input.dispatchTouchEvent', { type:'touchEnd', touchPoints:[] });
   if (loaded) await Promise.race([loaded, delay(4000).then(async () => {
-    const debug = await evaluate(`({path:location.pathname,trace:window.__swipeTrace,start:document.elementFromPoint(${x1},${point.y})?.outerHTML.slice(0,180)})`);
-    throw new Error(`swipe ${direction} did not navigate: ${JSON.stringify(debug)}`);
+    const debug=await evaluate(`({path:location.pathname,trace:window.__swipeTrace,start:document.elementFromPoint(${point.x},${point.y})?.outerHTML.slice(0,180)})`);
+    throw new Error(`content swipe ${direction} at ${scrollFraction} did not navigate: ${JSON.stringify(debug)}`);
   })]);
   await delay(300);
 }
@@ -216,22 +215,18 @@ try {
       const feed=getComputedStyle(document.querySelector('.recent-question-panel.v3-community-feed'));
       const agri=getComputedStyle(document.querySelector('.home-agri-summary-section'));
       const surfaces=[document.documentElement,document.body,...document.querySelectorAll('.phone,.pages-wrap,.pages,.page')].map(node=>getComputedStyle(node).backgroundColor);
-      const square=[...document.querySelectorAll('.search,.v4-quick-actions>a,.v4-quick-actions>button,.home-kb-section,.home-kb-cards .kb-card,.recent-question-panel,.v3-community-feed .q-card,.community-side-card,.home-agri-summary-section,.home-agri-summary-section .agri-summary-card')].every(node=>getComputedStyle(node).borderRadius==='0px'&&getComputedStyle(node).boxShadow==='none');
+      const square=[...document.querySelectorAll('.search,.v4-quick-actions>a,.v4-quick-actions>button,.home-kb-section,.home-kb-cards .kb-card,.recent-question-panel,.v3-community-feed .q-card,.post-tag,.community-side-card,.topic-tag-list a,.ai-compact-arrow,.home-agri-summary-section,.home-agri-summary-section .agri-summary-card,.home-agri-summary-section .agri-status,.home-agri-summary-section .agri-summary-more')].every(node=>getComputedStyle(node).borderRadius==='0px'&&getComputedStyle(node).boxShadow==='none');
       return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth,whiteSurfaces:surfaces.every(color=>color==='rgb(255, 255, 255)'),square,noSourceCopy:!/공식 출처는 글에서 확인|내용과 출처 확인/.test(homeKbCards.innerText)};
     })()`);
     assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px',whiteSurfaces:true,square:true,noSourceCopy:true}, `${width}px flat white home presentation`);
     const beforeVertical = await evaluate('location.pathname');
     await touchSwipe('body');
     assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px vertical scroll does not switch tab`);
-    await evaluate("document.querySelector('.community-feed-section').scrollIntoView({block:'center'})");
-    await ignoredHorizontalSwipe('.community-feed-section');
-    assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px home body swipe ignored`);
-    await evaluate('scrollTo(0,0)');
-    await primarySwipe('left', true);
-    assert.equal(await evaluate('location.pathname'), '/channel.html', `${width}px home to community`);
+    await contentSwipeAt(.5, 'left', true);
+    assert.equal(await evaluate('location.pathname'), '/channel.html', `${width}px home middle content to community`);
     await assertSingleVisualActive(`${width}px community`);
-    await primarySwipe('left', true);
-    assert.equal(await evaluate('location.pathname'), '/kb/index.html', `${width}px community to knowledge`);
+    await contentSwipeAt(.75, 'left', true);
+    assert.equal(await evaluate('location.pathname'), '/kb/index.html', `${width}px community lower content to knowledge`);
     await assertSingleVisualActive(`${width}px knowledge`);
     const kbContract = await evaluate(`(() => ({
       cards:document.querySelectorAll('#kbGrid .kb-card').length,
@@ -251,28 +246,25 @@ try {
       return {controlsFit:controls.every(rect=>rect.left>=0&&rect.right<=innerWidth),arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
     })()`);
     assert.deepEqual(kbLayout, {controlsFit:true,arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'}, `${width}px KB stable mobile rows`);
-    await evaluate("document.querySelector('#kbGrid .kb-card:last-child').scrollIntoView({block:'center'})");
-    await ignoredHorizontalSwipe('#kbGrid');
-    assert.equal(await evaluate('location.pathname'), '/kb/index.html', `${width}px KB body swipe ignored`);
-    await evaluate('scrollTo(0,0)');
     const searchResult = await evaluate(`(() => {kbSearch.value='관수';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
     assert.equal(searchResult.count, 1, `${width}px KB search count`);
     assert.match(searchResult.text, /관수/, `${width}px KB search result`);
     const filterResult = await evaluate(`(() => {kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='스마트팜';kbCategory.dispatchEvent(new Event('change',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
     assert.ok(filterResult.count >= 1 && /스마트팜/.test(filterResult.text), `${width}px KB category filter`);
-    await primarySwipe('left');
+    await evaluate("kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='';kbCategory.dispatchEvent(new Event('change',{bubbles:true}))");
+    await contentSwipeAt(.5, 'left');
     const knowledgeMenuState = await evaluate(`({hidden:v4AllMenu.hidden,trace:window.__swipeTrace,path:location.pathname,h1:document.querySelector('h1')?.getBoundingClientRect().toJSON()})`);
     assert.equal(knowledgeMenuState.hidden, false, `${width}px knowledge to menu ${JSON.stringify(knowledgeMenuState)}`);
     await assertSingleVisualActive(`${width}px menu`, true);
     await evaluate('v4AllMenu.scrollTop=v4AllMenu.scrollHeight');
     assert.ok(await evaluate("v4AllMenu.querySelector('a:last-of-type').getBoundingClientRect().bottom<=document.querySelector('.v4-nav').getBoundingClientRect().top+1"), `${width}px menu last link`);
-    await primarySwipe('right');
+    await contentSwipeAt(.5, 'right');
     assert.equal(await evaluate('v4AllMenu.hidden'), true, `${width}px menu to knowledge`);
     await assertSingleVisualActive(`${width}px knowledge after menu`);
-    await primarySwipe('right', true);
-    assert.equal(await evaluate('location.pathname'), '/channel.html', `${width}px knowledge to community`);
-    await primarySwipe('right', true);
-    assert.equal(await evaluate('location.pathname'), '/index.html', `${width}px community to home`);
+    await contentSwipeAt(.25, 'right', true);
+    assert.equal(await evaluate('location.pathname'), '/channel.html', `${width}px knowledge upper content to community`);
+    await contentSwipeAt(.75, 'right', true);
+    assert.equal(await evaluate('location.pathname'), '/index.html', `${width}px community lower content to home`);
     const homePath = await evaluate('location.pathname');
     const inputRect = await evaluate(`(() => {const r=globalSearch.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height/2}})()`);
     await socket.send('Input.dispatchTouchEvent', { type:'touchStart', touchPoints:[{x:inputRect.x,y:inputRect.y,radiusX:2,radiusY:2,force:1}] });
