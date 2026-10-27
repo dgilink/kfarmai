@@ -9,13 +9,69 @@ const crypto = require('node:crypto');
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
 const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js" defer data-kfarmai-presentation="v4-1"></script>');
-function renderKbV4(source) {
+
+// Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
+// ONLY to the generated public artifact; immutable approval source stays intact.
+// Revised SVGs have versioned filenames, preserving approved original assets.
+const approvedVisualRestyles = new Set([
+  'greenhouse-irrigation-precheck.html',
+  'greenhouse-heating-preflight-notes.html',
+]);
+function replaceVisualOnce(text, before, after, label) {
+  if (text.indexOf(before) < 0 || text.indexOf(before) !== text.lastIndexOf(before)) {
+    throw new Error('Non-unique approved presentation anchor: ' + label);
+  }
+  return text.replace(before, after);
+}
+function renderApprovedVisualRestyle(buffer, name) {
+  if (!approvedVisualRestyles.has(name)) return buffer;
+  let html = buffer.toString('utf8');
+  const css = '<link rel="stylesheet" href="/static/css/kf-article-media-fullbleed-v20261028.css">';
+  if (name === 'greenhouse-irrigation-precheck.html') {
+    html = replaceVisualOnce(html,
+      '<img src="/static/kb/greenhouse-irrigation-precheck-hero.webp" alt="온실 관수 설비 점검 항목 안내 이미지">',
+      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-hero.webp" alt="온실 관수 설비 점검 항목 안내 이미지" loading="eager"></figure>',
+      'irrigation hero');
+    html = replaceVisualOnce(html,
+      '<img src="/static/kb/greenhouse-irrigation-precheck-infographic.svg" alt="관수 전 세 단계 확인 포인트">',
+      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-infographic-restyle-20261028.svg" alt="관수 전 세 단계 확인 포인트" loading="lazy"></figure>',
+      'irrigation infographic');
+    html = replaceVisualOnce(html, '<main><article>',
+      '<main><article class="knowledge-article">', 'irrigation article');
+    html = replaceVisualOnce(html, '<body><main>',
+      '<body><header class="site-header"><a href="/index.html">kFarmAI</a></header><main>', 'irrigation header');
+    html = replaceVisualOnce(html, '</head>',
+      '<link rel="stylesheet" href="/static/css/knowledge-v3.css">' + css + '</head>',
+      'irrigation head');
+  } else if (name === 'greenhouse-heating-preflight-notes.html') {
+    if (html.split('<figure>').length !== 3) throw new Error('Unexpected approved heating figures');
+    html = html.replaceAll('<figure>', '<figure class="kf-full-media">');
+    html = replaceVisualOnce(html,
+      '<figcaption>온실 참고 사진: USDAgov/Holly Hess, 미국 연방정부 퍼블릭 도메인. 한국 현장 진단 증거가 아닙니다.</figcaption>',
+      '', 'heating long hero caption');
+    html = replaceVisualOnce(html,
+      '<figcaption>겨울철 온실 난방 전 점검 포인트</figcaption>',
+      '', 'heating infographic caption');
+    html = replaceVisualOnce(html,
+      'src="/static/kb/greenhouse-heating-preflight-notes-infographic.svg"',
+      'src="/static/kb/greenhouse-heating-preflight-notes-infographic-restyle-20261028.svg"',
+      'heating infographic');
+    html = replaceVisualOnce(html,
+      '최근 확인: 2026-10-19. 공공자료와 kFarmAI 정리 내용을 구분해 작성했습니다.',
+      '자료 확인: 2026-10-19 · 사진: USDAgov/Holly Hess (PD).',
+      'heating provenance');
+    html = replaceVisualOnce(html, '</head>', css + '</head>', 'heating head');
+  }
+  return Buffer.from(html, 'utf8');
+}
+function renderKbV4(source, name) {
   const marker = Buffer.from('</head>');
   const at = source.indexOf(marker);
   if (at < 0 || source.indexOf(marker, at + marker.length) >= 0 || source.includes(kbPresentationV1)) {
     throw new Error('KB presentation source has no unique head boundary.');
   }
-  return Buffer.concat([source.subarray(0, at), kbPresentationV1, source.subarray(at)]);
+  const render = Buffer.concat([source.subarray(0, at), kbPresentationV1, source.subarray(at)]);
+  return renderApprovedVisualRestyle(render, name);
 }
 
 const publicRootFiles = new Set([
@@ -128,7 +184,7 @@ const kbItems = registry.items.map((item) => {
 for (const entry of fs.readdirSync(path.join(outputDir, 'kb'), { withFileTypes: true })) {
   if (!entry.isFile() || !entry.name.endsWith('.html') || entry.name === 'index.html') continue;
   const destination = path.join(outputDir, 'kb', entry.name);
-  fs.writeFileSync(destination, renderKbV4(fs.readFileSync(destination)));
+  fs.writeFileSync(destination, renderKbV4(fs.readFileSync(destination), entry.name));
 }
 fs.writeFileSync(path.join(outputDir, 'data/kb-index.json'),
   `${JSON.stringify({items: kbItems})}\n`, 'utf8');

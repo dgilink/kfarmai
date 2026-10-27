@@ -1,40 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="840" height="898" viewBox="0 0 840 898" role="img" aria-labelledby="t d">
-<title id="t">온실 관수 전 점검</title>
-<desc id="d">시설 관리 3가지</desc>
-<rect width="840" height="898" fill="#FFFFFF"/>
-<rect x="0" y="0" width="840" height="242" fill="#164936"/>
-<rect x="0" y="242" width="840" height="5" fill="#CCA454"/>
-<text x="35" y="49" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="24" fill="#E5F1E8">KFARMAI / 농업정보</text>
-<text x="35" y="125" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="46" font-weight="800" fill="#FFFFFF">온실 관수 전 점검</text>
-<text x="35" y="180" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="31" font-weight="750" fill="#F0CF8D">시설 관리 3가지</text>
-<text x="35" y="219" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="21" fill="#D7E8DA">현장에서 바로 확인할 항목</text>
-<g data-check="1">
-<rect x="12" y="272" width="816" height="171" rx="13" fill="#FFFFFF" stroke="#CCDCCF" stroke-width="2"/>
-<rect x="12" y="287" width="7" height="141" rx="3" fill="#26784E"/>
-<circle cx="82" cy="321" r="30" fill="#206B4C"/>
-<text x="82" y="331" text-anchor="middle" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="27" font-weight="750" fill="#FFFFFF">01</text>
-<text x="136" y="332" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="36" font-weight="750" fill="#143D2C">센서 위치</text>
-<text x="43" y="387" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="29" font-weight="600" fill="#294B3A">뿌리 깊이와 고정 상태 확인</text>
-<text x="43" y="423" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="25" fill="#52695C">수분 이동에 맞춰 설치 위치 점검</text>
-</g>
-<g data-check="2">
-<rect x="12" y="453" width="816" height="171" rx="13" fill="#FFFFFF" stroke="#CCDCCF" stroke-width="2"/>
-<rect x="12" y="468" width="7" height="141" rx="3" fill="#C49B55"/>
-<circle cx="82" cy="502" r="30" fill="#206B4C"/>
-<text x="82" y="512" text-anchor="middle" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="27" font-weight="750" fill="#FFFFFF">02</text>
-<text x="136" y="513" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="36" font-weight="750" fill="#143D2C">배관·밸브</text>
-<text x="43" y="568" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="29" font-weight="600" fill="#294B3A">누수·필터 및 연결 상태 확인</text>
-<text x="43" y="604" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="25" fill="#52695C">설비 가동 전 점검</text>
-</g>
-<g data-check="3">
-<rect x="12" y="634" width="816" height="171" rx="13" fill="#FFFFFF" stroke="#CCDCCF" stroke-width="2"/>
-<rect x="12" y="649" width="7" height="141" rx="3" fill="#26784E"/>
-<circle cx="82" cy="683" r="30" fill="#206B4C"/>
-<text x="82" y="693" text-anchor="middle" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="27" font-weight="750" fill="#FFFFFF">03</text>
-<text x="136" y="694" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="36" font-weight="750" fill="#143D2C">관수 기록</text>
-<text x="43" y="749" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="29" font-weight="600" fill="#294B3A">관수 시각·양·작물 반응 기록</text>
-<text x="43" y="785" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="25" fill="#52695C">전후 변화 함께 확인</text>
-</g>
-<rect x="0" y="819" width="840" height="79" fill="#164936"/>
-<text x="30" y="866" font-family="Malgun Gothic,Noto Sans CJK KR,Apple SD Gothic Neo,sans-serif" font-size="24" fill="#FFFFFF">자료: 농촌진흥청 · 농사로</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">관수 전 세 단계 확인 포인트</title>
+  <desc id="desc">센서, 배관과 밸브, 기록 순서의 일반 점검 안내</desc>
+  <rect width="1200" height="630" rx="32" fill="#eff8f0"/>
+  <text x="70" y="100" font-family="sans-serif" font-size="48" font-weight="700" fill="#183d2a">관수 전 확인 포인트</text>
+  <g font-family="sans-serif" font-size="34" fill="#183d2a">
+    <rect x="70" y="160" width="320" height="320" rx="28" fill="#ffffff" stroke="#5f916d" stroke-width="4"/>
+    <text x="110" y="240" font-weight="700">1. 센서</text><text x="110" y="300">위치·고정 상태</text>
+    <rect x="440" y="160" width="320" height="320" rx="28" fill="#ffffff" stroke="#5f916d" stroke-width="4"/>
+    <text x="480" y="240" font-weight="700">2. 설비</text><text x="480" y="300">배관·밸브·필터</text>
+    <rect x="810" y="160" width="320" height="320" rx="28" fill="#ffffff" stroke="#5f916d" stroke-width="4"/>
+    <text x="850" y="240" font-weight="700">3. 기록</text><text x="850" y="300">시각·양·작물 반응</text>
+  </g>
+  <text x="70" y="560" font-family="sans-serif" font-size="25" fill="#42624d">일반 참고자료 · 시설별 설정은 공식 자료와 장비 설명서를 확인하세요.</text>
 </svg>
