@@ -13,6 +13,7 @@ body.v4-home .brand img { width:auto !important; height:29px !important; max-wid
 body.v4-home .header-actions > :not(.v41-top-actions), body.v4-home .tabs { display:none !important; }
 body.v4-home .search { height:var(--v41-control); margin:0 0 10px; padding:0 12px; border:1px solid var(--v41-line); border-radius:0; background:#fff; }
 body.v4-home .search-btn { order:2; width:34px; height:42px; } body.v4-home .search input { font-size:14px; }
+body.v4-home .pages-wrap { flex:0 0 auto; width:100%; }
 body.v4-home .pages-wrap, body.v4-home .pages, body.v4-home .page { height:auto; overflow:visible; }
 body.v4-home .pages { display:block; transform:none !important; }
 body.v4-home .pages > .page:not(:first-child), body.v4-home .page-dots { display:none !important; }
@@ -87,12 +88,12 @@ body.agri-v3-page .agri-v3-section#today { display:none; }
 /* Global four-tab menu: a real grouped menu, not an overlay of tiles. */
 .v4-menu { background:#fff; } .v4-menu h2 { letter-spacing:-.045em; }
 .v4-menu h3 { color:var(--v41-muted); border-bottom:1px solid var(--v41-line); font-size:13px; font-weight:800; }
-.v4-menu a { font-weight:700; } .v4-menu a span { font-size:18px; }
+.v4-menu a { font-weight:700; } .v4-menu .v4-menu-arrow { font-size:18px; }
 @media (max-width:767px) {
   body.v4-home .home-kb-cards { grid-template-columns:1fr 1fr; } body.v4-home .home-kb-cards .kb-card:first-child { grid-column:1 / -1; grid-row:auto; min-height:208px; }
   body.v4-home .community-home-layout { display:block; } body.v4-home .community-home-aside { margin-top:28px; }
   body.v4-home .home-agri-summary-section { margin-top:28px; }
-  .v4-menu { padding:22px var(--v41-gutter) 28px; }
+  .v4-menu { padding:16px var(--v41-gutter) calc(18px + env(safe-area-inset-bottom)); }
 }
 @media (min-width:768px) {
   body.v4-home .header { padding-inline:max(24px,calc((100% - 1180px)/2)); } body.v4-home .page { padding-inline:max(24px,calc((100% - 1180px)/2)); }

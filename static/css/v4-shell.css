@@ -21,7 +21,12 @@ body.v4-page .app {
   box-shadow: none;
   background: var(--v4-canvas);
 }
-body.v4-home .phone { height: 100dvh; max-height: none; }
+body.v4-home .phone {
+  height: auto;
+  min-height: 100dvh;
+  max-height: none;
+  overflow: visible;
+}
 body.v4-page .header,
 body.v4-page .agri-v3-header {
   background: #fff;
@@ -171,11 +176,13 @@ body.v4-page .v4-nav { display: grid !important; }
   text-decoration: none; white-space: nowrap; cursor: pointer;
 }
 .v4-nav-icon { width: 20px; height: 20px; flex: none; margin-right: 7px; }
-.v4-nav [aria-current="page"], .v4-nav [aria-expanded="true"] { color: var(--v4-green); border-top: 3px solid var(--v4-green); }
+.v4-nav:not(.is-menu-open) [aria-current="page"],
+.v4-nav.is-menu-open [aria-expanded="true"] { color: var(--v4-green); border-top: 3px solid var(--v4-green); }
 .v4-menu {
   position: fixed; z-index: 999; inset: 0 0 calc(62px + env(safe-area-inset-bottom));
   padding: 72px max(20px, calc((100vw - 1180px)/2));
-  background: #fff; overflow-y: auto;
+  background: #fff; overflow-x: hidden; overflow-y: auto;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y;
 }
 .v4-menu[hidden] { display: none; }
 .v4-menu h2 { margin: 0 0 24px; font-size: clamp(24px, 4vw, 36px); color: var(--v4-ink); }
@@ -185,7 +192,8 @@ body.v4-page .v4-nav { display: grid !important; }
 .v4-menu li { margin: 0; border-top: 1px solid var(--v4-line); }
 .v4-menu li:first-child { border-top: 0; }
 .v4-menu a { display: flex; justify-content: space-between; gap: 12px; min-height: 54px; align-items: center; padding: 10px 2px; color: var(--v4-ink); font-weight: 750; text-decoration: none; }
-.v4-menu a span { color: var(--v4-muted); }
+.v4-menu-label { min-width: 0; overflow: hidden; color: var(--v4-ink); text-overflow: ellipsis; }
+.v4-menu-arrow { flex: none; color: var(--v4-muted); }
 .v4-menu a:hover, .v4-menu a:focus-visible { color: var(--v4-green); }
 @media (min-width: 768px) {
   body.v4-kb-article { padding-bottom: 0; }
@@ -200,9 +208,11 @@ body.v4-page .v4-nav { display: grid !important; }
   .v4-quick-actions a, .v4-quick-actions button { min-height: 72px; font-size: 13px; }
   .v4-nav a, .v4-nav button { flex-direction: column; gap: 4px; font-size: 11px; }
   .v4-nav-icon { width: 20px; height: 20px; margin-right: 0; }
-  .v4-menu { padding: 24px 16px 30px; }
-  .v4-menu-groups { grid-template-columns: 1fr; gap: 24px; }
-  .v4-menu h3 { font-size: 17px; }
+  .v4-menu { padding: 16px 16px calc(18px + env(safe-area-inset-bottom)); }
+  .v4-menu h2 { margin-bottom: 14px; font-size: 24px; }
+  .v4-menu-groups { grid-template-columns: 1fr; gap: 14px; }
+  .v4-menu h3 { padding-bottom: 6px; font-size: 13px; }
+  .v4-menu a { min-height: 44px; padding: 6px 2px; font-size: 15px; white-space: nowrap; }
   body.v4-page .home-kb-cards { grid-template-columns: 1fr; }
   body.v4-page .home-kb-cards .kb-card:first-child { grid-row: auto; min-height: 145px; }
   body.v4-page .app { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }

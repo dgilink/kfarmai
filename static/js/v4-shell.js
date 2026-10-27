@@ -1,5 +1,6 @@
 (() => {
   'use strict';
+  if (document.querySelector('[data-v4-shell-nav]')) return;
   const page = location.pathname;
   if (/^\/kb\/[a-z0-9-]+\.html$/.test(page)) {
     document.body.classList.add('v4-page', 'v4-kb-article');
@@ -22,6 +23,7 @@
   const icon = key => `<svg class="v4-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[key]}</svg>`;
   const nav = document.createElement('nav');
   nav.className = 'v4-nav';
+  nav.dataset.v4ShellNav = '';
   nav.setAttribute('aria-label', '주요 메뉴');
   for (const [key, label, href] of items) {
     const link = document.createElement('a');
@@ -42,6 +44,8 @@
   menu.setAttribute('role', 'dialog');
   menu.setAttribute('aria-modal', 'true');
   menu.setAttribute('aria-labelledby', 'v4MenuTitle');
+  let bodyOverflowBeforeMenu = null;
+  let scrollPositionBeforeMenu = null;
   const groups = [
     ['계정 · 내 활동', [['마이페이지', '/index.html?panel=my']]],
     ['질문 · 커뮤니티', [['소통', '/channel.html'], ['글쓰기', '/channel.html?write=1']]],
@@ -55,18 +59,48 @@
   ];
   menu.innerHTML = '<h2 id="v4MenuTitle">전체</h2><div class="v4-menu-groups">' +
     groups.map(([heading, links]) => `<section><h3>${heading}</h3><ul>${links.map(([label, href]) =>
-      `<li><a href="${href}">${label}<span aria-hidden="true">→</span></a></li>`).join('')}</ul></section>`).join('') + '</div>';
+      `<li><a href="${href}"><span class="v4-menu-label">${label}</span><span class="v4-menu-arrow" aria-hidden="true">→</span></a></li>`).join('')}</ul></section>`).join('') + '</div>';
+  function setMenuState(open) {
+    menu.hidden = !open;
+    menuButton.setAttribute('aria-expanded', String(open));
+    nav.classList.toggle('is-menu-open', open);
+    document.body.classList.toggle('v4-menu-open', open);
+  }
+  function lockMenuScroll() {
+    if (bodyOverflowBeforeMenu !== null) return;
+    bodyOverflowBeforeMenu = {
+      value: document.body.style.getPropertyValue('overflow'),
+      priority: document.body.style.getPropertyPriority('overflow'),
+    };
+    scrollPositionBeforeMenu = { x: window.scrollX, y: window.scrollY };
+    document.body.style.setProperty('overflow', 'hidden', 'important');
+  }
+  function unlockMenuScroll() {
+    if (bodyOverflowBeforeMenu === null) return;
+    const previous = bodyOverflowBeforeMenu;
+    bodyOverflowBeforeMenu = null;
+    if (previous.value) document.body.style.setProperty('overflow', previous.value, previous.priority);
+    else document.body.style.removeProperty('overflow');
+    if (scrollPositionBeforeMenu) window.scrollTo(scrollPositionBeforeMenu.x, scrollPositionBeforeMenu.y);
+    scrollPositionBeforeMenu = null;
+  }
   function closeMenu() {
-    menu.hidden = true;
-    menuButton.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
+    if (menu.hidden && bodyOverflowBeforeMenu === null) {
+      setMenuState(false);
+      return;
+    }
+    setMenuState(false);
+    unlockMenuScroll();
   }
   menuButton.addEventListener('click', () => {
     const opening = menu.hidden;
-    menu.hidden = !opening;
-    menuButton.setAttribute('aria-expanded', String(opening));
-    document.body.style.overflow = opening ? 'hidden' : '';
+    setMenuState(opening);
+    if (opening) lockMenuScroll();
+    else unlockMenuScroll();
     if (opening) menu.querySelector('a')?.focus();
+  });
+  menu.addEventListener('click', event => {
+    if (event.target.closest('a')) closeMenu();
   });
   menu.addEventListener('keydown', event => {
     if (event.key === 'Escape') { closeMenu(); menuButton.focus(); }
@@ -77,6 +111,9 @@
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   });
+  window.addEventListener('pagehide', closeMenu);
+  window.addEventListener('pageshow', closeMenu);
+  window.addEventListener('popstate', closeMenu);
   nav.append(menuButton);
   document.body.append(menu, nav);
   if (new URLSearchParams(location.search).get('panel') === 'my') {
