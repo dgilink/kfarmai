@@ -29,7 +29,7 @@
     link.className = 'kb-card';
     link.href = item.path;
     const meta = document.createElement('small');
-    meta.textContent = compactList ? item.category : `${item.category} · ${item.date} · 공식 출처는 글에서 확인`;
+    meta.textContent = compactList ? item.category : `${item.category} · ${item.date}`;
     const title = document.createElement('strong');
     title.textContent = item.title;
     if (compactList) {
@@ -55,7 +55,9 @@
       return link;
     }
     const action = document.createElement('span');
-    action.textContent = '내용과 출처 확인 →';
+    action.className = 'kb-list-arrow';
+    action.setAttribute('aria-hidden', 'true');
+    action.textContent = '›';
     if (homeGrid && item.homeImage) {
       const image = document.createElement('img');
       image.src = item.homeImage;

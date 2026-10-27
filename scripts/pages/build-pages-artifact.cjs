@@ -157,12 +157,12 @@ const homeLeadMedia = Object.freeze({
 const homeItems = [...kbItems].sort((a, b) =>
   Number(Boolean(homeLeadMedia[b.path])) - Number(Boolean(homeLeadMedia[a.path])) || b.date.localeCompare(a.date));
 const cards = homeItems.slice(0, 4).map(item => {
-  const meta = `<small>${escapeHtml(item.category)} · ${item.date} · 공식 출처는 글에서 확인</small>`;
+  const meta = `<small>${escapeHtml(item.category)} · ${item.date}</small>`;
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
   const image = homeLeadMedia[item.path];
-  return `<a class="kb-card" href="${item.path}">${image
-    ? `<img src="${image}" alt="" loading="eager" decoding="async"><span class="v41-kb-copy">${meta}${title}</span>`
-    : `${meta}${title}<span>내용과 출처 확인 →</span>`}</a>`;
+  return `<a class="kb-card${image ? '' : ' is-text-only'}" href="${item.path}">${image
+    ? `<img class="kb-list-thumb" src="${image}" alt="" loading="eager" decoding="async">`
+    : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
 }).join('');
 fs.writeFileSync(homePath,
   `${homeSource.slice(0, startAt)}<div class="home-kb-cards" id="homeKbCards" aria-live="polite" data-kb-static="1">${cards}${homeSource.slice(endAt)}`,

@@ -61,7 +61,7 @@ async function navigate(route) {
 }
 
 async function touchSwipe(selector, direction = 'down') {
-  const point = await evaluate(`(() => { const r = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return {x:r.left+r.width/2,y1:Math.min(innerHeight-90,r.bottom-40),y2:Math.max(90,r.top+40)}; })()`);
+  const point = await evaluate(`(() => { const r = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return {x:${selector === 'body' ? 'Math.max(8,r.left+8)' : 'r.left+r.width/2'},y1:${selector === 'body' ? 'innerHeight-90' : 'Math.min(innerHeight-90,r.bottom-40)'},y2:${selector === 'body' ? '90' : 'Math.max(90,r.top+40)'}}; })()`);
   const fromY = direction === 'down' ? point.y1 : point.y2;
   const toY = direction === 'down' ? point.y2 : point.y1;
   await socket.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: point.x, y: fromY, radiusX: 2, radiusY: 2, force: 1 }] });
@@ -171,8 +171,8 @@ try {
       await touchSwipe('body', 'down');
       assert.ok(await evaluate('scrollY > 0'), `${route} ${width}px touch scroll to middle`);
       for (let attempt=0;attempt<12 && !await evaluate('scrollY+innerHeight>=document.scrollingElement.scrollHeight-2');attempt+=1) await touchSwipe('body','down');
-      const bottom = await evaluate(`(() => { const nav=document.querySelector('.v4-nav').getBoundingClientRect(); return {atBottom:scrollY+innerHeight>=document.scrollingElement.scrollHeight-2,navTop:nav.top,viewport:innerHeight}; })()`);
-      assert.ok(bottom.atBottom, `${route} ${width}px touch reaches last content`);
+      const bottom = await evaluate(`(() => { const nav=document.querySelector('.v4-nav').getBoundingClientRect(); return {atBottom:scrollY+innerHeight>=document.scrollingElement.scrollHeight-2,y:scrollY,height:document.scrollingElement.scrollHeight,navTop:nav.top,viewport:innerHeight}; })()`);
+      assert.ok(bottom.atBottom, `${route} ${width}px touch reaches last content ${JSON.stringify(bottom)}`);
       for (let attempt=0;attempt<12 && await evaluate('scrollY>1');attempt+=1) await touchSwipe('body','up');
       assert.ok(await evaluate('scrollY<=1'), `${route} ${width}px touch returns to top`);
       await evaluate('scrollTo(0,120)');
@@ -215,9 +215,11 @@ try {
       const kb=getComputedStyle(document.querySelector('.home-kb-section'));
       const feed=getComputedStyle(document.querySelector('.recent-question-panel.v3-community-feed'));
       const agri=getComputedStyle(document.querySelector('.home-agri-summary-section'));
-      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth};
+      const surfaces=[document.documentElement,document.body,...document.querySelectorAll('.phone,.pages-wrap,.pages,.page')].map(node=>getComputedStyle(node).backgroundColor);
+      const square=[...document.querySelectorAll('.search,.v4-quick-actions>a,.v4-quick-actions>button,.home-kb-section,.home-kb-cards .kb-card,.recent-question-panel,.v3-community-feed .q-card,.community-side-card,.home-agri-summary-section,.home-agri-summary-section .agri-summary-card')].every(node=>getComputedStyle(node).borderRadius==='0px'&&getComputedStyle(node).boxShadow==='none');
+      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth,whiteSurfaces:surfaces.every(color=>color==='rgb(255, 255, 255)'),square,noSourceCopy:!/공식 출처는 글에서 확인|내용과 출처 확인/.test(homeKbCards.innerText)};
     })()`);
-    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px'}, `${width}px flat white home presentation`);
+    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px',whiteSurfaces:true,square:true,noSourceCopy:true}, `${width}px flat white home presentation`);
     const beforeVertical = await evaluate('location.pathname');
     await touchSwipe('body');
     assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px vertical scroll does not switch tab`);
