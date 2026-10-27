@@ -93,7 +93,7 @@ body.agri-v3-page .agri-v3-section#today { display:none; }
   body.v4-home .home-kb-cards { grid-template-columns:1fr 1fr; } body.v4-home .home-kb-cards .kb-card:first-child { grid-column:1 / -1; grid-row:auto; min-height:208px; }
   body.v4-home .community-home-layout { display:block; } body.v4-home .community-home-aside { margin-top:28px; }
   body.v4-home .home-agri-summary-section { margin-top:28px; }
-  .v4-menu { padding:16px var(--v41-gutter) calc(18px + env(safe-area-inset-bottom)); }
+  .v4-menu { padding:12px var(--v41-gutter) calc(14px + env(safe-area-inset-bottom)); }
 }
 @media (min-width:768px) {
   body.v4-home .header { padding-inline:max(24px,calc((100% - 1180px)/2)); } body.v4-home .page { padding-inline:max(24px,calc((100% - 1180px)/2)); }

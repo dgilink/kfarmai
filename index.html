@@ -1601,9 +1601,9 @@
   .home-kb-cards .kb-card span { color:#176c43; font-weight:700; }
 </style>
 <link rel="stylesheet" href="static/css/agri-info.css?v=20260706-news2">
-<link rel="stylesheet" href="/static/css/v4-shell.css">
-<link rel="stylesheet" href="/static/css/v4-1-main.css">
-<script src="/static/js/v4-shell.js" defer></script>
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-swipe1">
+<link rel="stylesheet" href="/static/css/v4-1-main.css?v=20261027-swipe1">
+<script src="/static/js/v4-shell.js?v=20261027-swipe1" defer></script>
 </head>
 <body class="v3-home v4-page v4-home">
 
@@ -2382,9 +2382,13 @@
     return !!target?.closest?.('.agri-video-strip, .agri-research-chips');
   }
 
-  // Touch swipe
+  // The V4 home is one vertical document. Its former three-panel gesture must
+  // not intercept touch movement now that primary navigation lives in v4-shell.
+  const legacyPanelSwipeEnabled = !document.body.classList.contains('v4-home');
+
+  // Touch swipe (legacy three-panel view only)
   let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false, axis = null, trackingSwipe = false;
-  wrap.addEventListener('touchstart', e => {
+  if(legacyPanelSwipeEnabled) wrap.addEventListener('touchstart', e => {
     if(isNestedHorizontalScroller(e.target)){
       trackingSwipe = false; dragging = false; axis = null; dx = 0; dy = 0;
       return;
@@ -2396,7 +2400,7 @@
     startX = e.touches[0].clientX; startY = e.touches[0].clientY;
     dx = 0; dy = 0; dragging = false; trackingSwipe = true; axis = null;
   }, {passive:true, capture:true});
-  wrap.addEventListener('touchmove', e => {
+  if(legacyPanelSwipeEnabled) wrap.addEventListener('touchmove', e => {
     if(!trackingSwipe || e.touches.length !== 1) return;
     dx = e.touches[0].clientX - startX;
     dy = e.touches[0].clientY - startY;
@@ -2421,7 +2425,7 @@
       pages.style.transform = `translateX(${-current * 100 + (dx / w) * 100}%)`;
     }
   }, {passive:false, capture:true});
-  wrap.addEventListener('touchend', () => {
+  if(legacyPanelSwipeEnabled) wrap.addEventListener('touchend', () => {
     if(!trackingSwipe && !dragging) return;
     const absX = Math.abs(dx);
     const absY = Math.abs(dy);
@@ -2433,25 +2437,25 @@
     dx = 0; dy = 0;
     axis = null;
   }, {passive:true, capture:true});
-  wrap.addEventListener('touchcancel', () => {
+  if(legacyPanelSwipeEnabled) wrap.addEventListener('touchcancel', () => {
     trackingSwipe = false; dragging = false; axis = null; dx = 0; dy = 0;
     pages.classList.remove('dragging');
   }, {passive:true, capture:true});
 
   // Mouse drag (desktop preview)
   let mdown = false, mx = 0;
-  wrap.addEventListener('mousedown', e => {
+  if(legacyPanelSwipeEnabled) wrap.addEventListener('mousedown', e => {
     if(isNestedHorizontalScroller(e.target)){mdown=false;return;}
     mdown = true; mx = e.clientX; dx = 0;
   });
-  window.addEventListener('mousemove', e => {
+  if(legacyPanelSwipeEnabled) window.addEventListener('mousemove', e => {
     if(!mdown) return;
     dx = e.clientX - mx;
     pages.classList.add('dragging');
     const w = wrap.clientWidth;
     pages.style.transform = `translateX(${-current * 100 + (dx / w) * 100}%)`;
   });
-  window.addEventListener('mouseup', () => {
+  if(legacyPanelSwipeEnabled) window.addEventListener('mouseup', () => {
     if(!mdown) return;
     mdown = false;
     pages.classList.remove('dragging');

@@ -11,6 +11,12 @@
   const homeImages = Object.freeze({
     '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp'
   });
+  const listImages = Object.freeze({
+    '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
+    '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
+    '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
+    '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero.svg'
+  });
   const safePath = (value) => {
     try {
       const url = new URL(value, location.origin);
@@ -18,19 +24,41 @@
         /^\/kb\/[a-z0-9-]+\.html$/.test(url.pathname) ? url.pathname : null;
     } catch { return null; }
   };
-  const card = (item) => {
+  const card = (item, compactList = false) => {
     const link = document.createElement('a');
     link.className = 'kb-card';
     link.href = item.path;
     const meta = document.createElement('small');
-    meta.textContent = `${item.category} · ${item.date} · 공식 출처는 글에서 확인`;
+    meta.textContent = compactList ? item.category : `${item.category} · ${item.date} · 공식 출처는 글에서 확인`;
     const title = document.createElement('strong');
     title.textContent = item.title;
+    if (compactList) {
+      const copy = document.createElement('span');
+      copy.className = 'kb-list-copy';
+      copy.append(meta, title);
+      if (item.image) {
+        const image = document.createElement('img');
+        image.className = 'kb-list-thumb';
+        image.src = item.image;
+        image.alt = '';
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        link.append(image);
+      } else {
+        link.classList.add('is-text-only');
+      }
+      const arrow = document.createElement('span');
+      arrow.className = 'kb-list-arrow';
+      arrow.setAttribute('aria-hidden', 'true');
+      arrow.textContent = '›';
+      link.append(copy, arrow);
+      return link;
+    }
     const action = document.createElement('span');
     action.textContent = '내용과 출처 확인 →';
-    if (homeGrid && item.image) {
+    if (homeGrid && item.homeImage) {
       const image = document.createElement('img');
-      image.src = item.image;
+      image.src = item.homeImage;
       image.alt = '';
       image.loading = 'eager';
       image.decoding = 'async';
@@ -50,7 +78,7 @@
       const matches = items.filter(item =>
         (!category.value || item.category === category.value) &&
         (!q || `${item.title} ${item.category}`.toLocaleLowerCase('ko').includes(q)));
-      indexGrid.replaceChildren(...matches.map(card));
+      indexGrid.replaceChildren(...matches.map(item => card(item, true)));
       status.textContent = matches.length ? `${matches.length}개 참고자료` :
         '일치하는 글이 없습니다. 검색어를 바꿔보세요.';
     }
@@ -65,7 +93,8 @@
         category: String(value.category || ''),
         date: String(value.date || ''),
         path: safePath(value.path),
-        image: homeImages[safePath(value.path)] || ''
+        image: listImages[safePath(value.path)] || '',
+        homeImage: homeImages[safePath(value.path)] || ''
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
       if (category) {

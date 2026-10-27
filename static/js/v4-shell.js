@@ -92,12 +92,16 @@
     setMenuState(false);
     unlockMenuScroll();
   }
+  function openMenu({ focus = true } = {}) {
+    if (!menu.hidden) return;
+    setMenuState(true);
+    lockMenuScroll();
+    if (focus) menu.querySelector('a')?.focus();
+  }
   menuButton.addEventListener('click', () => {
     const opening = menu.hidden;
-    setMenuState(opening);
-    if (opening) lockMenuScroll();
-    else unlockMenuScroll();
-    if (opening) menu.querySelector('a')?.focus();
+    if (opening) openMenu();
+    else closeMenu();
   });
   menu.addEventListener('click', event => {
     if (event.target.closest('a')) closeMenu();
@@ -116,6 +120,94 @@
   window.addEventListener('popstate', closeMenu);
   nav.append(menuButton);
   document.body.append(menu, nav);
+
+  const tabIndex = { home: 0, community: 1, knowledge: 2 }[active];
+  const swipeIgnoreSelector = [
+    'input', 'textarea', 'select', 'button', 'a', 'label', '[contenteditable="true"]',
+    '[role="button"]', '[role="slider"]', '.modal', '.my-panel', '.search-dd',
+    '.image-preview-row', '.my-post-edit-images', '.agri-video-strip',
+    '.agri-research-chips', '.tools-card', '.topic-chip-row', '.tag-chip-row',
+    '.post-images', '.gallery', '.map', '[data-no-main-swipe]'
+  ].join(',');
+  const openBlockingLayer = () => !!document.querySelector(
+    '.modal-overlay.open, .my-panel-overlay.open, .search-dd.open, [data-dropdown-open="true"]'
+  );
+  const hasTextSelection = () => {
+    const selection = window.getSelection?.();
+    return !!selection && !selection.isCollapsed && String(selection).trim().length > 0;
+  };
+  const insideHorizontalScroller = target => {
+    for (let node = target; node && node !== document.body; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (node.scrollWidth > node.clientWidth + 2 && /auto|scroll/.test(style.overflowX)) return true;
+    }
+    return false;
+  };
+  const shouldIgnoreSwipe = target => {
+    if (!menu.hidden && target.closest?.('#v4AllMenu')) return false;
+    return openBlockingLayer() || hasTextSelection() || !!target.closest?.(swipeIgnoreSelector)
+      || insideHorizontalScroller(target);
+  };
+  const navigateTo = path => {
+    if (location.pathname !== path) location.assign(path);
+  };
+  const movePrimaryTab = direction => {
+    const currentIndex = menu.hidden ? tabIndex : 3;
+    if (!Number.isInteger(currentIndex)) return false;
+    const nextIndex = currentIndex + direction;
+    if (nextIndex < 0 || nextIndex > 3) return false;
+    if (nextIndex === 3) {
+      openMenu({ focus: false });
+      return true;
+    }
+    if (!menu.hidden) closeMenu();
+    navigateTo(items[nextIndex][2]);
+    return true;
+  };
+  let swipeStartX = 0;
+  let swipeStartY = 0;
+  let swipeDeltaX = 0;
+  let swipeDeltaY = 0;
+  let swipeTracking = false;
+  let swipeTransitioning = false;
+  const resetSwipe = () => {
+    swipeTracking = false;
+    swipeDeltaX = 0;
+    swipeDeltaY = 0;
+  };
+  document.addEventListener('touchstart', event => {
+    const touch = event.touches[0];
+    if (swipeTransitioning || event.touches.length !== 1 || !touch
+        || touch.clientX <= 28 || touch.clientX >= innerWidth - 28
+        || shouldIgnoreSwipe(event.target)) {
+      resetSwipe();
+      return;
+    }
+    swipeStartX = touch.clientX;
+    swipeStartY = touch.clientY;
+    swipeDeltaX = 0;
+    swipeDeltaY = 0;
+    swipeTracking = true;
+  }, { passive: true, capture: true });
+  document.addEventListener('touchmove', event => {
+    if (!swipeTracking || event.touches.length !== 1) return;
+    swipeDeltaX = event.touches[0].clientX - swipeStartX;
+    swipeDeltaY = event.touches[0].clientY - swipeStartY;
+    if (Math.abs(swipeDeltaY) > Math.abs(swipeDeltaX) * 1.1) resetSwipe();
+  }, { passive: true, capture: true });
+  document.addEventListener('touchend', () => {
+    if (!swipeTracking) return;
+    const absX = Math.abs(swipeDeltaX);
+    const absY = Math.abs(swipeDeltaY);
+    const direction = swipeDeltaX < 0 ? 1 : -1;
+    const shouldMove = absX >= 64 && absX >= absY * 1.35;
+    resetSwipe();
+    if (!shouldMove || !movePrimaryTab(direction)) return;
+    swipeTransitioning = true;
+    window.setTimeout(() => { swipeTransitioning = false; }, 250);
+  }, { passive: true, capture: true });
+  document.addEventListener('touchcancel', resetSwipe, { passive: true, capture: true });
+
   if (new URLSearchParams(location.search).get('panel') === 'my') {
     window.addEventListener('load', () => {
       if (typeof window.safeOpenMyPanel === 'function') window.safeOpenMyPanel();

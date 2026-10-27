@@ -16,41 +16,45 @@
   <meta name="description" content="공식자료 출처와 확인일을 함께 살펴보는 kFarmAI 농업정보 목록입니다.">
   <link rel="canonical" href="https://kfarmai.com/kb/index.html">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f7f9f6; color: #17202a; line-height: 1.7; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #fff; color: #17202a; line-height: 1.7; }
     header { background: #fff; min-height: 56px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #DDEDE3; padding: 0 16px; } header a { display: flex; align-items: center; text-decoration: none; } header img { height: 34px; width: auto; }
-    main { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
-    section { background: white; margin: 16px 0; padding: 18px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+    main { max-width: 900px; margin: 0 auto; padding: 24px 16px calc(92px + env(safe-area-inset-bottom)); }
     a { color: #176c43; font-weight: 700; }
     li { margin-bottom: 14px; }
     p, div, span, li, h1, h2, h3, h4, h5, h6, article, section, .summary, .quick-answer, .warning, .sources, .safety-notice { word-break: keep-all; overflow-wrap: break-word; line-break: strict; }
     a, .url, .email, .long-text, .code, .mono, pre, code { overflow-wrap: anywhere; word-break: break-word; }
     button, .btn, .chip, .tag-chip, .hash-tag, .category-badge, .cta-button, .related-questions a { word-break: keep-all; white-space: nowrap; }
     .tag-chip, .hash-tag { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
-    .kb-controls { display:grid; grid-template-columns: 1fr minmax(130px,180px); gap:10px; margin: 22px 0; }
-    .kb-controls input, .kb-controls select { min-height:44px; border:1px solid #b7d3c1; border-radius:10px; padding:8px 12px; font:inherit; }
-    .kb-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); gap:14px; }
-    .kb-card { display:block; background:#fff; border:1px solid #dce9df; border-radius:16px; padding:18px; text-decoration:none; color:#17202a; box-shadow:0 5px 18px rgba(0,0,0,.04); }
-    .kb-card strong { display:block; font-size:1.1rem; line-height:1.4; margin:8px 0; }
-    .kb-card small { color:#566a5b; font-weight:400; }
-    .kb-card:hover, .kb-card:focus-visible { border-color:#176c43; }
+    h1 { margin: 0 0 18px; font-size: clamp(28px, 5vw, 40px); letter-spacing: -.045em; }
+    .kb-controls { display:grid; grid-template-columns: 1fr minmax(130px,180px); gap:8px; margin: 0 0 18px; }
+    .kb-controls input, .kb-controls select { min-height:46px; border:1px solid #b7c5ba; border-radius:0; padding:8px 12px; background:#fff; color:#17202a; font:inherit; }
+    .kb-grid { display:block; border-top:2px solid #17202a; }
+    .kb-card { display:grid; grid-template-columns:88px minmax(0,1fr) 20px; align-items:center; gap:12px; min-height:78px; padding:10px 2px; border:0; border-bottom:1px solid #d8ded9; border-radius:0; background:#fff; color:#17202a; box-shadow:none; text-decoration:none; }
+    .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 20px; min-height:64px; }
+    .kb-list-thumb { display:block; width:88px; height:64px; object-fit:cover; background:#f1f4f1; }
+    .kb-list-copy { min-width:0; display:grid; gap:3px; }
+    .kb-card strong { display:block; min-width:0; overflow:hidden; color:#17202a; font-size:15px; line-height:1.45; text-overflow:ellipsis; white-space:nowrap; }
+    .kb-card small { overflow:hidden; color:#126c43; font-size:11px; font-weight:800; text-overflow:ellipsis; white-space:nowrap; }
+    .kb-list-arrow { color:#68736b; font-size:21px; font-weight:400; text-align:right; }
+    .kb-card:hover, .kb-card:focus-visible { color:#126c43; background:#f7faf7; }
+    #kbStatus { margin:12px 0 0; color:#68736b; font-size:12px; }
     @media(max-width:520px) { .kb-controls { grid-template-columns:1fr; } main { padding-top:18px; } }
   </style>
-  <link rel="stylesheet" href="/static/css/v4-shell.css">
-  <script src="/static/js/v4-shell.js" defer></script>
+  <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-swipe1">
+  <script src="/static/js/v4-shell.js?v=20261027-swipe1" defer></script>
 </head>
 <body class="v4-page">
   <header><a href="/index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
   <main>
     <h1>농업정보</h1>
-    <p>농업·식물 문제를 살펴볼 때 참고할 글입니다. 공공자료의 사실과 kFarmAI 편집 정보를 구분하고, 현장 조건은 공식 원문에서 다시 확인하세요.</p>
     <div class="kb-controls">
       <input id="kbSearch" type="search" placeholder="제목·분류 검색" aria-label="농업정보 검색">
       <select id="kbCategory" aria-label="농업정보 분류"><option value="">전체 분류</option></select>
     </div>
     <div id="kbGrid" class="kb-grid" aria-live="polite">
-      <a class="kb-card" href="/kb/autumn-rain-wheat-barley-sowing-checklist.html"><small>식량작물·재배노하우 · 2026-10-27</small><strong>가을비에 늦어진 밀·보리 파종, 지금 확인할 5가지</strong><span>파종 전후 5가지 점검 보기 →</span></a>
-      <a class="kb-card" href="/kb/strawberry-winter-light-humidity-check.html"><small>식물병·재배노하우 · 2026-10-24</small><strong>겨울 앞둔 딸기 하우스, 빛·습도·보온 5가지 점검</strong><span>5가지 점검 항목 보기 →</span></a>
-      <a class="kb-card" href="/kb/greenhouse-irrigation-precheck.html"><small>스마트팜 · 2026-10-11</small><strong>온실 관수 설비 가동 전 확인 포인트</strong><span>공식 출처와 일반 확인 포인트 보기 →</span></a>
+      <a class="kb-card is-text-only" href="/kb/autumn-rain-wheat-barley-sowing-checklist.html"><span class="kb-list-copy"><small>식량작물·재배노하우</small><strong>가을비에 늦어진 밀·보리 파종, 지금 확인할 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
+      <a class="kb-card" href="/kb/strawberry-winter-light-humidity-check.html"><img class="kb-list-thumb" src="/static/kb/strawberry-winter-light-humidity-check-hero.svg" alt="" loading="lazy"><span class="kb-list-copy"><small>식물병·재배노하우</small><strong>겨울 앞둔 딸기 하우스, 빛·습도·보온 5가지 점검</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
+      <a class="kb-card" href="/kb/greenhouse-irrigation-precheck.html"><img class="kb-list-thumb" src="/static/kb/greenhouse-irrigation-precheck-hero.webp" alt="" loading="lazy"><span class="kb-list-copy"><small>스마트팜</small><strong>온실 관수 설비 가동 전 확인 포인트</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
     </div>
     <p id="kbStatus">최근 게시된 참고자료를 확인하고 있습니다.</p>
     <noscript><p>목록 검색에는 JavaScript가 필요합니다. 위 공개 글은 바로 열 수 있습니다.</p></noscript>
