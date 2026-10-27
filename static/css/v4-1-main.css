@@ -90,9 +90,39 @@ body.agri-v3-page .agri-v3-section#today { display:none; }
 .v4-menu h3 { color:var(--v41-muted); border-bottom:1px solid var(--v41-line); font-size:13px; font-weight:800; }
 .v4-menu a { font-weight:700; } .v4-menu .v4-menu-arrow { font-size:18px; }
 @media (max-width:767px) {
-  body.v4-home .home-kb-cards { grid-template-columns:1fr 1fr; } body.v4-home .home-kb-cards .kb-card:first-child { grid-column:1 / -1; grid-row:auto; min-height:208px; }
-  body.v4-home .community-home-layout { display:block; } body.v4-home .community-home-aside { margin-top:28px; }
-  body.v4-home .home-agri-summary-section { margin-top:28px; }
+  body.v4-home .home-kb-section, body.v4-home .community-home-layout { margin-bottom:24px; }
+  body.v4-home .section-head,
+  body.v4-home .section-head.question-section-head { margin:0; padding:0 0 8px; border:0; border-bottom:1px solid var(--v41-ink); border-radius:0; background:#fff; box-shadow:none; }
+  body.v4-home .section-head.question-section-head::before { display:none; }
+  body.v4-home .home-kb-cards { display:block; border-top:0; }
+  body.v4-home .home-kb-cards .kb-card { position:relative; display:grid; grid-template-columns:minmax(0,1fr) 18px; align-items:center; gap:10px; min-height:66px; margin:0; padding:10px 2px; border:0; border-bottom:1px solid var(--v41-line); background:#fff; color:var(--v41-ink); }
+  body.v4-home .home-kb-cards .kb-card:first-child { display:grid; grid-row:auto; grid-template-columns:minmax(0,1fr) 18px; min-height:66px; padding:10px 2px; border:0; border-bottom:1px solid var(--v41-line); background:#fff; color:var(--v41-ink); }
+  body.v4-home .home-kb-cards .kb-card:has(img),
+  body.v4-home .home-kb-cards .kb-card:first-child:has(img) { grid-template-columns:82px minmax(0,1fr) 18px; }
+  body.v4-home .home-kb-cards .kb-card img { position:static; width:82px; height:60px; object-fit:cover; opacity:1; }
+  body.v4-home .home-kb-cards .v41-kb-copy { position:static; min-width:0; padding:0; background:none; color:var(--v41-ink); }
+  body.v4-home .home-kb-cards .v41-kb-copy small { color:var(--v41-green) !important; }
+  body.v4-home .home-kb-cards .v41-kb-copy strong { color:var(--v41-ink) !important; }
+  body.v4-home .home-kb-cards .kb-card small { margin:0 0 3px; color:var(--v41-green); }
+  body.v4-home .home-kb-cards .kb-card strong { display:-webkit-box; margin:0; overflow:hidden; font-size:15px; line-height:1.45; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+  body.v4-home .home-kb-cards .kb-card .kb-list-copy { display:grid; min-width:0; gap:3px; }
+  body.v4-home .home-kb-cards .kb-card .kb-list-arrow { display:block; color:var(--v41-muted); font-size:20px; line-height:1; text-align:right; white-space:nowrap; }
+  body.v4-home .community-home-layout { display:block; }
+  body.v4-home .community-feed-section { margin-top:16px; }
+  body.v4-home .community-feed-toolbar { margin:8px 0 0; padding-bottom:8px; }
+  body.v4-home .recent-question-panel.v3-community-feed { display:block; margin:0; padding:0; border:0; border-radius:0; background:#fff; box-shadow:none; }
+  body.v4-home .v3-community-feed .q-card { display:flex; min-height:0; margin:0; padding:12px 0; border:0; border-bottom:1px solid var(--v41-line); border-radius:0; background:#fff; box-shadow:none; }
+  body.v4-home .recent-question-panel .q-card-thumb { width:60px; height:60px; flex-basis:60px; border-radius:0; }
+  body.v4-home .community-home-aside { gap:0; margin-top:24px; }
+  body.v4-home .community-side-card { margin:0; padding:14px 0; border:0; border-bottom:1px solid var(--v41-line); border-radius:0; background:#fff; }
+  body.v4-home .topic-tag-list a { padding:6px 8px; border:1px solid var(--v41-line); background:#fff; }
+  body.v4-home .ai-compact-card { border-top:1px solid var(--v41-ink); }
+  body.v4-home .ai-compact-arrow { border-radius:0; background:var(--v41-green); }
+  body.v4-home .home-agri-summary-section { margin-top:24px; padding:0; border:0; border-radius:0; background:#fff; }
+  body.v4-home .home-agri-summary-section .agri-summary-grid { display:block; }
+  body.v4-home .home-agri-summary-section .agri-summary-card { min-height:0; margin:0; padding:12px 0; border:0; border-bottom:1px solid var(--v41-line); border-radius:0; background:#fff; box-shadow:none; }
+  body.v4-home .home-agri-summary-section .agri-summary-card:last-child { border-bottom:0; }
+  body.v4-home .home-agri-summary-section .agri-section-link { display:inline-flex; min-height:32px; margin-top:8px; padding:0; border:0; background:#fff; color:var(--v41-green); white-space:nowrap; }
   .v4-menu { padding:12px var(--v41-gutter) calc(14px + env(safe-area-inset-bottom)); }
 }
 @media (min-width:768px) {

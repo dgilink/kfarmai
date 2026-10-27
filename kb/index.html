@@ -27,7 +27,7 @@
     .tag-chip, .hash-tag { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
     h1 { margin: 0 0 18px; font-size: clamp(28px, 5vw, 40px); letter-spacing: -.045em; }
     .kb-controls { display:grid; grid-template-columns: 1fr minmax(130px,180px); gap:8px; margin: 0 0 18px; }
-    .kb-controls input, .kb-controls select { min-height:46px; border:1px solid #b7c5ba; border-radius:0; padding:8px 12px; background:#fff; color:#17202a; font:inherit; }
+    .kb-controls input, .kb-controls select { box-sizing:border-box; width:100%; min-width:0; min-height:46px; border:1px solid #b7c5ba; border-radius:0; padding:8px 12px; background:#fff; color:#17202a; font:inherit; }
     .kb-grid { display:block; border-top:2px solid #17202a; }
     .kb-card { display:grid; grid-template-columns:88px minmax(0,1fr) 20px; align-items:center; gap:12px; min-height:78px; padding:10px 2px; border:0; border-bottom:1px solid #d8ded9; border-radius:0; background:#fff; color:#17202a; box-shadow:none; text-decoration:none; }
     .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 20px; min-height:64px; }
@@ -35,13 +35,20 @@
     .kb-list-copy { min-width:0; display:grid; gap:3px; }
     .kb-card strong { display:block; min-width:0; overflow:hidden; color:#17202a; font-size:15px; line-height:1.45; text-overflow:ellipsis; white-space:nowrap; }
     .kb-card small { overflow:hidden; color:#126c43; font-size:11px; font-weight:800; text-overflow:ellipsis; white-space:nowrap; }
-    .kb-list-arrow { color:#68736b; font-size:21px; font-weight:400; text-align:right; }
+    .kb-list-arrow { display:block; width:20px; color:#68736b; font-size:21px; font-weight:400; line-height:1; text-align:right; white-space:nowrap; word-break:normal; writing-mode:horizontal-tb; }
     .kb-card:hover, .kb-card:focus-visible { color:#126c43; background:#f7faf7; }
     #kbStatus { margin:12px 0 0; color:#68736b; font-size:12px; }
-    @media(max-width:520px) { .kb-controls { grid-template-columns:1fr; } main { padding-top:18px; } }
+    @media(max-width:520px) {
+      main { padding:18px 16px calc(92px + env(safe-area-inset-bottom)); }
+      .kb-controls { grid-template-columns:minmax(0,1fr); }
+      .kb-card { grid-template-columns:78px minmax(0,1fr) 18px; gap:10px; min-height:76px; padding:10px 2px; }
+      .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 18px; min-height:62px; }
+      .kb-list-thumb { width:78px; height:58px; }
+      .kb-card strong { display:-webkit-box; overflow:hidden; line-height:1.4; white-space:normal; word-break:keep-all; overflow-wrap:break-word; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+    }
   </style>
-  <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-swipe1">
-  <script src="/static/js/v4-shell.js?v=20261027-swipe1" defer></script>
+  <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-flat1">
+  <script src="/static/js/v4-shell.js?v=20261027-flat1" defer></script>
 </head>
 <body class="v4-page">
   <header><a href="/index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a></header>
@@ -59,6 +66,6 @@
     <p id="kbStatus">최근 게시된 참고자료를 확인하고 있습니다.</p>
     <noscript><p>목록 검색에는 JavaScript가 필요합니다. 위 공개 글은 바로 열 수 있습니다.</p></noscript>
   </main>
-  <script src="/static/js/kb-discovery.js" defer></script>
+  <script src="/static/js/kb-discovery.js?v=20261027-flat1" defer></script>
 </body>
 </html>

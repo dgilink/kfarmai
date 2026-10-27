@@ -75,11 +75,10 @@ async function touchSwipe(selector, direction = 'down') {
 }
 
 async function primarySwipe(direction, expectNavigation = false) {
-  await evaluate(`document.querySelector(location.pathname==='/index.html'?'.section-title':location.pathname==='/channel.html'?'.v41-page-title':'h1')?.scrollIntoView({block:'center'})`);
+  await evaluate(`!v4AllMenu.hidden ? (v4AllMenu.scrollTop=0) : scrollTo(0,0)`);
   await delay(180);
   const point = await evaluate(`(() => {
-    if (!v4AllMenu.hidden) return {x:innerWidth/2,y:Math.min(320,innerHeight/2),width:innerWidth};
-    const candidate=document.querySelector(location.pathname==='/index.html'?'.section-title':location.pathname==='/channel.html'?'.v41-page-title':'h1');
+    const candidate=document.querySelector(!v4AllMenu.hidden?'#v4AllMenu>h2':location.pathname==='/index.html'?'.section-title':location.pathname==='/channel.html'?'.v41-page-title':'h1');
     const rect=candidate?.getBoundingClientRect();
     return {x:Math.max(110,Math.min(innerWidth-35,rect?rect.left+Math.min(rect.width-8,rect.width*.55):innerWidth*.55)),y:rect?rect.top+rect.height/2:innerHeight/2,width:innerWidth};
   })()`);
@@ -212,9 +211,19 @@ try {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
     await navigate('/index.html');
     await assertSingleVisualActive(`${width}px home`);
+    const homePresentation = await evaluate(`(() => {
+      const kb=getComputedStyle(document.querySelector('.home-kb-section'));
+      const feed=getComputedStyle(document.querySelector('.recent-question-panel.v3-community-feed'));
+      const agri=getComputedStyle(document.querySelector('.home-agri-summary-section'));
+      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth};
+    })()`);
+    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px'}, `${width}px flat white home presentation`);
     const beforeVertical = await evaluate('location.pathname');
     await touchSwipe('body');
     assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px vertical scroll does not switch tab`);
+    await evaluate("document.querySelector('.community-feed-section').scrollIntoView({block:'center'})");
+    await ignoredHorizontalSwipe('.community-feed-section');
+    assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px home body swipe ignored`);
     await evaluate('scrollTo(0,0)');
     await primarySwipe('left', true);
     assert.equal(await evaluate('location.pathname'), '/channel.html', `${width}px home to community`);
@@ -233,13 +242,25 @@ try {
     assert.equal(kbContract.forbidden, false, `${width}px KB date/source CTA hidden`);
     assert.equal(kbContract.intro, '', `${width}px KB intro removed`);
     assert.equal(kbContract.overflow, false, `${width}px KB no horizontal overflow`);
+    const kbLayout = await evaluate(`(() => {
+      const controls=[kbSearch,kbCategory].map(node=>node.getBoundingClientRect());
+      const arrow=getComputedStyle(document.querySelector('.kb-list-arrow'));
+      const title=getComputedStyle(document.querySelector('.kb-card strong'));
+      return {controlsFit:controls.every(rect=>rect.left>=0&&rect.right<=innerWidth),arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
+    })()`);
+    assert.deepEqual(kbLayout, {controlsFit:true,arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'}, `${width}px KB stable mobile rows`);
+    await evaluate("document.querySelector('#kbGrid .kb-card:last-child').scrollIntoView({block:'center'})");
+    await ignoredHorizontalSwipe('#kbGrid');
+    assert.equal(await evaluate('location.pathname'), '/kb/index.html', `${width}px KB body swipe ignored`);
+    await evaluate('scrollTo(0,0)');
     const searchResult = await evaluate(`(() => {kbSearch.value='관수';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
     assert.equal(searchResult.count, 1, `${width}px KB search count`);
     assert.match(searchResult.text, /관수/, `${width}px KB search result`);
     const filterResult = await evaluate(`(() => {kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='스마트팜';kbCategory.dispatchEvent(new Event('change',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
     assert.ok(filterResult.count >= 1 && /스마트팜/.test(filterResult.text), `${width}px KB category filter`);
     await primarySwipe('left');
-    assert.equal(await evaluate('v4AllMenu.hidden'), false, `${width}px knowledge to menu`);
+    const knowledgeMenuState = await evaluate(`({hidden:v4AllMenu.hidden,trace:window.__swipeTrace,path:location.pathname,h1:document.querySelector('h1')?.getBoundingClientRect().toJSON()})`);
+    assert.equal(knowledgeMenuState.hidden, false, `${width}px knowledge to menu ${JSON.stringify(knowledgeMenuState)}`);
     await assertSingleVisualActive(`${width}px menu`, true);
     await evaluate('v4AllMenu.scrollTop=v4AllMenu.scrollHeight');
     assert.ok(await evaluate("v4AllMenu.querySelector('a:last-of-type').getBoundingClientRect().bottom<=document.querySelector('.v4-nav').getBoundingClientRect().top+1"), `${width}px menu last link`);

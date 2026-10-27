@@ -148,6 +148,19 @@
     return openBlockingLayer() || hasTextSelection() || !!target.closest?.(swipeIgnoreSelector)
       || insideHorizontalScroller(target);
   };
+  const swipeZoneSelector = [
+    '.header', '.agri-v3-header',
+    'body.v4-home .home-kb-section:first-of-type .section-head',
+    'body.community-list-page .v41-page-title',
+    'body.v4-page main > h1',
+    '#v4AllMenu > h2'
+  ].join(',');
+  const insidePrimarySwipeZone = target => {
+    const zone = target.closest?.(swipeZoneSelector);
+    if (!zone || innerWidth > 767) return false;
+    const rect = zone.getBoundingClientRect();
+    return rect.bottom >= 0 && rect.top <= innerHeight && rect.top < 260;
+  };
   const navigateTo = path => {
     if (location.pathname !== path) location.assign(path);
   };
@@ -179,6 +192,7 @@
     const touch = event.touches[0];
     if (swipeTransitioning || event.touches.length !== 1 || !touch
         || touch.clientX <= 28 || touch.clientX >= innerWidth - 28
+        || !insidePrimarySwipeZone(event.target)
         || shouldIgnoreSwipe(event.target)) {
       resetSwipe();
       return;
@@ -193,7 +207,6 @@
     if (!swipeTracking || event.touches.length !== 1) return;
     swipeDeltaX = event.touches[0].clientX - swipeStartX;
     swipeDeltaY = event.touches[0].clientY - swipeStartY;
-    if (Math.abs(swipeDeltaY) > Math.abs(swipeDeltaX) * 1.1) resetSwipe();
   }, { passive: true, capture: true });
   document.addEventListener('touchend', () => {
     if (!swipeTracking) return;

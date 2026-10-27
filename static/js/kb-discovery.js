@@ -82,7 +82,7 @@
       status.textContent = matches.length ? `${matches.length}개 참고자료` :
         '일치하는 글이 없습니다. 검색어를 바꿔보세요.';
     }
-    if (homeGrid) homeGrid.replaceChildren(...items.slice(0, 4).map(card));
+    if (homeGrid) homeGrid.replaceChildren(...items.slice(0, 4).map(item => card(item, true)));
   }
   fetch('/data/kb-index.json', {cache: 'no-store'})
     .then(response => { if (!response.ok) throw Error('registry'); return response.json(); })
