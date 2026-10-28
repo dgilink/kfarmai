@@ -196,6 +196,7 @@ test('detail presentation removes narrow phone frames, grey tails and rounded sh
   assert.match(css,/> \.phone,[\s\S]*max-width: none !important/);
   assert.match(css,/footer,[\s\S]*background: #fff !important/);
   assert.match(css,/\.diag-card[\s\S]*width: min\(calc\(100% - 32px\), var\(--kf-detail-width\)\)/);
+  assert.match(css,/body\.v4-detail-page > header\.v4-global-header \{[\s\S]*position: fixed/);
   assert.match(css,/\.fixed-map-shell,[\s\S]*var\(--kf-detail-width\)/);
   assert.match(css,/\.v4-privacy-page main[\s\S]*grid-template-columns: repeat\(2/);
   assert.match(css,/@media \(max-width: 767px\)/);

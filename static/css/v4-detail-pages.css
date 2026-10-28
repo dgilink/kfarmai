@@ -64,6 +64,14 @@ body.v4-detail-page .page > .hero {
   backdrop-filter: none;
 }
 
+/* The shared text header must stay fixed on every detail route. This selector
+   intentionally outranks the legacy-header compatibility rule above. */
+body.v4-detail-page > header.v4-global-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 950;
+}
+
 body.v4-detail-page > header > a,
 body.v4-detail-page > header > .top,
 body.v4-detail-page .header > .top,
