@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+import shutil
 import unittest
 import urllib.error
 from unittest import mock
@@ -147,9 +148,32 @@ FIXTURE_DATE = FIXTURE_NOW.astimezone(dt.timezone(dt.timedelta(hours=9))).date()
 
 
 class RealDailyE2E(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        # A hermetic REVIEW fixture uses the real production selector and all
+        # other pipeline code, but has no already-published topics or dates.
+        # Keep the production registry and approved KB bytes unchanged.
+        cls.fixture_dir = tempfile.TemporaryDirectory(prefix="kfarmai-daily-test-")
+        cls.fixture_root = Path(cls.fixture_dir.name)
+        (cls.fixture_root / "automation").mkdir()
+        (cls.fixture_root / "static" / "kb").mkdir(parents=True)
+        (cls.fixture_root / "kb").mkdir()
+        (cls.fixture_root / "automation" / "daily_registry.json").write_text(
+            json.dumps({"items": []}), encoding="utf-8")
+        (cls.fixture_root / "automation" / "topic_seed.json").write_text(
+            json.dumps({"do_not_repeat": []}), encoding="utf-8")
+        shutil.copyfile(ROOT / "automation" / "config.json",
+                        cls.fixture_root / "automation" / "config.json")
+        shutil.copyfile(ROOT / "static" / "kb" / "usda-greenhouse-heating-photo.jpg",
+                        cls.fixture_root / "static" / "kb" / "usda-greenhouse-heating-photo.jpg")
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.fixture_dir.cleanup()
+
     def make(self, *, source=None, model=None, rpc=None):
         source, model, rpc = source or Source(), model or Model(), rpc or RPC()
-        return RealDailyProvider(ROOT, source, model, DurableBudget(rpc),
+        return RealDailyProvider(self.fixture_root, source, model, DurableBudget(rpc),
                                  lambda slug: False), model, rpc
 
     def test_source_to_review_artifact_and_issue(self):
@@ -212,7 +236,7 @@ class RealDailyE2E(unittest.TestCase):
 
     def test_existing_review_issue_blocks_new_day_before_paid_work(self):
         rpc, model = RPC(), Model()
-        provider = RealDailyProvider(ROOT, Source(), model, DurableBudget(rpc),
+        provider = RealDailyProvider(self.fixture_root, Source(), model, DurableBudget(rpc),
                                      lambda slug: slug == TOPICS[0]["slug"])
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
             provider.run(date=FIXTURE_DATE,
