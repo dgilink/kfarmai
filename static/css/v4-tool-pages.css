@@ -20,6 +20,12 @@ body.kf-tool-page .mini,
 body.kf-tool-page .context-card,
 body.kf-tool-page .stage-step-image,
 body.kf-tool-page .metric,
+body.kf-tool-page .summary-card,
+body.kf-tool-page .chart-box,
+body.kf-tool-page .item,
+body.kf-tool-page .month,
+body.kf-tool-page .empty,
+body.kf-tool-page .loading,
 body.kf-tool-page .tag,
 body.kf-tool-page .badge,
 body.kf-tool-page .pill { border-radius:0; box-shadow:none; }
@@ -88,6 +94,7 @@ body.kf-subsidy .reset { background:#fff; color:var(--kf-green); border:1px soli
 body.kf-subsidy .badge { background:#fff; border:1px solid var(--kf-line); color:var(--kf-green); }
 body.kf-crop .representative-image img { border-radius:0; }
 body.kf-crop .crop-card { border-radius:0; box-shadow:none; }
+body.kf-crop .crop-icon { border-radius:0; background:transparent; }
 @media (min-width:600px) {
   body.kf-subsidy .filters { grid-template-columns:repeat(3,minmax(0,1fr)); }
   body.kf-market .tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
