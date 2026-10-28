@@ -387,7 +387,7 @@ try {
           active:nav?.querySelectorAll('[aria-current="page"]').length,
           activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
-          tabs:route.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
+          tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
       assert.deepEqual(toolUi,{text:'KFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
