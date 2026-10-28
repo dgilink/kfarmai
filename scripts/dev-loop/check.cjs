@@ -58,7 +58,7 @@ function main() {
   for (const file of tests) run('CJS ' + file, process.execPath, [path.join(testRoot, file)], 90000);
   run('KB post-publish audit', python,
     ['-m','unittest','discover','-s','tests','-p','test_kfarmai_post_publish_audit.py'], 120000);
-  artifact = fs.mkdtempSync(path.join(os.tmpdir(), 'kfarmai-devloop-site-'));
+  artifact = fs.mkdtempSync(path.join(os.tmpdir(), 'kfarmai-pages-artifact-devloop-'));
   const built = run('Pages build', process.execPath,
     ['scripts/pages/build-pages-artifact.cjs', '--output=' + artifact], 120000);
   if (built.ok) run('Pages allowlist/secret verifier', process.execPath,
