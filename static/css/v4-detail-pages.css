@@ -79,10 +79,11 @@ body.v4-detail-page .brand img,
 body.v4-detail-page > header img,
 body.v4-detail-page .topbar img {
   display: block;
-  width: auto;
-  max-width: 180px;
-  height: 30px;
+  width: min(152px, 45vw) !important;
+  max-width: 152px !important;
+  height: 30px !important;
   object-fit: contain;
+  object-position: left center;
 }
 
 body.v4-detail-page > header button[onclick*="openMenu"],
@@ -116,7 +117,41 @@ body.v4-detail-page .summary-bar,
 body.v4-detail-page .case-card,
 body.v4-detail-page .notice,
 body.v4-detail-page .empty-state,
-body.v4-detail-page .return-area a {
+body.v4-detail-page .return-area a,
+body.v4-detail-page .summary-item,
+body.v4-detail-page .summary-card,
+body.v4-detail-page .guide-card,
+body.v4-detail-page .guide-visual,
+body.v4-detail-page .match-summary-card,
+body.v4-detail-page .report-title-row,
+body.v4-detail-page .report-result-item,
+body.v4-detail-page .report-summary-line,
+body.v4-detail-page .report-next-step,
+body.v4-detail-page .official-reference-card,
+body.v4-detail-page .official-reference-more,
+body.v4-detail-page .ncpms-enrichment,
+body.v4-detail-page .report-download-btn,
+body.v4-detail-page .detail-toggle-button,
+body.v4-detail-page .match-detail-panel,
+body.v4-detail-page .source-detail-card,
+body.v4-detail-page .report-extra-check,
+body.v4-detail-page .report-caution,
+body.v4-detail-page .check-card,
+body.v4-detail-page .official-card,
+body.v4-detail-page .tool-result-card,
+body.v4-detail-page .tool-result-link,
+body.v4-detail-page .field input,
+body.v4-detail-page .hub-hero,
+body.v4-detail-page .hub-note,
+body.v4-detail-page .api-status,
+body.v4-detail-page .guide-summary,
+body.v4-detail-page .guide-block,
+body.v4-detail-page .source-item,
+body.v4-detail-page .official-site-card,
+body.v4-detail-page .smart-area-card,
+body.v4-detail-page .topic-entry,
+body.v4-detail-page .subsidy-card,
+body.v4-news-page main > div[style*="border-radius"] {
   border-radius: 0 !important;
   box-shadow: none !important;
 }
