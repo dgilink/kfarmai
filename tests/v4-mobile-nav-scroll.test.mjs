@@ -51,6 +51,15 @@ async function evaluate(expression) {
   return result.result.value;
 }
 
+async function waitForEvaluation(expression, timeout = 1000) {
+  const deadline = Date.now() + timeout;
+  do {
+    if (await evaluate(expression)) return;
+    await delay(25);
+  } while (Date.now() < deadline);
+  throw new Error(`condition did not become true within ${timeout}ms: ${expression}`);
+}
+
 async function navigate(route) {
   const loaded = socket.once('Page.loadEventFired');
   await socket.send('Page.navigate', { url: `http://127.0.0.1:${port}${route}` });
@@ -191,7 +200,12 @@ async function communityRequestRaces() {
   assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{title:card?.querySelector('.post-title')?.textContent,loading:!!document.querySelector('#postList .loading'),comments:card?.querySelector('.post-comments')?.textContent||'',reactions:card?.querySelector('.post-reactions')?.textContent||''}})()`),
     {title:'progressive result',loading:false,comments:'',reactions:''}, 'base posts render before metrics and profiles finish');
   await evaluate(`window.__resolveSlowMetrics();window.__resolveSlowProfiles()`);
-  await delay(50);
+  await waitForEvaluation(`(() => {
+    const card=document.querySelector('#postList .post-card');
+    return card?.querySelector('.post-author')?.textContent==='빠른작성자'
+      && card?.querySelector('.post-comments')?.textContent==='댓글 2'
+      && card?.querySelector('.post-reactions')?.textContent==='같은 증상 1 · 도움됐어요 3';
+  })()`);
   assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{author:card?.querySelector('.post-author')?.textContent,comments:card?.querySelector('.post-comments')?.textContent,reactions:card?.querySelector('.post-reactions')?.textContent}})()`),
     {author:'빠른작성자',comments:'댓글 2',reactions:'같은 증상 1 · 도움됐어요 3'}, 'metrics and profile enrich the visible cards in place');
 
