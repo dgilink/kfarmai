@@ -400,11 +400,23 @@ try {
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/channel.html');
   assert.equal(await evaluate("document.getElementById('searchInput')===null"),true,'community search field removed');
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'channel-fixed-header-390.png'),Buffer.from(capture.data,'base64'));
+  }
   const homeSearchLoaded=socket.once('Page.loadEventFired');
   await evaluate("document.querySelector('.v4-global-search-action').click()");
   await homeSearchLoaded;
   await delay(120);
   assert.deepEqual(await evaluate(`({path:location.pathname,focus:document.activeElement?.id})`),{path:'/index.html',focus:'globalSearch'},'non-home search icon opens and focuses home search');
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'home-focused-search-390.png'),Buffer.from(capture.data,'base64'));
+  }
   await navigate('/channel.html');
   await swipeWhileCommunityRenders();
   await communityRequestRaces();
