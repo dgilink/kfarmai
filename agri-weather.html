@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>농업날씨 - kFarmAI</title>
 <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <meta name="description" content="기온, 강수, 습도, 풍속을 농작업 참고 정보와 작물별 체크포인트로 확인합니다.">
@@ -13,14 +13,16 @@ body{background:#E8F1EA;color:#111827}.app{background:linear-gradient(180deg,#F3
 .source-grid{display:grid;gap:8px;margin-top:8px}.source-card{border:1px solid #E1E8E2;background:#FAFCFA;border-radius:12px;padding:10px}.source-card b{display:block;font-size:12.5px;color:#14532D;margin-bottom:5px}.source-card p{font-size:12px;line-height:1.55;color:#374151}.source-card span{display:inline-flex;margin-top:7px;font-size:11px;font-weight:900;color:#64748B}
 body,button,input,textarea,select{word-break:keep-all;line-break:strict}p,span,div,li,h1,h2,h3,h4,h5,h6,.card,.section,.notice,.description,.guide-text,.calendar-text,.weather-text{word-break:keep-all;overflow-wrap:break-word;line-break:strict}.url,.email,.code,.mono,.tag,.hash-tag,pre,code{word-break:break-all;overflow-wrap:anywhere}button,.btn,.chip,.tag-chip,.symptom-chip,.nav-item,.crop-card,.result-card,.badge{word-break:keep-all;white-space:nowrap}.item,.item li,.month p,.note,.safe,.empty,.sub,.hint,.summary p,.work-card p,.point,.official p{white-space:normal}
 </style>
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-tools1">
+<link rel="stylesheet" href="/static/css/v4-tool-pages.css?v=20261028-tools1">
+<script src="/static/js/v4-shell.js?v=20261028-tools1" defer></script>
 </head>
-<body>
+<body class="v4-page kf-tool-page kf-weather">
 <main class="app">
   <header class="header">
-    <div class="top"><a class="brand" href="index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div>
-    <h1>농업날씨 체크포인트</h1>
-    <p class="sub">농작업 전 기온, 강수, 습도, 풍속을 함께 확인하세요. 실제 작업 여부는 현장 상황과 공식 정보를 함께 확인해야 합니다.</p>
+    <div class="top"><a class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a></div>
   </header>
+  <h1 class="kf-tool-title">농업날씨</h1>
   <section class="content">
     <div class="card">
       <div class="label">권역 선택</div>
