@@ -140,6 +140,9 @@ test('home and community share stable first-paint feed cache and prioritize visi
   assert.match(home,/COMMUNITY_FEED_CACHE_KEY = 'kfarmai_public_feed_v2'/);
   assert.match(home,/restoreHomeFeedCache\(feed\)/);
   assert.match(home,/card\.dataset\.postId/);
+  assert.match(home,/homeFeedTouchActive/);
+  assert.match(home,/pendingHomeFeedUpdates/);
+  assert.match(home,/renderHomeFeedPosts\(feed,data,\{\}\)/);
   assert.match(home,/index<2\?'eager':'lazy'/);
   assert.match(home,/fetchpriority="high"/);
   assert.match(channel,/thumbLoading=index<2\?'eager':'lazy'/);

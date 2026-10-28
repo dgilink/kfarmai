@@ -2647,6 +2647,8 @@ let myPostCache = [];
 let blockedUserIdsSet = new Set();
 let homeFeedSort = 'latest';
 let homeFeedRequestId = 0;
+let homeFeedTouchActive = false;
+let pendingHomeFeedUpdates = [];
 const COMMUNITY_FEED_CACHE_KEY = 'kfarmai_public_feed_v2';
 const COMMUNITY_FEED_CACHE_TTL = 5 * 60 * 1000;
 const I18N = {
@@ -3442,6 +3444,33 @@ function stripPostPrefixes(content){
   return String(content||'').replace(/^\[(?:\uC791\uC131\uC790|\uCC44\uB110|\uC9C0\uC5ED|\uB300\uD45C\s*\uC99D\uC0C1|\uD0DC\uADF8|[^:\]]*):\s*[^\]]+\]\s*/gm,'').trim();
 }
 function getInitial(user){return (displayNameForUser(user)||'U').trim()[0].toUpperCase();}
+function updateHomeFeed(update){
+  if(homeFeedTouchActive)pendingHomeFeedUpdates.push(update);
+  else update();
+}
+function finishHomeFeedTouch(){
+  homeFeedTouchActive=false;
+  const updates=pendingHomeFeedUpdates.splice(0);
+  updates.forEach(update=>update());
+}
+document.addEventListener('touchstart',event=>{
+  if(event.target.closest?.('#recentFeed'))homeFeedTouchActive=true;
+},{capture:true,passive:true});
+document.addEventListener('touchend',finishHomeFeedTouch,{capture:true,passive:true});
+document.addEventListener('touchcancel',finishHomeFeedTouch,{capture:true,passive:true});
+window.addEventListener('pagehide',finishHomeFeedTouch);
+function renderHomeFeedPosts(feed,posts,profileMap={}){
+  const nextIds=(posts||[]).map(post=>String(post.id||''));
+  const currentIds=[...feed.querySelectorAll('.q-card[data-post-id]')].map(card=>card.dataset.postId);
+  if(nextIds.length&&nextIds.length===currentIds.length&&nextIds.every((id,index)=>id===currentIds[index])){
+    updateHomeFeed(()=>updateHomeFeedMeta(posts,profileMap));
+    return;
+  }
+  updateHomeFeed(()=>{
+    feed.innerHTML='';
+    posts.forEach((post,index)=>renderFeedCard(feed,post,profileMap,index));
+  });
+}
 async function loadFeed(sort=homeFeedSort){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
@@ -3459,17 +3488,16 @@ async function loadFeed(sort=homeFeedSort){
     if(requestId!==homeFeedRequestId)return;
     feed.dataset.loading='0';
     if(!data||data.length===0){
-      feed.innerHTML=homeFeedSort==='unanswered'
+      updateHomeFeed(()=>{feed.innerHTML=homeFeedSort==='unanswered'
         ? '<div class="feed-loading">현재 답변을 기다리는 글이 없습니다.</div>'
-        : '<div class="feed-loading">아직 등록된 글이 없습니다.</div>';
+        : '<div class="feed-loading">아직 등록된 글이 없습니다.</div>';});
       return;
     }
-    feed.innerHTML='';
-    data.forEach((post,index)=>renderFeedCard(feed,post,{},index));
+    renderHomeFeedPosts(feed,data,{});
     if(homeFeedSort==='latest')cacheHomeFeed(data,{});
     const profileMap=await fetchProfileMap((data||[]).map(post=>post.user_id));
     if(requestId!==homeFeedRequestId)return;
-    updateHomeFeedMeta(data,profileMap);
+    updateHomeFeed(()=>updateHomeFeedMeta(data,profileMap));
     if(homeFeedSort==='latest')cacheHomeFeed(data,profileMap);
   }catch(e){
     if(requestId!==homeFeedRequestId)return;
@@ -3541,7 +3569,7 @@ function openPostDetail(post){
 async function renderFeedFallback(message){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
-  feed.innerHTML=`<div class="feed-loading">${escHtml(message)}</div>`;
+  updateHomeFeed(()=>{feed.innerHTML=`<div class="feed-loading">${escHtml(message)}</div>`;});
 }
 function filterByChannel(id,name){location.href=`channel.html?category=${encodeURIComponent(id||'')}`;}
 const SEARCH_STORAGE_KEY='kfarmai_recent_searches';
