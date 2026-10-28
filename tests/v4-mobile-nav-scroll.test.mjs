@@ -367,6 +367,33 @@ try {
   await navigate('/channel.html');
   await swipeWhileCommunityRenders();
   await communityRequestRaces();
+  // Cross-page visual contract: the four previously disconnected tool surfaces
+  // must show the same white KFarmAI header and one active bottom-menu tab.
+  for (const width of [320, 390, 430]) {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
+    for (const route of ['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
+      await navigate(route);
+      const toolUi = await evaluate(`(() => {
+        const brand=document.querySelector('.header .brand');
+        const title=document.querySelector('.kf-tool-title');
+        const controls=[...document.querySelectorAll('input:not([type=hidden]),select')].slice(0,4);
+        const nav=document.querySelector('.v4-nav');
+        return {
+          text:brand?.textContent?.trim(),
+          font:brand&&getComputedStyle(brand).fontSize,
+          title:!!title && title.textContent.trim().length>0,
+          white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
+          overflow:document.documentElement.scrollWidth>innerWidth+1,
+          active:nav?.querySelectorAll('[aria-current="page"]').length,
+          activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
+          squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
+          tabs:route.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
+        };
+      })()`);
+      assert.deepEqual(toolUi,{text:'KFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+    }
+  }
+  await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/index.html');
   await evaluate("openModal('question-help')");
   await delay(250);
