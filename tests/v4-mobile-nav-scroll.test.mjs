@@ -219,13 +219,13 @@ try {
   assert.equal(build.status, 0, build.stderr);
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   port = server.address().port;
-  chrome = spawn(chromePath, ['--headless=new', '--disable-gpu', '--disable-gpu-sandbox', '--no-sandbox', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true });
-  for (let attempt = 0; attempt < 80; attempt += 1) {
+  chrome = spawn(chromePath, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true });
+  for (let attempt = 0; attempt < 150; attempt += 1) {
     const portFile = path.join(profile, 'DevToolsActivePort');
     if (fs.existsSync(portFile)) { debugPort = Number(fs.readFileSync(portFile, 'utf8').split('\n')[0]); break; }
     await delay(100);
   }
-  assert.ok(debugPort, 'Chrome debugging is available');
+  assert.ok(debugPort, `Chrome debugging is available (exit=${chrome.exitCode}, signal=${chrome.signalCode})`);
   const target = await fetch(`http://127.0.0.1:${debugPort}/json/new?about:blank`, { method: 'PUT' }).then(response => response.json());
   socket = new CdpSocket(target.webSocketDebuggerUrl);
   await socket.open();
