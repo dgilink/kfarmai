@@ -161,6 +161,7 @@ test('AI diagnosis uses the compact name and white responsive upload surface', (
   assert.match(shell,/\['AI진단', '\/diagnosis\.html'\]/);
   assert.match(css,/\.cam-wrap \{[\s\S]*background: #f7faf8 !important/);
   assert.match(css,/\.card-hd,[\s\S]*display: none !important/);
+  assert.match(css,/\.diag-card::after,[\s\S]*\.inner::before,[\s\S]*display: none !important/);
 });
 
 const detailPages = [
@@ -180,7 +181,7 @@ test('full-menu destinations and their first detail pages use the responsive V4 
     assert.ok(html.includes('v4-page v4-detail-page'), file + ' detail page body');
     assert.ok(html.includes(pageClass), file + ' specific body class');
     assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-menu1'), file + ' shell CSS');
-    assert.ok(html.includes('/static/css/v4-detail-pages.css?v=20261029-compact1'), file + ' detail CSS');
+    assert.ok(html.includes('/static/css/v4-detail-pages.css?v=20261029-compact2'), file + ' detail CSS');
     assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-menu1'), file + ' shell JS');
     const scripts=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
     for (const [,attributes,source] of scripts) {
@@ -200,6 +201,8 @@ test('detail presentation removes narrow phone frames, grey tails and rounded sh
   assert.match(css,/\.fixed-map-shell,[\s\S]*var\(--kf-detail-width\)/);
   assert.match(css,/\.v4-privacy-page main[\s\S]*grid-template-columns: repeat\(2/);
   assert.match(css,/@media \(max-width: 767px\)/);
+  assert.match(css,/\.match-report-shell \{[\s\S]*background: #fff/);
+  assert.match(css,/\.flow-grid \{[\s\S]*display: block/);
 });
 
 test('all-menu links are covered by an active full-menu destination', () => {
