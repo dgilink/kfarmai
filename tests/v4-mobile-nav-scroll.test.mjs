@@ -180,6 +180,21 @@ async function communityRequestRaces() {
   await delay(50);
   assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['filtered result'],'filter result replaces previous search');
 
+  await evaluate(`(() => {
+    currentChannel=null;keyword='';offset=0;blockedUsersReady=Promise.resolve();
+    attachCommentCounts=posts=>new Promise(resolve=>{window.__resolveSlowMetrics=()=>resolve(posts.map(post=>({...post,comment_count:2,same_symptom_count:1,helpful_count:3}))) });
+    fetchProfileMap=()=>new Promise(resolve=>{window.__resolveSlowProfiles=()=>resolve({'author-1':'빠른작성자'})});
+    resetAndLoad();
+  })()`);
+  await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[4].resolve({data:[post],count:1,error:null})})()`);
+  await delay(50);
+  assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{title:card?.querySelector('.post-title')?.textContent,loading:!!document.querySelector('#postList .loading'),comments:card?.querySelector('.post-comments')?.textContent||'',reactions:card?.querySelector('.post-reactions')?.textContent||''}})()`),
+    {title:'progressive result',loading:false,comments:'',reactions:''}, 'base posts render before metrics and profiles finish');
+  await evaluate(`window.__resolveSlowMetrics();window.__resolveSlowProfiles()`);
+  await delay(50);
+  assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{author:card?.querySelector('.post-author')?.textContent,comments:card?.querySelector('.post-comments')?.textContent,reactions:card?.querySelector('.post-reactions')?.textContent}})()`),
+    {author:'빠른작성자',comments:'댓글 2',reactions:'같은 증상 1 · 도움됐어요 3'}, 'metrics and profile enrich the visible cards in place');
+
   await socket.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
   const point=await evaluate(`(() => {offset=0;const list=document.getElementById('postList');list.innerHTML='<div class="loading">Loading</div>';const r=list.querySelector('.loading').getBoundingClientRect();return{x:Math.max(45,Math.min(innerWidth-45,r.left+r.width/2)),y:r.top+r.height/2}})()`);
   const touch={x:point.x,y:point.y,radiusX:2,radiusY:2,force:1};
