@@ -191,8 +191,16 @@ async function communityRequestRaces() {
 
   await evaluate(`(() => {
     currentChannel=null;keyword='';offset=0;blockedUsersReady=Promise.resolve();
-    attachCommentCounts=posts=>new Promise(resolve=>{window.__resolveSlowMetrics=()=>resolve(posts.map(post=>({...post,comment_count:2,same_symptom_count:1,helpful_count:3}))) });
-    fetchProfileMap=()=>new Promise(resolve=>{window.__resolveSlowProfiles=()=>resolve({'author-1':'빠른작성자'})});
+    attachCommentCounts=posts=>new Promise(resolve=>{
+      const complete=()=>resolve(posts.map(post=>({...post,comment_count:2,same_symptom_count:1,helpful_count:3})));
+      if(posts.some(post=>post.title==='progressive result'))window.__resolveSlowMetrics=complete;
+      else complete();
+    });
+    fetchProfileMap=userIds=>new Promise(resolve=>{
+      const complete=()=>resolve(userIds.includes('author-1')?{'author-1':'빠른작성자'}:{});
+      if(userIds.includes('author-1'))window.__resolveSlowProfiles=complete;
+      else complete();
+    });
     resetAndLoad();
   })()`);
   await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[4].resolve({data:[post],count:1,error:null})})()`);
