@@ -17,19 +17,19 @@ let phase = 'core';
 // Only diagnostic summaries enter the JSON artifact. Detailed sanitized logs stay local.
 function redact(value) {
   return String(value || '')
-    .replace(/\\bsk-(?:proj-|svcacct-)?[A-Za-z0-9_-]{16,}\\b/g, '[REDACTED_KEY]')
-    .replace(/\\beyJ[A-Za-z0-9_-]{16,}\\.eyJ[A-Za-z0-9_-]{16,}\\.[A-Za-z0-9_-]+\\b/g, '[REDACTED_JWT]')
-    .replace(/\\bBearer\\s+[^\\s"'<>]+/gi, 'Bearer [REDACTED]')
-    .replace(/\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b/gi, '[REDACTED_EMAIL]');
+    .replace(/\bsk-(?:proj-|svcacct-)?[A-Za-z0-9_-]{16,}\b/g, '[REDACTED_KEY]')
+    .replace(/\beyJ[A-Za-z0-9_-]{16,}\.eyJ[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]+\b/g, '[REDACTED_JWT]')
+    .replace(/\bBearer\s+[^\s"'<>]+/gi, 'Bearer [REDACTED]')
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[REDACTED_EMAIL]');
 }
 function categorizeFailure(output, error) {
   if (error?.code === 'ETIMEDOUT') return 'TIMEOUT';
   if (error?.code === 'ENOENT') return 'COMMAND_NOT_FOUND';
-  const missing = output.match(/ModuleNotFoundError:\\s*No module named ['"]([A-Za-z0-9_.-]+)['"]/);
+  const missing = output.match(/ModuleNotFoundError:\s*No module named ['"]([A-Za-z0-9_.-]+)['"]/);
   if (missing) return 'PYTHON_MODULE_MISSING:' + missing[1];
   if (/ERR_ASSERTION|AssertionError/.test(output)) return 'ASSERTION_FAILED';
   if (/ECONNREFUSED|ERR_CONNECTION_REFUSED/.test(output)) return 'CONNECTION_REFUSED';
-  if (/chrome\\.exe|Failed to launch|DevToolsActivePort/.test(output)) return 'CHROME_LAUNCH_FAILED';
+  if (/chrome\.exe|Failed to launch|DevToolsActivePort/.test(output)) return 'CHROME_LAUNCH_FAILED';
   return 'EXIT_NONZERO';
 }
 const report = {
@@ -50,14 +50,14 @@ function run(name, command, args, timeoutMs = 90000) {
     maxBuffer: 4 * 1024 * 1024, windowsHide: true
   });
   const ok = !res.error && res.status === 0;
-  const output = String(res.stderr || '') + '\\n' + String(res.stdout || '');
+  const output = String(res.stderr || '') + '\n' + String(res.stdout || '');
   const failure = ok ? null : categorizeFailure(output, res.error);
-  const failedNames = ok ? [] : [...output.matchAll(/(?:^|\\n)(?:FAIL|ERROR):\\s+([A-Za-z0-9_. ()-]{1,110})/g)]
+  const failedNames = ok ? [] : [...output.matchAll(/(?:^|\n)(?:FAIL|ERROR):\s+([A-Za-z0-9_. ()-]{1,110})/g)]
     .slice(0, 12).map(match => match[1].trim());
   if (!ok && !process.env.CI) {
     // For local diagnosis only: never attach detailed failure logs to a GitHub artifact.
     fs.appendFileSync(localFailureLog, redact(
-      '\\n=== ' + name + ' ===\\n' + output.slice(-24000) + '\\n'
+      '\n=== ' + name + ' ===\n' + output.slice(-24000) + '\n'
     ));
   }
   steps.push({
@@ -125,7 +125,7 @@ catch (err) {
   for (const x of steps) process.stdout.write(x.status + ' ' + x.name + '\n');
   process.stdout.write((corePass ? 'CORE_PASS' : 'CORE_FAIL') +
     (full ? (fullPass ? ' | FULL_PASS' : ' | FULL_FAIL') : ' | FULL_NOT_RUN') +
-    ' | RELEASE_HOLD | ' + reportPath + '\\n');
-  if (!ok && !process.env.CI) process.stdout.write('LOCAL_FAILURE_LOG | ' + localFailureLog + '\\n');
+    ' | RELEASE_HOLD | ' + reportPath + '\n');
+  if (!ok && !process.env.CI) process.stdout.write('LOCAL_FAILURE_LOG | ' + localFailureLog + '\n');
   process.exitCode = ok ? 0 : 1;
 }
