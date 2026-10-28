@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const pages = [
-  ['agri-weather.html', 'kf-weather', '농업날씨', ['areaChips','regionChips','typeChips','cropSearch','weatherPanel']],
+  ['agri-weather.html', 'kf-weather', '농업날씨', ['areaChips','typeChips','cropSearch','cropOptions','weatherPanel']],
   ['market-prices.html', 'kf-market', '농산물 시세', ['q','searchBtn','chips','typeTabs','status','list','detail']],
   ['crop-calendar.html', 'kf-crop', '재배달력', ['searchInput','cropGrid','detail']],
   ['subsidy-calendar.html', 'kf-subsidy', '정책·지원', ['regionFilter','targetFilter','categoryFilter','programList']],
@@ -66,6 +66,45 @@ test('agricultural information list leaves search on home and uses topic badges'
   assert.match(discovery,/search\?\.value/);
   assert.match(discovery,/selectedCategory/);
   assert.match(discovery,/renderTopics/);
+  assert.match(discovery,/includes\('재배노하우'\) \? '재배노하우'/);
+});
+
+test('global shell provides one fixed text header and routes search to home', () => {
+  const shell=read('static/js/v4-shell.js');
+  const css=read('static/css/v4-shell.css');
+  const channel=read('channel.html');
+  const builder=read('scripts/pages/build-pages-artifact.cjs');
+  assert.match(shell,/className = 'v4-global-header'/);
+  assert.match(shell,/v4-global-brand/);
+  assert.match(shell,/\/index\.html\?focus=search/);
+  assert.match(shell,/get\('focus'\) === 'search'/);
+  assert.match(css,/\.v4-global-header \{[\s\S]*position: fixed/);
+  assert.match(css,/font: 900 24px/);
+  assert.match(css,/\.v4-legacy-header \{ display: none !important; \}/);
+  assert.ok(!channel.includes('id="searchInput"'));
+  assert.match(builder,/applyGlobalShellTree\(outputDir\)/);
+  assert.match(builder,/data-v4-global-header/);
+  assert.match(builder,/addBodyClasses/);
+  assert.doesNotMatch(css,/@view-transition/);
+  assert.match(shell,/target === document\.documentElement \|\| document\.body\.contains\(target\)/);
+});
+
+test('weather and market pages keep only compact user-facing information', () => {
+  const weather=read('agri-weather.html');
+  const market=read('market-prices.html');
+  assert.ok(!weather.includes('id="regionChips"'));
+  assert.ok(!weather.includes('id="typeNote"'));
+  assert.ok(!weather.includes('id="workPanel"'));
+  assert.ok(!weather.includes('id="publicInfoPanel"'));
+  assert.match(weather,/<details id="cropOptions" class="crop-options">/);
+  assert.match(weather,/class="page-source">출처:/);
+  assert.match(weather,/renderAll\(\);try\{/,'weather renders defaults before async data');
+  assert.ok(!market.includes('KAMIS 최근 조사자료'));
+  assert.ok(!market.includes('많이 확인하는 품목 참고'));
+  assert.ok(!market.includes('id="fallbackList"'));
+  assert.match(market,/class="page-source">출처:/);
+  assert.match(market,/market-updated/);
+  assert.match(market,/listItems=fallbackItems\.filter/,'market renders stable local rows before API');
 });
 
 test('tool pages display full-menu tab as sole active destination', () => {

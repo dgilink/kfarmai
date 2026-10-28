@@ -76,9 +76,10 @@
   let items = [];
   let selectedCategory = '';
   let initialIndexDraw = true;
+  const topicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
   function renderTopics() {
     if (!topics) return;
-    const categories = [...new Set(items.map(item => item.category).filter(Boolean))].sort();
+    const categories = [...new Set(items.map(item => topicKey(item.category)).filter(Boolean))].sort();
     const rows = [['', '전체'], ...categories.map(name => [name, name])];
     topics.replaceChildren(...rows.map(([value, label]) => {
       const button = document.createElement('button');
@@ -94,7 +95,7 @@
     if (indexGrid) {
       const q = search?.value.trim().toLocaleLowerCase('ko') || '';
       const matches = items.filter(item =>
-        (!selectedCategory || item.category === selectedCategory) &&
+        (!selectedCategory || topicKey(item.category) === selectedCategory) &&
         (!q || `${item.title} ${item.category}`.toLocaleLowerCase('ko').includes(q)));
       // The Pages artifact already contains the complete approved list. Keep its
       // first-paint nodes (and in-progress image loads) until a real filter action.
@@ -136,7 +137,7 @@
     if (!items.length && indexGrid) {
       let visible = 0;
       for (const row of indexGrid.querySelectorAll('.kb-card')) {
-        const matches = !selectedCategory || row.querySelector('small')?.textContent.trim() === selectedCategory;
+        const matches = !selectedCategory || topicKey(row.querySelector('small')?.textContent.trim()) === selectedCategory;
         row.hidden = !matches;
         if (matches) visible += 1;
       }

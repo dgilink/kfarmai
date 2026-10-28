@@ -51,6 +51,15 @@ async function evaluate(expression) {
   return result.result.value;
 }
 
+async function waitForEvaluation(expression, timeout = 1000) {
+  const deadline = Date.now() + timeout;
+  do {
+    if (await evaluate(expression)) return;
+    await delay(25);
+  } while (Date.now() < deadline);
+  throw new Error(`condition did not become true within ${timeout}ms: ${expression}`);
+}
+
 async function navigate(route) {
   const loaded = socket.once('Page.loadEventFired');
   await socket.send('Page.navigate', { url: `http://127.0.0.1:${port}${route}` });
@@ -165,7 +174,7 @@ async function communityRequestRaces() {
     resetAndLoad();
   })()`);
   assert.equal(await evaluate('window.__queries.length'), 1, 'initial request started');
-  await evaluate(`document.getElementById('searchInput').value='first';applyKeywordSearch();document.getElementById('searchInput').value='second';applyKeywordSearch()`);
+  await evaluate(`keyword='first';resetAndLoad();keyword='second';resetAndLoad()`);
   assert.equal(await evaluate('window.__queries.length'), 3, 'each search starts despite an older load');
   assert.match(await evaluate('window.__queries[2].filters[0]'), /second/, 'latest query uses latest keyword');
   await evaluate(`window.__reply(2,'second result')`);
@@ -182,8 +191,16 @@ async function communityRequestRaces() {
 
   await evaluate(`(() => {
     currentChannel=null;keyword='';offset=0;blockedUsersReady=Promise.resolve();
-    attachCommentCounts=posts=>new Promise(resolve=>{window.__resolveSlowMetrics=()=>resolve(posts.map(post=>({...post,comment_count:2,same_symptom_count:1,helpful_count:3}))) });
-    fetchProfileMap=()=>new Promise(resolve=>{window.__resolveSlowProfiles=()=>resolve({'author-1':'빠른작성자'})});
+    attachCommentCounts=posts=>new Promise(resolve=>{
+      const complete=()=>resolve(posts.map(post=>({...post,comment_count:2,same_symptom_count:1,helpful_count:3})));
+      if(posts.some(post=>post.title==='progressive result'))window.__resolveSlowMetrics=complete;
+      else complete();
+    });
+    fetchProfileMap=userIds=>new Promise(resolve=>{
+      const complete=()=>resolve(userIds.includes('author-1')?{'author-1':'빠른작성자'}:{});
+      if(userIds.includes('author-1'))window.__resolveSlowProfiles=complete;
+      else complete();
+    });
     resetAndLoad();
   })()`);
   await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[4].resolve({data:[post],count:1,error:null})})()`);
@@ -191,7 +208,12 @@ async function communityRequestRaces() {
   assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{title:card?.querySelector('.post-title')?.textContent,loading:!!document.querySelector('#postList .loading'),comments:card?.querySelector('.post-comments')?.textContent||'',reactions:card?.querySelector('.post-reactions')?.textContent||''}})()`),
     {title:'progressive result',loading:false,comments:'',reactions:''}, 'base posts render before metrics and profiles finish');
   await evaluate(`window.__resolveSlowMetrics();window.__resolveSlowProfiles()`);
-  await delay(50);
+  await waitForEvaluation(`(() => {
+    const card=document.querySelector('#postList .post-card');
+    return card?.querySelector('.post-author')?.textContent==='빠른작성자'
+      && card?.querySelector('.post-comments')?.textContent==='댓글 2'
+      && card?.querySelector('.post-reactions')?.textContent==='같은 증상 1 · 도움됐어요 3';
+  })()`);
   assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{author:card?.querySelector('.post-author')?.textContent,comments:card?.querySelector('.post-comments')?.textContent,reactions:card?.querySelector('.post-reactions')?.textContent}})()`),
     {author:'빠른작성자',comments:'댓글 2',reactions:'같은 증상 1 · 도움됐어요 3'}, 'metrics and profile enrich the visible cards in place');
 
@@ -262,11 +284,18 @@ try {
         clientHeight: document.scrollingElement.clientHeight,
         phoneOverflow: document.querySelector('.phone') ? getComputedStyle(document.querySelector('.phone')).overflowY : null,
         touchAction: getComputedStyle(document.scrollingElement).touchAction,
+        globalHeaders: document.querySelectorAll('.v4-global-header').length,
+        headerFixed: getComputedStyle(document.querySelector('.v4-global-header')).position,
+        headerTop: Math.round(document.querySelector('.v4-global-header').getBoundingClientRect().top),
+        brand: document.querySelector('.v4-global-brand')?.textContent.trim(),
+        headerLogos: document.querySelectorAll('header img[src*="kfarmai-logo"]').length,
       }))()`);
       assert.ok(initial.xOverflow <= 1, `${route} ${width}px horizontal overflow`);
       assert.equal(initial.navs, 1, `${route} ${width}px single nav`);
       assert.equal(initial.menus, 1, `${route} ${width}px single menu`);
       assert.equal(initial.active, 1, `${route} ${width}px one page tab active`);
+      assert.deepEqual({count:initial.globalHeaders,fixed:initial.headerFixed,top:initial.headerTop,brand:initial.brand,logos:initial.headerLogos},
+        {count:1,fixed:'fixed',top:0,brand:'kFarmAI',logos:0}, `${route} ${width}px fixed text header`);
       assert.ok(initial.scrollHeight > initial.clientHeight, `${route} ${width}px has vertical content`);
       if (route === '/index.html') assert.equal(initial.phoneOverflow, 'visible', `${route} ${width}px unclipped phone`);
 
@@ -351,14 +380,14 @@ try {
     })()`);
     assert.equal(kbLayout.search,false,`${width}px KB search field removed`);
     assert.equal(kbLayout.category,false,`${width}px KB select removed`);
-    assert.equal(kbLayout.searchAction,false,`${width}px KB search icon removed`);
+    assert.equal(kbLayout.searchAction,true,`${width}px KB search icon routes to home`);
     assert.ok(kbLayout.badges>=3&&kbLayout.badgesFit&&kbLayout.active===1,`${width}px KB topic badges fit with one active`);
     assert.deepEqual({arrowMode:kbLayout.arrowMode,arrowWrap:kbLayout.arrowWrap,titleWrap:kbLayout.titleWrap},{arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'},`${width}px KB stable rows`);
     const topicResult=await evaluate(`(() => {
-      const button=[...document.querySelectorAll('.kb-topic')].find(node=>node.dataset.category);
+      const button=[...document.querySelectorAll('.kb-topic')].find(node=>node.dataset.category==='재배노하우');
       button.click();
       const categories=[...document.querySelectorAll('#kbGrid .kb-card:not([hidden]) small')].map(node=>node.textContent.trim());
-      return {selected:button.dataset.category,count:categories.length,allMatch:categories.every(value=>value===button.dataset.category),active:document.querySelectorAll('.kb-topic[aria-pressed="true"]').length};
+      return {selected:button.dataset.category,count:categories.length,allMatch:categories.every(value=>value.includes('재배노하우')),active:document.querySelectorAll('.kb-topic[aria-pressed="true"]').length};
     })()`);
     assert.ok(topicResult.count>=1&&topicResult.allMatch&&topicResult.active===1,`${width}px topic badge filters approved articles`);
     await evaluate("document.querySelector('.kb-topic[data-category=\"\"]')?.click()");
@@ -392,6 +421,25 @@ try {
 
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/channel.html');
+  assert.equal(await evaluate("document.getElementById('searchInput')===null"),true,'community search field removed');
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'channel-fixed-header-390.png'),Buffer.from(capture.data,'base64'));
+  }
+  const homeSearchLoaded=socket.once('Page.loadEventFired');
+  await evaluate("document.querySelector('.v4-global-search-action').click()");
+  await homeSearchLoaded;
+  await delay(120);
+  assert.deepEqual(await evaluate(`({path:location.pathname,focus:document.activeElement?.id})`),{path:'/index.html',focus:'globalSearch'},'non-home search icon opens and focuses home search');
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'home-focused-search-390.png'),Buffer.from(capture.data,'base64'));
+  }
+  await navigate('/channel.html');
   await swipeWhileCommunityRenders();
   await communityRequestRaces();
   // Cross-page visual contract: the four previously disconnected tool surfaces
@@ -401,7 +449,7 @@ try {
     for (const route of ['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
       await navigate(route);
       const toolUi = await evaluate(`(() => {
-        const brand=document.querySelector('.header .brand');
+        const brand=document.querySelector('.v4-global-brand');
         const title=document.querySelector('.kf-tool-title');
         const controls=[...document.querySelectorAll('input:not([type=hidden]),select')].slice(0,4);
         const nav=document.querySelector('.v4-nav');
@@ -417,12 +465,33 @@ try {
           tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
-      assert.deepEqual(toolUi,{text:'KFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      assert.deepEqual(toolUi,{text:'kFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
       const flatUi = await evaluate(`(() => ({
         loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
       }))()`);
       assert.deepEqual(flatUi,{loading:true,cropIcon:true}, route+' '+width+'px has no leftover rounded status or crop-icon shapes');
+      if (route === '/agri-weather.html') {
+        const compactWeather = await evaluate(`(() => ({
+          noDistrict:!document.getElementById('regionChips'),
+          chooser:!!document.getElementById('cropOptions'),
+          collapsed:!document.getElementById('cropOptions').open,
+          sources:document.querySelectorAll('.page-source').length,
+          longPanels:!!document.getElementById('workPanel')||!!document.getElementById('publicInfoPanel'),
+          updated:/업데이트/.test(document.getElementById('weatherPanel').innerText)
+        }))()`);
+        assert.deepEqual(compactWeather,{noDistrict:true,chooser:true,collapsed:true,sources:1,longPanels:false,updated:true},route+' '+width+'px compact weather contract');
+      }
+      if (route === '/market-prices.html') {
+        const compactMarket = await evaluate(`(() => ({
+          sources:document.querySelectorAll('.page-source').length,
+          duplicate:!!document.getElementById('fallbackList'),
+          verbose:/KAMIS 최근 조사자료|많이 확인하는 품목 참고|시장 흐름 참고자료입니다/.test(document.body.innerText),
+          updated:/업데이트/.test(document.getElementById('status').innerText),
+          rows:document.querySelectorAll('#list .price-card').length
+        }))()`);
+        assert.ok(compactMarket.sources===1&&!compactMarket.duplicate&&!compactMarket.verbose&&compactMarket.updated&&compactMarket.rows>=1,route+' '+width+'px compact market contract '+JSON.stringify(compactMarket));
+      }
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot, { recursive:true });

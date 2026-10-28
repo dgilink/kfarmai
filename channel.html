@@ -188,10 +188,6 @@
         <a class="v41-icon-button" href="index.html?panel=my" aria-label="계정"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"></path></svg></a>
       </div>
     </div>
-    <form class="search" onsubmit="event.preventDefault(); applyKeywordSearch();">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input type="search" id="searchInput" placeholder="이 채널에서 증상이나 작물을 검색해보세요" enterkeyhint="search" autocomplete="off">
-    </form>
   </header>
 
   <h1 class="v41-page-title">소통</h1>
@@ -518,8 +514,11 @@ async function init(){
   blockedUsersReady=refreshBlockedUsers();
   const restoredFeed=restorePublicFeedCache();
   sb.auth.onAuthStateChange(async (event,session)=>{if(event==='INITIAL_SESSION')return; currentUser=session?.user||null; blockedUsersReady=refreshBlockedUsers(); await blockedUsersReady; if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();if(channels.length)await setupComposeDraft(currentUser);}else await setupComposeDraft(null); resetAndLoad();});
-  document.getElementById('searchInput').value=keyword;
-  document.getElementById('searchInput').addEventListener('input', debounce(applyKeywordSearch, 300));
+  const channelSearch=document.getElementById('searchInput');
+  if(channelSearch){
+    channelSearch.value=keyword;
+    channelSearch.addEventListener('input', debounce(applyKeywordSearch, 300));
+  }
   window.addEventListener('scroll', handleScroll, {passive:true});
   document.addEventListener('keydown', e=>{ if(e.key==='Escape'){closeWriteModal();closeLoginModal();} });
   resetAndLoad({preserveVisible:restoredFeed});
@@ -709,9 +708,9 @@ function displayChannelName(slug,name){
 function searchTopic(encodedTopic){
   const topic=decodeURIComponent(encodedTopic);
   const input=document.getElementById('searchInput');
-  input.value=topic;
+  if(input)input.value=topic;
   keyword=topic;
-  input.focus();
+  input?.focus();
   resetAndLoad();
 }
 function openMore(sort){
@@ -764,7 +763,7 @@ function renderMiniPosts(wrap,posts,profileMap={}){
   }
   wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="${channelPostUrl(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayPostCategory(post))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
-function applyKeywordSearch(){keyword=document.getElementById('searchInput').value.trim();resetAndLoad();}
+function applyKeywordSearch(){keyword=document.getElementById('searchInput')?.value.trim()||'';resetAndLoad();}
 // Keep the touch target connected until the gesture ends. Removing the loading row
 // mid-swipe can prevent Chrome from delivering touchend to the document shell.
 let postListTouches=0;

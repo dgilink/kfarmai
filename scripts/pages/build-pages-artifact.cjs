@@ -8,7 +8,8 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=20261028-menu1" defer data-kfarmai-presentation="v4-1"></script>');
+const shellVersion = '20261029-stable1';
+const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
 // ONLY to the generated public artifact; immutable approval source stays intact.
@@ -251,7 +252,8 @@ if (kbTopicsAt < 0 || kbIndexWithCards.indexOf(kbTopicsStart, kbTopicsAt + kbTop
 }
 const kbTopicsEnd = kbIndexWithCards.indexOf('</div>', kbTopicsAt + kbTopicsStart.length);
 if (kbTopicsEnd < 0) throw new Error('KB topic badge boundary is incomplete.');
-const kbTopicNames = [...new Set(kbItems.map(item => item.category).filter(Boolean))].sort();
+const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
+const kbTopicNames = [...new Set(kbItems.map(item => kbTopicKey(item.category)).filter(Boolean))].sort();
 const kbTopicButtons = [['', '전체'], ...kbTopicNames.map(name => [name, name])]
   .map(([value, label], index) => '<button class="kb-topic" type="button" data-category="' +
     escapeHtml(value) + '" aria-pressed="' + (index === 0 ? 'true' : 'false') + '">' +
@@ -279,6 +281,64 @@ const cards = homeItems.slice(0, 4).map(item => {
 fs.writeFileSync(homePath,
   `${homeSource.slice(0, startAt)}<div class="home-kb-cards" id="homeKbCards" aria-live="polite" data-kb-static="1">${cards}${homeSource.slice(endAt)}`,
   'utf8');
+
+// Every public screen receives the same fixed text header and search route.
+// Existing pages may already reference the shell; normalize their cache key
+// instead of adding duplicate assets. Approved KB source bytes remain unchanged
+// because this runs only against the generated Pages artifact.
+const shellCssHref = `/static/css/v4-shell.css?v=${shellVersion}`;
+const shellJsSrc = `/static/js/v4-shell.js?v=${shellVersion}`;
+const shellIcon = paths => `<svg class="v4-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+const searchIcon = shellIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
+const accountIcon = shellIcon('<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"/>');
+function addBodyClasses(html, classes) {
+  return html.replace(/<body\b([^>]*)>/i, (match, attributes) => {
+    if (/\bclass\s*=\s*["']/i.test(attributes)) {
+      return match.replace(/\bclass\s*=\s*(["'])(.*?)\1/i, (classMatch, quote, value) => {
+        const merged = [...new Set([...value.split(/\s+/).filter(Boolean), ...classes])].join(' ');
+        return `class=${quote}${merged}${quote}`;
+      });
+    }
+    return `<body${attributes} class="${classes.join(' ')}">`;
+  });
+}
+function globalHeaderHtml(isHome) {
+  const search = isHome ? '' : `<a class="v4-global-action v4-global-search-action" href="/index.html?focus=search" aria-label="검색">${searchIcon}</a>`;
+  return `<header class="v4-global-header" data-v4-global-header><div class="v4-global-header-inner"><a class="v4-global-brand" href="/index.html" aria-label="kFarmAI 홈">kFarmAI</a><nav class="v4-global-actions" aria-label="빠른 메뉴">${search}<a class="v4-global-action" href="/index.html?panel=my" aria-label="계정">${accountIcon}</a></nav></div></header>`;
+}
+function applyGlobalShellToHtml(filePath) {
+  let html = fs.readFileSync(filePath, 'utf8');
+  // Search-engine ownership verification files use an .html suffix but are not
+  // documents or screens and must remain byte-minimal.
+  if (!/<\/head>/i.test(html)) return;
+  html = html
+    .replace(/\/?static\/css\/v4-shell\.css\?v=[^"']+/g, shellCssHref)
+    .replace(/\/?static\/js\/v4-shell\.js\?v=[^"']+/g, shellJsSrc)
+    .replace(/\/?static\/js\/kb-discovery\.js\?v=[^"']+/g, '/static/js/kb-discovery.js?v=20261029-topics2');
+  const assets = [];
+  if (!/static\/css\/v4-shell\.css/i.test(html)) {
+    assets.push(`<link rel="stylesheet" href="${shellCssHref}" data-kfarmai-global-shell="1">`);
+  }
+  if (!/static\/js\/v4-shell\.js/i.test(html)) {
+    assets.push(`<script src="${shellJsSrc}" defer data-kfarmai-global-shell="1"></script>`);
+  }
+  if (assets.length) html = html.replace(/<\/head>/i, assets.join('') + '</head>');
+  if (!/data-v4-global-header/i.test(html)) {
+    const relativePath = path.relative(outputDir, filePath).split(path.sep).join('/');
+    const isHome = relativePath === 'index.html';
+    html = addBodyClasses(html, ['v4-global-header-ready', ...(isHome ? ['v4-global-home'] : [])]);
+    html = html.replace(/(<body\b[^>]*>)/i, `$1${globalHeaderHtml(isHome)}`);
+  }
+  fs.writeFileSync(filePath, html, 'utf8');
+}
+function applyGlobalShellTree(directory) {
+  for (const entry of fs.readdirSync(directory, {withFileTypes:true})) {
+    const target = path.join(directory, entry.name);
+    if (entry.isDirectory()) applyGlobalShellTree(target);
+    else if (entry.isFile() && entry.name.endsWith('.html')) applyGlobalShellToHtml(target);
+  }
+}
+applyGlobalShellTree(outputDir);
 
 function countFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).reduce(
