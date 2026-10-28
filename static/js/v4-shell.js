@@ -213,7 +213,9 @@
   };
   const insidePrimarySwipeSurface = target => innerWidth <= 767
     && (Number.isInteger(tabIndex) || !menu.hidden)
-    && (menu.hidden ? document.body.contains(target) : !!target.closest?.('#v4AllMenu'));
+    && (menu.hidden
+      ? target === document.documentElement || document.body.contains(target)
+      : !!target.closest?.('#v4AllMenu'));
   const navigateTo = path => {
     if (location.pathname !== path) location.assign(path);
   };
