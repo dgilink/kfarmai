@@ -12,6 +12,26 @@ const reportPath = (reportArg && reportArg.slice('--report='.length)) ||
   process.env.DEV_LOOP_REPORT || path.join(os.tmpdir(), 'kfarmai-dev-loop-v1-report.json');
 const python = process.platform === 'win32' ? 'python' : 'python3';
 const steps = [];
+const localFailureLog = path.join(os.tmpdir(), 'kfarmai-dev-loop-v1-failures.log');
+let phase = 'core';
+// Only diagnostic summaries enter the JSON artifact. Detailed sanitized logs stay local.
+function redact(value) {
+  return String(value || '')
+    .replace(/\\bsk-(?:proj-|svcacct-)?[A-Za-z0-9_-]{16,}\\b/g, '[REDACTED_KEY]')
+    .replace(/\\beyJ[A-Za-z0-9_-]{16,}\\.eyJ[A-Za-z0-9_-]{16,}\\.[A-Za-z0-9_-]+\\b/g, '[REDACTED_JWT]')
+    .replace(/\\bBearer\\s+[^\\s"'<>]+/gi, 'Bearer [REDACTED]')
+    .replace(/\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b/gi, '[REDACTED_EMAIL]');
+}
+function categorizeFailure(output, error) {
+  if (error?.code === 'ETIMEDOUT') return 'TIMEOUT';
+  if (error?.code === 'ENOENT') return 'COMMAND_NOT_FOUND';
+  const missing = output.match(/ModuleNotFoundError:\\s*No module named ['"]([A-Za-z0-9_.-]+)['"]/);
+  if (missing) return 'PYTHON_MODULE_MISSING:' + missing[1];
+  if (/ERR_ASSERTION|AssertionError/.test(output)) return 'ASSERTION_FAILED';
+  if (/ECONNREFUSED|ERR_CONNECTION_REFUSED/.test(output)) return 'CONNECTION_REFUSED';
+  if (/chrome\\.exe|Failed to launch|DevToolsActivePort/.test(output)) return 'CHROME_LAUNCH_FAILED';
+  return 'EXIT_NONZERO';
+}
 const report = {
   schema: 'kfarmai-dev-loop-v1',
   timestamp: new Date().toISOString(),
@@ -30,10 +50,21 @@ function run(name, command, args, timeoutMs = 90000) {
     maxBuffer: 4 * 1024 * 1024, windowsHide: true
   });
   const ok = !res.error && res.status === 0;
+  const output = String(res.stderr || '') + '\\n' + String(res.stdout || '');
+  const failure = ok ? null : categorizeFailure(output, res.error);
+  const failedNames = ok ? [] : [...output.matchAll(/(?:^|\\n)(?:FAIL|ERROR):\\s+([A-Za-z0-9_. ()-]{1,110})/g)]
+    .slice(0, 12).map(match => match[1].trim());
+  if (!ok && !process.env.CI) {
+    // For local diagnosis only: never attach detailed failure logs to a GitHub artifact.
+    fs.appendFileSync(localFailureLog, redact(
+      '\\n=== ' + name + ' ===\\n' + output.slice(-24000) + '\\n'
+    ));
+  }
   steps.push({
-    name, status: ok ? 'PASS' : 'FAIL', exitCode: res.status,
+    name, phase, status: ok ? 'PASS' : 'FAIL', exitCode: res.status,
     durationMs: Date.now() - start,
-    reason: res.error ? (res.error.code || res.error.name) : ok ? '' : 'EXIT_' + res.status
+    reason: res.error ? (res.error.code || res.error.name) : ok ? '' : 'EXIT_' + res.status,
+    ...(failure ? {diagnosticCode: failure, failedTests: failedNames} : {})
   });
   return {ok, stdout: res.stdout || ''};
 }
@@ -65,6 +96,7 @@ function main() {
     ['scripts/pages/verify-pages-artifact.cjs', artifact], 90000);
   else steps.push({name:'Pages allowlist/secret verifier',status:'FAIL',reason:'BUILD_FAILED'});
   if (full) {
+    phase = 'full';
     run('Complete Python unit suite', python,
       ['-m','unittest','discover','-s','tests','-p','test_*.py'], 240000);
     if (process.platform === 'win32')
@@ -81,12 +113,19 @@ catch (err) {
   steps.push({name:'Verifier internal error', status:'FAIL', reason:err.code || err.message || 'ERROR'});
 } finally {
   if (artifact) fs.rmSync(artifact, {recursive:true, force:true});
-  const ok = steps.every(x => x.status === 'PASS');
-  report.corePass = ok;
+  const corePass = steps.filter(x => x.phase !== 'full').every(x => x.status === 'PASS');
+  const fullPass = !full ? null : steps.filter(x => x.phase === 'full').every(x => x.status === 'PASS');
+  const ok = corePass && (fullPass === null || fullPass);
+  report.corePass = corePass;
+  report.fullPass = fullPass;
+  if (!ok && !process.env.CI) report.localFailureLog = localFailureLog;
   report.releaseReady = false;
   fs.mkdirSync(path.dirname(reportPath), {recursive:true});
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
   for (const x of steps) process.stdout.write(x.status + ' ' + x.name + '\n');
-  process.stdout.write((ok ? 'CORE_PASS' : 'CORE_FAIL') + ' | RELEASE_HOLD | ' + reportPath + '\n');
+  process.stdout.write((corePass ? 'CORE_PASS' : 'CORE_FAIL') +
+    (full ? (fullPass ? ' | FULL_PASS' : ' | FULL_FAIL') : ' | FULL_NOT_RUN') +
+    ' | RELEASE_HOLD | ' + reportPath + '\\n');
+  if (!ok && !process.env.CI) process.stdout.write('LOCAL_FAILURE_LOG | ' + localFailureLog + '\\n');
   process.exitCode = ok ? 0 : 1;
 }
