@@ -6,9 +6,6 @@
   --v4-surface: #f4f7f4;
   --v4-green: #126c43;
 }
-@view-transition { navigation: auto; }
-::view-transition-old(root),
-::view-transition-new(root) { animation-duration: .001s; }
 html { background: #fff; }
 
 body.v4-page {
