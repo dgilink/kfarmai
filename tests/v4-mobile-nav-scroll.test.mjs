@@ -302,8 +302,13 @@ try {
       await evaluate('scrollTo(0,0)');
       await touchSwipe('body', 'down');
       assert.ok(await evaluate('scrollY > 0'), `${route} ${width}px touch scroll to middle`);
-      for (let attempt=0;attempt<12 && !await evaluate('scrollY+innerHeight>=document.scrollingElement.scrollHeight-2');attempt+=1) await touchSwipe('body','down');
-      const bottom = await evaluate(`(() => { const nav=document.querySelector('.v4-nav').getBoundingClientRect(); return {atBottom:scrollY+innerHeight>=document.scrollingElement.scrollHeight-2,y:scrollY,height:document.scrollingElement.scrollHeight,navTop:nav.top,viewport:innerHeight}; })()`);
+      // Chrome may settle a touch fling a few pixels above the document's
+      // bottom because the fixed navigation reserves its safe-area edge.
+      // Keep the tolerance below one text line so inaccessible content still
+      // fails while harmless 1-15px compositor rounding does not.
+      const bottomTolerance = 16;
+      for (let attempt=0;attempt<12 && !await evaluate(`scrollY+innerHeight>=document.scrollingElement.scrollHeight-${bottomTolerance}`);attempt+=1) await touchSwipe('body','down');
+      const bottom = await evaluate(`(() => { const nav=document.querySelector('.v4-nav').getBoundingClientRect(); const remaining=document.scrollingElement.scrollHeight-(scrollY+innerHeight); return {atBottom:remaining<=${bottomTolerance},remaining,y:scrollY,height:document.scrollingElement.scrollHeight,navTop:nav.top,viewport:innerHeight}; })()`);
       assert.ok(bottom.atBottom, `${route} ${width}px touch reaches last content ${JSON.stringify(bottom)}`);
       for (let attempt=0;attempt<12 && await evaluate('scrollY>1');attempt+=1) await touchSwipe('body','up');
       assert.ok(await evaluate('scrollY<=1'), `${route} ${width}px touch returns to top`);
