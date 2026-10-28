@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>작물별 재배달력 - kFarmAI</title>
 <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <style>
@@ -24,14 +24,16 @@
 .mini strong{display:block;font-size:12.5px;color:#14532d;margin-bottom:4px}
 .mini p{margin:0;color:#4b5563;font-size:12.5px;line-height:1.55}
 </style>
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-tools1">
+<link rel="stylesheet" href="/static/css/v4-tool-pages.css?v=20261028-tools1">
+<script src="/static/js/v4-shell.js?v=20261028-tools1" defer></script>
 </head>
-<body>
+<body class="v4-page kf-tool-page kf-crop">
 <main class="app">
   <header class="header">
-    <div class="top"><a class="brand" href="index.html"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a><a class="home" href="index.html">홈</a></div>
-    <h1>작물별 재배달력</h1>
-    <p class="sub">작물을 선택하면 월별 주요 작업과 파종·정식·수확 시기를 참고자료로 확인합니다.</p>
+    <div class="top"><a class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a></div>
   </header>
+  <h1 class="kf-tool-title">재배달력</h1>
   <section class="content">
     <div class="card"><input id="searchInput" class="search" type="search" placeholder="작물 또는 식물 검색"><div class="suggest-card hidden" id="resultSection"><div id="resultList" class="result-list"></div></div></div>
     <section class="card"><div id="cropGrid" class="crop-grid"></div></section>

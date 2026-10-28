@@ -1,0 +1,111 @@
+/* KFarmAI V4.1 tool-page presentation. Data and interactions are unchanged. */
+:root { --kf-ink:#17202a; --kf-muted:#596660; --kf-green:#126c43; --kf-line:#d9e0da; }
+html { background:#fff; }
+body.kf-tool-page { margin:0; min-width:320px; background:#fff; color:var(--kf-ink); font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
+body.kf-tool-page .app { width:100%; max-width:none; min-height:100dvh; margin:0; border:0; border-radius:0; box-shadow:none; background:#fff; }
+body.kf-tool-page .header { position:sticky; top:0; z-index:90; padding:0; min-height:60px; background:#fff; border:0; border-bottom:1px solid var(--kf-line); box-shadow:none; backdrop-filter:none; transform:none; }
+body.kf-tool-page .header .top { display:flex; align-items:center; justify-content:flex-start; width:min(calc(100% - 32px),1120px); min-height:60px; margin:0 auto; gap:10px; }
+body.kf-tool-page .header .brand { display:inline-flex; align-items:center; min-height:44px; color:var(--kf-ink); font-size:24px; font-weight:800; line-height:1.1; letter-spacing:-.055em; white-space:nowrap; text-decoration:none; }
+body.kf-tool-page .kf-tool-title { width:min(calc(100% - 32px),1120px); margin:0 auto; padding:22px 0 12px; font-size:clamp(27px,4vw,36px); font-weight:850; line-height:1.2; letter-spacing:-.055em; }
+body.kf-tool-page .content { width:min(calc(100% - 32px),1120px); margin:0 auto; padding:4px 0 calc(110px + env(safe-area-inset-bottom)); background:#fff; }
+body.kf-tool-page .card,
+body.kf-tool-page .intro,
+body.kf-tool-page .source-card,
+body.kf-tool-page .work-card,
+body.kf-tool-page .condition,
+body.kf-tool-page .point,
+body.kf-tool-page .official,
+body.kf-tool-page .selected-crop,
+body.kf-tool-page .mini,
+body.kf-tool-page .context-card,
+body.kf-tool-page .stage-step-image,
+body.kf-tool-page .metric,
+body.kf-tool-page .summary-card,
+body.kf-tool-page .chart-box,
+body.kf-tool-page .item,
+body.kf-tool-page .month,
+body.kf-tool-page .empty,
+body.kf-tool-page .loading,
+body.kf-tool-page .tag,
+body.kf-tool-page .badge,
+body.kf-tool-page .pill { border-radius:0; box-shadow:none; }
+body.kf-tool-page .card { margin:0; padding:14px 0; border:0; border-bottom:1px solid var(--kf-line); background:#fff; }
+body.kf-tool-page .card.intro { padding:10px 0; }
+body.kf-tool-page .label { margin-bottom:8px; color:var(--kf-green); font-size:13px; font-weight:800; letter-spacing:0; }
+body.kf-tool-page .label::before { display:none; }
+body.kf-tool-page .hint { color:var(--kf-muted); }
+body.kf-tool-page .chips,
+body.kf-tool-page .periods { gap:6px; }
+body.kf-tool-page button,
+body.kf-tool-page input,
+body.kf-tool-page select,
+body.kf-tool-page textarea,
+body.kf-tool-page .chip,
+body.kf-tool-page .crop-chip,
+body.kf-tool-page .period,
+body.kf-tool-page .tab,
+body.kf-tool-page .reset,
+body.kf-tool-page .search-btn,
+body.kf-tool-page .cta a,
+body.kf-tool-page .link { border-radius:0; box-shadow:none; }
+body.kf-tool-page .search,
+body.kf-tool-page .select,
+body.kf-tool-page .context-controls select { min-height:44px; background:#fff; border:1px solid var(--kf-line); color:var(--kf-ink); }
+body.kf-tool-page .chip,
+body.kf-tool-page .crop-chip,
+body.kf-tool-page .period,
+body.kf-tool-page .tab { min-height:38px; padding:8px 10px; border:1px solid var(--kf-line); background:#fff; color:var(--kf-ink); font-weight:750; }
+body.kf-tool-page .chip.active,
+body.kf-tool-page .crop-chip.active,
+body.kf-tool-page .period.active,
+body.kf-tool-page .tab.active,
+body.kf-tool-page .search-btn { background:var(--kf-green); border-color:var(--kf-green); color:#fff; }
+body.kf-tool-page .crop-chip.active { box-shadow:none; }
+body.kf-tool-page .weather-grid { gap:6px; }
+body.kf-tool-page .metric,
+body.kf-tool-page .work-card,
+body.kf-tool-page .point,
+body.kf-tool-page .source-card,
+body.kf-tool-page .condition,
+body.kf-tool-page .selected-crop,
+body.kf-tool-page .context-card,
+body.kf-tool-page .mini { background:#fff; border:1px solid var(--kf-line); }
+body.kf-tool-page .summary:not(.safe),
+body.kf-tool-page .type-note { background:#fff; border-color:var(--kf-line); }
+body.kf-tool-page .cta a,
+body.kf-tool-page .link { background:#fff; border:1px solid var(--kf-line); color:var(--kf-green); }
+body.kf-tool-page .cta a:nth-child(2n),
+body.kf-tool-page .link.dark { background:var(--kf-green); border-color:var(--kf-green); color:#fff; }
+body.kf-tool-page .official { background:#fff; border:0; border-top:1px solid var(--kf-line); padding:14px 0; }
+body.kf-tool-page .safe,
+body.kf-tool-page .notice,
+body.kf-tool-page .error { border-radius:0; box-shadow:none; }
+body.kf-tool-page .v4-nav { font-family:inherit; }
+body.kf-market .market-controls { margin:0 0 16px; padding:0 0 12px; background:#fff; border-bottom:1px solid var(--kf-line); }
+body.kf-market .chip-wrap::after { display:none; }
+body.kf-market .tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; margin:4px 0 0; }
+body.kf-market .tab { width:100%; white-space:normal; min-width:0; }
+body.kf-market .tab:not(.active) { border-color:var(--kf-line); background:#fff; color:var(--kf-ink); }
+body.kf-market .price-card { width:100%; min-width:0; }
+body.kf-market .pill { background:#fff; color:var(--kf-green); }
+body.kf-market .swipe-hint { display:none; }
+body.kf-subsidy .filters { grid-template-columns:minmax(0,1fr); }
+body.kf-subsidy .reset { background:#fff; color:var(--kf-green); border:1px solid var(--kf-line); }
+body.kf-subsidy .badge { background:#fff; border:1px solid var(--kf-line); color:var(--kf-green); }
+body.kf-crop .representative-image img { border-radius:0; }
+body.kf-crop .crop-card { border-radius:0; box-shadow:none; }
+body.kf-crop .crop-icon { border-radius:0; background:transparent; }
+@media (min-width:600px) {
+  body.kf-subsidy .filters { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  body.kf-market .tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (min-width:768px) {
+  body.kf-tool-page .content { padding-top:10px; }
+  body.kf-market .tabs { grid-template-columns:repeat(4,minmax(0,1fr)); }
+}
+@media (max-width:359px) {
+  body.kf-tool-page .header .top,
+  body.kf-tool-page .kf-tool-title,
+  body.kf-tool-page .content { width:calc(100% - 24px); }
+  body.kf-tool-page .weather-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}

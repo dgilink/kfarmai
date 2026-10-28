@@ -70,4 +70,14 @@ jobs:
           node-version: '22'
       - name: Execute existing mobile CDP test on Pages artifact
         shell: pwsh
+        env:
+          KFARMAI_UI_SCREENSHOT_DIR: ${{ runner.temp }}/kfarmai-ui-screenshots
         run: node tests/v4-mobile-nav-scroll.test.mjs
+      - name: Save mobile layout screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kfarmai-v4-tools-mobile-390
+          path: ${{ runner.temp }}/kfarmai-ui-screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 3

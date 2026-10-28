@@ -5,10 +5,11 @@
   if (/^\/kb\/[a-z0-9-]+\.html$/.test(page)) {
     document.body.classList.add('v4-page', 'v4-kb-article');
   }
+  const toolPages = new Set(['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']);
   const active = page === '/' || page.endsWith('/index.html') && !page.startsWith('/kb/')
     ? 'home' : page.endsWith('/channel.html') || page.endsWith('/post.html')
       ? 'community' : page.startsWith('/kb/') || page.endsWith('/agri-info.html')
-        ? 'knowledge' : '';
+        ? 'knowledge' : toolPages.has(page) ? 'tools' : '';
   const items = [
     ['home', '홈', '/index.html'],
     ['community', '소통', '/channel.html'],
@@ -37,6 +38,7 @@
   menuButton.innerHTML = `${icon('menu')}<span>전체</span>`;
   menuButton.setAttribute('aria-controls', 'v4AllMenu');
   menuButton.setAttribute('aria-expanded', 'false');
+  if (active === 'tools') menuButton.setAttribute('aria-current', 'page');
   const menu = document.createElement('div');
   menu.id = 'v4AllMenu';
   menu.className = 'v4-menu';
@@ -171,11 +173,13 @@
   let swipeStartY = 0;
   let swipeDeltaX = 0;
   let swipeDeltaY = 0;
+  let swipeTouchId = null;
   let swipeTracking = false;
   let swipeTransitioning = false;
   let suppressClickUntil = 0;
   const resetSwipe = () => {
     swipeTracking = false;
+    swipeTouchId = null;
     swipeDeltaX = 0;
     swipeDeltaY = 0;
   };
@@ -190,17 +194,25 @@
     }
     swipeStartX = touch.clientX;
     swipeStartY = touch.clientY;
+    swipeTouchId = touch.identifier;
     swipeDeltaX = 0;
     swipeDeltaY = 0;
     swipeTracking = true;
   }, { passive: true, capture: true });
   document.addEventListener('touchmove', event => {
-    if (!swipeTracking || event.touches.length !== 1) return;
+    if (!swipeTracking) return;
+    if (event.touches.length !== 1) { resetSwipe(); return; }
+    if (event.touches[0].identifier !== swipeTouchId) { resetSwipe(); return; }
     swipeDeltaX = event.touches[0].clientX - swipeStartX;
     swipeDeltaY = event.touches[0].clientY - swipeStartY;
   }, { passive: true, capture: true });
-  document.addEventListener('touchend', () => {
+  document.addEventListener('touchend', event => {
     if (!swipeTracking) return;
+    if (event.touches.length) { resetSwipe(); return; }
+    const touch = [...event.changedTouches].find(item => item.identifier === swipeTouchId);
+    if (!touch) { resetSwipe(); return; }
+    swipeDeltaX = touch.clientX - swipeStartX;
+    swipeDeltaY = touch.clientY - swipeStartY;
     const absX = Math.abs(swipeDeltaX);
     const absY = Math.abs(swipeDeltaY);
     const direction = swipeDeltaX < 0 ? 1 : -1;
@@ -213,6 +225,8 @@
     window.setTimeout(() => { swipeTransitioning = false; }, 250);
   }, { passive: true, capture: true });
   document.addEventListener('touchcancel', resetSwipe, { passive: true, capture: true });
+  window.addEventListener('pagehide', resetSwipe);
+  window.addEventListener('blur', resetSwipe);
   document.addEventListener('click', event => {
     if (performance.now() >= suppressClickUntil) return;
     event.preventDefault();
