@@ -139,6 +139,13 @@ class GitHubFixture:
         return issue
 
 
+# A synthetic, unpublished date is required: the production registry already
+# contains real articles on many dates, including the day CI is executed.
+# These tests must still exercise the genuine duplicate-date production guard.
+FIXTURE_NOW = dt.datetime(2040, 1, 15, 3, 0, tzinfo=dt.timezone.utc)
+FIXTURE_DATE = FIXTURE_NOW.astimezone(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
+
+
 class RealDailyE2E(unittest.TestCase):
     def make(self, *, source=None, model=None, rpc=None):
         source, model, rpc = source or Source(), model or Model(), rpc or RPC()
@@ -147,7 +154,7 @@ class RealDailyE2E(unittest.TestCase):
 
     def test_source_to_review_artifact_and_issue(self):
         provider, model, rpc = self.make()
-        now = dt.datetime.now(dt.timezone.utc)
+        now = FIXTURE_NOW
         date = now.astimezone(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / "result"
@@ -179,8 +186,8 @@ class RealDailyE2E(unittest.TestCase):
     def test_missing_source_prevents_reservation(self):
         provider, model, rpc = self.make(source=Source(missing=True))
         with self.assertRaises(Exception):
-            provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                         run_id=990002, head_sha="a"*40, output="unused")
+            provider.run(date=FIXTURE_DATE,
+                         run_id=990002, head_sha="a"*40, output="unused", now=FIXTURE_NOW)
         self.assertEqual(0, model.calls)
         self.assertNotIn("reserve", rpc.calls)
 
@@ -208,8 +215,8 @@ class RealDailyE2E(unittest.TestCase):
         provider = RealDailyProvider(ROOT, Source(), model, DurableBudget(rpc),
                                      lambda slug: slug == TOPICS[0]["slug"])
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
-            provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                         run_id=990007, head_sha="a"*40, output=Path(temp)/"out")
+            provider.run(date=FIXTURE_DATE,
+                         run_id=990007, head_sha="a"*40, output=Path(temp)/"out", now=FIXTURE_NOW)
         self.assertEqual(0, model.calls)
         self.assertNotIn("reserve", rpc.calls)
 
@@ -222,15 +229,15 @@ class RealDailyE2E(unittest.TestCase):
     def test_budget_block_prevents_model(self):
         provider, model, rpc = self.make(rpc=RPC(budget=True))
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
-            provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                         run_id=990003, head_sha="a"*40, output=Path(temp)/"out")
+            provider.run(date=FIXTURE_DATE,
+                         run_id=990003, head_sha="a"*40, output=Path(temp)/"out", now=FIXTURE_NOW)
         self.assertEqual(0, model.calls)
 
     def test_missing_usage_freezes_budget(self):
         provider, model, rpc = self.make(model=Model(missing_usage=True))
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
-            provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                         run_id=990004, head_sha="a"*40, output=Path(temp)/"out")
+            provider.run(date=FIXTURE_DATE,
+                         run_id=990004, head_sha="a"*40, output=Path(temp)/"out", now=FIXTURE_NOW)
         self.assertEqual(1, model.calls)
         self.assertIn("freeze", rpc.calls)
         self.assertNotIn("settle", rpc.calls)
@@ -240,8 +247,8 @@ class RealDailyE2E(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             output = Path(temp) / "out"
             with self.assertRaisesRegex(Exception, "BLOCKED_MODEL_INCOMPLETE"):
-                provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                             run_id=990044, head_sha="a" * 40, output=output)
+                provider.run(date=FIXTURE_DATE,
+                             run_id=990044, head_sha="a" * 40, output=output, now=FIXTURE_NOW)
             self.assertFalse(output.exists())
         self.assertEqual(1, model.calls)
         self.assertEqual(1, rpc.calls.count("settle"))
@@ -257,8 +264,8 @@ class RealDailyE2E(unittest.TestCase):
                 with tempfile.TemporaryDirectory() as temp:
                     output = Path(temp) / "out"
                     with self.assertRaisesRegex(Exception, expected):
-                        provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                                     run_id=990045, head_sha="a" * 40, output=output)
+                        provider.run(date=FIXTURE_DATE,
+                                     run_id=990045, head_sha="a" * 40, output=output, now=FIXTURE_NOW)
                     self.assertFalse(output.exists())
                 self.assertEqual(1, rpc.calls.count("settle"))
 
@@ -274,16 +281,16 @@ class RealDailyE2E(unittest.TestCase):
                 with tempfile.TemporaryDirectory() as temp:
                     output = Path(temp) / "out"
                     with self.assertRaisesRegex(Exception, "BLOCKED_ARTICLE_LENGTH"):
-                        provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                                     run_id=990046, head_sha="a" * 40, output=output)
+                        provider.run(date=FIXTURE_DATE,
+                                     run_id=990046, head_sha="a" * 40, output=output, now=FIXTURE_NOW)
                     self.assertFalse(output.exists())
                 self.assertEqual(1, rpc.calls.count("settle"))
 
     def test_model_error_no_retry_and_unknown(self):
         provider, model, rpc = self.make(model=Model(fail=True))
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
-            provider.run(date=dt.datetime.now(dt.timezone(dt.timedelta(hours=9))).date().isoformat(),
-                         run_id=990005, head_sha="a"*40, output=Path(temp)/"out")
+            provider.run(date=FIXTURE_DATE,
+                         run_id=990005, head_sha="a"*40, output=Path(temp)/"out", now=FIXTURE_NOW)
         self.assertEqual(1, model.calls)
         self.assertIn("unknown", rpc.calls)
 
@@ -413,7 +420,7 @@ class RealDailyE2E(unittest.TestCase):
 
     def test_live_issue_adapter_requires_exact_workflow_and_one_create(self):
         provider, _, rpc = self.make()
-        now = dt.datetime.now(dt.timezone.utc)
+        now = FIXTURE_NOW
         date = now.astimezone(dt.timezone(dt.timedelta(hours=9))).date().isoformat()
         with tempfile.TemporaryDirectory() as temp:
             result = provider.run(date=date, run_id=990006, head_sha="a"*40,
