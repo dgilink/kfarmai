@@ -305,9 +305,9 @@ try {
       const agri=getComputedStyle(document.querySelector('.home-agri-summary-section'));
       const surfaces=[document.documentElement,document.body,...document.querySelectorAll('.phone,.pages-wrap,.pages,.page')].map(node=>getComputedStyle(node).backgroundColor);
       const square=[...document.querySelectorAll('.search,.v4-quick-actions>a,.v4-quick-actions>button,.home-kb-section,.home-kb-cards .kb-card,.recent-question-panel,.v3-community-feed .q-card,.post-tag,.community-side-card,.topic-tag-list a,.ai-compact-arrow,.home-agri-summary-section,.home-agri-summary-section .agri-summary-card,.home-agri-summary-section .agri-status,.home-agri-summary-section .agri-summary-more')].every(node=>getComputedStyle(node).borderRadius==='0px'&&getComputedStyle(node).boxShadow==='none');
-      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth,whiteSurfaces:surfaces.every(color=>color==='rgb(255, 255, 255)'),square,noSourceCopy:!/공식 출처는 글에서 확인|내용과 출처 확인/.test(homeKbCards.innerText)};
+      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth,whiteSurfaces:surfaces.every(color=>color==='rgb(255, 255, 255)'),square,homeSearch:!!document.getElementById('globalSearch'),noSourceCopy:!/공식 출처는 글에서 확인|내용과 출처 확인/.test(homeKbCards.innerText)};
     })()`);
-    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px',whiteSurfaces:true,square:true,noSourceCopy:true}, `${width}px flat white home presentation`);
+    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px',whiteSurfaces:true,square:true,homeSearch:true,noSourceCopy:true}, `${width}px flat white home presentation`);
     const beforeVertical = await evaluate('location.pathname');
     await touchSwipe('body');
     assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px vertical scroll does not switch tab`);
@@ -329,18 +329,12 @@ try {
     assert.equal(kbContract.intro, '', `${width}px KB intro removed`);
     assert.equal(kbContract.overflow, false, `${width}px KB no horizontal overflow`);
     const kbLayout = await evaluate(`(() => {
-      const controls=[kbSearch,kbCategory].map(node=>node.getBoundingClientRect());
       const arrow=getComputedStyle(document.querySelector('.kb-list-arrow'));
       const title=getComputedStyle(document.querySelector('.kb-card strong'));
-      return {controlsFit:controls.every(rect=>rect.left>=0&&rect.right<=innerWidth),arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
+      const badges=[...document.querySelectorAll('.kb-keywords span')];
+      return {search:!!document.getElementById('kbSearch'),category:!!document.getElementById('kbCategory'),searchAction:!!document.querySelector('[aria-label="검색"]'),badges:badges.length,badgesFit:badges.every(node=>node.getBoundingClientRect().right<=innerWidth+1),arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
     })()`);
-    assert.deepEqual(kbLayout, {controlsFit:true,arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'}, `${width}px KB stable mobile rows`);
-    const searchResult = await evaluate(`(() => {kbSearch.value='관수';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
-    assert.equal(searchResult.count, 1, `${width}px KB search count`);
-    assert.match(searchResult.text, /관수/, `${width}px KB search result`);
-    const filterResult = await evaluate(`(() => {kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='스마트팜';kbCategory.dispatchEvent(new Event('change',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
-    assert.ok(filterResult.count >= 1 && /스마트팜/.test(filterResult.text), `${width}px KB category filter`);
-    await evaluate("kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='';kbCategory.dispatchEvent(new Event('change',{bubbles:true}))");
+    assert.deepEqual(kbLayout, {search:false,category:false,searchAction:false,badges:3,badgesFit:true,arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'}, `${width}px KB list uses keyword badges without duplicate search controls`);
     await contentSwipeAt(.5, 'left');
     const knowledgeMenuState = await evaluate(`({hidden:v4AllMenu.hidden,trace:window.__swipeTrace,path:location.pathname,h1:document.querySelector('h1')?.getBoundingClientRect().toJSON()})`);
     assert.equal(knowledgeMenuState.hidden, false, `${width}px knowledge to menu ${JSON.stringify(knowledgeMenuState)}`);
@@ -402,6 +396,49 @@ try {
         const capture = await socket.send('Page.captureScreenshot', { format:'png', captureBeyondViewport:false });
         const name = route.slice(1).replace(/[^a-z0-9.-]/gi, '_');
         fs.writeFileSync(path.join(captureRoot, name + '-390.png'), Buffer.from(capture.data, 'base64'));
+      }
+    }
+  }
+
+  // The selected crop details must be a single white reading surface. Text
+  // rows may use dividers, but no bordered wrapper may contain more cards.
+  for (const width of [320, 390, 430]) {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
+    for (const route of ['/crop-guide.html?crop=pear', '/crop-calendar.html?crop=pear']) {
+      await navigate(route);
+      const flatCropDetail=await evaluate(`(() => {
+        const detail=document.querySelector('#detail');
+        const outer=detail?.querySelector(':scope > .card');
+        const rows=[...detail.querySelectorAll('.item,.context-card,.mini,.month,.safe')];
+        const nested=[...detail.querySelectorAll('.mini,.month')];
+        const stageGrid=detail.querySelector('.stage-step-grid');
+        return {
+          rendered:!!outer,
+          white:getComputedStyle(detail).backgroundColor==='rgb(255, 255, 255)',
+          outerSides:getComputedStyle(outer).borderLeftWidth==='0px'&&getComputedStyle(outer).borderRightWidth==='0px',
+          rowsFlat:rows.every(node=>{const s=getComputedStyle(node);return s.backgroundColor==='rgb(255, 255, 255)'&&s.borderRadius==='0px'&&s.boxShadow==='none'&&s.borderLeftWidth==='0px'&&s.borderRightWidth==='0px'}),
+          nestedFlat:nested.length>0&&nested.every(node=>{const s=getComputedStyle(node);return s.borderLeftWidth==='0px'&&s.borderRightWidth==='0px'}),
+          stageSingle:!stageGrid||getComputedStyle(stageGrid).gridTemplateColumns.split(' ').length===1,
+          width:detail.getBoundingClientRect().width,
+          overflow:document.documentElement.scrollWidth>innerWidth+1,
+        };
+      })()`);
+      assert.equal(flatCropDetail.rendered,true,route+' selected detail rendered');
+      assert.equal(flatCropDetail.white,true,route+' white surface');
+      assert.equal(flatCropDetail.outerSides,true,route+' no outer side box');
+      assert.equal(flatCropDetail.rowsFlat,true,route+' text rows are flat');
+      assert.equal(flatCropDetail.nestedFlat,true,route+' nested cards removed');
+      assert.equal(flatCropDetail.stageSingle,true,route+' stage media uses one column');
+      assert.ok(flatCropDetail.width>=width-32,route+' fills mobile bezel');
+      assert.equal(flatCropDetail.overflow,false,route+' no horizontal overflow');
+      if (width===390&&process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+        await evaluate("document.querySelector('#detail .mini-list,#detail .month-grid,#detail .item')?.scrollIntoView({block:'start'})");
+        await delay(180);
+        const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+        fs.mkdirSync(captureRoot,{recursive:true});
+        const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+        const name=route.includes('crop-guide')?'crop-guide-detail-pear-390.png':'crop-calendar-detail-pear-390.png';
+        fs.writeFileSync(path.join(captureRoot,name),Buffer.from(capture.data,'base64'));
       }
     }
   }

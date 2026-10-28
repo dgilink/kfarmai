@@ -77,16 +77,17 @@
   let initialIndexDraw = true;
   function draw() {
     if (indexGrid) {
-      const q = search.value.trim().toLocaleLowerCase('ko');
+      const q = search?.value.trim().toLocaleLowerCase('ko') || '';
+      const selectedCategory = category?.value || '';
       const matches = items.filter(item =>
-        (!category.value || item.category === category.value) &&
+        (!selectedCategory || item.category === selectedCategory) &&
         (!q || `${item.title} ${item.category}`.toLocaleLowerCase('ko').includes(q)));
       // The Pages artifact already contains the complete approved list. Keep its
       // first-paint nodes (and in-progress image loads) until a real filter action.
-      const keepServerList = initialIndexDraw && indexGrid.dataset.kbStatic === '1' && !q && !category.value;
+      const keepServerList = initialIndexDraw && indexGrid.dataset.kbStatic === '1' && !q && !selectedCategory;
       if (!keepServerList) indexGrid.replaceChildren(...matches.map(item => card(item, true)));
       initialIndexDraw = false;
-      status.textContent = matches.length ? `${matches.length}개 참고자료` :
+      if (status) status.textContent = matches.length ? `${matches.length}개 참고자료` :
         '일치하는 글이 없습니다. 검색어를 바꿔보세요.';
     }
     if (homeGrid) homeGrid.replaceChildren(...items.slice(0, 4).map(item => card(item, true)));

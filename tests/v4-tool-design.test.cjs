@@ -20,7 +20,7 @@ for (const [file, cls, title, ids] of pages) {
     assert.ok(html.includes('class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a>'));
     assert.ok(html.includes('<h1 class="kf-tool-title">' + title + '</h1>'));
     assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-menu1'));
-    assert.ok(html.includes('/static/css/v4-tool-pages.css?v=20261028-tools1'));
+    assert.ok(html.includes('/static/css/v4-tool-pages.css?v=20261028-flat1'));
     assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-menu1'));
     const header=html.match(/<header class="header">([\s\S]*?)<\/header>/);
     assert.ok(header, 'shared header must exist');
@@ -44,8 +44,26 @@ test('shared CSS prevents rounded tool elements and preserves price tab layout',
   assert.match(css,/body\.kf-market \.tabs \{ display:grid/);
   assert.match(css,/body\.kf-tool-page \.loading/);
   assert.match(css,/body\.kf-crop \.crop-icon \{ border-radius:0; background:transparent; \}/);
+  assert.match(css,/body\.kf-crop #detail \.mini-list/);
+  assert.match(css,/body\.kf-crop #detail \.mini:first-child/);
+  assert.match(css,/body\.kf-crop #detail \.stage-step-grid \{ grid-template-columns:minmax\(0,1fr\)/);
   assert.match(css,/body\.kf-tool-page \.content/);
   assert.ok(!/rgba\([^\n]*gradient\(/.test(css));
+});
+
+test('agricultural information list leaves search only on the home screen', () => {
+  const kb=read('kb/index.html');
+  const home=read('index.html');
+  const discovery=read('static/js/kb-discovery.js');
+  assert.ok(!kb.includes('id="kbSearch"'));
+  assert.ok(!kb.includes('id="kbCategory"'));
+  assert.ok(!kb.includes('class="kb-controls"'));
+  assert.ok(!kb.includes('aria-label="검색"'));
+  assert.match(kb,/class="kb-keywords"/);
+  for (const phrase of ['공식자료 기반','현장 핵심 정리','출처·확인일 제공']) assert.ok(kb.includes(phrase));
+  assert.ok(home.includes('id="globalSearch"'));
+  assert.match(discovery,/search\?\.value/);
+  assert.match(discovery,/category\?\.value/);
 });
 
 test('tool pages display full-menu tab as sole active destination', () => {
