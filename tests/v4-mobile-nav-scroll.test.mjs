@@ -347,6 +347,12 @@ try {
     })()`);
     assert.ok(topicResult.count>=1&&topicResult.allMatch&&topicResult.active===1,`${width}px topic badge filters approved articles`);
     await evaluate("document.querySelector('.kb-topic[data-category=\"\"]')?.click()");
+    if (width===390&&process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+      fs.mkdirSync(captureRoot,{recursive:true});
+      const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+      fs.writeFileSync(path.join(captureRoot,'kb-index-topics-390.png'),Buffer.from(capture.data,'base64'));
+    }
     await contentSwipeAt(.5, 'left');
     const knowledgeMenuState = await evaluate(`({hidden:v4AllMenu.hidden,trace:window.__swipeTrace,path:location.pathname,h1:document.querySelector('h1')?.getBoundingClientRect().toJSON()})`);
     assert.equal(knowledgeMenuState.hidden, false, `${width}px knowledge to menu ${JSON.stringify(knowledgeMenuState)}`);
