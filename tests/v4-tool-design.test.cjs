@@ -85,6 +85,13 @@ test('community first paint delays transient loading indicators but retains acce
   assert.match(channel,/pendingPostListUpdate/);
   assert.match(channel,/refreshBlockedUsers\(\)/);
   assert.match(channel,/blockedUserIdsSet/);
+  assert.match(channel,/if\(event==='INITIAL_SESSION'\)return/);
+  assert.match(channel,/applyChannels\(defaultChannels\(\)\)/);
+  assert.match(channel,/const basePosts=visibleFeedPosts\(source\)/);
+  assert.match(channel,/renderPosts\(basePosts,totalCount,\{\},requestId,firstPage,category\)/);
+  assert.match(channel,/Promise\.all\(\[/);
+  assert.match(channel,/updateRenderedPostMeta\(posts,profileMap,requestId\)/);
+  assert.match(channel,/COMMUNITY_FEED_CACHE_TTL=5\*60\*1000/);
 });
 
 const detailPages = [
