@@ -926,10 +926,10 @@ function renderPostsNow(posts,totalCount,profileMap={},firstPage=false,category=
     hasMore=false;
     return;
   }
-  posts.forEach((post,postIndex)=>{
+  posts.forEach(post=>{
     const slug=window.KFCommunity.categoryForPost(post,channels)?.slug||'';
     const imageUrls=normalizeImages(post.image_urls);
-    const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="${postIndex<4?'eager':'lazy'}" decoding="async"${postIndex<2?' fetchpriority="high"':''}>`:'';
+    const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
     const category=post.crop_tag||extractCategoryFromContent(post.content);
     const preview=stripPostPrefixes(post.content||'');
     const card=document.createElement('a');
