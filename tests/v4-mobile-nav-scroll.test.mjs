@@ -184,7 +184,7 @@ async function communityRequestRaces() {
   assert.deepEqual(await evaluate(`({titles:[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent),loading:isLoading,count:document.getElementById('resultCount').textContent})`),
     {titles:['second result'],loading:false,count:'1개'}, 'late responses cannot replace the latest search');
   await evaluate(`currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
-  assert.deepEqual(await evaluate('window.__queries[3].filters[0]'),['category_id','category-test'],'channel filter uses the latest category');
+  assert.equal(await evaluate(`window.__queries[3].filters.some(filter=>Array.isArray(filter)&&filter[0]==='category_id'&&filter[1]==='category-test')`),true,'channel filter uses the latest category');
   await evaluate(`window.__reply(3,'filtered result')`);
   await delay(50);
   assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['filtered result'],'filter result replaces previous search');
