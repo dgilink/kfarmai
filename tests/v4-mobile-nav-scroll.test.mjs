@@ -160,7 +160,7 @@ async function communityRequestRaces() {
     }};
     attachCommentCounts=async posts=>posts;
     fetchProfileMap=async()=>({});
-    window.__post=(title)=>({id:title,title,content:'test',created_at:'2026-10-01',user_id:null});
+    window.__post=(title)=>({id:title,title,content:'test',created_at:'2026-10-01',user_id:null,category_id:'category-test'});
     window.__reply=(index,title)=>window.__queries[index].resolve({data:[window.__post(title)],count:1,error:null});
     resetAndLoad();
   })()`);
