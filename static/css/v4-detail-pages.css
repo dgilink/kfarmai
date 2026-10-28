@@ -212,7 +212,7 @@ body.v4-diagnosis-page .scroll-area {
   width: 100%;
   min-height: 0;
   overflow: visible;
-  padding: 0 0 calc(96px + env(safe-area-inset-bottom));
+  padding: 60px 0 calc(96px + env(safe-area-inset-bottom));
   background: #fff;
 }
 body.v4-diagnosis-page .v4-detail-title {
@@ -543,6 +543,14 @@ body.v4-public-data-page .match-report-shell {
   border: 0;
   background: #fff;
 }
+body.v4-public-data-page #matchResult,
+body.v4-public-data-page #matchContent { scroll-margin-top: 72px; }
+body.v4-public-data-page .match-summary-card {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #fff !important;
+}
 body.v4-public-data-page .report-title-row,
 body.v4-public-data-page .report-block,
 body.v4-public-data-page .report-result-item,
@@ -569,12 +577,29 @@ body.v4-public-data-page .report-summary-line,
 body.v4-public-data-page .report-next-step,
 body.v4-public-data-page .report-extra-check,
 body.v4-public-data-page .report-caution { display: none !important; }
+body.v4-public-data-page .report-photo-thumb,
+body.v4-public-data-page .report-print-footer,
+body.v4-public-data-page .ncpms-enrichment p { display: none !important; }
+body.v4-public-data-page .ncpms-enrichment,
+body.v4-public-data-page .official-reference-more {
+  margin: 0;
+  padding: 12px 0;
+  border: 0 !important;
+  border-bottom: 1px solid var(--kf-detail-line) !important;
+  background: #fff !important;
+}
 body.v4-public-data-page .report-status-badge {
   border: 1px solid #b9d8c7 !important;
   background: #fff !important;
   color: var(--kf-detail-green) !important;
 }
 body.v4-public-data-page .report-download-btn {
+  border-color: var(--kf-detail-green) !important;
+  background: var(--kf-detail-green) !important;
+  color: #fff !important;
+}
+body.v4-public-data-page .report-block .btn,
+body.v4-public-data-page .ncpms-enrichment .btn {
   border-color: var(--kf-detail-green) !important;
   background: var(--kf-detail-green) !important;
   color: #fff !important;
@@ -628,6 +653,19 @@ body.v4-mfg-page .flow-step-number {
   font-size: 11px;
 }
 body.v4-mfg-page .flow-step h3 { margin: 0; }
+body.v4-mfg-page .flow-step .guide-tags {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0 !important;
+}
+body.v4-mfg-page .flow-step .guide-tag {
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 0;
+  background: #f2f6f3;
+}
 body.v4-mfg-page .decision-card,
 body.v4-mfg-page .hub-card,
 body.v4-mfg-page .support-card { min-height: 0; padding: 12px; border: 1px solid var(--kf-detail-line); background: #fff; }
