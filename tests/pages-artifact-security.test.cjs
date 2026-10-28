@@ -50,6 +50,34 @@ try {
     assert.ok(discovery.includes("homeGrid?.dataset.kbStatic === '1'"));
   });
 
+  test('KB listing first paint uses uniform approved card structure', () => {
+    const html = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
+    const items = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-index.json'), 'utf8')).items;
+    const start = html.indexOf('<div id="kbGrid" class="kb-grid" aria-live="polite" data-kb-static="1">');
+    const end = html.indexOf('</div>', start);
+    assert.ok(start > 0 && end > start, 'approved KB listing present');
+    const list = html.slice(start, end);
+    const cards = [...list.matchAll(/<a class="kb-card(?: is-text-only)?" href="(\/kb\/[a-z0-9-]+\.html)">([\s\S]*?)<\/a>/g)];
+    assert.equal(cards.length, items.length, 'all approved registry articles render at first paint');
+    for (const [index, [, href, contents]] of cards.entries()) {
+      assert.equal(href, items[index].path, 'registry order and link preserved');
+      assert.match(contents, /^((?:<img class="kb-list-thumb"[^>]+>)?)<span class="kb-list-copy"><small>[^<]+<\/small><strong>[^<]+<\/strong><\/span><span class="kb-list-arrow" aria-hidden="true">›<\/span>$/);
+      assert.ok(!contents.includes('저장 관리 핵심') && !contents.includes('2026-10-28'));
+    }
+    assert.ok(cards[0][0].includes('class="kb-card is-text-only"'),
+      'newest approved text-only article may not be squeezed into image grid columns');
+  });
+
+  test('source KB index fallback is also readable before artifact build', () => {
+    const source = fs.readFileSync(path.join(repoRoot, 'kb/index.html'), 'utf8');
+    const region = source.split('<div id="kbGrid" class="kb-grid" aria-live="polite">')[1]?.split('</div>')[0] || '';
+    const cards = [...region.matchAll(/<a class="kb-card(?: is-text-only)?"[^>]*>([\s\S]*?)<\/a>/g)];
+    assert.ok(cards.length >= 4);
+    assert.ok(cards.every(([, body]) => body.includes('class="kb-list-copy"')
+      && body.includes('class="kb-list-arrow"')), 'no raw <small>/<strong> directly in CSS grid columns');
+    assert.ok(!region.includes('저장 관리 핵심 5가지 보기'), 'remove legacy fallback CTA');
+  });
+
   const mustNotExist = [
     'supabase/config.toml',
     'supabase/migrations/20261004133000_v3_production_rls_hardening.sql',
