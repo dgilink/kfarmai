@@ -171,11 +171,13 @@
   let swipeStartY = 0;
   let swipeDeltaX = 0;
   let swipeDeltaY = 0;
+  let swipeTouchId = null;
   let swipeTracking = false;
   let swipeTransitioning = false;
   let suppressClickUntil = 0;
   const resetSwipe = () => {
     swipeTracking = false;
+    swipeTouchId = null;
     swipeDeltaX = 0;
     swipeDeltaY = 0;
   };
@@ -190,17 +192,25 @@
     }
     swipeStartX = touch.clientX;
     swipeStartY = touch.clientY;
+    swipeTouchId = touch.identifier;
     swipeDeltaX = 0;
     swipeDeltaY = 0;
     swipeTracking = true;
   }, { passive: true, capture: true });
   document.addEventListener('touchmove', event => {
-    if (!swipeTracking || event.touches.length !== 1) return;
+    if (!swipeTracking) return;
+    if (event.touches.length !== 1) { resetSwipe(); return; }
+    if (event.touches[0].identifier !== swipeTouchId) { resetSwipe(); return; }
     swipeDeltaX = event.touches[0].clientX - swipeStartX;
     swipeDeltaY = event.touches[0].clientY - swipeStartY;
   }, { passive: true, capture: true });
-  document.addEventListener('touchend', () => {
+  document.addEventListener('touchend', event => {
     if (!swipeTracking) return;
+    if (event.touches.length) { resetSwipe(); return; }
+    const touch = [...event.changedTouches].find(item => item.identifier === swipeTouchId);
+    if (!touch) { resetSwipe(); return; }
+    swipeDeltaX = touch.clientX - swipeStartX;
+    swipeDeltaY = touch.clientY - swipeStartY;
     const absX = Math.abs(swipeDeltaX);
     const absY = Math.abs(swipeDeltaY);
     const direction = swipeDeltaX < 0 ? 1 : -1;
@@ -213,6 +223,8 @@
     window.setTimeout(() => { swipeTransitioning = false; }, 250);
   }, { passive: true, capture: true });
   document.addEventListener('touchcancel', resetSwipe, { passive: true, capture: true });
+  window.addEventListener('pagehide', resetSwipe);
+  window.addEventListener('blur', resetSwipe);
   document.addEventListener('click', event => {
     if (performance.now() >= suppressClickUntil) return;
     event.preventDefault();

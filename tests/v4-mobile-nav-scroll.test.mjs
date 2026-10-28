@@ -124,6 +124,95 @@ async function ignoredHorizontalSwipe(selector) {
   await delay(300);
 }
 
+async function swipeWhileCommunityRenders() {
+  const point = await evaluate(`(() => {
+    offset=0;
+    const list=document.getElementById('postList');
+    list.innerHTML='<div class="loading">Loading posts</div>';
+    const loading=list.querySelector('.loading');
+    loading.scrollIntoView({block:'center'});
+    const rect=loading.getBoundingClientRect();
+    window.__loadingTouchTarget=loading;
+    return {x:Math.max(45,Math.min(innerWidth-130,rect.left+rect.width/2)),y:rect.top+rect.height/2};
+  })()`);
+  assert.equal(await evaluate(`document.elementFromPoint(${point.x},${point.y})?.closest('.loading')===window.__loadingTouchTarget`), true, 'touch begins on community loading row');
+  const loaded = socket.once('Page.loadEventFired');
+  await socket.send('Input.dispatchTouchEvent', { type:'touchStart', touchPoints:[{x:point.x,y:point.y,radiusX:2,radiusY:2,force:1}] });
+  await evaluate('renderPosts([],0,{})');
+  assert.equal(await evaluate('window.__loadingTouchTarget.isConnected'), true, 'async post render keeps active touch target connected');
+  for (let step=1;step<=10;step+=1) {
+    await socket.send('Input.dispatchTouchEvent', { type:'touchMove', touchPoints:[{x:point.x+110*step/10,y:point.y,radiusX:2,radiusY:2,force:1}] });
+    await delay(20);
+  }
+  await socket.send('Input.dispatchTouchEvent', { type:'touchEnd', touchPoints:[] });
+  await Promise.race([loaded,delay(4000).then(()=>{throw new Error('community loading swipe did not navigate home');})]);
+  assert.equal(await evaluate('location.pathname'), '/index.html', 'community loading swipe navigates home');
+}
+
+async function communityRequestRaces() {
+  await navigate('/channel.html');
+  await evaluate(`(() => {
+    window.__realSb=sb;
+    window.__queries=[];
+    sb={from:()=>{
+      const query={filters:[],eq(...args){this.filters.push(args);return this},not(){return this},or(value){this.filters.push(value);return this},order(){return this},range(){return this},select(){return this},then(resolve){this.resolve=resolve;window.__queries.push(this)}};
+      return query;
+    }};
+    attachCommentCounts=async posts=>posts;
+    fetchProfileMap=async()=>({});
+    window.__post=(title)=>({id:title,title,content:'test',created_at:'2026-10-01',user_id:null});
+    window.__reply=(index,title)=>window.__queries[index].resolve({data:[window.__post(title)],count:1,error:null});
+    resetAndLoad();
+  })()`);
+  assert.equal(await evaluate('window.__queries.length'), 1, 'initial request started');
+  await evaluate(`document.getElementById('searchInput').value='first';applyKeywordSearch();document.getElementById('searchInput').value='second';applyKeywordSearch()`);
+  assert.equal(await evaluate('window.__queries.length'), 3, 'each search starts despite an older load');
+  assert.match(await evaluate('window.__queries[2].filters[0]'), /second/, 'latest query uses latest keyword');
+  await evaluate(`window.__reply(2,'second result')`);
+  await delay(50);
+  await evaluate(`window.__reply(0,'old result');window.__reply(1,'first result')`);
+  await delay(50);
+  assert.deepEqual(await evaluate(`({titles:[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent),loading:isLoading,count:document.getElementById('resultCount').textContent})`),
+    {titles:['second result'],loading:false,count:'1개'}, 'late responses cannot replace the latest search');
+  await evaluate(`currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
+  assert.deepEqual(await evaluate('window.__queries[3].filters[0]'),['category_id','category-test'],'channel filter uses the latest category');
+  await evaluate(`window.__reply(3,'filtered result')`);
+  await delay(50);
+  assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['filtered result'],'filter result replaces previous search');
+
+  await socket.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
+  const point=await evaluate(`(() => {offset=0;const list=document.getElementById('postList');list.innerHTML='<div class="loading">Loading</div>';const r=list.querySelector('.loading').getBoundingClientRect();return{x:Math.max(45,Math.min(innerWidth-45,r.left+r.width/2)),y:r.top+r.height/2}})()`);
+  const touch={x:point.x,y:point.y,radiusX:2,radiusY:2,force:1};
+  await socket.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch]});
+  await evaluate(`renderPosts([window.__post('stale render')],1,{});renderPosts([window.__post('latest render')],1,{})`);
+  assert.equal(await evaluate("document.getElementById('postList').querySelector('.loading')?.isConnected"),true,'active touch target survives queued renders');
+  await socket.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{...touch,y:touch.y+60}]});
+  await socket.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['latest render'],'only latest queued render flushes');
+  assert.equal(await evaluate('pendingPostListUpdate===null'),true,'pending render is cleared');
+
+  await socket.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch]});
+  await evaluate(`renderPosts([window.__post('cancelled touch')],1,{})`);
+  await socket.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});
+  assert.equal(await evaluate("document.getElementById('postList').querySelector('.post-title')?.textContent"),'cancelled touch','touchcancel releases pending render');
+  await socket.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch]});
+  await socket.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch,{...touch,x:touch.x+20,y:touch.y+20}]});
+  await evaluate(`renderPosts([window.__post('multitouch')],1,{})`);
+  await socket.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  assert.equal(await evaluate("document.getElementById('postList').querySelector('.post-title')?.textContent"),'multitouch','multitouch eventually releases render');
+  await socket.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[touch]});
+  await evaluate(`renderPosts([window.__post('page exit')],1,{});window.dispatchEvent(new Event('pagehide'))`);
+  assert.equal(await evaluate("document.getElementById('postList').querySelector('.post-title')?.textContent"),'page exit','pagehide releases pending render');
+  assert.equal(await evaluate('postListTouches'),0,'pagehide clears touch state');
+  await socket.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});
+  await socket.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:1});
+  const clicked=socket.once('Page.loadEventFired');
+  await evaluate("document.getElementById('postList').querySelector('.post-card').click()");
+  await clicked;
+  assert.equal(await evaluate('location.pathname'),'/post.html','post link still navigates after touch recovery');
+  await navigate('/channel.html');
+}
+
 try {
   assert.ok(fs.existsSync(chromePath), 'Chrome is required');
   const build = spawnSync(process.execPath, [path.join(repoRoot, 'scripts/pages/build-pages-artifact.cjs'), `--output=${root}`], { cwd: repoRoot, encoding: 'utf8' });
@@ -131,18 +220,18 @@ try {
   await new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); });
   port = server.address().port;
   chrome = spawn(chromePath, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true });
-  for (let attempt = 0; attempt < 80; attempt += 1) {
+  for (let attempt = 0; attempt < 150; attempt += 1) {
     const portFile = path.join(profile, 'DevToolsActivePort');
     if (fs.existsSync(portFile)) { debugPort = Number(fs.readFileSync(portFile, 'utf8').split('\n')[0]); break; }
     await delay(100);
   }
-  assert.ok(debugPort, 'Chrome debugging is available');
+  assert.ok(debugPort, `Chrome debugging is available (exit=${chrome.exitCode}, signal=${chrome.signalCode})`);
   const target = await fetch(`http://127.0.0.1:${debugPort}/json/new?about:blank`, { method: 'PUT' }).then(response => response.json());
   socket = new CdpSocket(target.webSocketDebuggerUrl);
   await socket.open();
   await socket.send('Page.enable'); await socket.send('Runtime.enable'); await socket.send('Network.enable');
   const fatal = [];
-  socket.on('Runtime.exceptionThrown', event => fatal.push(event.exceptionDetails?.text || 'exception'));
+  socket.on('Runtime.exceptionThrown', event => fatal.push(event.exceptionDetails?.exception?.description || event.exceptionDetails?.text || 'exception'));
 
   for (const width of widths) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
@@ -275,6 +364,9 @@ try {
   }
 
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
+  await navigate('/channel.html');
+  await swipeWhileCommunityRenders();
+  await communityRequestRaces();
   await navigate('/index.html');
   await evaluate("openModal('question-help')");
   await delay(250);
