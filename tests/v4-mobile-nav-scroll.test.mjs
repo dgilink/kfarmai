@@ -165,7 +165,7 @@ async function communityRequestRaces() {
     resetAndLoad();
   })()`);
   assert.equal(await evaluate('window.__queries.length'), 1, 'initial request started');
-  await evaluate(`document.getElementById('searchInput').value='first';applyKeywordSearch();document.getElementById('searchInput').value='second';applyKeywordSearch()`);
+  await evaluate(`keyword='first';resetAndLoad();keyword='second';resetAndLoad()`);
   assert.equal(await evaluate('window.__queries.length'), 3, 'each search starts despite an older load');
   assert.match(await evaluate('window.__queries[2].filters[0]'), /second/, 'latest query uses latest keyword');
   await evaluate(`window.__reply(2,'second result')`);
@@ -262,11 +262,18 @@ try {
         clientHeight: document.scrollingElement.clientHeight,
         phoneOverflow: document.querySelector('.phone') ? getComputedStyle(document.querySelector('.phone')).overflowY : null,
         touchAction: getComputedStyle(document.scrollingElement).touchAction,
+        globalHeaders: document.querySelectorAll('.v4-global-header').length,
+        headerFixed: getComputedStyle(document.querySelector('.v4-global-header')).position,
+        headerTop: Math.round(document.querySelector('.v4-global-header').getBoundingClientRect().top),
+        brand: document.querySelector('.v4-global-brand')?.textContent.trim(),
+        headerLogos: document.querySelectorAll('header img[src*="kfarmai-logo"]').length,
       }))()`);
       assert.ok(initial.xOverflow <= 1, `${route} ${width}px horizontal overflow`);
       assert.equal(initial.navs, 1, `${route} ${width}px single nav`);
       assert.equal(initial.menus, 1, `${route} ${width}px single menu`);
       assert.equal(initial.active, 1, `${route} ${width}px one page tab active`);
+      assert.deepEqual({count:initial.globalHeaders,fixed:initial.headerFixed,top:initial.headerTop,brand:initial.brand,logos:initial.headerLogos},
+        {count:1,fixed:'fixed',top:0,brand:'kFarmAI',logos:0}, `${route} ${width}px fixed text header`);
       assert.ok(initial.scrollHeight > initial.clientHeight, `${route} ${width}px has vertical content`);
       if (route === '/index.html') assert.equal(initial.phoneOverflow, 'visible', `${route} ${width}px unclipped phone`);
 
@@ -351,14 +358,14 @@ try {
     })()`);
     assert.equal(kbLayout.search,false,`${width}px KB search field removed`);
     assert.equal(kbLayout.category,false,`${width}px KB select removed`);
-    assert.equal(kbLayout.searchAction,false,`${width}px KB search icon removed`);
+    assert.equal(kbLayout.searchAction,true,`${width}px KB search icon routes to home`);
     assert.ok(kbLayout.badges>=3&&kbLayout.badgesFit&&kbLayout.active===1,`${width}px KB topic badges fit with one active`);
     assert.deepEqual({arrowMode:kbLayout.arrowMode,arrowWrap:kbLayout.arrowWrap,titleWrap:kbLayout.titleWrap},{arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'},`${width}px KB stable rows`);
     const topicResult=await evaluate(`(() => {
-      const button=[...document.querySelectorAll('.kb-topic')].find(node=>node.dataset.category);
+      const button=[...document.querySelectorAll('.kb-topic')].find(node=>node.dataset.category==='재배노하우');
       button.click();
       const categories=[...document.querySelectorAll('#kbGrid .kb-card:not([hidden]) small')].map(node=>node.textContent.trim());
-      return {selected:button.dataset.category,count:categories.length,allMatch:categories.every(value=>value===button.dataset.category),active:document.querySelectorAll('.kb-topic[aria-pressed="true"]').length};
+      return {selected:button.dataset.category,count:categories.length,allMatch:categories.every(value=>value.includes('재배노하우')),active:document.querySelectorAll('.kb-topic[aria-pressed="true"]').length};
     })()`);
     assert.ok(topicResult.count>=1&&topicResult.allMatch&&topicResult.active===1,`${width}px topic badge filters approved articles`);
     await evaluate("document.querySelector('.kb-topic[data-category=\"\"]')?.click()");
@@ -392,6 +399,13 @@ try {
 
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/channel.html');
+  assert.equal(await evaluate("document.getElementById('searchInput')===null"),true,'community search field removed');
+  const homeSearchLoaded=socket.once('Page.loadEventFired');
+  await evaluate("document.querySelector('.v4-global-search-action').click()");
+  await homeSearchLoaded;
+  await delay(120);
+  assert.deepEqual(await evaluate(`({path:location.pathname,focus:document.activeElement?.id})`),{path:'/index.html',focus:'globalSearch'},'non-home search icon opens and focuses home search');
+  await navigate('/channel.html');
   await swipeWhileCommunityRenders();
   await communityRequestRaces();
   // Cross-page visual contract: the four previously disconnected tool surfaces
@@ -401,7 +415,7 @@ try {
     for (const route of ['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
       await navigate(route);
       const toolUi = await evaluate(`(() => {
-        const brand=document.querySelector('.header .brand');
+        const brand=document.querySelector('.v4-global-brand');
         const title=document.querySelector('.kf-tool-title');
         const controls=[...document.querySelectorAll('input:not([type=hidden]),select')].slice(0,4);
         const nav=document.querySelector('.v4-nav');
@@ -417,7 +431,7 @@ try {
           tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
-      assert.deepEqual(toolUi,{text:'KFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      assert.deepEqual(toolUi,{text:'kFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
       const flatUi = await evaluate(`(() => ({
         loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')

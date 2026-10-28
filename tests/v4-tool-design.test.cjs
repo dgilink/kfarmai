@@ -66,6 +66,23 @@ test('agricultural information list leaves search on home and uses topic badges'
   assert.match(discovery,/search\?\.value/);
   assert.match(discovery,/selectedCategory/);
   assert.match(discovery,/renderTopics/);
+  assert.match(discovery,/includes\('재배노하우'\) \? '재배노하우'/);
+});
+
+test('global shell provides one fixed text header and routes search to home', () => {
+  const shell=read('static/js/v4-shell.js');
+  const css=read('static/css/v4-shell.css');
+  const channel=read('channel.html');
+  const builder=read('scripts/pages/build-pages-artifact.cjs');
+  assert.match(shell,/className = 'v4-global-header'/);
+  assert.match(shell,/v4-global-brand/);
+  assert.match(shell,/\/index\.html\?focus=search/);
+  assert.match(shell,/get\('focus'\) === 'search'/);
+  assert.match(css,/\.v4-global-header \{[\s\S]*position: fixed/);
+  assert.match(css,/font: 900 24px/);
+  assert.match(css,/\.v4-legacy-header \{ display: none !important; \}/);
+  assert.ok(!channel.includes('id="searchInput"'));
+  assert.match(builder,/applyGlobalShellTree\(outputDir\)/);
 });
 
 test('tool pages display full-menu tab as sole active destination', () => {

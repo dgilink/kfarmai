@@ -68,6 +68,27 @@ try {
       'newest approved text-only article may not be squeezed into image grid columns');
   });
 
+  test('all public HTML receives one versioned global shell and grouped cultivation topic', () => {
+    const htmlFiles = [];
+    const walk = directory => fs.readdirSync(directory, {withFileTypes:true}).forEach(entry => {
+      const target = path.join(directory, entry.name);
+      if (entry.isDirectory()) walk(target);
+      else if (entry.isFile() && entry.name.endsWith('.html')) htmlFiles.push(target);
+    });
+    walk(artifactDir);
+    assert.ok(htmlFiles.length > 100, 'public screen inventory');
+    for (const file of htmlFiles) {
+      const html = fs.readFileSync(file, 'utf8');
+      if (!/<\/head>/i.test(html)) continue;
+      assert.equal((html.match(/static\/css\/v4-shell\.css\?v=20261029-header1/g) || []).length, 1, file);
+      assert.equal((html.match(/static\/js\/v4-shell\.js\?v=20261029-header1/g) || []).length, 1, file);
+    }
+    const kb = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
+    assert.equal((kb.match(/data-category="재배노하우"/g) || []).length, 1);
+    assert.ok(!kb.includes('data-category="식량작물·재배노하우"'));
+    assert.ok(!kb.includes('data-category="식물병·재배노하우"'));
+  });
+
   test('source KB index fallback is also readable before artifact build', () => {
     const source = fs.readFileSync(path.join(repoRoot, 'kb/index.html'), 'utf8');
     const region = source.split('<div id="kbGrid" class="kb-grid" aria-live="polite">')[1]?.split('</div>')[0] || '';

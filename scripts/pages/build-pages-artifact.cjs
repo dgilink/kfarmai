@@ -8,7 +8,8 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=20261028-menu1" defer data-kfarmai-presentation="v4-1"></script>');
+const shellVersion = '20261029-header1';
+const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
 // ONLY to the generated public artifact; immutable approval source stays intact.
@@ -251,7 +252,8 @@ if (kbTopicsAt < 0 || kbIndexWithCards.indexOf(kbTopicsStart, kbTopicsAt + kbTop
 }
 const kbTopicsEnd = kbIndexWithCards.indexOf('</div>', kbTopicsAt + kbTopicsStart.length);
 if (kbTopicsEnd < 0) throw new Error('KB topic badge boundary is incomplete.');
-const kbTopicNames = [...new Set(kbItems.map(item => item.category).filter(Boolean))].sort();
+const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
+const kbTopicNames = [...new Set(kbItems.map(item => kbTopicKey(item.category)).filter(Boolean))].sort();
 const kbTopicButtons = [['', '전체'], ...kbTopicNames.map(name => [name, name])]
   .map(([value, label], index) => '<button class="kb-topic" type="button" data-category="' +
     escapeHtml(value) + '" aria-pressed="' + (index === 0 ? 'true' : 'false') + '">' +
@@ -279,6 +281,40 @@ const cards = homeItems.slice(0, 4).map(item => {
 fs.writeFileSync(homePath,
   `${homeSource.slice(0, startAt)}<div class="home-kb-cards" id="homeKbCards" aria-live="polite" data-kb-static="1">${cards}${homeSource.slice(endAt)}`,
   'utf8');
+
+// Every public screen receives the same fixed text header and search route.
+// Existing pages may already reference the shell; normalize their cache key
+// instead of adding duplicate assets. Approved KB source bytes remain unchanged
+// because this runs only against the generated Pages artifact.
+const shellCssHref = `/static/css/v4-shell.css?v=${shellVersion}`;
+const shellJsSrc = `/static/js/v4-shell.js?v=${shellVersion}`;
+function applyGlobalShellToHtml(filePath) {
+  let html = fs.readFileSync(filePath, 'utf8');
+  // Search-engine ownership verification files use an .html suffix but are not
+  // documents or screens and must remain byte-minimal.
+  if (!/<\/head>/i.test(html)) return;
+  html = html
+    .replace(/\/?static\/css\/v4-shell\.css\?v=[^"']+/g, shellCssHref)
+    .replace(/\/?static\/js\/v4-shell\.js\?v=[^"']+/g, shellJsSrc)
+    .replace(/\/?static\/js\/kb-discovery\.js\?v=[^"']+/g, '/static/js/kb-discovery.js?v=20261029-topics2');
+  const assets = [];
+  if (!/static\/css\/v4-shell\.css/i.test(html)) {
+    assets.push(`<link rel="stylesheet" href="${shellCssHref}" data-kfarmai-global-shell="1">`);
+  }
+  if (!/static\/js\/v4-shell\.js/i.test(html)) {
+    assets.push(`<script src="${shellJsSrc}" defer data-kfarmai-global-shell="1"></script>`);
+  }
+  if (assets.length) html = html.replace(/<\/head>/i, assets.join('') + '</head>');
+  fs.writeFileSync(filePath, html, 'utf8');
+}
+function applyGlobalShellTree(directory) {
+  for (const entry of fs.readdirSync(directory, {withFileTypes:true})) {
+    const target = path.join(directory, entry.name);
+    if (entry.isDirectory()) applyGlobalShellTree(target);
+    else if (entry.isFile() && entry.name.endsWith('.html')) applyGlobalShellToHtml(target);
+  }
+}
+applyGlobalShellTree(outputDir);
 
 function countFiles(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).reduce(

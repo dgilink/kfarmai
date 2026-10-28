@@ -128,7 +128,8 @@ test('search includes title content crop region and tags', () => {
 });
 test('category page consumes the related-search query', () => {
   assert.match(channel, /keyword=\(params\.get\('q'\)\|\|''\)\.trim\(\)/);
-  assert.match(channel, /searchInput'\)\.value=keyword/);
+  assert.doesNotMatch(channel, /id="searchInput"/);
+  assert.match(channel, /const channelSearch=document\.getElementById\('searchInput'\)/);
 });
 test('old Render search is documented outside core route', () => assert.match(contract, /과거 Render 검색 API는 V3 홈의 기본 검색 경로가 아니다/));
 test('responsive stylesheet removes fixed phone width on desktop', () => {

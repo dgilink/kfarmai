@@ -24,8 +24,47 @@
     community: '<path d="M4 4h16v12H9l-5 4z"/>',
     knowledge: '<path d="M3 4h8a3 3 0 0 1 3 3v13a3 3 0 0 0-3-3H3zM21 4h-4a3 3 0 0 0-3 3v13a3 3 0 0 1 3-3h4z"/>',
     menu: '<path d="M3 6h18M3 12h18M3 18h18"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    account: '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"/>',
   };
   const icon = key => `<svg class="v4-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[key]}</svg>`;
+  const isHome = active === 'home';
+  const legacyHeaders = [...document.querySelectorAll([
+    'body > header:not(.hero):not(.print-report-head)', 'body > .app > header:not(.hero)', 'body > .phone > header',
+    'body > .wrap > header', 'body > .container > header'
+  ].join(','))];
+  const globalHeader = document.createElement('header');
+  globalHeader.className = 'v4-global-header';
+  globalHeader.dataset.v4GlobalHeader = '';
+  const globalTop = document.createElement('div');
+  globalTop.className = 'v4-global-header-inner';
+  globalTop.innerHTML = '<a class="v4-global-brand" href="/index.html" aria-label="kFarmAI 홈">kFarmAI</a>' +
+    '<nav class="v4-global-actions" aria-label="빠른 메뉴">' +
+    (isHome ? '' : '<a class="v4-global-action v4-global-search-action" href="/index.html?focus=search" aria-label="검색">' + icon('search') + '</a>') +
+    '<a class="v4-global-action" href="/index.html?panel=my" aria-label="계정">' + icon('account') + '</a></nav>';
+  globalHeader.append(globalTop);
+  const homeSearch = isHome ? document.getElementById('searchBox') : null;
+  if (homeSearch) {
+    homeSearch.classList.add('v4-global-search');
+    globalHeader.append(homeSearch);
+  }
+  document.body.prepend(globalHeader);
+  document.body.classList.add('v4-global-header-ready');
+  if (isHome) document.body.classList.add('v4-global-home');
+  for (const header of legacyHeaders) {
+    if (header !== globalHeader && !header.contains(homeSearch)) header.classList.add('v4-legacy-header');
+  }
+  document.querySelectorAll('.hero > .topbar, header img[src*="kfarmai-logo"], .brand img[src*="kfarmai-logo"], .logo img[src*="kfarmai-logo"]').forEach(node => {
+    if (node.matches('.topbar')) node.classList.add('v4-legacy-header');
+    else node.remove();
+  });
+  if (isHome && new URLSearchParams(location.search).get('focus') === 'search') {
+    requestAnimationFrame(() => {
+      const input = document.getElementById('globalSearch');
+      input?.focus({preventScroll:true});
+      input?.select?.();
+    });
+  }
   const nav = document.createElement('nav');
   nav.className = 'v4-nav';
   nav.dataset.v4ShellNav = '';
