@@ -51,7 +51,7 @@ test('shared CSS prevents rounded tool elements and preserves price tab layout',
   assert.ok(!/rgba\([^\n]*gradient\(/.test(css));
 });
 
-test('agricultural information list leaves search only on the home screen', () => {
+test('agricultural information list leaves search on home and uses topic badges', () => {
   const kb=read('kb/index.html');
   const home=read('index.html');
   const discovery=read('static/js/kb-discovery.js');
@@ -59,11 +59,13 @@ test('agricultural information list leaves search only on the home screen', () =
   assert.ok(!kb.includes('id="kbCategory"'));
   assert.ok(!kb.includes('class="kb-controls"'));
   assert.ok(!kb.includes('aria-label="검색"'));
-  assert.match(kb,/class="kb-keywords"/);
-  for (const phrase of ['공식자료 기반','현장 핵심 정리','출처·확인일 제공']) assert.ok(kb.includes(phrase));
+  assert.match(kb,/id="kbTopics" class="kb-topics"/);
+  assert.match(kb,/class="kb-topic"/);
+  assert.ok(kb.includes('data-category="" aria-pressed="true">전체'));
   assert.ok(home.includes('id="globalSearch"'));
   assert.match(discovery,/search\?\.value/);
-  assert.match(discovery,/category\?\.value/);
+  assert.match(discovery,/selectedCategory/);
+  assert.match(discovery,/renderTopics/);
 });
 
 test('tool pages display full-menu tab as sole active destination', () => {

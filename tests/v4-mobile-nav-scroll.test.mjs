@@ -331,10 +331,22 @@ try {
     const kbLayout = await evaluate(`(() => {
       const arrow=getComputedStyle(document.querySelector('.kb-list-arrow'));
       const title=getComputedStyle(document.querySelector('.kb-card strong'));
-      const badges=[...document.querySelectorAll('.kb-keywords span')];
-      return {search:!!document.getElementById('kbSearch'),category:!!document.getElementById('kbCategory'),searchAction:!!document.querySelector('[aria-label="검색"]'),badges:badges.length,badgesFit:badges.every(node=>node.getBoundingClientRect().right<=innerWidth+1),arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
+      const badges=[...document.querySelectorAll('.kb-topic')];
+      return {search:!!document.getElementById('kbSearch'),category:!!document.getElementById('kbCategory'),searchAction:!!document.querySelector('[aria-label="검색"]'),badges:badges.length,badgesFit:badges.every(node=>node.getBoundingClientRect().right<=innerWidth+1),active:badges.filter(node=>node.getAttribute('aria-pressed')==='true').length,arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
     })()`);
-    assert.deepEqual(kbLayout, {search:false,category:false,searchAction:false,badges:3,badgesFit:true,arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'}, `${width}px KB list uses keyword badges without duplicate search controls`);
+    assert.equal(kbLayout.search,false,`${width}px KB search field removed`);
+    assert.equal(kbLayout.category,false,`${width}px KB select removed`);
+    assert.equal(kbLayout.searchAction,false,`${width}px KB search icon removed`);
+    assert.ok(kbLayout.badges>=3&&kbLayout.badgesFit&&kbLayout.active===1,`${width}px KB topic badges fit with one active`);
+    assert.deepEqual({arrowMode:kbLayout.arrowMode,arrowWrap:kbLayout.arrowWrap,titleWrap:kbLayout.titleWrap},{arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'},`${width}px KB stable rows`);
+    const topicResult=await evaluate(`(() => {
+      const button=[...document.querySelectorAll('.kb-topic')].find(node=>node.dataset.category);
+      button.click();
+      const categories=[...document.querySelectorAll('#kbGrid .kb-card:not([hidden]) small')].map(node=>node.textContent.trim());
+      return {selected:button.dataset.category,count:categories.length,allMatch:categories.every(value=>value===button.dataset.category),active:document.querySelectorAll('.kb-topic[aria-pressed="true"]').length};
+    })()`);
+    assert.ok(topicResult.count>=1&&topicResult.allMatch&&topicResult.active===1,`${width}px topic badge filters approved articles`);
+    await evaluate("document.querySelector('.kb-topic[data-category=\"\"]')?.click()");
     await contentSwipeAt(.5, 'left');
     const knowledgeMenuState = await evaluate(`({hidden:v4AllMenu.hidden,trace:window.__swipeTrace,path:location.pathname,h1:document.querySelector('h1')?.getBoundingClientRect().toJSON()})`);
     assert.equal(knowledgeMenuState.hidden, false, `${width}px knowledge to menu ${JSON.stringify(knowledgeMenuState)}`);

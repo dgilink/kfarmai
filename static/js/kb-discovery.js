@@ -5,7 +5,7 @@
   if (!indexGrid && !homeGrid) return;
   if (!indexGrid && homeGrid?.dataset.kbStatic === '1') return;
   const search = document.getElementById('kbSearch');
-  const category = document.getElementById('kbCategory');
+  const topics = document.getElementById('kbTopics');
   const status = document.getElementById('kbStatus');
   // Only approved, already-published KB media may be used for the home lead.
   const homeImages = Object.freeze({
@@ -74,11 +74,25 @@
     return link;
   };
   let items = [];
+  let selectedCategory = '';
   let initialIndexDraw = true;
+  function renderTopics() {
+    if (!topics) return;
+    const categories = [...new Set(items.map(item => item.category).filter(Boolean))].sort();
+    const rows = [['', '전체'], ...categories.map(name => [name, name])];
+    topics.replaceChildren(...rows.map(([value, label]) => {
+      const button = document.createElement('button');
+      button.className = 'kb-topic';
+      button.type = 'button';
+      button.dataset.category = value;
+      button.setAttribute('aria-pressed', String(value === selectedCategory));
+      button.textContent = label;
+      return button;
+    }));
+  }
   function draw() {
     if (indexGrid) {
       const q = search?.value.trim().toLocaleLowerCase('ko') || '';
-      const selectedCategory = category?.value || '';
       const matches = items.filter(item =>
         (!selectedCategory || item.category === selectedCategory) &&
         (!q || `${item.title} ${item.category}`.toLocaleLowerCase('ko').includes(q)));
@@ -105,19 +119,30 @@
         homeImage: homeImages[safePath(value.path)] || ''
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
-      if (category) {
-        for (const name of [...new Set(items.map(item => item.category))].sort()) {
-          const option = document.createElement('option');
-          option.value = name;
-          option.textContent = name;
-          category.append(option);
-        }
-      }
+      renderTopics();
       draw();
     })
     .catch(() => {
       if (status) status.textContent = '목록을 불러오지 못했습니다. 위 공개 글을 바로 확인하거나 잠시 후 다시 시도하세요.';
     });
   if (search) search.addEventListener('input', draw);
-  if (category) category.addEventListener('change', draw);
+  if (topics) topics.addEventListener('click', event => {
+    const button = event.target.closest('.kb-topic');
+    if (!button || !topics.contains(button)) return;
+    selectedCategory = button.dataset.category || '';
+    for (const node of topics.querySelectorAll('.kb-topic')) {
+      node.setAttribute('aria-pressed', String((node.dataset.category || '') === selectedCategory));
+    }
+    if (!items.length && indexGrid) {
+      let visible = 0;
+      for (const row of indexGrid.querySelectorAll('.kb-card')) {
+        const matches = !selectedCategory || row.querySelector('small')?.textContent.trim() === selectedCategory;
+        row.hidden = !matches;
+        if (matches) visible += 1;
+      }
+      if (status) status.textContent = `${visible}개 참고자료`;
+      return;
+    }
+    draw();
+  });
 })();

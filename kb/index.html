@@ -34,8 +34,9 @@
     button, .btn, .chip, .tag-chip, .hash-tag, .category-badge, .cta-button, .related-questions a { word-break: keep-all; white-space: nowrap; }
     .tag-chip, .hash-tag { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
     h1 { margin:0 0 14px; font-size:clamp(27px,4vw,40px); line-height:1.1; letter-spacing:-.055em; }
-    .kb-keywords { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; }
-    .kb-keywords span { display:inline-flex; align-items:center; min-height:28px; padding:4px 8px; border:1px solid #c9d8cc; border-radius:999px; background:#fff; color:#126c43; font-size:11px; font-weight:800; line-height:1.2; white-space:nowrap; }
+    .kb-topics { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; }
+    .kb-topic { display:inline-flex; align-items:center; min-height:32px; padding:5px 9px; border:1px solid #c9d8cc; border-radius:999px; background:#fff; color:#126c43; font:inherit; font-size:11px; font-weight:800; line-height:1.2; white-space:nowrap; cursor:pointer; }
+    .kb-topic[aria-pressed="true"] { border-color:#126c43; background:#126c43; color:#fff; }
     .kb-grid { display:block; border-top:2px solid #17202a; }
     body.kb-index-page .kb-card { display:grid; grid-template-columns:88px minmax(0,1fr) 20px; align-items:center; gap:12px; min-height:78px; padding:10px 2px; border:0; border-bottom:1px solid #d8ded9; border-radius:0; background:#fff; color:#17202a; box-shadow:none; text-decoration:none; }
     .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 20px; min-height:64px; }
@@ -67,8 +68,12 @@
   </header>
   <main>
     <h1>농업정보</h1>
-    <div class="kb-keywords" aria-label="농업정보 핵심 안내">
-      <span>공식자료 기반</span><span>현장 핵심 정리</span><span>출처·확인일 제공</span>
+    <div id="kbTopics" class="kb-topics" aria-label="농업정보 주제 선택">
+      <button class="kb-topic" type="button" data-category="" aria-pressed="true">전체</button>
+      <button class="kb-topic" type="button" data-category="과수·수확후관리" aria-pressed="false">과수·수확후관리</button>
+      <button class="kb-topic" type="button" data-category="식량작물·재배노하우" aria-pressed="false">식량작물·재배노하우</button>
+      <button class="kb-topic" type="button" data-category="식물병·재배노하우" aria-pressed="false">식물병·재배노하우</button>
+      <button class="kb-topic" type="button" data-category="스마트팜" aria-pressed="false">스마트팜</button>
     </div>
     <div id="kbGrid" class="kb-grid" aria-live="polite">
       <a class="kb-card is-text-only" href="/kb/pear-harvest-sorting-cold-storage-five-checks.html"><span class="kb-list-copy"><small>과수·수확후관리</small><strong>수확한 배 오래 보관하려면? 저장온도 0℃·습도 85~90%와 선별 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
@@ -79,6 +84,6 @@
     <p id="kbStatus">최근 게시된 참고자료를 확인하고 있습니다.</p>
     <noscript><p>목록 검색에는 JavaScript가 필요합니다. 위 공개 글은 바로 열 수 있습니다.</p></noscript>
   </main>
-  <script src="/static/js/kb-discovery.js?v=20261027-finalmobile1" defer></script>
+  <script src="/static/js/kb-discovery.js?v=20261028-topics1" defer></script>
 </body>
 </html>
