@@ -1971,7 +1971,7 @@
     }
   </style>
   <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
-  <link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261028-menu1">
+  <link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261029-compact1">
   <script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
 </head>
 <body class="v4-page v4-detail-page v4-public-data-page">
@@ -1983,18 +1983,10 @@
         </a>
         <a class="home-link" href="index.html">홈</a>
       </div>
-      <h1>공공데이터 확인</h1>
-      <p>
-        AI 참고 진단 결과를 공공정보로 교차 확인하세요.
-        작물명과 증상을 입력하면 확인할 공식정보를 정리해드립니다.
-      </p>
+      <h1>공공정보 확인</h1>
     </header>
 
     <div class="content">
-      <section class="section section--guide" aria-label="공공데이터 확인 안내 이미지">
-        <img class="guide-visual" src="/static/public-data/ai-public-data-guide.png" alt="AI 참고 진단을 공공데이터로 다시 확인하는 안내 이미지" />
-      </section>
-
       <section class="section section--match" id="matchResult" aria-label="공공데이터 매칭보고">
         <div id="matchContent" class="empty-state">
           직접 작물명과 증상을 입력하면 관련 공공정보 확인 경로를 정리해드립니다.
@@ -2005,7 +1997,6 @@
         <div class="section-head">
           <div>
             <h2 class="section-title" id="exampleTitle" data-icon="예시">바로 확인 예시</h2>
-            <p class="section-subtitle">현재 서비스 가능한 공공정보 매칭 사례입니다.</p>
           </div>
         </div>
         <div class="example-chips" id="exampleChips" aria-label="공공정보 확인 예시"></div>
@@ -2015,7 +2006,6 @@
         <div class="section-head">
           <div>
             <h2 class="section-title" id="officialTitle" data-icon="공식">공식자료 바로가기</h2>
-            <p class="section-subtitle">공식 시스템과 kFarmAI 참고 화면을 빠르게 확인하세요.</p>
           </div>
         </div>
         <div class="official-grid" id="officialInfoGrid"></div>
@@ -2025,7 +2015,6 @@
         <div class="section-head">
           <div>
             <h2 class="section-title" id="toolTitle" data-icon="입력">직접 확인하기</h2>
-            <p class="section-subtitle">전용 사례가 없으면 기본 공식정보 확인 경로를 제공합니다.</p>
           </div>
         </div>
         <form class="tool-form" id="publicDataForm" novalidate>
@@ -2058,13 +2047,12 @@
           </div>
         </div>
         <div class="notice">
-          AI 참고 진단과 공공정보 확인 결과는 참고자료입니다.
-          농약 사용 전 제품 라벨과 안전사용기준을 확인하고, 판단이 어렵다면 공식 상담창구에 문의하세요.
+          AI 분석은 참고용입니다. 농약 사용 전 제품 라벨과 안전사용기준을 확인하세요.
         </div>
       </section>
 
       <div class="return-area">
-        <a class="btn secondary" href="diagnosis.html">AI 참고 진단으로 돌아가기</a>
+        <a class="btn secondary" href="diagnosis.html">AI진단</a>
         <a class="btn" href="index.html">홈으로</a>
       </div>
     </div>
@@ -3015,7 +3003,7 @@
         <div class="report-print-footer">
           <strong>출처</strong> ${escapeHtml(labels)}<br>
           <strong>제공</strong> kfarmai.com<br>
-          이 보고서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 기사·공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
+          이 보고서는 AI진단 결과와 공공자료 확인 경로를 연결합니다. 실제 내용은 각 공식 원문에서 확인하세요.
         </div>
       `;
     }
@@ -3074,7 +3062,7 @@
           <footer class="print-report-footer">
             <strong>출처</strong> ${escapeHtml(renderSourceLine(sources))}<br>
             <strong>제공</strong> kfarmai.com<br>
-            본 문서는 AI 참고 진단 결과를 공공자료 확인 경로와 연결한 참고자료입니다. 공공자료 본문과 이미지는 저장하거나 재게시하지 않으며, 실제 내용은 각 공식 원문에서 확인하세요.
+            본 문서는 AI진단 결과와 공공자료 확인 경로를 연결합니다. 실제 내용은 각 공식 원문에서 확인하세요.
           </footer>
         </article>
       `;

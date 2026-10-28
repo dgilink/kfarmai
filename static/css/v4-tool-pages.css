@@ -146,3 +146,50 @@ body.kf-crop #detail .stage-image img { border:0; }
   body.kf-tool-page .content { width:calc(100% - 24px); }
   body.kf-tool-page .weather-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
+
+/* V4.3: compact mobile detail rows and remove repeated explanatory copy. */
+body.kf-tool-page .card.intro .hint,
+body.kf-tool-page .detail-head .sub,
+body.kf-tool-page .selected-crop span,
+body.kf-tool-page .context-card span,
+body.kf-tool-page .context-card small,
+body.kf-tool-page .photo-note,
+body.kf-tool-page .ai-image-caption { display:none !important; }
+
+body.kf-tool-page .content > .card:first-child { padding-top: 0; }
+body.kf-tool-page .crop-grid { gap: 6px; }
+body.kf-tool-page .crop-card { min-height: 62px; aspect-ratio: auto; padding: 8px 4px; }
+body.kf-tool-page .crop-icon { width: 28px; height: 28px; font-size: 20px; }
+body.kf-tool-page .crop-name { font-size: 11.5px; }
+body.kf-tool-page .context-controls { gap: 6px; margin: 8px 0; }
+body.kf-tool-page .context-card { padding: 10px 0; border-inline: 0; }
+body.kf-tool-page #detail .item > ul { margin-top: 6px; }
+body.kf-tool-page #detail .item > ul li { margin-bottom: 3px; line-height: 1.45; }
+body.kf-tool-page #detail .links { gap: 6px; }
+body.kf-tool-page #detail .links a { min-height: 40px; padding: 8px 6px; }
+body.kf-tool-page #detail .representative-image img { aspect-ratio: 16 / 9; max-height: 250px; }
+body.kf-tool-page #detail .official-image { min-width: 126px; max-width: 146px; }
+body.kf-tool-page #detail .safe { color: var(--kf-muted); font-size: 11.5px; }
+
+body.kf-weather .type-note,
+body.kf-weather .summary:not(.safe),
+body.kf-weather .point p,
+body.kf-weather .source-card p { display:none !important; }
+body.kf-weather .metric { padding: 10px; }
+body.kf-weather .weather-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+body.kf-weather .work-card,
+body.kf-weather .point,
+body.kf-weather .source-card { padding: 10px 0; border-inline: 0; }
+
+body.kf-subsidy .intro,
+body.kf-subsidy .safe { display:none !important; }
+body.kf-subsidy .subsidy-card { padding: 12px 0; border-inline: 0; }
+
+body.kf-market #detail .meta,
+body.kf-market #detail .chart-empty br { display:none; }
+body.kf-market .summary-card { padding: 8px; }
+
+@media (max-width:359px) {
+  body.kf-tool-page .crop-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  body.kf-weather .weather-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

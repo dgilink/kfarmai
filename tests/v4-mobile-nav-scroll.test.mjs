@@ -586,6 +586,40 @@ try {
     }
   }
 
+  // Exercise representative internal controls on every tool family. These are
+  // state-only interactions; upload pickers, external links and writes are not
+  // triggered by the visual regression test.
+  const internalScenarios = [
+    ['/agri-weather.html', `document.querySelectorAll('#areaChips .chip')[1]?.click();document.querySelectorAll('#typeChips .chip')[1]?.click();cropOptions.open=true;document.querySelector('#cropList .crop-chip')?.click()`],
+    ['/market-prices.html', `document.querySelectorAll('#typeTabs button.tab')[1]?.click();document.querySelector('#chips .chip')?.click()`],
+    ['/subsidy-calendar.html', `regionFilter.selectedIndex=Math.min(1,regionFilter.options.length-1);regionFilter.dispatchEvent(new Event('change',{bubbles:true}));resetButton.click()`],
+    ['/public-data.html', `document.querySelector('#exampleChips .chip')?.click()`],
+    ['/diagnosis.html', `diagExtra.open=true;symptomInput.value='잎이 노랗게 변함';symptomInput.dispatchEvent(new Event('input',{bubbles:true}))`],
+    ['/news_sub.html', `document.querySelectorAll('.kf-tab')[1]?.click()`],
+  ];
+  for (const [route, action] of internalScenarios) {
+    await navigate(route);
+    await evaluate(`(()=>{${action}})()`);
+    await delay(300);
+    const state=await evaluate(`(() => ({
+      overflow:document.documentElement.scrollWidth>innerWidth+1,
+      header:getComputedStyle(document.querySelector('.v4-global-header')).position,
+      nav:document.querySelectorAll('.v4-nav').length,
+      active:document.querySelectorAll('.v4-nav [aria-current="page"]').length,
+      visibleText:(document.body.innerText||'').trim().length>0,
+    }))()`);
+    assert.deepEqual(state,{overflow:false,header:'fixed',nav:1,active:1,visibleText:true},route+' internal controls keep the shared layout');
+    if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+      fs.mkdirSync(captureRoot,{recursive:true});
+      const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+      fs.writeFileSync(path.join(captureRoot,route.slice(1).replace(/[^a-z0-9.-]/gi,'_')+'-state-390.png'),Buffer.from(capture.data,'base64'));
+    }
+  }
+  await navigate('/mfg.html?category=smart-agriculture&area=smartfarm');
+  assert.deepEqual(await evaluate(`(() => ({selected:!!document.querySelector('.hub-card.is-active'),detail:/스마트팜/.test(document.getElementById('inputCategoryGuide')?.innerText||''),overflow:document.documentElement.scrollWidth>innerWidth+1}))()`),
+    {selected:true,detail:true,overflow:false},'mfg smart-agriculture detail uses the shared compact layout');
+
   // Exercise every visible full-menu link through its real click transition.
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/index.html');

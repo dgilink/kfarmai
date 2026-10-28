@@ -198,11 +198,11 @@
     <button class="chip" type="button" data-slug="cultivation-knowhow"><span>재배</span></button>
   </div>
   <section class="identity">
-    <div class="identity-title" id="hubTitle">질문, AI 참고 진단, 공공정보 확인을 한 흐름으로 연결합니다</div>
+    <div class="identity-title" id="hubTitle">질문과 AI진단</div>
     <div class="identity-text" id="hubDescription">식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.</div>
     <div class="identity-actions" id="hubActions">
       <a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문·경험 올리기</a>
-      <a href="diagnosis.html">AI 참고 진단</a>
+      <a href="diagnosis.html">AI진단</a>
     </div>
   </section>
 
@@ -362,7 +362,7 @@ const CHANNEL_HUB_DEFAULT = {
   description:'식물과 작물 증상을 자유롭게 묻고 비슷한 사례를 찾아보는 공간입니다.',
   topics:['잎이 말라요','잎이 노랗게 변해요','물을 줘도 시들어요','벌레가 보여요','사진으로 물어보기','글로 질문하기'],
   links:[
-    ['AI 참고 진단','diagnosis.html'],
+    ['AI진단','diagnosis.html'],
     ['비슷한 질문','channel.html?sort=symptom'],
     ['최신 질문','channel.html?sort=latest']
   ]
@@ -373,17 +373,17 @@ const CHANNEL_HUBS = {
   'plant-brag': {
     description:'실내식물, 화분, 물주기, 분갈이 고민을 나누는 공간입니다.',
     topics:['물주기','잎마름','과습','분갈이','벌레','햇빛 부족'],
-    links:[['AI 참고 진단','diagnosis.html'],['분갈이 참고','knowledge-hub.html?q=분갈이'],['상토·화분 정보','santo.html']]
+    links:[['AI진단','diagnosis.html'],['분갈이 참고','knowledge-hub.html?q=분갈이'],['상토·화분 정보','santo.html']]
   },
   'garden-class': {
     description:'실내식물, 화분, 물주기, 분갈이 고민을 나누는 공간입니다.',
     topics:['물주기','잎마름','과습','분갈이','벌레','햇빛 부족'],
-    links:[['AI 참고 진단','diagnosis.html'],['분갈이 참고','knowledge-hub.html?q=분갈이'],['상토·화분 정보','santo.html']]
+    links:[['AI진단','diagnosis.html'],['분갈이 참고','knowledge-hub.html?q=분갈이'],['상토·화분 정보','santo.html']]
   },
   'plant-meet': {
     description:'실내식물과 반려식물 관리 경험을 나누고 비슷한 고민을 찾아보는 공간입니다.',
     topics:['물주기','잎마름','과습','분갈이','벌레','햇빛 부족'],
-    links:[['AI 참고 진단','diagnosis.html'],['비슷한 질문','channel.html?sort=symptom'],['상토·화분 정보','santo.html']]
+    links:[['AI진단','diagnosis.html'],['비슷한 질문','channel.html?sort=symptom'],['상토·화분 정보','santo.html']]
   },
   'crop-consult': {
     description:'텃밭과 채소 재배 중 생기는 증상과 관리 고민을 확인하는 공간입니다.',
@@ -635,7 +635,7 @@ function renderChannelHub(){
   const diagnosisUrl=`diagnosis.html${currentChannel?.slug?`?category=${encodeURIComponent(currentChannel.slug)}`:''}`;
   document.getElementById('hubActions').innerHTML=archivedChannel
     ? '<a class="secondary" href="channel.html">현재 커뮤니티 보기</a>'
-    : `<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문·경험 올리기</a><a href="${diagnosisUrl}">AI 참고 진단</a>`;
+    : `<a class="secondary" href="javascript:void(0)" onclick="openWriteFlow()">질문·경험 올리기</a><a href="${diagnosisUrl}">AI진단</a>`;
   const writeButton=document.querySelector('.fab');
   if(writeButton)writeButton.hidden=Boolean(archivedChannel);
   document.getElementById('relatedLinks').innerHTML=hub.links.map(([label,url])=>`<a class="related-link" href="${withChannelQuery(url)}">${esc(label)}</a>`).join('');
@@ -926,10 +926,12 @@ function renderPostsNow(posts,totalCount,profileMap={},firstPage=false,category=
     hasMore=false;
     return;
   }
-  posts.forEach(post=>{
+  posts.forEach((post,index)=>{
     const slug=window.KFCommunity.categoryForPost(post,channels)?.slug||'';
     const imageUrls=normalizeImages(post.image_urls);
-    const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" loading="lazy">`:'';
+    const thumbLoading=index<2?'eager':'lazy';
+    const thumbPriority=index<2?' fetchpriority="high"':'';
+    const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" width="84" height="84" loading="${thumbLoading}"${thumbPriority}>`:'';
     const category=post.crop_tag||extractCategoryFromContent(post.content);
     const preview=stripPostPrefixes(post.content||'');
     const card=document.createElement('a');

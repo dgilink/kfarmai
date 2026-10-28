@@ -20,7 +20,7 @@ for (const [file, cls, title, ids] of pages) {
     assert.ok(html.includes('class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a>'));
     assert.ok(html.includes('<h1 class="kf-tool-title">' + title + '</h1>'));
     assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-menu1'));
-    assert.ok(html.includes('/static/css/v4-tool-pages.css?v=20261028-flat1'));
+    assert.ok(html.includes('/static/css/v4-tool-pages.css?v=20261029-compact1'));
     assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-menu1'));
     const header=html.match(/<header class="header">([\s\S]*?)<\/header>/);
     assert.ok(header, 'shared header must exist');
@@ -133,6 +133,33 @@ test('community first paint delays transient loading indicators but retains acce
   assert.match(channel,/COMMUNITY_FEED_CACHE_TTL=5\*60\*1000/);
 });
 
+test('home and community share stable first-paint feed cache and prioritize visible media', () => {
+  const home=read('index.html');
+  const channel=read('channel.html');
+  const builder=read('scripts/pages/build-pages-artifact.cjs');
+  assert.match(home,/COMMUNITY_FEED_CACHE_KEY = 'kfarmai_public_feed_v2'/);
+  assert.match(home,/restoreHomeFeedCache\(feed\)/);
+  assert.match(home,/card\.dataset\.postId/);
+  assert.match(home,/index<2\?'eager':'lazy'/);
+  assert.match(home,/fetchpriority="high"/);
+  assert.match(channel,/thumbLoading=index<2\?'eager':'lazy'/);
+  assert.match(channel,/width="84" height="84"/);
+  assert.match(builder,/width="92" height="62"/);
+});
+
+test('AI diagnosis uses the compact name and white responsive upload surface', () => {
+  const diagnosis=read('diagnosis.html');
+  const shell=read('static/js/v4-shell.js');
+  const css=read('static/css/v4-detail-pages.css');
+  assert.match(diagnosis,/<h1 class="v4-detail-title">AI진단<\/h1>/);
+  assert.ok(!diagnosis.includes('<span class="card-hd-txt">AI 참고 진단</span>'));
+  assert.match(diagnosis,/class="cam-placeholder-icon"/);
+  assert.match(diagnosis,/>사진 촬영<\/button>/);
+  assert.match(shell,/\['AI진단', '\/diagnosis\.html'\]/);
+  assert.match(css,/\.cam-wrap \{[\s\S]*background: #f7faf8 !important/);
+  assert.match(css,/\.card-hd,[\s\S]*display: none !important/);
+});
+
 const detailPages = [
   ['diagnosis.html', 'v4-diagnosis-page'],
   ['diagnosis-cases.html', 'v4-cases-page'],
@@ -150,7 +177,7 @@ test('full-menu destinations and their first detail pages use the responsive V4 
     assert.ok(html.includes('v4-page v4-detail-page'), file + ' detail page body');
     assert.ok(html.includes(pageClass), file + ' specific body class');
     assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-menu1'), file + ' shell CSS');
-    assert.ok(html.includes('/static/css/v4-detail-pages.css?v=20261028-menu1'), file + ' detail CSS');
+    assert.ok(html.includes('/static/css/v4-detail-pages.css?v=20261029-compact1'), file + ' detail CSS');
     assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-menu1'), file + ' shell JS');
     const scripts=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
     for (const [,attributes,source] of scripts) {

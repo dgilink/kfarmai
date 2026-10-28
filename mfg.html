@@ -117,7 +117,7 @@
   }
 </style>
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
-<link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261028-menu1">
+<link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261029-compact1">
 <script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
 </head>
 <body class="v4-page v4-detail-page v4-mfg-page">
@@ -255,8 +255,8 @@ const DEFAULT_CANONICAL_CATEGORIES = [
 ];
 
 const DEFAULT_MATERIAL_FLOW = [
-  { step: 1, name: '문제 확인', description: '식물·작물의 이상 증상, 재배환경, 최근 날씨 조건을 먼저 확인합니다.', next: ['AI 참고 진단', '농업날씨', '커뮤니티 질문'] },
-  { step: 2, name: '원인 후보 정리', description: 'AI 참고 진단으로 원인 후보와 확인 포인트를 정리합니다.', next: ['공공정보 확인', 'NCPMS 병해충 정보', '재배가이드'] },
+  { step: 1, name: '문제 확인', description: '이상 증상과 환경을 확인합니다.', next: ['AI진단', '농업날씨', '커뮤니티 질문'] },
+  { step: 2, name: '원인 후보 정리', description: '원인 후보를 정리합니다.', next: ['공공정보 확인', 'NCPMS 병해충 정보', '재배가이드'] },
   { step: 3, name: '필요 자재 종류 확인', description: '특정 제품이 아니라 상토, 비료, 관수, 작물보호, 도구 등 필요한 자재 종류를 확인합니다.', next: ['농자재·관리 카테고리'] },
   { step: 4, name: '공식 정보 확인', description: '안전사용기준, 병해충 정보, 재배기술 등 공식 정보를 함께 확인합니다.', next: ['공공정보 확인', '공식 링크'] },
   { step: 5, name: '지역 판매점·제조사 확인', description: '지역 판매점은 위치 기반 확인, 제조사는 공식 제품 정보 확인 용도로 구분합니다.', next: ['지역 판매점 확인', '제조사 공식 정보'] }
@@ -361,7 +361,7 @@ const DEFAULT_INPUT_CATEGORIES = [
       }
     ],
     cautions: ['실내 식물은 외부 날씨보다 실내 온도, 일조, 환기 영향을 함께 확인하세요.'],
-    relatedActions: ['AI 참고 진단에서 잎 색, 시듦, 흙 마름 상태를 정리해볼 수 있습니다.'],
+    relatedActions: ['AI진단에서 증상을 정리할 수 있습니다.'],
     dataSources: ['홈가드닝 관리 참고자료', '공식 제조사 사이트', '관련기관 공개 자료'],
     notice: '판매 유도가 아니라 식물 관리에 필요한 도구를 확인하는 참고 정보입니다.'
   },

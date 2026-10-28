@@ -4,8 +4,8 @@
 <link rel="icon" href="/static/kfarmai-logo-horizontal.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>공공자료 기반 AI 참고 진단사례 - kFarmAI</title>
-<meta name="description" content="kFarmAI 공공자료 기반 AI 참고 진단사례. AI가 원인 후보를 정리하고 공공데이터가 확인 기준을 제공합니다.">
+<title>AI진단 사례 - kFarmAI</title>
+<meta name="description" content="공공자료 확인 경로가 연결된 kFarmAI AI진단 사례입니다.">
 <meta name="theme-color" content="#1D9E75">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -331,7 +331,7 @@
   }
 </style>
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
-<link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261028-menu1">
+<link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261029-compact1">
 <script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
 </head>
 <body class="v4-page v4-detail-page v4-cases-page">
@@ -344,40 +344,23 @@
       <a class="home-link" href="index.html">홈</a>
     </div>
     <div class="headline">
-      <h1>공공자료 기반 AI 참고 진단사례</h1>
-      <p class="subtitle">AI가 원인 후보를 정리하고, 공공데이터가 확인 기준을 제공합니다.</p>
+      <h1>AI진단 사례</h1>
     </div>
     <nav class="top-links" aria-label="진단사례 관련 페이지">
       <a class="top-link" href="public-data.html">공공데이터 검증 보기</a>
-      <a class="top-link" href="diagnosis.html">AI 참고 진단하기</a>
+      <a class="top-link" href="diagnosis.html">AI진단</a>
       <a class="top-link" href="agri_map.html">농약사 지도 보기</a>
       <a class="top-link" href="channel.html">커뮤니티 질문하기</a>
-      <a class="top-link" href="contest-demo.html">공모전 데모 보기</a>
     </nav>
   </header>
 
   <section class="content">
-    <div class="summary-bar" aria-label="진단사례 요약">
-      <div class="summary-item">
-        <div class="summary-num">6</div>
-        <div class="summary-label">데모 사례</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num">공공</div>
-        <div class="summary-label">자료 기준</div>
-      </div>
-      <div class="summary-item">
-        <div class="summary-num">확인</div>
-        <div class="summary-label">중심 흐름</div>
-      </div>
-    </div>
-
     <div id="cases" class="cases">
       <div class="loading">진단사례를 불러오는 중입니다.</div>
     </div>
 
     <div class="page-disclaimer">
-      이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.
+      AI 분석은 참고용입니다. 농약 사용 전 등록 작물·병해충과 안전사용기준을 확인하세요.
     </div>
   </section>
 </main>
@@ -445,8 +428,7 @@ function escHtml(value) {
 
 function safeDisplayText(value) {
   return String(value || '')
-    .replace(new RegExp('AI ' + '진단', 'g'), 'AI 참고 진단')
-    .replace(/진단사례/g, '참고 진단사례');
+    .replace(/AI\s*(?:참고\s*)?진단/g, 'AI진단');
 }
 
 function listHtml(items) {
@@ -461,7 +443,7 @@ function actionsHtml(links) {
 
 function renderCase(item) {
   const candidates = (item.causeCandidates || []).map(name => `<span class="candidate">${escHtml(safeDisplayText(name))}</span>`).join('');
-  const disclaimer = '이 결과는 AI 참고 진단이며 최종 처방이 아닙니다. 농약 사용 전 등록 작물, 병해충, 사용시기, 희석배수, 안전사용기준을 반드시 확인하세요.';
+  const disclaimer = 'AI 분석은 참고용입니다. 농약 사용 전 등록 작물·병해충과 안전사용기준을 확인하세요.';
   return `
     <article class="case-card" id="${escHtml(item.caseId)}">
       <div class="case-top">
@@ -473,7 +455,7 @@ function renderCase(item) {
       <p class="demo-question">${escHtml(safeDisplayText(item.userQuestion))}</p>
 
       <div class="section">
-        <div class="section-title">AI 참고 진단 요약</div>
+        <div class="section-title">AI진단 요약</div>
         <p class="body-text">${escHtml(safeDisplayText(item.aiSummary))}</p>
       </div>
 
@@ -519,7 +501,7 @@ async function loadCases() {
     const cases = await res.json();
     casesEl.innerHTML = cases.map(renderCase).join('');
   } catch (err) {
-    casesEl.innerHTML = '<div class="error">현재 AI 참고 진단 결과를 불러오지 못했습니다. 증상 설명을 다시 확인하거나 공공정보 확인 메뉴를 이용해주세요.</div>' + FALLBACK_CASES.map(renderCase).join('');
+    casesEl.innerHTML = '<div class="error">AI진단 사례를 불러오지 못했습니다. 공공정보 확인 메뉴를 이용해주세요.</div>' + FALLBACK_CASES.map(renderCase).join('');
   }
 }
 
