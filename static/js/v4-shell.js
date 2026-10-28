@@ -33,22 +33,25 @@
     'body > header:not(.hero):not(.print-report-head)', 'body > .app > header:not(.hero)', 'body > .phone > header',
     'body > .wrap > header', 'body > .container > header'
   ].join(','))];
-  const globalHeader = document.createElement('header');
-  globalHeader.className = 'v4-global-header';
-  globalHeader.dataset.v4GlobalHeader = '';
-  const globalTop = document.createElement('div');
-  globalTop.className = 'v4-global-header-inner';
-  globalTop.innerHTML = '<a class="v4-global-brand" href="/index.html" aria-label="kFarmAI 홈">kFarmAI</a>' +
-    '<nav class="v4-global-actions" aria-label="빠른 메뉴">' +
-    (isHome ? '' : '<a class="v4-global-action v4-global-search-action" href="/index.html?focus=search" aria-label="검색">' + icon('search') + '</a>') +
-    '<a class="v4-global-action" href="/index.html?panel=my" aria-label="계정">' + icon('account') + '</a></nav>';
-  globalHeader.append(globalTop);
+  let globalHeader = document.querySelector('[data-v4-global-header]');
+  if (!globalHeader) {
+    globalHeader = document.createElement('header');
+    globalHeader.className = 'v4-global-header';
+    globalHeader.dataset.v4GlobalHeader = '';
+    const globalTop = document.createElement('div');
+    globalTop.className = 'v4-global-header-inner';
+    globalTop.innerHTML = '<a class="v4-global-brand" href="/index.html" aria-label="kFarmAI 홈">kFarmAI</a>' +
+      '<nav class="v4-global-actions" aria-label="빠른 메뉴">' +
+      (isHome ? '' : '<a class="v4-global-action v4-global-search-action" href="/index.html?focus=search" aria-label="검색">' + icon('search') + '</a>') +
+      '<a class="v4-global-action" href="/index.html?panel=my" aria-label="계정">' + icon('account') + '</a></nav>';
+    globalHeader.append(globalTop);
+    document.body.prepend(globalHeader);
+  }
   const homeSearch = isHome ? document.getElementById('searchBox') : null;
   if (homeSearch) {
     homeSearch.classList.add('v4-global-search');
     globalHeader.append(homeSearch);
   }
-  document.body.prepend(globalHeader);
   document.body.classList.add('v4-global-header-ready');
   if (isHome) document.body.classList.add('v4-global-home');
   for (const header of legacyHeaders) {
@@ -165,6 +168,21 @@
   window.addEventListener('popstate', closeMenu);
   nav.append(menuButton);
   document.body.append(menu, nav);
+  const warmTargets = ['/index.html', '/channel.html', '/kb/index.html'];
+  const warmNavigation = () => {
+    if (navigator.connection?.saveData) return;
+    for (const href of warmTargets) {
+      if (location.pathname === href || location.pathname === '/' && href === '/index.html') continue;
+      if (document.head.querySelector(`link[rel="prefetch"][href="${href}"]`)) continue;
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      link.as = 'document';
+      document.head.append(link);
+    }
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(warmNavigation, {timeout:1200});
+  else window.setTimeout(warmNavigation, 350);
 
   const tabIndex = { home: 0, community: 1, knowledge: 2 }[active];
   const swipeIgnoreSelector = [

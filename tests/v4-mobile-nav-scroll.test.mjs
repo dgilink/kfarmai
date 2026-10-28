@@ -449,6 +449,27 @@ try {
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
       }))()`);
       assert.deepEqual(flatUi,{loading:true,cropIcon:true}, route+' '+width+'px has no leftover rounded status or crop-icon shapes');
+      if (route === '/agri-weather.html') {
+        const compactWeather = await evaluate(`(() => ({
+          noDistrict:!document.getElementById('regionChips'),
+          chooser:!!document.getElementById('cropOptions'),
+          collapsed:!document.getElementById('cropOptions').open,
+          sources:document.querySelectorAll('.page-source').length,
+          longPanels:!!document.getElementById('workPanel')||!!document.getElementById('publicInfoPanel'),
+          updated:/업데이트/.test(document.getElementById('weatherPanel').innerText)
+        }))()`);
+        assert.deepEqual(compactWeather,{noDistrict:true,chooser:true,collapsed:true,sources:1,longPanels:false,updated:true},route+' '+width+'px compact weather contract');
+      }
+      if (route === '/market-prices.html') {
+        const compactMarket = await evaluate(`(() => ({
+          sources:document.querySelectorAll('.page-source').length,
+          duplicate:!!document.getElementById('fallbackList'),
+          verbose:/KAMIS 최근 조사자료|많이 확인하는 품목 참고|시장 흐름 참고자료입니다/.test(document.body.innerText),
+          updated:/업데이트/.test(document.getElementById('status').innerText),
+          rows:document.querySelectorAll('#list .price-card').length
+        }))()`);
+        assert.ok(compactMarket.sources===1&&!compactMarket.duplicate&&!compactMarket.verbose&&compactMarket.updated&&compactMarket.rows>=1,route+' '+width+'px compact market contract '+JSON.stringify(compactMarket));
+      }
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot, { recursive:true });

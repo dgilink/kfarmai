@@ -6,6 +6,10 @@
   --v4-surface: #f4f7f4;
   --v4-green: #126c43;
 }
+@view-transition { navigation: auto; }
+::view-transition-old(root),
+::view-transition-new(root) { animation-duration: .001s; }
+html { background: #fff; }
 
 body.v4-page {
   background: var(--v4-canvas);
@@ -257,6 +261,12 @@ body.v4-global-header-ready {
 }
 body.v4-global-header-ready.v4-global-home { --v4-global-header-height: 124px; }
 .v4-legacy-header { display: none !important; }
+body.v4-global-header-ready > header:not(.v4-global-header):not(.hero):not(.print-report-head),
+body.v4-global-header-ready > .app > header:not(.hero),
+body.v4-global-header-ready > .phone > header,
+body.v4-global-header-ready > .wrap > header,
+body.v4-global-header-ready > .container > header,
+body.v4-global-header-ready .hero > .topbar { display: none !important; }
 .v4-global-header {
   position: fixed;
   z-index: 950;

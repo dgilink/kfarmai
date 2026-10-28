@@ -80,8 +80,10 @@ try {
     for (const file of htmlFiles) {
       const html = fs.readFileSync(file, 'utf8');
       if (!/<\/head>/i.test(html)) continue;
-      assert.equal((html.match(/static\/css\/v4-shell\.css\?v=20261029-header1/g) || []).length, 1, file);
-      assert.equal((html.match(/static\/js\/v4-shell\.js\?v=20261029-header1/g) || []).length, 1, file);
+      assert.equal((html.match(/static\/css\/v4-shell\.css\?v=20261029-stable1/g) || []).length, 1, file);
+      assert.equal((html.match(/static\/js\/v4-shell\.js\?v=20261029-stable1/g) || []).length, 1, file);
+      assert.equal((html.match(/data-v4-global-header/g) || []).length, 1, file);
+      assert.match(html,/<body\b[^>]*\bv4-global-header-ready\b/i,file);
     }
     const kb = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
     assert.equal((kb.match(/data-category="재배노하우"/g) || []).length, 1);

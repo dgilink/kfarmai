@@ -51,12 +51,17 @@ test('static weather and market fallbacks expose freshness', () => {
 test('weather fallback is not labeled as today or realtime', () => {
   const html = read('agri-weather.html');
   assert.doesNotMatch(html, /오늘 날씨요약|실시간 기상 연동/);
-  assert.match(html, /기준 저장 자료를 표시하고 있습니다/);
+  assert.match(html, /weather-updated/);
+  assert.match(html, /class="page-source">출처:/);
+  assert.doesNotMatch(html, /기준 저장 자료를 표시하고 있습니다/);
   assert.doesNotMatch(read('index.html'), /오늘의 농업 영상|최신 농업연구동향|오늘의 농업 이슈/);
 });
 
 test('KAMIS fallback and trend expose source date or unavailable state', () => {
-  assert.match(read('market-prices.html'), /실시간 데이터가 아닙니다/);
+  const html = read('market-prices.html');
+  assert.match(html, /market-updated/);
+  assert.match(html, /class="page-source">출처:/);
+  assert.doesNotMatch(html, /실시간 데이터가 아닙니다|KAMIS 최근 조사자료/);
   assert.match(worker, /status:\s*PROVIDER_STATUS\.UNAVAILABLE/);
   assert.match(worker, /errorCode:\s*type === 'auction' \? 'auction_endpoint_pending' : 'period_api_pending'/);
 });
