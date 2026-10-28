@@ -391,6 +391,13 @@ try {
         };
       })()`);
       assert.deepEqual(toolUi,{text:'KFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+        const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+        fs.mkdirSync(captureRoot, { recursive:true });
+        const capture = await socket.send('Page.captureScreenshot', { format:'png', captureBeyondViewport:false });
+        const name = route.slice(1).replace(/[^a-z0-9.-]/gi, '_');
+        fs.writeFileSync(path.join(captureRoot, name + '-390.png'), Buffer.from(capture.data, 'base64'));
+      }
     }
   }
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
