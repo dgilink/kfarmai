@@ -203,6 +203,44 @@ const endAt = homeSource.indexOf('</div>', startAt + homeStart.length);
 if (endAt < 0) throw new Error('Home KB card boundary is incomplete.');
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char =>
   ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
+
+// Generate the KB listing from the *verified approved registry*, not from
+// hand-written fallback cards. All rows have the exact same 2/3-column DOM
+// structure before JS loads, including the newest article and text-only rows.
+const kbIndexPath = path.join(outputDir, 'kb', 'index.html');
+const kbIndexSource = fs.readFileSync(kbIndexPath, 'utf8');
+const kbIndexStart = '<div id="kbGrid" class="kb-grid" aria-live="polite">';
+const kbStartAt = kbIndexSource.indexOf(kbIndexStart);
+if (kbStartAt < 0 || kbIndexSource.indexOf(kbIndexStart, kbStartAt + kbIndexStart.length) >= 0) {
+  throw new Error('KB index listing boundary is not unique.');
+}
+const kbEndAt = kbIndexSource.indexOf('</div>', kbStartAt + kbIndexStart.length);
+if (kbEndAt < 0) throw new Error('KB index listing boundary is incomplete.');
+// Media is limited to approved, local, pre-existing public article assets.
+const kbListMedia = Object.freeze({
+  '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
+  '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
+  '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
+  '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
+});
+const kbIndexCards = kbItems.map(item => {
+  const image = kbListMedia[item.path];
+  if (image && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
+    throw new Error('Approved KB list image missing: ' + image);
+  }
+  const thumb = image ? '<img class="kb-list-thumb" src="' + image +
+    '" alt="" loading="lazy" decoding="async">' : '';
+  const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) +
+    '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
+  return '<a class="kb-card' + (image ? '' : ' is-text-only') +
+    '" href="' + item.path + '">' + thumb + copy +
+    '<span class="kb-list-arrow" aria-hidden="true">›</span></a>';
+}).join('\n      ');
+const kbIndexStaticStart = kbIndexStart.slice(0, -1) + ' data-kb-static="1">';
+fs.writeFileSync(kbIndexPath, kbIndexSource.slice(0, kbStartAt) +
+  kbIndexStaticStart + '\n      ' + kbIndexCards + '\n    ' +
+  kbIndexSource.slice(kbEndAt), 'utf8');
+
 // The home lead may use only media already declared by an approved public article.
 // No image is invented for NO_IMAGE content.
 const homeLeadMedia = Object.freeze({
