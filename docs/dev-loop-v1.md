@@ -23,7 +23,7 @@ Open Warp (as PowerShell). Start from your existing original KFarmAI worktree; D
 cd "C:\Users\user\PERSONAL\dev\kfarmai-v4-phase7-20261024"
 git status -sb
 git remote -v
-git fetch origin automation/dev-loop-v1-20261028
+git fetch origin "refs/heads/automation/dev-loop-v1-20261028:refs/remotes/origin/automation/dev-loop-v1-20261028"
 git worktree add -b preview/devloop-first-run "C:\Users\user\PERSONAL\dev\kfarmai-devloop-first-run" origin/automation/dev-loop-v1-20261028
 cd "C:\Users\user\PERSONAL\dev\kfarmai-devloop-first-run"
 node --version
@@ -44,7 +44,7 @@ Or run verification with no Codex modifications:
 pwsh -NoProfile -File .\scripts\dev-loop.ps1 -VerifyOnly -Full
 ~~~
 
-The report is saved to your system temporary directory as kfarmai-dev-loop-v1-report.json. The Codex activity log, when present, is local only. The script never stages, commits, pushes or deploys.
+The report is saved to your system temporary directory as kfarmai-dev-loop-v1-report.json. On failures, the locally saved redacted diagnostic log is kfarmai-dev-loop-v1-failures.log. The report separates CORE_PASS/FAIL from FULL_PASS/FAIL/NOT_RUN; full tests are not silently counted as passed. Never publish raw local diagnostic logs or credentials. The Codex activity log, when present, is local only. The script never stages, commits, pushes or deploys.
 
 ## Pull request process
 
