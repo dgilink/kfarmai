@@ -74,13 +74,18 @@
     return link;
   };
   let items = [];
+  let initialIndexDraw = true;
   function draw() {
     if (indexGrid) {
       const q = search.value.trim().toLocaleLowerCase('ko');
       const matches = items.filter(item =>
         (!category.value || item.category === category.value) &&
         (!q || `${item.title} ${item.category}`.toLocaleLowerCase('ko').includes(q)));
-      indexGrid.replaceChildren(...matches.map(item => card(item, true)));
+      // The Pages artifact already contains the complete approved list. Keep its
+      // first-paint nodes (and in-progress image loads) until a real filter action.
+      const keepServerList = initialIndexDraw && indexGrid.dataset.kbStatic === '1' && !q && !category.value;
+      if (!keepServerList) indexGrid.replaceChildren(...matches.map(item => card(item, true)));
+      initialIndexDraw = false;
       status.textContent = matches.length ? `${matches.length}개 참고자료` :
         '일치하는 글이 없습니다. 검색어를 바꿔보세요.';
     }
