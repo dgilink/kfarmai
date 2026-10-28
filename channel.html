@@ -154,6 +154,18 @@
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-finalmobile1">
 <link rel="stylesheet" href="/static/css/v4-1-lists.css">
 <link rel="stylesheet" href="/static/css/v4-1-main.css?v=20261027-finalmobile1">
+<style>
+  /* Keep initial community geometry stable; avoid a flash for fast replies. */
+  body.community-list-page #postList { min-height:78px; }
+  body.community-list-page .post-list-pending { min-height:78px; padding:12px 0; background:#fff; }
+  body.community-list-page .post-list-pending .spinner,
+  body.community-list-page .post-list-pending .loading-copy { animation:kf-loading-appear 0.15s ease 0.45s both; }
+  @keyframes kf-loading-appear { from { opacity:0; } to { opacity:1; } }
+  @media (prefers-reduced-motion: reduce) {
+    body.community-list-page .post-list-pending .spinner,
+    body.community-list-page .post-list-pending .loading-copy { animation:none; }
+  }
+</style>
 <script src="/static/js/v4-shell.js?v=20261027-finalmobile1" defer></script>
 </head>
 <body class="community-list-page v4-page">
@@ -199,7 +211,7 @@
   </section>
 
   <div class="status-line"><span id="resultLabel">최신 글</span><span id="resultCount"></span></div>
-  <main class="list" id="postList"><div class="loading"><span class="spinner"></span>불러오는 중...</div></main>
+  <main class="list" id="postList" aria-live="polite"><div class="loading post-list-pending" role="status"><span class="spinner" aria-hidden="true"></span><span class="loading-copy">불러오는 중...</span></div></main>
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
 
   <section class="hub-section question-hub" aria-label="채널 질문 모음">
@@ -733,54 +745,117 @@ function renderMiniPosts(wrap,posts,profileMap={}){
   wrap.innerHTML=posts.map(post=>`<a class="mini-post" href="${channelPostUrl(post.id)}"><div class="mini-title">${esc(post.title||'제목 없음')}</div><div class="mini-meta"><span>${esc(displayNameForRecord(post,profileMap))}</span><span>${esc(displayPostCategory(post))}</span><span>${commentCountLabel(post)}</span><span>조회 ${post.view_count||0}</span><span>${postLikeButton(post)}</span><span>${timeAgo(post.created_at)}</span></div></a>`).join('');
 }
 function applyKeywordSearch(){keyword=document.getElementById('searchInput').value.trim();resetAndLoad();}
-function resetAndLoad(){offset=0;hasMore=true;document.getElementById('postList').innerHTML='<div class="loading"><span class="spinner"></span>불러오는 중...</div>';loadPosts();}
+// Keep the touch target connected until the gesture ends. Removing the loading row
+// mid-swipe can prevent Chrome from delivering touchend to the document shell.
+let postListTouches=0;
+let pendingPostListUpdate=null;
+let postListTouchTimer=0;
+let postListRequestId=0;
+const postListElement=document.getElementById('postList');
+function finishPostListTouch(){
+  postListTouches=0;
+  clearTimeout(postListTouchTimer);
+  postListTouchTimer=0;
+  const update=pendingPostListUpdate;
+  pendingPostListUpdate=null;
+  update?.();
+}
+postListElement.addEventListener('touchstart',event=>{
+  postListTouches=event.touches.length;
+  clearTimeout(postListTouchTimer);
+  // A lost touchend must not leave the list frozen indefinitely.
+  postListTouchTimer=setTimeout(finishPostListTouch,10000);
+},{passive:true});
+function trackPostListTouch(event){
+  if(!postListTouches)return;
+  postListTouches=event.touches.length;
+  if(!postListTouches)finishPostListTouch();
+}
+document.addEventListener('touchend',trackPostListTouch,{passive:true});
+document.addEventListener('touchcancel',trackPostListTouch,{passive:true});
+document.addEventListener('touchstart',event=>{
+  if(postListTouches&&event.touches.length>1)postListTouches=event.touches.length;
+},{passive:true});
+window.addEventListener('pagehide',finishPostListTouch);
+window.addEventListener('blur',finishPostListTouch);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)finishPostListTouch();});
+function updatePostList(update,requestId=postListRequestId){
+  const currentUpdate=()=>{if(requestId===postListRequestId)update();};
+  if(postListTouches)pendingPostListUpdate=currentUpdate;
+  else currentUpdate();
+}
+const postListLoadingMarkup='<div class="loading post-list-pending" role="status"><span class="spinner" aria-hidden="true"></span><span class="loading-copy">불러오는 중...</span></div>';
+function resetAndLoad(){
+  postListRequestId++;
+  offset=0;hasMore=true;isLoading=false;
+  document.getElementById('moreLoader').style.display='none';
+  updatePostList(()=>{postListElement.innerHTML=postListLoadingMarkup;});
+  loadPosts();
+}
 async function loadPosts(){
-  if(isLoading||!hasMore)return;
+  if(isLoading||!hasMore||(offset>0&&pendingPostListUpdate))return;
+  const requestId=++postListRequestId;
+  const pageOffset=offset;
+  const firstPage=pageOffset===0;
+  const channel=currentChannel;
+  const category=activeCategory;
+  const search=keyword;
   isLoading=true;
-  document.getElementById('moreLoader').style.display=offset>0?'block':'none';
+  document.getElementById('moreLoader').style.display=pageOffset>0?'block':'none';
   try{
     let query=sb.from('posts').select('id,user_id,channel_id,category_id,title,content,crop_tag,tags,region_tag,image_urls,view_count,created_at,channels(name,slug),community_categories(name,slug)',{count:'exact'});
     if(archivedChannel)query=query.eq('channel_id',archivedChannel.id);
-    else if(currentChannel?.id)query=query.eq('category_id',currentChannel.id);
+    else if(channel?.id)query=query.eq('category_id',channel.id);
     else query=query.not('category_id','is',null);
-    query=applyPostFilters(query);
-    const pageSize=currentChannel?80:PAGE_SIZE;
-    query=query.order(listSortColumn(),{ascending:false}).range(offset,offset+pageSize-1);
+    query=applyPostFilters(query,search);
+    const pageSize=channel?80:PAGE_SIZE;
+    query=query.order(listSortColumn(),{ascending:false}).range(pageOffset,pageOffset+pageSize-1);
     const {data,count,error}=await query;
+    if(requestId!==postListRequestId)return;
     if(error)throw error;
-    const source=currentChannel?.id?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
+    const source=channel?.id?(data||[]):(data||[]).filter(postBelongsToCurrentChannel);
     const posts=await attachCommentCounts(source);
+    if(requestId!==postListRequestId)return;
     if(sortParam==='symptom')posts.sort((a,b)=>Number(b.same_symptom_count||0)-Number(a.same_symptom_count||0)||new Date(b.created_at||0)-new Date(a.created_at||0));
     const profileMap=await fetchProfileMap(posts.map(post=>post.user_id));
-    renderPosts(posts,(currentChannel||blockedUserIdsSet.size)?posts.length:(count||0),profileMap);
-    offset+=(data||[]).length;
+    if(requestId!==postListRequestId)return;
+    offset=pageOffset+(data||[]).length;
     hasMore=(data||[]).length===pageSize;
+    renderPosts(posts,(channel||blockedUserIdsSet.size)?posts.length:(count||0),profileMap,requestId,firstPage,category);
   }catch(e){
-    if(offset===0)document.getElementById('postList').innerHTML='<div class="empty">현재 커뮤니티 글을 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';
+    if(requestId===postListRequestId){
+      hasMore=false;
+      if(firstPage)updatePostList(()=>{postListElement.innerHTML='<div class="empty">현재 커뮤니티 글을 불러오지 못했습니다. 잠시 후 다시 확인해주세요.</div>';},requestId);
+    }
   }finally{
-    isLoading=false;
-    document.getElementById('moreLoader').style.display='none';
+    if(requestId===postListRequestId){
+      isLoading=false;
+      document.getElementById('moreLoader').style.display='none';
+    }
   }
 }
-function applyPostFilters(query){
-  if(keyword)query=query.or(`title.ilike.%${escapeLike(keyword)}%,content.ilike.%${escapeLike(keyword)}%,crop_tag.ilike.%${escapeLike(keyword)}%,region_tag.ilike.%${escapeLike(keyword)}%`);
+function applyPostFilters(query,search=keyword){
+  if(search)query=query.or(`title.ilike.%${escapeLike(search)}%,content.ilike.%${escapeLike(search)}%,crop_tag.ilike.%${escapeLike(search)}%,region_tag.ilike.%${escapeLike(search)}%`);
   return query;
 }
 function listSortColumn(){return sortParam==='popular'?'view_count':'created_at';}
-function renderPosts(posts,totalCount,profileMap={}){
+function renderPosts(posts,totalCount,profileMap={},requestId=postListRequestId,firstPage=offset===0,category=activeCategory){
+  updatePostList(()=>renderPostsNow(posts,totalCount,profileMap,firstPage,category),requestId);
+}
+function renderPostsNow(posts,totalCount,profileMap={},firstPage=false,category=activeCategory){
   const list=document.getElementById('postList');
-  posts=activeCategory?posts.filter(post=>extractCategoryFromContent(post.content)===activeCategory):posts;
+  posts=category?posts.filter(post=>extractCategoryFromContent(post.content)===category):posts;
   const label=document.getElementById('resultLabel');
   if(isMoreListMode){
     label.textContent=`${currentChannel?.name||'전체 채널'} · ${currentSortLabel()}`;
   }else if(currentChannel){
     label.textContent='이 채널의 최신 글';
   }else{
-    label.textContent=activeCategory||'최신 글';
+    label.textContent=category||'최신 글';
   }
-  document.getElementById('resultCount').textContent=`${activeCategory?posts.length:totalCount}개`;
-  if(offset===0)list.innerHTML='';
-  if(!posts.length&&offset===0){
+  document.getElementById('resultCount').textContent=`${category?posts.length:totalCount}개`;
+  if(firstPage)list.innerHTML='';
+  if(!posts.length&&firstPage){
     if(currentChannel?.slug){
       list.innerHTML='<div class="empty">아직 이 채널에 올라온 글이 없습니다.<br>첫 글을 남겨보세요.</div>';
       hasMore=false;
