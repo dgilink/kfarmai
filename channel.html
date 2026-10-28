@@ -154,6 +154,18 @@
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-finalmobile1">
 <link rel="stylesheet" href="/static/css/v4-1-lists.css">
 <link rel="stylesheet" href="/static/css/v4-1-main.css?v=20261027-finalmobile1">
+<style>
+  /* Keep initial community geometry stable; avoid a flash for fast replies. */
+  body.community-list-page #postList { min-height:78px; }
+  body.community-list-page .post-list-pending { min-height:78px; padding:12px 0; background:#fff; }
+  body.community-list-page .post-list-pending .spinner,
+  body.community-list-page .post-list-pending .loading-copy { animation:kf-loading-appear 0.15s ease 0.45s both; }
+  @keyframes kf-loading-appear { from { opacity:0; } to { opacity:1; } }
+  @media (prefers-reduced-motion: reduce) {
+    body.community-list-page .post-list-pending .spinner,
+    body.community-list-page .post-list-pending .loading-copy { animation:none; }
+  }
+</style>
 <script src="/static/js/v4-shell.js?v=20261027-finalmobile1" defer></script>
 </head>
 <body class="community-list-page v4-page">
@@ -199,7 +211,7 @@
   </section>
 
   <div class="status-line"><span id="resultLabel">최신 글</span><span id="resultCount"></span></div>
-  <main class="list" id="postList"><div class="loading"><span class="spinner"></span>불러오는 중...</div></main>
+  <main class="list" id="postList" aria-live="polite"><div class="loading post-list-pending" role="status"><span class="spinner" aria-hidden="true"></span><span class="loading-copy">불러오는 중...</span></div></main>
   <div class="loading" id="moreLoader" style="display:none"><span class="spinner"></span>더 불러오는 중...</div>
 
   <section class="hub-section question-hub" aria-label="채널 질문 모음">
@@ -772,11 +784,12 @@ function updatePostList(update,requestId=postListRequestId){
   if(postListTouches)pendingPostListUpdate=currentUpdate;
   else currentUpdate();
 }
+const postListLoadingMarkup='<div class="loading post-list-pending" role="status"><span class="spinner" aria-hidden="true"></span><span class="loading-copy">불러오는 중...</span></div>';
 function resetAndLoad(){
   postListRequestId++;
   offset=0;hasMore=true;isLoading=false;
   document.getElementById('moreLoader').style.display='none';
-  updatePostList(()=>{postListElement.innerHTML='<div class="loading"><span class="spinner"></span>불러오는 중...</div>';});
+  updatePostList(()=>{postListElement.innerHTML=postListLoadingMarkup;});
   loadPosts();
 }
 async function loadPosts(){
