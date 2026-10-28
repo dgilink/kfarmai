@@ -15,7 +15,7 @@
   <title>농업정보 | kFarmAI</title>
   <meta name="description" content="공식자료 출처와 확인일을 함께 살펴보는 kFarmAI 농업정보 목록입니다.">
   <link rel="canonical" href="https://kfarmai.com/kb/index.html">
-  <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261027-finalmobile1">
+  <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #fff; color: #17202a; line-height: 1.7; }
     * { box-sizing: border-box; }
@@ -34,8 +34,9 @@
     button, .btn, .chip, .tag-chip, .hash-tag, .category-badge, .cta-button, .related-questions a { word-break: keep-all; white-space: nowrap; }
     .tag-chip, .hash-tag { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
     h1 { margin:0 0 14px; font-size:clamp(27px,4vw,40px); line-height:1.1; letter-spacing:-.055em; }
-    .kb-controls { display:grid; grid-template-columns: 1fr minmax(130px,180px); gap:8px; margin: 0 0 18px; }
-    .kb-controls input, .kb-controls select { box-sizing:border-box; width:100%; min-width:0; height:44px; border:1px solid #b7c5ba; border-radius:0; padding:8px 12px; background:#fff; color:#17202a; font:inherit; }
+    .kb-topics { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 16px; }
+    .kb-topic { display:inline-flex; align-items:center; min-height:32px; padding:5px 9px; border:1px solid #c9d8cc; border-radius:999px; background:#fff; color:#126c43; font:inherit; font-size:11px; font-weight:800; line-height:1.2; white-space:nowrap; cursor:pointer; }
+    .kb-topic[aria-pressed="true"] { border-color:#126c43; background:#126c43; color:#fff; }
     .kb-grid { display:block; border-top:2px solid #17202a; }
     body.kb-index-page .kb-card { display:grid; grid-template-columns:88px minmax(0,1fr) 20px; align-items:center; gap:12px; min-height:78px; padding:10px 2px; border:0; border-bottom:1px solid #d8ded9; border-radius:0; background:#fff; color:#17202a; box-shadow:none; text-decoration:none; }
     .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 20px; min-height:64px; }
@@ -48,30 +49,31 @@
     #kbStatus { margin:12px 0 0; color:#68736b; font-size:12px; }
     @media(max-width:520px) {
       main { padding-top:20px; }
-      .kb-controls { grid-template-columns:minmax(0,1fr); }
       body.kb-index-page .kb-card { grid-template-columns:78px minmax(0,1fr) 18px; gap:10px; min-height:76px; padding:10px 2px; }
       body.kb-index-page .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 18px; min-height:62px; }
       .kb-list-thumb { width:78px; height:58px; }
       .kb-card strong { display:-webkit-box; overflow:hidden; line-height:1.4; white-space:normal; word-break:keep-all; overflow-wrap:break-word; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
     }
   </style>
-  <script src="/static/js/v4-shell.js?v=20261027-finalmobile1" defer></script>
+  <script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
 </head>
 <body class="kb-index-page v4-page">
   <header class="header">
     <div class="top">
       <a href="/index.html" aria-label="kFarmAI 홈"><img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI"></a>
       <div class="v41-top-actions" aria-label="빠른 메뉴">
-        <button class="v41-icon-button" type="button" onclick="document.getElementById('kbSearch')?.focus()" aria-label="검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m16 16 4 4"></path></svg></button>
         <a class="v41-icon-button" href="/index.html?panel=my" aria-label="계정"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"></path></svg></a>
       </div>
     </div>
   </header>
   <main>
     <h1>농업정보</h1>
-    <div class="kb-controls">
-      <input id="kbSearch" type="search" placeholder="제목·분류 검색" aria-label="농업정보 검색">
-      <select id="kbCategory" aria-label="농업정보 분류"><option value="">전체 분류</option></select>
+    <div id="kbTopics" class="kb-topics" aria-label="농업정보 주제 선택">
+      <button class="kb-topic" type="button" data-category="" aria-pressed="true">전체</button>
+      <button class="kb-topic" type="button" data-category="과수·수확후관리" aria-pressed="false">과수·수확후관리</button>
+      <button class="kb-topic" type="button" data-category="식량작물·재배노하우" aria-pressed="false">식량작물·재배노하우</button>
+      <button class="kb-topic" type="button" data-category="식물병·재배노하우" aria-pressed="false">식물병·재배노하우</button>
+      <button class="kb-topic" type="button" data-category="스마트팜" aria-pressed="false">스마트팜</button>
     </div>
     <div id="kbGrid" class="kb-grid" aria-live="polite">
       <a class="kb-card is-text-only" href="/kb/pear-harvest-sorting-cold-storage-five-checks.html"><span class="kb-list-copy"><small>과수·수확후관리</small><strong>수확한 배 오래 보관하려면? 저장온도 0℃·습도 85~90%와 선별 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
@@ -82,6 +84,6 @@
     <p id="kbStatus">최근 게시된 참고자료를 확인하고 있습니다.</p>
     <noscript><p>목록 검색에는 JavaScript가 필요합니다. 위 공개 글은 바로 열 수 있습니다.</p></noscript>
   </main>
-  <script src="/static/js/kb-discovery.js?v=20261027-finalmobile1" defer></script>
+  <script src="/static/js/kb-discovery.js?v=20261028-topics1" defer></script>
 </body>
 </html>

@@ -8,7 +8,7 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js" defer data-kfarmai-presentation="v4-1"></script>');
+const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=20261028-menu1" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
 // ONLY to the generated public artifact; immutable approval source stays intact.
@@ -240,6 +240,24 @@ const kbIndexStaticStart = kbIndexStart.slice(0, -1) + ' data-kb-static="1">';
 fs.writeFileSync(kbIndexPath, kbIndexSource.slice(0, kbStartAt) +
   kbIndexStaticStart + '\n      ' + kbIndexCards + '\n    ' +
   kbIndexSource.slice(kbEndAt), 'utf8');
+
+// Topic badges are generated from the same verified registry projection as the
+// list, so newly approved categories appear without a hand-maintained select.
+const kbTopicsStart = '<div id="kbTopics" class="kb-topics" aria-label="농업정보 주제 선택">';
+const kbIndexWithCards = fs.readFileSync(kbIndexPath, 'utf8');
+const kbTopicsAt = kbIndexWithCards.indexOf(kbTopicsStart);
+if (kbTopicsAt < 0 || kbIndexWithCards.indexOf(kbTopicsStart, kbTopicsAt + kbTopicsStart.length) >= 0) {
+  throw new Error('KB topic badge boundary is not unique.');
+}
+const kbTopicsEnd = kbIndexWithCards.indexOf('</div>', kbTopicsAt + kbTopicsStart.length);
+if (kbTopicsEnd < 0) throw new Error('KB topic badge boundary is incomplete.');
+const kbTopicNames = [...new Set(kbItems.map(item => item.category).filter(Boolean))].sort();
+const kbTopicButtons = [['', '전체'], ...kbTopicNames.map(name => [name, name])]
+  .map(([value, label], index) => '<button class="kb-topic" type="button" data-category="' +
+    escapeHtml(value) + '" aria-pressed="' + (index === 0 ? 'true' : 'false') + '">' +
+    escapeHtml(label) + '</button>').join('\n      ');
+fs.writeFileSync(kbIndexPath, kbIndexWithCards.slice(0, kbTopicsAt) + kbTopicsStart +
+  '\n      ' + kbTopicButtons + '\n    ' + kbIndexWithCards.slice(kbTopicsEnd), 'utf8');
 
 // The home lead may use only media already declared by an approved public article.
 // No image is invented for NO_IMAGE content.

@@ -51,8 +51,11 @@
 .news-sub-head { padding:14px 16px 0; border-bottom:1px solid #e8e8e8; background:#fff; }
 .news-sub-head .kf-tabs { position:static; top:auto; z-index:auto; padding:12px 0 8px !important; border-bottom:0; background:transparent; }
 </style>
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
+<link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261028-menu1">
+<script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
 </head>
-<body>
+<body class="v4-page v4-detail-page v4-news-page">
 
 <svg class="kf-icon-sprite" width="0" height="0" style="position:absolute;left:-9999px;overflow:hidden;" aria-hidden="true" focusable="false">
   <symbol id="nav-home" viewBox="0 0 24 24">
@@ -99,7 +102,7 @@
 
 <div class="news-sub-head">
   <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">NEWS & SUBSIDY</div>
-  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">관련소식</div>
+  <h1 style="font-size:clamp(27px,4vw,36px);font-weight:900;letter-spacing:-0.5px;margin:0;">관련소식</h1>
   <div class="kf-tabs" style="padding:12px 0 0;">
     <button class="kf-tab active" onclick="switchTab('subsidy',this)">📋 정부보조사업</button>
     <button class="kf-tab" onclick="switchTab('news',this)">📰 농업뉴스</button>

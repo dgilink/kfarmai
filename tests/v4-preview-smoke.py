@@ -40,6 +40,10 @@ def artifact_origin():
 origin = artifact_origin()
 pages = [
     "/index.html", "/channel.html", "/post.html", "/agri-info.html", "/kb/index.html",
+    "/agri-weather.html", "/market-prices.html", "/crop-calendar.html",
+    "/subsidy-calendar.html", "/diagnosis.html", "/diagnosis-cases.html",
+    "/public-data.html", "/agri_map.html", "/mfg.html", "/news_sub.html",
+    "/links.html", "/crop-guide.html", "/oauth/privacy/",
     "/kb/strawberry-small-smartfarm.html",
     "/kb/strawberry-winter-light-humidity-check.html",
     "/kb/greenhouse-heating-preflight-notes.html",

@@ -305,9 +305,9 @@ try {
       const agri=getComputedStyle(document.querySelector('.home-agri-summary-section'));
       const surfaces=[document.documentElement,document.body,...document.querySelectorAll('.phone,.pages-wrap,.pages,.page')].map(node=>getComputedStyle(node).backgroundColor);
       const square=[...document.querySelectorAll('.search,.v4-quick-actions>a,.v4-quick-actions>button,.home-kb-section,.home-kb-cards .kb-card,.recent-question-panel,.v3-community-feed .q-card,.post-tag,.community-side-card,.topic-tag-list a,.ai-compact-arrow,.home-agri-summary-section,.home-agri-summary-section .agri-summary-card,.home-agri-summary-section .agri-status,.home-agri-summary-section .agri-summary-more')].every(node=>getComputedStyle(node).borderRadius==='0px'&&getComputedStyle(node).boxShadow==='none');
-      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth,whiteSurfaces:surfaces.every(color=>color==='rgb(255, 255, 255)'),square,noSourceCopy:!/공식 출처는 글에서 확인|내용과 출처 확인/.test(homeKbCards.innerText)};
+      return {kbBackground:kb.backgroundColor,kbBorder:kb.borderTopWidth,feedRadius:feed.borderRadius,feedSide:feed.borderLeftWidth,agriRadius:agri.borderRadius,agriBorder:agri.borderTopWidth,whiteSurfaces:surfaces.every(color=>color==='rgb(255, 255, 255)'),square,homeSearch:!!document.getElementById('globalSearch'),noSourceCopy:!/공식 출처는 글에서 확인|내용과 출처 확인/.test(homeKbCards.innerText)};
     })()`);
-    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px',whiteSurfaces:true,square:true,noSourceCopy:true}, `${width}px flat white home presentation`);
+    assert.deepEqual(homePresentation, {kbBackground:'rgb(255, 255, 255)',kbBorder:'0px',feedRadius:'0px',feedSide:'0px',agriRadius:'0px',agriBorder:'0px',whiteSurfaces:true,square:true,homeSearch:true,noSourceCopy:true}, `${width}px flat white home presentation`);
     const beforeVertical = await evaluate('location.pathname');
     await touchSwipe('body');
     assert.equal(await evaluate('location.pathname'), beforeVertical, `${width}px vertical scroll does not switch tab`);
@@ -329,18 +329,30 @@ try {
     assert.equal(kbContract.intro, '', `${width}px KB intro removed`);
     assert.equal(kbContract.overflow, false, `${width}px KB no horizontal overflow`);
     const kbLayout = await evaluate(`(() => {
-      const controls=[kbSearch,kbCategory].map(node=>node.getBoundingClientRect());
       const arrow=getComputedStyle(document.querySelector('.kb-list-arrow'));
       const title=getComputedStyle(document.querySelector('.kb-card strong'));
-      return {controlsFit:controls.every(rect=>rect.left>=0&&rect.right<=innerWidth),arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
+      const badges=[...document.querySelectorAll('.kb-topic')];
+      return {search:!!document.getElementById('kbSearch'),category:!!document.getElementById('kbCategory'),searchAction:!!document.querySelector('[aria-label="검색"]'),badges:badges.length,badgesFit:badges.every(node=>node.getBoundingClientRect().right<=innerWidth+1),active:badges.filter(node=>node.getAttribute('aria-pressed')==='true').length,arrowMode:arrow.writingMode,arrowWrap:arrow.whiteSpace,titleWrap:title.whiteSpace};
     })()`);
-    assert.deepEqual(kbLayout, {controlsFit:true,arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'}, `${width}px KB stable mobile rows`);
-    const searchResult = await evaluate(`(() => {kbSearch.value='관수';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
-    assert.equal(searchResult.count, 1, `${width}px KB search count`);
-    assert.match(searchResult.text, /관수/, `${width}px KB search result`);
-    const filterResult = await evaluate(`(() => {kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='스마트팜';kbCategory.dispatchEvent(new Event('change',{bubbles:true}));return {count:kbGrid.querySelectorAll('.kb-card').length,text:kbGrid.innerText}})()`);
-    assert.ok(filterResult.count >= 1 && /스마트팜/.test(filterResult.text), `${width}px KB category filter`);
-    await evaluate("kbSearch.value='';kbSearch.dispatchEvent(new Event('input',{bubbles:true}));kbCategory.value='';kbCategory.dispatchEvent(new Event('change',{bubbles:true}))");
+    assert.equal(kbLayout.search,false,`${width}px KB search field removed`);
+    assert.equal(kbLayout.category,false,`${width}px KB select removed`);
+    assert.equal(kbLayout.searchAction,false,`${width}px KB search icon removed`);
+    assert.ok(kbLayout.badges>=3&&kbLayout.badgesFit&&kbLayout.active===1,`${width}px KB topic badges fit with one active`);
+    assert.deepEqual({arrowMode:kbLayout.arrowMode,arrowWrap:kbLayout.arrowWrap,titleWrap:kbLayout.titleWrap},{arrowMode:'horizontal-tb',arrowWrap:'nowrap',titleWrap:'normal'},`${width}px KB stable rows`);
+    const topicResult=await evaluate(`(() => {
+      const button=[...document.querySelectorAll('.kb-topic')].find(node=>node.dataset.category);
+      button.click();
+      const categories=[...document.querySelectorAll('#kbGrid .kb-card:not([hidden]) small')].map(node=>node.textContent.trim());
+      return {selected:button.dataset.category,count:categories.length,allMatch:categories.every(value=>value===button.dataset.category),active:document.querySelectorAll('.kb-topic[aria-pressed="true"]').length};
+    })()`);
+    assert.ok(topicResult.count>=1&&topicResult.allMatch&&topicResult.active===1,`${width}px topic badge filters approved articles`);
+    await evaluate("document.querySelector('.kb-topic[data-category=\"\"]')?.click()");
+    if (width===390&&process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+      fs.mkdirSync(captureRoot,{recursive:true});
+      const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+      fs.writeFileSync(path.join(captureRoot,'kb-index-topics-390.png'),Buffer.from(capture.data,'base64'));
+    }
     await contentSwipeAt(.5, 'left');
     const knowledgeMenuState = await evaluate(`({hidden:v4AllMenu.hidden,trace:window.__swipeTrace,path:location.pathname,h1:document.querySelector('h1')?.getBoundingClientRect().toJSON()})`);
     assert.equal(knowledgeMenuState.hidden, false, `${width}px knowledge to menu ${JSON.stringify(knowledgeMenuState)}`);
@@ -405,6 +417,110 @@ try {
       }
     }
   }
+
+  // The selected crop details must be a single white reading surface. Text
+  // rows may use dividers, but no bordered wrapper may contain more cards.
+  for (const width of [320, 390, 430]) {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
+    for (const route of ['/crop-guide.html?crop=pear', '/crop-calendar.html?crop=pear']) {
+      await navigate(route);
+      const flatCropDetail=await evaluate(`(() => {
+        const detail=document.querySelector('#detail');
+        const outer=detail?.querySelector(':scope > .card');
+        const rows=[...detail.querySelectorAll('.item,.context-card,.mini,.month,.safe')];
+        const nested=[...detail.querySelectorAll('.mini,.month')];
+        const stageGrid=detail.querySelector('.stage-step-grid');
+        return {
+          rendered:!!outer,
+          white:getComputedStyle(detail).backgroundColor==='rgb(255, 255, 255)',
+          outerSides:getComputedStyle(outer).borderLeftWidth==='0px'&&getComputedStyle(outer).borderRightWidth==='0px',
+          rowsFlat:rows.every(node=>{const s=getComputedStyle(node);return s.backgroundColor==='rgb(255, 255, 255)'&&s.borderRadius==='0px'&&s.boxShadow==='none'&&s.borderLeftWidth==='0px'&&s.borderRightWidth==='0px'}),
+          nestedFlat:nested.length>0&&nested.every(node=>{const s=getComputedStyle(node);return s.borderLeftWidth==='0px'&&s.borderRightWidth==='0px'}),
+          stageSingle:!stageGrid||getComputedStyle(stageGrid).gridTemplateColumns.split(' ').length===1,
+          width:detail.getBoundingClientRect().width,
+          overflow:document.documentElement.scrollWidth>innerWidth+1,
+        };
+      })()`);
+      assert.equal(flatCropDetail.rendered,true,route+' selected detail rendered');
+      assert.equal(flatCropDetail.white,true,route+' white surface');
+      assert.equal(flatCropDetail.outerSides,true,route+' no outer side box');
+      assert.equal(flatCropDetail.rowsFlat,true,route+' text rows are flat');
+      assert.equal(flatCropDetail.nestedFlat,true,route+' nested cards removed');
+      assert.equal(flatCropDetail.stageSingle,true,route+' stage media uses one column');
+      assert.ok(flatCropDetail.width>=width-32,route+' fills mobile bezel');
+      assert.equal(flatCropDetail.overflow,false,route+' no horizontal overflow');
+      if (width===390&&process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+        await evaluate("document.querySelector('#detail .mini-list,#detail .month-grid,#detail .item')?.scrollIntoView({block:'start'})");
+        await delay(180);
+        const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+        fs.mkdirSync(captureRoot,{recursive:true});
+        const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+        const name=route.includes('crop-guide')?'crop-guide-detail-pear-390.png':'crop-calendar-detail-pear-390.png';
+        fs.writeFileSync(path.join(captureRoot,name),Buffer.from(capture.data,'base64'));
+      }
+    }
+  }
+
+  // Every destination exposed by the full menu, plus the first internal detail
+  // screens reached from those destinations, must use the same responsive shell.
+  const detailRoutes = [
+    '/diagnosis.html', '/diagnosis-cases.html', '/public-data.html', '/agri_map.html',
+    '/mfg.html', '/news_sub.html', '/links.html', '/crop-guide.html', '/oauth/privacy/',
+  ];
+  for (const width of [320, 390, 430]) {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
+    for (const route of detailRoutes) {
+      await navigate(route);
+      const detailUi = await evaluate(`(() => {
+        const nav=document.querySelector('.v4-nav');
+        const frame=document.querySelector('body.v4-detail-page > .phone,body.v4-detail-page > .app,body.v4-detail-page > main.phone,body.v4-detail-page > main.app,body.v4-detail-page > main.page');
+        const footer=document.querySelector('footer,.agri-v3-footer,.site-footer');
+        const controls=[...document.querySelectorAll('input:not([type=hidden]),select,textarea,button:not(.v4-nav button)')].slice(0,8);
+        const oldMenu=document.querySelector('.kf-menu');
+        return {
+          detail:document.body.classList.contains('v4-detail-page'),
+          h1:!!document.querySelector('h1'),
+          white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
+          footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
+          overflow:document.documentElement.scrollWidth>innerWidth+1,
+          navCount:nav?.querySelectorAll(':scope>a,:scope>button').length,
+          active:nav?.querySelectorAll('[aria-current="page"]').length,
+          activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
+          frameFull:!frame||Math.abs(frame.getBoundingClientRect().width-innerWidth)<=1,
+          oldMenuHidden:!oldMenu||getComputedStyle(oldMenu).display==='none',
+          squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
+        };
+      })()`);
+      assert.deepEqual(detailUi, {detail:true,h1:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+        const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+        fs.mkdirSync(captureRoot,{recursive:true});
+        const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+        const name=route.replace(/^\//,'').replace(/\/$/,'index').replace(/[^a-z0-9.-]/gi,'_');
+        fs.writeFileSync(path.join(captureRoot,name+'-390.png'),Buffer.from(capture.data,'base64'));
+      }
+    }
+  }
+
+  // Exercise every visible full-menu link through its real click transition.
+  await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
+  await navigate('/index.html');
+  await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
+  const allMenuTargets=await evaluate("[...document.querySelectorAll('#v4AllMenu a')].map(a=>({label:a.textContent.trim(),target:new URL(a.href).pathname+new URL(a.href).search}))");
+  assert.equal(allMenuTargets.length, 13, 'all menu exposes thirteen detail links');
+  for (let index=0;index<allMenuTargets.length;index+=1) {
+    await navigate('/index.html');
+    await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
+    const expected=allMenuTargets[index];
+    const loaded=socket.once('Page.loadEventFired');
+    await evaluate(`document.querySelectorAll('#v4AllMenu a')[${index}].click()`);
+    await Promise.race([loaded,delay(4000).then(()=>{throw new Error('menu link did not navigate: '+expected.label);})]);
+    await delay(220);
+    assert.equal(await evaluate('location.pathname+location.search'), expected.target, expected.label+' click destination');
+    assert.equal(await evaluate("document.querySelectorAll('.v4-nav').length"),1,expected.label+' destination shell');
+    assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),true,expected.label+' destination no horizontal overflow');
+  }
+
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/index.html');
   await evaluate("openModal('question-help')");

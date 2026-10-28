@@ -95,6 +95,43 @@ body.kf-subsidy .badge { background:#fff; border:1px solid var(--kf-line); color
 body.kf-crop .representative-image img { border-radius:0; }
 body.kf-crop .crop-card { border-radius:0; box-shadow:none; }
 body.kf-crop .crop-icon { border-radius:0; background:transparent; }
+/* Crop detail pages use one white reading surface. Nested stage/month cards
+   become text rows so no wrapper rectangle sits behind four more rectangles. */
+body.kf-crop #detail,
+body.kf-crop #detail > .card,
+body.kf-crop #detail .item,
+body.kf-crop #detail .context-card,
+body.kf-crop #detail .mini,
+body.kf-crop #detail .month,
+body.kf-crop #detail .stage-step-image,
+body.kf-crop #detail .safe { background:#fff; box-shadow:none; }
+body.kf-crop #detail > .card { padding:18px 0; border:0; }
+body.kf-crop #detail .item,
+body.kf-crop #detail .context-card,
+body.kf-crop #detail .safe {
+  margin:0;
+  padding:18px 0;
+  border:0;
+  border-top:1px solid var(--kf-line);
+}
+body.kf-crop #detail .mini-list,
+body.kf-crop #detail .month-grid { gap:0; margin-top:8px; }
+body.kf-crop #detail .mini,
+body.kf-crop #detail .month {
+  margin:0;
+  padding:12px 0;
+  border:0;
+  border-top:1px solid var(--kf-line);
+}
+body.kf-crop #detail .mini:first-child,
+body.kf-crop #detail .month:first-child { border-top:0; }
+body.kf-crop #detail .month.active { background:#fff; border-color:var(--kf-line); }
+body.kf-crop #detail .stage-step-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+body.kf-crop #detail .stage-step-image { margin:0; border:0; }
+body.kf-crop #detail .stage-step-image figcaption { padding:8px 0 0; text-align:left; }
+body.kf-crop #detail .representative-image { margin-inline:0; }
+body.kf-crop #detail .representative-image img,
+body.kf-crop #detail .stage-image img { border:0; }
 @media (min-width:600px) {
   body.kf-subsidy .filters { grid-template-columns:repeat(3,minmax(0,1fr)); }
   body.kf-market .tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
