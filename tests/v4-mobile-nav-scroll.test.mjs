@@ -391,9 +391,20 @@ try {
         };
       })()`);
       assert.deepEqual(toolUi,{text:'KFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      const flatUi = await evaluate(`(() => ({
+        loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
+        cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
+      }))()`);
+      assert.deepEqual(flatUi,{loading:true,cropIcon:true}, route+' '+width+'px has no leftover rounded status or crop-icon shapes');
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot, { recursive:true });
+        await evaluate(`new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>{scrollTo(0,0);resolve()})))`);
+        await delay(180);
+        // Warm the compositor once before saving review evidence. The previous
+        // artifact intermittently omitted sticky-header text despite a valid DOM.
+        await socket.send('Page.captureScreenshot', { format:'png', captureBeyondViewport:false });
+        await delay(80);
         const capture = await socket.send('Page.captureScreenshot', { format:'png', captureBeyondViewport:false });
         const name = route.slice(1).replace(/[^a-z0-9.-]/gi, '_');
         fs.writeFileSync(path.join(captureRoot, name + '-390.png'), Buffer.from(capture.data, 'base64'));
