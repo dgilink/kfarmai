@@ -85,7 +85,7 @@ test('global shell provides one fixed text header and routes search to home', ()
   assert.match(builder,/applyGlobalShellTree\(outputDir\)/);
   assert.match(builder,/data-v4-global-header/);
   assert.match(builder,/addBodyClasses/);
-  assert.match(css,/@view-transition \{ navigation: auto; \}/);
+  assert.doesNotMatch(css,/@view-transition/);
   assert.match(shell,/target === document\.documentElement \|\| document\.body\.contains\(target\)/);
 });
 
