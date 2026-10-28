@@ -113,8 +113,11 @@ body { min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-a
 .edit-modal-bg { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center; }
 .edit-modal-bg.show { display:flex; }
 </style>
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
+<link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261028-menu1">
+<script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
 </head>
-<body>
+<body class="v4-page v4-detail-page v4-map-page">
 <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #f0f0f0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
   <a href="index.html" style="text-decoration:none; display:flex; align-items:center;">
     <img src="/static/kfarmai-logo-horizontal.png" alt="kFarmAI" style="height:36px; width:auto;">
@@ -125,7 +128,7 @@ body { min-height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-a
 <div class="fixed-map-shell">
 <div style="padding:14px 16px 8px;border-bottom:1px solid #e8e8e8;">
   <div style="font-size:10px;letter-spacing:2px;color:#666;margin-bottom:4px;">PESTICIDE STORES</div>
-  <div style="font-size:20px;font-weight:900;letter-spacing:-0.5px;">전국농약사</div>
+  <h1 style="font-size:clamp(27px,4vw,36px);font-weight:900;letter-spacing:-0.5px;margin:0;">주변 농약사</h1>
 </div>
 
 <div class="kf-search-bar">

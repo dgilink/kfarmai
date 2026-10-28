@@ -1,0 +1,346 @@
+/* KFarmAI V4.2 detail-page presentation.
+   Keeps each legacy feature working while removing narrow phone frames,
+   grey page tails and rounded decorative shells. */
+:root {
+  --kf-detail-ink: #17202a;
+  --kf-detail-muted: #596660;
+  --kf-detail-green: #126c43;
+  --kf-detail-line: #d9e0da;
+  --kf-detail-width: 1120px;
+}
+
+html { background: #fff; }
+body.v4-detail-page {
+  display: block !important;
+  min-width: 320px;
+  min-height: 100dvh;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  background: #fff !important;
+  color: var(--kf-detail-ink);
+  font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", Arial, sans-serif;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
+  overscroll-behavior-y: auto !important;
+}
+
+body.v4-detail-page > .phone,
+body.v4-detail-page > .app,
+body.v4-detail-page > main.phone,
+body.v4-detail-page > main.app,
+body.v4-detail-page > main.page {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100dvh !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  background: #fff !important;
+}
+
+body.v4-detail-page > header,
+body.v4-detail-page .phone > .header,
+body.v4-detail-page .app > .header,
+body.v4-detail-page .page > .hero {
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  width: 100%;
+  min-height: 60px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--kf-detail-line);
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+  backdrop-filter: none;
+}
+
+body.v4-detail-page > header > a,
+body.v4-detail-page > header > .top,
+body.v4-detail-page .header > .top,
+body.v4-detail-page .header > .top-bar,
+body.v4-detail-page .hero > .topbar {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  min-height: 60px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+body.v4-detail-page .brand img,
+body.v4-detail-page > header img,
+body.v4-detail-page .topbar img {
+  display: block;
+  width: auto;
+  max-width: 180px;
+  height: 30px;
+  object-fit: contain;
+}
+
+body.v4-detail-page > header button[onclick*="openMenu"],
+body.v4-detail-page .kf-overlay,
+body.v4-detail-page .kf-menu { display: none !important; }
+
+body.v4-detail-page .home,
+body.v4-detail-page .home-link,
+body.v4-detail-page .case-link,
+body.v4-detail-page button,
+body.v4-detail-page input,
+body.v4-detail-page select,
+body.v4-detail-page textarea,
+body.v4-detail-page .card,
+body.v4-detail-page .section,
+body.v4-detail-page .item,
+body.v4-detail-page .btn,
+body.v4-detail-page .top-link,
+body.v4-detail-page .hub-card,
+body.v4-detail-page .guide-panel,
+body.v4-detail-page .flow-step,
+body.v4-detail-page .decision-card,
+body.v4-detail-page .support-card,
+body.v4-detail-page .company-directory,
+body.v4-detail-page .modal,
+body.v4-detail-page .modal-notice,
+body.v4-detail-page .map-panel,
+body.v4-detail-page .shop-alpha,
+body.v4-detail-page .shop-tag,
+body.v4-detail-page .summary-bar,
+body.v4-detail-page .case-card,
+body.v4-detail-page .notice,
+body.v4-detail-page .empty-state,
+body.v4-detail-page .return-area a {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.v4-detail-page .content,
+body.v4-detail-page .hub-wrap,
+body.v4-detail-page .company-directory,
+body.v4-detail-page .fixed-map-shell,
+body.v4-detail-page .list-wrap,
+body.v4-detail-page main:not(.phone):not(.app):not(.page) {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  max-width: none;
+  margin-inline: auto;
+}
+
+body.v4-detail-page .content,
+body.v4-detail-page .hub-wrap,
+body.v4-detail-page main:not(.phone):not(.app):not(.page) {
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+}
+
+body.v4-detail-page .company-directory { margin-top: 20px; margin-bottom: calc(92px + env(safe-area-inset-bottom)); }
+body.v4-detail-page .v4-detail-heading,
+body.v4-news-page .news-sub-head {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  margin-inline: auto;
+  padding: 22px 0 12px !important;
+  border-bottom-color: var(--kf-detail-line) !important;
+}
+body.v4-mfg-page .v4-detail-heading-duplicate { display: none; }
+body.v4-detail-page footer,
+body.v4-detail-page .agri-v3-footer,
+body.v4-detail-page .site-footer,
+body.v4-detail-page .report-print-footer,
+body.v4-detail-page .print-report-footer {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: #fff !important;
+}
+
+/* AI reference diagnosis: replace the 430px dark phone mockup with the same
+   white, responsive reading surface used by the other tools. */
+body.v4-diagnosis-page .header { position: relative; }
+body.v4-diagnosis-page .header .search,
+body.v4-diagnosis-page .header .tabs,
+body.v4-diagnosis-page .header .case-link,
+body.v4-diagnosis-page .header .bell { display: none !important; }
+body.v4-diagnosis-page .scroll-area {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  overflow: visible;
+  padding: 0 0 calc(96px + env(safe-area-inset-bottom));
+  background: #fff;
+}
+body.v4-diagnosis-page .v4-detail-title {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  margin: 0 auto;
+  padding: 22px 0 12px;
+  color: var(--kf-detail-ink);
+  font-size: clamp(27px, 4vw, 36px);
+  line-height: 1.2;
+  letter-spacing: -.055em;
+}
+body.v4-diagnosis-page .ptr { display: none; }
+body.v4-diagnosis-page .diag-card {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  min-height: 0;
+  margin: 0 auto;
+  border: 0;
+  border-top: 2px solid var(--kf-detail-ink);
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+  overflow: visible;
+}
+body.v4-diagnosis-page .diag-card::before { display: none; }
+body.v4-diagnosis-page .card-hd {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--kf-detail-line);
+  background: #fff;
+}
+body.v4-diagnosis-page .card-hd-txt { color: var(--kf-detail-green); }
+body.v4-diagnosis-page .card-hd-tag { color: var(--kf-detail-muted); }
+body.v4-diagnosis-page .inner { min-height: 0; padding: 14px 0 0; }
+body.v4-diagnosis-page .cam-wrap,
+body.v4-diagnosis-page .diag-overlay,
+body.v4-diagnosis-page .result-card,
+body.v4-diagnosis-page .community-connect,
+body.v4-diagnosis-page .diag-extra,
+body.v4-diagnosis-page .diag-form-input,
+body.v4-diagnosis-page #symptomInput,
+body.v4-diagnosis-page .diag-btn,
+body.v4-diagnosis-page .input-action,
+body.v4-diagnosis-page .cam-btn,
+body.v4-diagnosis-page .shutter {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+body.v4-diagnosis-page .cam-wrap { min-height: 320px; background: #111814; border-color: var(--kf-detail-line); }
+body.v4-diagnosis-page .diag-btn { background: var(--kf-detail-green); }
+body.v4-diagnosis-page .steps { margin-bottom: 2px; }
+
+/* Map and directory pages. */
+body.v4-map-page .fixed-map-shell,
+body.v4-map-page .list-wrap { background: #fff; }
+body.v4-map-page .map-panel { margin: 12px 0; }
+body.v4-map-page .region-tab-wrap,
+body.v4-map-page .kf-search-bar,
+body.v4-map-page .list-header { padding-inline: 0; background: #fff; }
+body.v4-map-page .rtab,
+body.v4-map-page .kf-btn,
+body.v4-map-page .reg-float-btn,
+body.v4-map-page .roadview-close { border-radius: 0; box-shadow: none; }
+body.v4-map-page .reg-float-btn { bottom: calc(76px + env(safe-area-inset-bottom)); }
+body.v4-map-page #shopList { padding-bottom: calc(136px + env(safe-area-inset-bottom)); }
+body.v4-map-page .shop-item:last-child { border-bottom: 1px solid var(--kf-detail-line); }
+
+/* Legal/help destination fills the available width without creating very long
+   single-column lines on desktop. */
+body.v4-privacy-page .v4-detail-header {
+  min-height: 60px;
+  border-bottom: 1px solid var(--kf-detail-line);
+  background: #fff;
+}
+body.v4-privacy-page .v4-detail-header a {
+  display: flex;
+  align-items: center;
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  min-height: 60px;
+  margin: 0 auto;
+}
+body.v4-privacy-page main {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 40px;
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  padding: 30px 0 calc(96px + env(safe-area-inset-bottom));
+}
+body.v4-privacy-page main > h1,
+body.v4-privacy-page main > p,
+body.v4-privacy-page .back-link { grid-column: 1 / -1; }
+body.v4-privacy-page section { border-top: 1px solid var(--kf-detail-line); }
+
+/* Nested content pages linked from the full-menu destinations. */
+body.v4-cases-page .header,
+body.v4-public-data-page .hero { position: relative; }
+body.v4-cases-page .headline,
+body.v4-cases-page .top-links,
+body.v4-public-data-page .hero > h1,
+body.v4-public-data-page .hero > p {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  margin-inline: auto;
+}
+body.v4-cases-page .content,
+body.v4-public-data-page .content { padding-inline: 0; }
+body.v4-cases-page .top-links { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+body.v4-public-data-page .page { background: #fff; }
+body.v4-public-data-page .section { border-inline: 0; }
+body.v4-mfg-page .hub-hero,
+body.v4-mfg-page .api-status,
+body.v4-mfg-page .hub-note { background: #fff; }
+
+@media (min-width: 768px) {
+  body.v4-detail-page .content,
+  body.v4-detail-page .hub-wrap,
+  body.v4-detail-page main:not(.phone):not(.app):not(.page) { padding-bottom: 40px; }
+  body.v4-map-page .reg-float-btn { left: auto; right: max(24px, calc((100vw - var(--kf-detail-width)) / 2)); transform: none; }
+  body.v4-map-page .reg-float-btn:hover { transform: none; }
+}
+
+@media (max-width: 767px) {
+  body.v4-detail-page > header > a,
+  body.v4-detail-page > header > .top,
+  body.v4-detail-page .header > .top,
+  body.v4-detail-page .header > .top-bar,
+  body.v4-detail-page .hero > .topbar,
+  body.v4-detail-page .content,
+  body.v4-detail-page .hub-wrap,
+  body.v4-detail-page .company-directory,
+  body.v4-detail-page .fixed-map-shell,
+  body.v4-detail-page .list-wrap,
+  body.v4-detail-page main:not(.phone):not(.app):not(.page),
+  body.v4-diagnosis-page .v4-detail-title,
+  body.v4-diagnosis-page .diag-card,
+  body.v4-privacy-page .v4-detail-header a,
+  body.v4-privacy-page main,
+  body.v4-cases-page .headline,
+  body.v4-cases-page .top-links,
+  body.v4-public-data-page .hero > h1,
+  body.v4-public-data-page .hero > p,
+  body.v4-detail-page .v4-detail-heading,
+  body.v4-news-page .news-sub-head {
+    width: calc(100% - 24px);
+  }
+  body.v4-diagnosis-page .cam-wrap { min-height: 230px; }
+  body.v4-cases-page .top-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.v4-privacy-page main { grid-template-columns: minmax(0, 1fr); gap: 0; padding-top: 22px; }
+  body.v4-privacy-page main > h1,
+  body.v4-privacy-page main > p,
+  body.v4-privacy-page .back-link { grid-column: auto; }
+  body.v4-map-page .reg-float-btn { width: calc(100% - 24px); padding-inline: 12px; }
+}
+
+@media (max-width: 359px) {
+  body.v4-detail-page > header > a,
+  body.v4-detail-page > header > .top,
+  body.v4-detail-page .header > .top,
+  body.v4-detail-page .header > .top-bar,
+  body.v4-detail-page .hero > .topbar,
+  body.v4-detail-page .content,
+  body.v4-detail-page .hub-wrap,
+  body.v4-detail-page .company-directory,
+  body.v4-detail-page .fixed-map-shell,
+  body.v4-detail-page .list-wrap,
+  body.v4-detail-page main:not(.phone):not(.app):not(.page),
+  body.v4-diagnosis-page .v4-detail-title,
+  body.v4-diagnosis-page .diag-card,
+  body.v4-privacy-page .v4-detail-header a,
+  body.v4-privacy-page main,
+  body.v4-cases-page .headline,
+  body.v4-cases-page .top-links,
+  body.v4-public-data-page .hero > h1,
+  body.v4-public-data-page .hero > p,
+  body.v4-detail-page .v4-detail-heading,
+  body.v4-news-page .news-sub-head { width: calc(100% - 20px); }
+}

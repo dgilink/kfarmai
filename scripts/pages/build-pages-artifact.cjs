@@ -8,7 +8,7 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js" defer data-kfarmai-presentation="v4-1"></script>');
+const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=20261028-menu1" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
 // ONLY to the generated public artifact; immutable approval source stays intact.

@@ -405,6 +405,67 @@ try {
       }
     }
   }
+
+  // Every destination exposed by the full menu, plus the first internal detail
+  // screens reached from those destinations, must use the same responsive shell.
+  const detailRoutes = [
+    '/diagnosis.html', '/diagnosis-cases.html', '/public-data.html', '/agri_map.html',
+    '/mfg.html', '/news_sub.html', '/links.html', '/crop-guide.html', '/oauth/privacy/',
+  ];
+  for (const width of [320, 390, 430]) {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
+    for (const route of detailRoutes) {
+      await navigate(route);
+      const detailUi = await evaluate(`(() => {
+        const nav=document.querySelector('.v4-nav');
+        const frame=document.querySelector('body.v4-detail-page > .phone,body.v4-detail-page > .app,body.v4-detail-page > main.phone,body.v4-detail-page > main.app,body.v4-detail-page > main.page');
+        const footer=document.querySelector('footer,.agri-v3-footer,.site-footer');
+        const controls=[...document.querySelectorAll('input:not([type=hidden]),select,textarea,button:not(.v4-nav button)')].slice(0,8);
+        const oldMenu=document.querySelector('.kf-menu');
+        return {
+          detail:document.body.classList.contains('v4-detail-page'),
+          h1:!!document.querySelector('h1'),
+          white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
+          footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
+          overflow:document.documentElement.scrollWidth>innerWidth+1,
+          navCount:nav?.querySelectorAll(':scope>a,:scope>button').length,
+          active:nav?.querySelectorAll('[aria-current="page"]').length,
+          activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
+          frameFull:!frame||Math.abs(frame.getBoundingClientRect().width-innerWidth)<=1,
+          oldMenuHidden:!oldMenu||getComputedStyle(oldMenu).display==='none',
+          squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
+        };
+      })()`);
+      assert.deepEqual(detailUi, {detail:true,h1:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+        const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+        fs.mkdirSync(captureRoot,{recursive:true});
+        const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+        const name=route.replace(/^\//,'').replace(/\/$/,'index').replace(/[^a-z0-9.-]/gi,'_');
+        fs.writeFileSync(path.join(captureRoot,name+'-390.png'),Buffer.from(capture.data,'base64'));
+      }
+    }
+  }
+
+  // Exercise every visible full-menu link through its real click transition.
+  await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
+  await navigate('/index.html');
+  await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
+  const allMenuTargets=await evaluate("[...document.querySelectorAll('#v4AllMenu a')].map(a=>({label:a.textContent.trim(),target:new URL(a.href).pathname+new URL(a.href).search}))");
+  assert.equal(allMenuTargets.length, 13, 'all menu exposes thirteen detail links');
+  for (let index=0;index<allMenuTargets.length;index+=1) {
+    await navigate('/index.html');
+    await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
+    const expected=allMenuTargets[index];
+    const loaded=socket.once('Page.loadEventFired');
+    await evaluate(`document.querySelectorAll('#v4AllMenu a')[${index}].click()`);
+    await Promise.race([loaded,delay(4000).then(()=>{throw new Error('menu link did not navigate: '+expected.label);})]);
+    await delay(220);
+    assert.equal(await evaluate('location.pathname+location.search'), expected.target, expected.label+' click destination');
+    assert.equal(await evaluate("document.querySelectorAll('.v4-nav').length"),1,expected.label+' destination shell');
+    assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),true,expected.label+' destination no horizontal overflow');
+  }
+
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/index.html');
   await evaluate("openModal('question-help')");

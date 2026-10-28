@@ -19,9 +19,9 @@ for (const [file, cls, title, ids] of pages) {
     assert.ok(html.includes('<body class="v4-page kf-tool-page ' + cls + '">'));
     assert.ok(html.includes('class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a>'));
     assert.ok(html.includes('<h1 class="kf-tool-title">' + title + '</h1>'));
-    assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-tools1'));
+    assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-menu1'));
     assert.ok(html.includes('/static/css/v4-tool-pages.css?v=20261028-tools1'));
-    assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-tools1'));
+    assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-menu1'));
     const header=html.match(/<header class="header">([\s\S]*?)<\/header>/);
     assert.ok(header, 'shared header must exist');
     assert.ok(!header[1].includes('<img'), 'no header image logo');
@@ -65,4 +65,51 @@ test('community first paint delays transient loading indicators but retains acce
   assert.match(channel,/pendingPostListUpdate/);
   assert.match(channel,/refreshBlockedUsers\(\)/);
   assert.match(channel,/blockedUserIdsSet/);
+});
+
+const detailPages = [
+  ['diagnosis.html', 'v4-diagnosis-page'],
+  ['diagnosis-cases.html', 'v4-cases-page'],
+  ['public-data.html', 'v4-public-data-page'],
+  ['agri_map.html', 'v4-map-page'],
+  ['mfg.html', 'v4-mfg-page'],
+  ['news_sub.html', 'v4-news-page'],
+  ['links.html', 'v4-links-page'],
+  ['oauth/privacy/index.html', 'v4-privacy-page'],
+];
+
+test('full-menu destinations and their first detail pages use the responsive V4 shell', () => {
+  for (const [file, pageClass] of detailPages) {
+    const html = read(file);
+    assert.ok(html.includes('v4-page v4-detail-page'), file + ' detail page body');
+    assert.ok(html.includes(pageClass), file + ' specific body class');
+    assert.ok(html.includes('/static/css/v4-shell.css?v=20261028-menu1'), file + ' shell CSS');
+    assert.ok(html.includes('/static/css/v4-detail-pages.css?v=20261028-menu1'), file + ' detail CSS');
+    assert.ok(html.includes('/static/js/v4-shell.js?v=20261028-menu1'), file + ' shell JS');
+    const scripts=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+    for (const [,attributes,source] of scripts) {
+      if (!source.trim() || /\bsrc\s*=/i.test(attributes)
+          || /type\s*=\s*["']application\/ld\+json/i.test(attributes)) continue;
+      new vm.Script(source,{filename:file});
+    }
+  }
+});
+
+test('detail presentation removes narrow phone frames, grey tails and rounded shells', () => {
+  const css = read('static/css/v4-detail-pages.css');
+  assert.match(css,/> \.phone,[\s\S]*max-width: none !important/);
+  assert.match(css,/footer,[\s\S]*background: #fff !important/);
+  assert.match(css,/\.diag-card[\s\S]*width: min\(calc\(100% - 32px\), var\(--kf-detail-width\)\)/);
+  assert.match(css,/\.fixed-map-shell,[\s\S]*var\(--kf-detail-width\)/);
+  assert.match(css,/\.v4-privacy-page main[\s\S]*grid-template-columns: repeat\(2/);
+  assert.match(css,/@media \(max-width: 767px\)/);
+});
+
+test('all-menu links are covered by an active full-menu destination', () => {
+  const shell = read('static/js/v4-shell.js');
+  const menuTargets = [
+    '/subsidy-calendar.html', '/diagnosis.html', '/agri-weather.html', '/market-prices.html',
+    '/agri_map.html', '/crop-calendar.html', '/oauth/privacy/',
+  ];
+  for (const target of menuTargets) assert.ok(shell.includes("'" + target + "'"), target);
 });

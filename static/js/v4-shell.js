@@ -5,7 +5,11 @@
   if (/^\/kb\/[a-z0-9-]+\.html$/.test(page)) {
     document.body.classList.add('v4-page', 'v4-kb-article');
   }
-  const toolPages = new Set(['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']);
+  const toolPages = new Set([
+    '/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/crop-guide.html',
+    '/subsidy-calendar.html', '/diagnosis.html', '/diagnosis-cases.html', '/public-data.html',
+    '/agri_map.html', '/mfg.html', '/news_sub.html', '/links.html', '/oauth/privacy/',
+  ]);
   const active = page === '/' || page.endsWith('/index.html') && !page.startsWith('/kb/')
     ? 'home' : page.endsWith('/channel.html') || page.endsWith('/post.html')
       ? 'community' : page.startsWith('/kb/') || page.endsWith('/agri-info.html')
