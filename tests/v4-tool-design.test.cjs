@@ -42,6 +42,8 @@ test('shared CSS prevents rounded tool elements and preserves price tab layout',
   assert.match(css,/font-size:24px/);
   assert.match(css,/body\.kf-tool-page \.chip\.active/);
   assert.match(css,/body\.kf-market \.tabs \{ display:grid/);
+  assert.match(css,/body\.kf-tool-page \.loading/);
+  assert.match(css,/body\.kf-crop \.crop-icon \{ border-radius:0; background:transparent; \}/);
   assert.match(css,/body\.kf-tool-page \.content/);
   assert.ok(!/rgba\([^\n]*gradient\(/.test(css));
 });
