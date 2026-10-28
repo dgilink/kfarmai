@@ -5,10 +5,11 @@
   if (/^\/kb\/[a-z0-9-]+\.html$/.test(page)) {
     document.body.classList.add('v4-page', 'v4-kb-article');
   }
+  const toolPages = new Set(['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']);
   const active = page === '/' || page.endsWith('/index.html') && !page.startsWith('/kb/')
     ? 'home' : page.endsWith('/channel.html') || page.endsWith('/post.html')
       ? 'community' : page.startsWith('/kb/') || page.endsWith('/agri-info.html')
-        ? 'knowledge' : '';
+        ? 'knowledge' : toolPages.has(page) ? 'tools' : '';
   const items = [
     ['home', '홈', '/index.html'],
     ['community', '소통', '/channel.html'],
@@ -37,6 +38,7 @@
   menuButton.innerHTML = `${icon('menu')}<span>전체</span>`;
   menuButton.setAttribute('aria-controls', 'v4AllMenu');
   menuButton.setAttribute('aria-expanded', 'false');
+  if (active === 'tools') menuButton.setAttribute('aria-current', 'page');
   const menu = document.createElement('div');
   menu.id = 'v4AllMenu';
   menu.className = 'v4-menu';
