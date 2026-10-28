@@ -86,6 +86,7 @@ test('global shell provides one fixed text header and routes search to home', ()
   assert.match(builder,/data-v4-global-header/);
   assert.match(builder,/addBodyClasses/);
   assert.match(css,/@view-transition \{ navigation: auto; \}/);
+  assert.match(shell,/target === document\.documentElement \|\| document\.body\.contains\(target\)/);
 });
 
 test('weather and market pages keep only compact user-facing information', () => {
