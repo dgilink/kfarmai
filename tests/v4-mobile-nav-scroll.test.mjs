@@ -723,7 +723,7 @@ try {
   await navigate('/index.html');
   await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
   const allMenuTargets=await evaluate("[...document.querySelectorAll('#v4AllMenu a')].map(a=>({label:a.textContent.trim(),target:new URL(a.href).pathname+new URL(a.href).search}))");
-  assert.equal(allMenuTargets.length, 14, 'all menu exposes fourteen detail links');
+  assert.equal(allMenuTargets.length, 13, 'all menu exposes thirteen detail links after language settings removal');
   for (let index=0;index<allMenuTargets.length;index+=1) {
     await navigate('/index.html');
     await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
