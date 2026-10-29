@@ -121,6 +121,7 @@ body.v4-home .home-agri-summary-section .agri-status,
 body.v4-home .home-agri-summary-section .agri-summary-more { border-radius:0; box-shadow:none; }
 body.v4-home .section-head,
 body.v4-home .section-head.question-section-head { margin:0; padding:0 0 8px; border:0; border-bottom:1px solid var(--v41-ink); background:#fff; }
+body.v4-home .section-head.feed-more-head { justify-content:flex-end; }
 body.v4-home .section-head.question-section-head::before { display:none; }
 body.v4-home .home-kb-cards { display:block; border-top:0; }
 body.v4-home .home-kb-cards .kb-card { position:relative; display:grid; grid-template-columns:minmax(0,1fr) 18px; align-items:center; gap:10px; min-height:66px; margin:0; padding:10px 2px; border:0; border-bottom:1px solid var(--v41-line); background:#fff; color:var(--v41-ink); }

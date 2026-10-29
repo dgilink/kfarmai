@@ -71,10 +71,24 @@ try {
   test('requested article visuals are replaced only in the generated public artifact', () => {
     const irrigation = fs.readFileSync(path.join(artifactDir, 'kb/greenhouse-irrigation-precheck.html'), 'utf8');
     const strawberry = fs.readFileSync(path.join(artifactDir, 'kb/strawberry-winter-light-humidity-check.html'), 'utf8');
-    assert.ok(irrigation.includes('greenhouse-irrigation-precheck-infographic-restyle-20261029.svg'));
+    assert.ok(irrigation.includes('greenhouse-irrigation-precheck-infographic-restyle-20261029-v2.svg'));
     assert.ok(strawberry.includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
     assert.ok(!strawberry.includes('Keepsake_Strawberry_by_USDA'));
     assert.ok(!strawberry.includes('온실 사진: USDA/ARS'));
+  });
+
+  test('knowledge list thumbnails use photos instead of article infographics', () => {
+    const html = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
+    const home = fs.readFileSync(path.join(artifactDir, 'index.html'), 'utf8');
+    for (const file of [
+      'pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp',
+      'autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp',
+    ]) {
+      assert.ok(html.includes(`/static/kb/${file}`), file);
+      assert.ok(home.includes(`/static/kb/${file}`), file);
+    }
+    const listRegion = html.split('id="kbGrid"')[1]?.split('</div>')[0] || '';
+    assert.ok(!listRegion.includes('-infographic.'), 'list thumbnails must not use infographics');
   });
 
   test('all public HTML receives one versioned global shell and grouped cultivation topic', () => {

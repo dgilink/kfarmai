@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">온실 관수 가동 전 세 곳 확인</title>
+  <desc id="desc">센서, 배관과 필터, 끝단 토출과 기록을 관수 흐름에 따라 확인하는 안내</desc>
+  <rect width="1200" height="675" fill="#ffffff"/>
+  <g font-family="Noto Sans KR, Apple SD Gothic Neo, sans-serif">
+    <text x="56" y="62" fill="#0a7b83" font-size="29" font-weight="800">온실 관수 설비</text>
+    <text x="56" y="126" fill="#17211d" font-size="54" font-weight="900" letter-spacing="-2">물이 흐르기 전, 3곳을 먼저 확인</text>
+    <path d="M56 164H1144" stroke="#dbe4e0" stroke-width="2"/>
+
+    <path d="M94 275H1084" fill="none" stroke="#0a7b83" stroke-width="24" stroke-linecap="round"/>
+    <path d="M1084 275h42" fill="none" stroke="#43a7d8" stroke-width="24" stroke-linecap="round"/>
+    <path d="M1126 249c22 25 32 43 32 58a32 32 0 1 1-64 0c0-15 10-33 32-58Z" fill="#43a7d8"/>
+
+    <g fill="#ffffff" stroke="#0a7b83" stroke-width="10">
+      <circle cx="274" cy="275" r="36"/>
+      <circle cx="598" cy="275" r="36"/>
+      <circle cx="914" cy="275" r="36"/>
+    </g>
+    <g text-anchor="middle" font-size="32" font-weight="900" fill="#0a7b83">
+      <text x="274" y="286">1</text>
+      <text x="598" y="286">2</text>
+      <text x="914" y="286">3</text>
+    </g>
+
+    <g stroke="#dbe4e0" stroke-width="2">
+      <path d="M400 344V532"/>
+      <path d="M746 344V532"/>
+    </g>
+    <g fill="#17211d" font-weight="900" font-size="34">
+      <text x="82" y="392">센서</text>
+      <text x="430" y="392">배관 · 밸브 · 필터</text>
+      <text x="776" y="392">끝단 토출 · 기록</text>
+    </g>
+    <g fill="#4e5e56" font-weight="600" font-size="27">
+      <text x="82" y="442">뿌리 깊이에 맞는 위치</text>
+      <text x="82" y="483">고정 상태와 측정값</text>
+      <text x="430" y="442">누수와 막힘 여부</text>
+      <text x="430" y="483">연결부와 필터 상태</text>
+      <text x="776" y="442">물이 고르게 나오는지</text>
+      <text x="776" y="483">시각 · 양 · 작물 반응</text>
+    </g>
+
+    <rect x="56" y="563" width="1088" height="64" fill="#eef8f6"/>
+    <circle cx="88" cy="595" r="10" fill="#ef8b3a"/>
+    <text x="112" y="605" fill="#17211d" font-size="28" font-weight="800">가동 직후에는 끝단 토출과 작물의 수분 반응까지 확인하세요.</text>
+    <text x="1144" y="657" fill="#0a7b83" font-size="22" font-weight="800" text-anchor="end">kFarmAI</text>
+  </g>
+</svg>
