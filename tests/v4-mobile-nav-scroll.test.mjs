@@ -527,6 +527,27 @@ try {
     }
   }
 
+  await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
+  await navigate('/subsidy-calendar.html?policyPreview=sample');
+  await waitForEvaluation("document.getElementById('countText').textContent.includes('1건')", 3000);
+  const policyPreview = await evaluate(`(() => ({
+    sample:!sampleBanner.hidden && /실제 공고·신청 정보가 아닙니다/.test(sampleBanner.textContent),
+    open:approvedList.querySelectorAll('.policy-row').length,
+    noApplicationLink:!approvedList.querySelector('a[href]'),
+    referenceClosed:!referenceSection.open,
+    overflow:document.documentElement.scrollWidth > innerWidth+1
+  }))()`);
+  assert.deepEqual(policyPreview,{sample:true,open:1,noApplicationLink:true,referenceClosed:true,overflow:false},'sample policy records remain distinct and fit 390px');
+  await evaluate("statusFilter.value='마감';statusFilter.dispatchEvent(new Event('change',{bubbles:true}))");
+  assert.equal(await evaluate("approvedList.querySelector('.policy-row h3')?.textContent.includes('청년농 교육')"),true,'closed policy filter');
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    await evaluate("statusFilter.value='접수 중';statusFilter.dispatchEvent(new Event('change',{bubbles:true}))");
+    const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture = await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'policy-support-sample-390.png'),Buffer.from(capture.data,'base64'));
+  }
+
   // Samsung Internet can expose a visual viewport that is slightly narrower
   // than its layout viewport. The global actions must still occupy the exact
   // same right-side coordinates on list, tool and map pages.

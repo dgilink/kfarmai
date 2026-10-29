@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "publishMode": "approved_only",
+  "snapshotAt": "2026-10-29T09:00:00+09:00",
+  "items": [
+    {
+      "sourceId": "bojo-open-api",
+      "externalId": "sample-open",
+      "title": "[화면 시험] 시설원예 지원 예시",
+      "region": ["전국"],
+      "targets": ["농업인"],
+      "categories": ["시설원예"],
+      "agency": "화면 시험용",
+      "applicationStart": "2026-01-01",
+      "applicationEnd": "2099-12-31",
+      "publishedAt": "2026-01-01",
+      "officialUrl": "https://www.bojo.go.kr/ga/retrieveOpnApi.do",
+      "sourceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-10-29T09:00:00+09:00"
+    },
+    {
+      "sourceId": "bojo-open-api",
+      "externalId": "sample-closed",
+      "title": "[화면 시험] 청년농 교육 예시",
+      "region": ["전남"],
+      "targets": ["청년농"],
+      "categories": ["교육"],
+      "agency": "화면 시험용",
+      "applicationStart": "2025-01-01",
+      "applicationEnd": "2025-12-31",
+      "publishedAt": "2025-01-01",
+      "officialUrl": "https://www.bojo.go.kr/ga/retrieveOpnApi.do",
+      "sourceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "reviewStatus": "approved",
+      "reviewedAt": "2026-10-29T09:00:00+09:00"
+    }
+  ]
+}

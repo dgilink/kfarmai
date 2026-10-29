@@ -57,3 +57,13 @@
 - 1차 지역 범위: 전국 공고와 모든 시도, 지자체 상세 공고는 검증된 출처부터 추가.
 
 **현 상태:** 화면과 데이터 계약 설계 완료. 공급자 응답 기반 필드 확정·실제 수집·자동 갱신·Production 공개는 미완료.
+
+## Preview 구현 — 키 없이 검증 가능
+
+- `data/policy-support-approved.json`: 승인 항목 0건인 공개용 정적 스냅샷. 승인 공고가 없을 때의 정직한 기본 화면이다. 수집 후보를 이 파일에 직접 합치지 않는다.
+- `data/schemas/policy-support-approved.schema.json`: 공개 항목의 최소 계약. `reviewStatus=approved`, 공식 URL, 검수시각, 신청기간, 원문 hash가 필요하다. 검수자 식별자는 공개하지 않고 내부 검수 이력에만 둔다.
+- `static/js/policy-support.js`: 승인본만 읽고 KST 기준 접수 상태를 계산한다. 필수 필드/URL/날짜 오류가 있으면 스냅샷 전체를 거부한다. 지역 필터에는 전국 공고를 함께 포함한다.
+- `subsidy-calendar.html`: 승인 공고와 기존 정적 `지원 유형 참고`를 분리하고, 샘플 화면에서도 신청 링크를 막는다. 실제 공고가 아닌 시험 자료는 localhost에서 `?policyPreview=sample`로만 확인하며 선명하게 표시한다.
+- `tests/fixtures/policy-support/approved.sample.json`: 화면 시험용 가상 사례. Production 승인 데이터가 아니다.
+
+실제 OpenAPI 키와 공식 응답 명세를 받기 전에는 프론트엔드의 이 스냅샷에 공고를 임의로 넣지 않는다. 승인본 생성기, 운영 검수 화면, Worker API, 자동 갱신 일정은 후속 단계이다.

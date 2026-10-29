@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KFarmAI approved policy support snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "publishMode", "snapshotAt", "items"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "publishMode": { "const": "approved_only" },
+    "snapshotAt": { "type": ["string", "null"], "format": "date-time" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "externalId", "title", "region", "targets", "categories", "agency", "applicationStart", "applicationEnd", "publishedAt", "officialUrl", "sourceHash", "reviewStatus", "reviewedAt"],
+        "properties": {
+          "sourceId": { "type": "string", "minLength": 1 },
+          "externalId": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 180 },
+          "region": { "type": "array", "items": { "type": "string" } },
+          "targets": { "type": "array", "items": { "type": "string" } },
+          "categories": { "type": "array", "items": { "type": "string" } },
+          "agency": { "type": "string", "minLength": 1 },
+          "applicationStart": { "type": "string", "format": "date" },
+          "applicationEnd": { "type": "string", "format": "date" },
+          "publishedAt": { "type": "string", "format": "date" },
+          "officialUrl": { "type": "string", "pattern": "^https://" },
+          "sourceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "reviewStatus": { "const": "approved" },
+          "reviewedAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}
