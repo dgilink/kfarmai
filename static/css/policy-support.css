@@ -2,7 +2,7 @@ body.kf-subsidy{background:#fff}
 body.kf-subsidy .app{max-width:none;background:#fff}
 body.kf-subsidy .content{padding:12px 14px 96px;max-width:860px;margin:auto}
 body.kf-subsidy .filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-body.kf-subsidy .select{min-width:0;border-radius:4px;height:42px;font-size:13px}
+body.kf-subsidy .select{min-width:0;border-radius:0;height:44px;font-size:13px}
 body.kf-subsidy .policy-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:12px 0 9px;border-top:2px solid #17202a}
 body.kf-subsidy .policy-heading h2{font-size:18px;line-height:1.35}
 body.kf-subsidy .policy-heading span{color:#596660;font-size:11px}
