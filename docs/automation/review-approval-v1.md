@@ -7,7 +7,7 @@ Baseline: `b768656c95eb5f511deb637f74281a2dae4fa10f`. This extends the existing 
 ## Entry points and operation
 
 - `automation/kfarmai_review_approval.py`: pure package verification, read-only plan, explicit local exact apply, exact-stage verification, production verification fixtures and state transition contracts.
-- `automation/review_approval_workflow.py`: GitHub Actions adapter for future authorized use. The executable path requires `--execute`, `GITHUB_ACTIONS=true`, the exact repository/event and `KFARMAI_REVIEW_PUBLISH_ENABLED=true`. Unset/false keeps it disabled.
+- `automation/review_approval_workflow.py`: GitHub Actions publication adapter. The executable path requires `--execute`, the exact owner-authored issue commands, the protected environment and `KFARMAI_REVIEW_PUBLISH_ENABLED=true`. Unset/false keeps it disabled. The private Edge Function may create the two hash-bound owner commands after one CSRF-protected human approval; the workflow still verifies both comments and their order.
 - `.github/workflows/kfarmai-review-approval.yml`: owner-only `issue_comment: created`, main checkout, shared LOW/REVIEW concurrency, no provider credential or model configuration.
 - `automation/kfarmai_post_publish_audit.py`: existing read-only shared auditor, with optional `source_run_id` added to the shared LOW record builder.
 

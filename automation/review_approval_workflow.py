@@ -318,9 +318,6 @@ def _activation_reference():
     event_path = os.getenv("GITHUB_EVENT_PATH")
     require(bool(event_path), "BLOCKED_EVENT")
     event = parse_json(Path(event_path).read_bytes())
-    expected_id = os.getenv("KFARMAI_REVIEW_PUBLISH_APPROVAL_ID", "")
-    require(bool(expected_id) and expected_id == metadata(event["issue"])["approval_id"],
-            "BLOCKED_CANARY_SCOPE")
     run(event, Path.cwd(), GitHub())
 
 

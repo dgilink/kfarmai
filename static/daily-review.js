@@ -70,7 +70,7 @@
       byId("review-manifest").value = String(review.manifest_sha256 || "");
       byId("review-action").value = String(review.action || "");
       const button = byId("review-button");
-      button.textContent = review.action === "CONTENT_APPROVE" ? "콘텐츠 검수 승인" : "공개 승인";
+      button.textContent = "승인 후 자동 게시";
       const hero = byId("review-hero");
       const infographic = byId("review-infographic");
       const images = [imageReady(hero), imageReady(infographic)];

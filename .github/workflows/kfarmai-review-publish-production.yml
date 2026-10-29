@@ -19,8 +19,7 @@ jobs:
       github.actor == github.repository_owner &&
       github.actor_id == '293838055' &&
       startsWith(github.event.comment.body, '/kfarmai publish ') &&
-      vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'true' &&
-      vars.KFARMAI_REVIEW_PUBLISH_APPROVAL_ID != ''
+      vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'true'
     environment: kfarmai-production-publish
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -31,7 +30,6 @@ jobs:
     env:
       PYTHONUTF8: '1'
       KFARMAI_REVIEW_PUBLISH_ENABLED: ${{ vars.KFARMAI_REVIEW_PUBLISH_ENABLED }}
-      KFARMAI_REVIEW_PUBLISH_APPROVAL_ID: ${{ vars.KFARMAI_REVIEW_PUBLISH_APPROVAL_ID }}
       GH_TOKEN: ${{ github.token }}
     steps:
       - name: Check out exact current main
@@ -51,7 +49,6 @@ jobs:
         run: |
           set -euo pipefail
           test "$KFARMAI_REVIEW_PUBLISH_ENABLED" = 'true'
-          printf '%s' "$KFARMAI_REVIEW_PUBLISH_APPROVAL_ID" | grep -Eq '^review-[A-Za-z0-9_-]{1,96}$'
           test "$(git rev-parse HEAD)" = "$(git ls-remote origin refs/heads/main | cut -f1)"
           python -m py_compile \
             automation/kfarmai_review_approval.py \

@@ -10,6 +10,7 @@ REVISION_SQL = (ROOT / "supabase/migrations/20261019100628_daily_review_revision
 INFOGRAPHIC_SQL = (ROOT / "supabase/migrations/20261019111706_daily_review_infographic_png_preview.sql").read_text(encoding="utf-8")
 KOREAN_FONT_SQL = (ROOT / "supabase/migrations/20261019114158_daily_review_infographic_korean_font_replace.sql").read_text(encoding="utf-8")
 FONT_STORE_SQL = (ROOT / "supabase/migrations/20261019121638_daily_review_infographic_font_store.sql").read_text(encoding="utf-8")
+UNIFIED_SQL = (ROOT / "supabase/migrations/20261029120000_unified_review_publish_approval.sql").read_text(encoding="utf-8")
 
 
 class DailyEmailApprovalContractTests(unittest.TestCase):
@@ -58,7 +59,7 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn('<meta charset="UTF-8">', EDGE)
         self.assertIn('redirectToReview(token,value)', EDGE)
         self.assertIn('<meta charset="UTF-8">', review_page)
-        self.assertIn('콘텐츠 검수 승인', review_script)
+        self.assertIn('승인 후 자동 게시', review_script)
         self.assertIn("daily_review_email_rotate", EDGE)
         self.assertIn("TOKEN_REVOKED", rotation)
         self.assertIn("TOKEN_ROTATED", rotation)
@@ -100,6 +101,19 @@ class DailyEmailApprovalContractTests(unittest.TestCase):
         self.assertIn("id-token: write", workflow)
         self.assertIn("actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02", workflow)
         self.assertNotIn("OPENAI_API_KEY", workflow)
+
+    def test_one_button_approval_is_atomic_private_and_idempotently_dispatched(self):
+        for value in ("daily_review_approval_apply_combined", "daily_review_publish_dispatch_complete",
+                      "daily_review_publish_dispatch", "CONTENT_APPROVED", "PUBLISH_APPROVED",
+                      "request_fingerprint", "security definer set search_path = ''"):
+            self.assertIn(value, UNIFIED_SQL)
+        self.assertIn("grant execute on function public.daily_review_approval_apply_combined(text,text,text) to service_role", UNIFIED_SQL)
+        self.assertIn("grant execute on function public.daily_review_publish_dispatch_complete(text,text,bigint,bigint) to service_role", UNIFIED_SQL)
+        self.assertIn('action:"APPROVE_AND_PUBLISH"', EDGE)
+        self.assertIn('action!=="APPROVE_AND_PUBLISH"', EDGE)
+        self.assertIn("KFARMAI_GITHUB_APPROVAL_TOKEN", EDGE)
+        self.assertIn("dispatchPublication(result)", EDGE)
+        self.assertNotIn('send(approvalId,"PUBLISH")', EDGE)
 
     def test_polished_revision_stores_font_verified_preview_before_email(self):
         workflow = (ROOT / ".github/workflows/kfarmai-review-content-revision.yml").read_text(encoding="utf-8")
