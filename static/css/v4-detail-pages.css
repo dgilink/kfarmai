@@ -12,7 +12,7 @@
 html { background: #fff; }
 body.v4-detail-page {
   display: block !important;
-  min-width: 320px;
+  min-width: 0;
   min-height: 100dvh;
   margin: 0 !important;
   padding: 0 !important;

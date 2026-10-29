@@ -201,7 +201,7 @@
 
 .agri-v3-page {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   background: var(--agri-bg);
   color: var(--agri-text);
   font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;

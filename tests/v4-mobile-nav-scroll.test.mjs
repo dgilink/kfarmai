@@ -449,7 +449,7 @@ try {
   await communityRequestRaces();
   // Cross-page visual contract: the four previously disconnected tool surfaces
   // must show the same white KFarmAI header and one active bottom-menu tab.
-  for (const width of [320, 390, 430]) {
+  for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
     for (const route of ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
       await navigate(route);
@@ -505,19 +505,19 @@ try {
         }))()`);
         assert.ok(compactMarket.sources===1&&!compactMarket.duplicate&&!compactMarket.verbose&&compactMarket.updated&&compactMarket.rows>=3&&compactMarket.firstChip==='전체'&&compactMarket.firstActive&&compactMarket.emptyQuery,route+' '+width+'px compact market contract '+JSON.stringify(compactMarket));
       }
-      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      if ((width === 390 || width === 267 && route === '/facility-vegetables.html') && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot, { recursive:true });
         const capture = await socket.send('Page.captureScreenshot', { format:'png', captureBeyondViewport:false });
         const name = route.slice(1).replace(/[^a-z0-9.-]/gi, '_');
-        fs.writeFileSync(path.join(captureRoot, name + '-390.png'), Buffer.from(capture.data, 'base64'));
+        fs.writeFileSync(path.join(captureRoot, name + '-' + width + '.png'), Buffer.from(capture.data, 'base64'));
       }
     }
   }
 
   // The selected crop details must be a single white reading surface. Text
   // rows may use dividers, but no bordered wrapper may contain more cards.
-  for (const width of [320, 390, 430]) {
+  for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
     for (const route of ['/crop-guide.html?crop=pear', '/crop-calendar.html?crop=pear']) {
       await navigate(route);
@@ -564,7 +564,7 @@ try {
     '/diagnosis.html', '/diagnosis-cases.html', '/public-data.html', '/agri_map.html',
     '/mfg.html', '/news_sub.html', '/links.html', '/crop-guide.html', '/oauth/privacy/',
   ];
-  for (const width of [320, 390, 430]) {
+  for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
     for (const route of detailRoutes) {
       await navigate(route);
@@ -609,13 +609,37 @@ try {
         await evaluate("window.dispatchEvent(new Event('pageshow'))");
         await delay(100);
         assert.equal(await evaluate('window.scrollY'),0,route+' '+width+'px pageshow restores the complete title and search bar');
+        if (width === 267) {
+          await evaluate(`(() => {
+            Object.defineProperty(navigator,'geolocation',{configurable:true,value:{
+              getCurrentPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}})}
+            }});
+            window.kakao={maps:{
+              LatLng:function(lat,lng){this.lat=lat;this.lng=lng},
+              CustomOverlay:function(options){this.setMap=map=>{if(map&&!options.content.isConnected)document.getElementById('agriMap').append(options.content)};this.setMap(options.map)},
+              Circle:function(options){this.setMap=()=>{};this.options=options}
+            }};
+            kakaoMap={setCenter(position){window.__locationCenter={lat:position.lat,lng:position.lng}},setLevel(level){window.__locationLevel=level}};
+            document.getElementById('locateButton').disabled=false;
+            requestCurrentLocation();
+          })()`);
+          const locationUi=await evaluate(`(() => ({
+            marker:!!document.querySelector('.current-location-dot'),
+            status:document.getElementById('mapStatus').textContent,
+            busy:document.getElementById('locateButton').getAttribute('aria-busy'),
+            disabled:document.getElementById('locateButton').disabled,
+            center:window.__locationCenter,
+            level:window.__locationLevel
+          }))()`);
+          assert.deepEqual(locationUi,{marker:true,status:'현재 위치 표시',busy:'false',disabled:false,center:{lat:37.5665,lng:126.978},level:4},'267px current-location control centers map and renders red marker');
+        }
       }
-      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      if ((width === 390 || width === 267 && route === '/agri_map.html') && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot,{recursive:true});
         const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
         const name=route.replace(/^\//,'').replace(/\/$/,'index').replace(/[^a-z0-9.-]/gi,'_');
-        fs.writeFileSync(path.join(captureRoot,name+'-390.png'),Buffer.from(capture.data,'base64'));
+        fs.writeFileSync(path.join(captureRoot,name+'-'+width+'.png'),Buffer.from(capture.data,'base64'));
       }
     }
   }

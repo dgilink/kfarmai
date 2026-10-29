@@ -1,7 +1,7 @@
 /* KFarmAI V4.1 tool-page presentation. Data and interactions are unchanged. */
 :root { --kf-ink:#17202a; --kf-muted:#596660; --kf-green:#126c43; --kf-blue:#245b93; --kf-amber:#8b4b08; --kf-purple:#65479a; --kf-teal:#0f6f67; --kf-rose:#983a5f; --kf-line:#d9e0da; }
 html { background:#fff; }
-body.kf-tool-page { margin:0; min-width:320px; background:#fff; color:var(--kf-ink); font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
+body.kf-tool-page { margin:0; min-width:0; background:#fff; color:var(--kf-ink); font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
 body.kf-tool-page .app { width:100%; max-width:none; min-height:100dvh; margin:0; border:0; border-radius:0; box-shadow:none; background:#fff; }
 body.kf-tool-page .header { position:sticky; top:0; z-index:90; padding:0; min-height:60px; background:#fff; border:0; border-bottom:1px solid var(--kf-line); box-shadow:none; backdrop-filter:none; transform:none; }
 body.kf-tool-page .header .top { display:flex; align-items:center; justify-content:flex-start; width:min(calc(100% - 32px),1120px); min-height:60px; margin:0 auto; gap:10px; }

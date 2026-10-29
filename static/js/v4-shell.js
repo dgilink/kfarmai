@@ -5,7 +5,21 @@
   const topAlignedPages = new Set(['/facility-vegetables.html', '/agri_map.html']);
   if (topAlignedPages.has(page)) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.addEventListener('pageshow', () => requestAnimationFrame(() => window.scrollTo(0, 0)));
+    const resetInitialScroll = () => {
+      window.scrollTo({top:0, left:0, behavior:'auto'});
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    const settleAtTop = () => {
+      resetInitialScroll();
+      requestAnimationFrame(resetInitialScroll);
+      window.setTimeout(resetInitialScroll, 120);
+      window.setTimeout(resetInitialScroll, 420);
+    };
+    settleAtTop();
+    window.addEventListener('DOMContentLoaded', settleAtTop, {once:true});
+    window.addEventListener('pageshow', settleAtTop);
+    window.addEventListener('pagehide', resetInitialScroll);
   }
   const normalizeDiagnosisLabel = root => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
