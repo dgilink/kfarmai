@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "topics": [
+    {
+      "priority": 10,
+      "status": "ready",
+      "slug": "greenhouse-pepper-soil-moisture-sensor-check",
+      "subject": "시설고추 토양수분 감지기, 설치·값·관수 전 확인 포인트",
+      "category": "스마트팜",
+      "sources": [
+        {
+          "institution": "농촌진흥청",
+          "title": "고추 ‘목마름’ 신호 전에 수치로 물 준다… 토양 수분 -20kPa일 때 수량 가장 많아",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000812564&mode=view&prgId=day_farmprmninfoEntry",
+          "claim": "토양 수분 장력 값을 이용해 시설 고추에 물 주는 시점을 정하는 기준",
+          "application_conditions": "시설고추 여름철 고온기 시험 결과이며 재배 방식·토양·센서 사양과 현장 상태별 재확인 필요"
+        },
+        {
+          "institution": "농촌진흥청",
+          "title": "가뭄·폭염에 고추 토양수분관리 중요, 물관리 철저",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000804071&mode=view&prgId=day_farmlcltinfoEntry",
+          "claim": "수분 장력계 기준으로",
+          "application_conditions": "고추 가뭄·폭염기 물관리 참고자료이며 시설·노지와 토양 조건별 공식자료 및 현장 상태 재확인 필요"
+        }
+      ]
+    },
+    {
+      "priority": 20,
+      "status": "ready",
+      "slug": "winter-strawberry-pollinator-bee-check",
+      "subject": "겨울철 딸기 화분매개벌, 투입 전 벌통·먹이·활동 확인 포인트",
+      "category": "재배노하우",
+      "sources": [
+        {
+          "institution": "농촌진흥청",
+          "title": "겨울철 딸기, 지금부터 꿀벌‧뒤영벌 준비하세요!",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000805745&mode=view&prgId=day_farmprmninfoEntry",
+          "claim": "딸기에 이용되는 화분 매개용 벌은 꿀벌과 뒤영벌",
+          "application_conditions": "겨울철 시설딸기 화분매개 참고자료이며 벌통 규모·시설 면적·지역 기온과 개화 상태별 재확인 필요"
+        },
+        {
+          "institution": "농촌진흥청",
+          "title": "겨울철 딸기 키울 ‘화분 매개용 꿀벌’ 관리는 지금부터",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000798773&mode=view&prgId=day_farmprmninfoEntry",
+          "claim": "일주일에 3회는 벌 활동량을 조사",
+          "application_conditions": "시설딸기용 꿀벌 관리 참고자료이며 농가 시설·벌통 상태·개화 시기와 현장 여건별 재확인 필요"
+        }
+      ]
+    },
+    {
+      "priority": 30,
+      "status": "ready",
+      "slug": "winter-greenhouse-cucumber-downy-mildew-check",
+      "subject": "겨울철 오이 하우스, 노균병 의심 전 잎 뒷면·온습도 확인 포인트",
+      "category": "식물병",
+      "sources": [
+        {
+          "institution": "농촌진흥청",
+          "title": "겨울철 시설작물의 병해충관리 요령",
+          "url": "https://www.rda.go.kr/middlePopOpenPopNongsaroDBView.do?no=1350&sj=",
+          "claim": "노균병은 저온다습한 조건에서 발생하기 쉬운 병",
+          "application_conditions": "겨울철 시설작물의 일반 병해충 관리자료이며 오이 품종·생육 단계·시설 환경별 공식 진단자료 재확인 필요"
+        },
+        {
+          "institution": "농촌진흥청",
+          "title": "시설 채소 병해충 주의 “방제 서두르세요”",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000783853&mode=view&prgId=day_farmprmninfoEntry",
+          "claim": "흰가루병, 잿빛곰팡이병, 노균병은 온도가 낮고 습도가 높으면",
+          "application_conditions": "시설채소 병 발생 환경에 관한 참고자료이며 증상만으로 확정 진단하지 말고 공식자료와 현장 상태 재확인 필요"
+        }
+      ]
+    }
+  ]
+}

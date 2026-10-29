@@ -19,7 +19,7 @@ from daily_review_runner import verify_context
 from durable_budget import DurableBudget
 from kfarmai_review_approval import canonical, digest, metadata, read_archive
 from real_daily_provider import (MODEL, MAX_INPUT, MAX_OUTPUT, MAX_RESERVE, SAFETY_NOTE, PESTICIDE_SAFETY_NOTE, TOPICS, RealDailyProvider,
-                                 _source_evidence, estimated_cost, OpenAIResponses)
+                                 _source_evidence, estimated_cost, load_topic_queue, OpenAIResponses)
 
 
 def article():
@@ -52,7 +52,7 @@ class Source:
         self.missing = missing
 
     def fetch(self, url):
-        source = next(x for x in TOPICS[0]["sources"] if x["url"] == url)
+        source = next(x for topic in TOPICS for x in topic["sources"] if x["url"] == url)
         claim = "다른 문장" if self.missing else source["claim"]
         return ("<html><head><title>" + source["title"] +
                 "</title></head><body><main>" + (claim + " 현장 상태를 함께 확인합니다. ") * 30 +
@@ -162,6 +162,8 @@ class RealDailyE2E(unittest.TestCase):
             json.dumps({"items": []}), encoding="utf-8")
         (cls.fixture_root / "automation" / "topic_seed.json").write_text(
             json.dumps({"do_not_repeat": []}), encoding="utf-8")
+        shutil.copyfile(ROOT / "automation" / "daily_topic_queue.json",
+                        cls.fixture_root / "automation" / "daily_topic_queue.json")
         shutil.copyfile(ROOT / "automation" / "config.json",
                         cls.fixture_root / "automation" / "config.json")
         shutil.copyfile(ROOT / "static" / "kb" / "usda-greenhouse-heating-photo.jpg",
@@ -234,13 +236,51 @@ class RealDailyE2E(unittest.TestCase):
         with self.assertRaises(Exception):
             provider.classify_content(a, TOPICS[0], evidence)
 
-    def test_existing_review_issue_blocks_new_day_before_paid_work(self):
+    def test_existing_review_issues_for_all_topics_block_before_paid_work(self):
         rpc, model = RPC(), Model()
         provider = RealDailyProvider(self.fixture_root, Source(), model, DurableBudget(rpc),
-                                     lambda slug: slug == TOPICS[0]["slug"])
+                                     lambda slug: True)
         with tempfile.TemporaryDirectory() as temp, self.assertRaises(Exception):
             provider.run(date=FIXTURE_DATE,
                          run_id=990007, head_sha="a"*40, output=Path(temp)/"out", now=FIXTURE_NOW)
+        self.assertEqual(0, model.calls)
+        self.assertNotIn("reserve", rpc.calls)
+
+    def test_reviewed_queue_is_ordered_and_skips_claimed_topic(self):
+        topics = load_topic_queue(self.fixture_root)
+        self.assertGreaterEqual(len(topics), 3)
+        self.assertEqual(sorted(x["priority"] for x in topics),
+                         [x["priority"] for x in topics])
+        self.assertEqual(len(topics), len({x["slug"] for x in topics}))
+        provider = RealDailyProvider(self.fixture_root, Source(), Model(), DurableBudget(RPC()),
+                                     lambda slug: slug == topics[0]["slug"])
+        self.assertEqual(topics[1]["slug"], provider.select_topic(FIXTURE_DATE)["slug"])
+
+    def test_invalid_queue_blocks_before_source_budget_or_model(self):
+        with tempfile.TemporaryDirectory(prefix="kfarmai-bad-queue-") as temp:
+            root = Path(temp)
+            shutil.copytree(self.fixture_root, root, dirs_exist_ok=True)
+            queue = json.loads((root / "automation/daily_topic_queue.json").read_text())
+            queue["topics"][0]["sources"][0]["url"] = "https://example.com/not-official"
+            (root / "automation/daily_topic_queue.json").write_text(
+                json.dumps(queue, ensure_ascii=False), encoding="utf-8")
+            model, rpc = Model(), RPC()
+            source = mock.MagicMock()
+            provider = RealDailyProvider(root, source, model, DurableBudget(rpc), lambda slug: False)
+            with self.assertRaisesRegex(Exception, "BLOCKED_TOPIC_QUEUE_INVALID"):
+                provider.run(date=FIXTURE_DATE, run_id=990047, head_sha="a" * 40,
+                             output=root / "result", now=FIXTURE_NOW)
+            source.fetch.assert_not_called()
+            self.assertEqual(0, model.calls)
+            self.assertNotIn("reserve", rpc.calls)
+
+    def test_exhausted_queue_blocks_before_paid_work(self):
+        model, rpc = Model(), RPC()
+        provider = RealDailyProvider(self.fixture_root, Source(), model, DurableBudget(rpc),
+                                     lambda slug: True)
+        with self.assertRaisesRegex(Exception, "BLOCKED_NO_VERIFIED_TOPIC"):
+            provider.run(date=FIXTURE_DATE, run_id=990048, head_sha="a" * 40,
+                         output=self.fixture_root / "unused-result", now=FIXTURE_NOW)
         self.assertEqual(0, model.calls)
         self.assertNotIn("reserve", rpc.calls)
 

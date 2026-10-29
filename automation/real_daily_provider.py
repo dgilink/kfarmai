@@ -70,23 +70,9 @@ def topic_safety_notice(article, topic):
         return FACILITY_SAFETY_NOTE
     return GENERAL_SAFETY_NOTE
 
-# Editorial seed, not a source of asserted facts. The exact phrases below are
-# rechecked in the current official HTML response before any model reservation.
-TOPICS = ({
-    "slug": "greenhouse-heating-preflight-notes",
-    "subject": "겨울철 온실 난방 전 틈새·난방기·배관 확인 포인트",
-    "category": "스마트팜",
-    "sources": (
-        {"institution": "농촌진흥청", "title": "겨울철 시설원예 난방비 잡는 4가지 절약 요령 기억하세요",
-         "url": "https://www.rda.go.kr/board/board.do?dataNo=100000792431&mode=view&prgId=day_farmprmninfoEntry",
-         "claim": "난방 배관에 누수는 없는지",
-         "application_conditions": "겨울철 시설원예 온실 난방; 설비와 현장 상태별 재확인 필요"},
-        {"institution": "농촌진흥청", "title": "시설원예 난방비 잡는 절약요령 꿀팁",
-         "url": "https://www.rda.go.kr/board/board.do?boardId=cardnews&dataNo=100000793148&mode=updateCnt&prgId=con_cardnews",
-         "claim": "온실 틈새",
-         "application_conditions": "겨울철 시설원예 온실 관리; 작물·지역·날씨 조건별 재확인 필요"},
-    ),
-},)
+TOPIC_QUEUE = "automation/daily_topic_queue.json"
+TOPIC_KEYS = {"priority", "status", "slug", "subject", "category", "sources"}
+SOURCE_KEYS = {"institution", "title", "url", "claim", "application_conditions"}
 
 
 class _VisibleText(HTMLParser):
@@ -134,6 +120,61 @@ def _allowed_url(url, domains):
                 and any(host == d or host.endswith("." + d) for d in domains))
     except ValueError:
         return False
+
+
+def load_topic_queue(root):
+    """Load the reviewed queue and fail closed before any network or paid work."""
+    try:
+        data = json.loads((Path(root) / TOPIC_QUEUE).read_bytes())
+        require(isinstance(data, dict) and set(data) == {"schema_version", "topics"}
+                and data["schema_version"] == 1 and isinstance(data["topics"], list)
+                and data["topics"], "BLOCKED_TOPIC_QUEUE_INVALID")
+        config = json.loads((Path(root) / "automation/config.json").read_bytes())
+        categories = set(config["auto_publish_categories"] + config["review_categories"])
+        domains = load_domains(root)
+        topics = []
+        priorities, slugs, subjects, source_urls = set(), set(), set(), set()
+        for raw in data["topics"]:
+            require(isinstance(raw, dict) and set(raw) == TOPIC_KEYS,
+                    "BLOCKED_TOPIC_QUEUE_INVALID")
+            priority, status = raw["priority"], raw["status"]
+            slug, subject, category = raw["slug"], raw["subject"], raw["category"]
+            sources = raw["sources"]
+            require(type(priority) is int and 1 <= priority <= 10000
+                    and priority not in priorities and status == "ready"
+                    and isinstance(slug, str) and re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+){2,11}", slug)
+                    and slug not in slugs and isinstance(subject, str) and 12 <= len(subject) <= 90
+                    and subject not in subjects and category in categories
+                    and isinstance(sources, list) and 2 <= len(sources) <= 4,
+                    "BLOCKED_TOPIC_QUEUE_INVALID")
+            priorities.add(priority); slugs.add(slug); subjects.add(subject)
+            normalized_sources = []
+            for source in sources:
+                require(isinstance(source, dict) and set(source) == SOURCE_KEYS,
+                        "BLOCKED_TOPIC_QUEUE_INVALID")
+                require(all(isinstance(source[key], str) and source[key].strip() == source[key]
+                            for key in SOURCE_KEYS), "BLOCKED_TOPIC_QUEUE_INVALID")
+                require(2 <= len(source["institution"]) <= 40
+                        and 8 <= len(source["title"]) <= 150
+                        and 4 <= len(source["claim"]) <= 160
+                        and 12 <= len(source["application_conditions"]) <= 220
+                        and _allowed_url(source["url"], domains)
+                        and source["url"] not in source_urls,
+                        "BLOCKED_TOPIC_QUEUE_INVALID")
+                source_urls.add(source["url"])
+                normalized_sources.append(dict(source))
+            topics.append({**raw, "sources": tuple(normalized_sources)})
+        return tuple(sorted(topics, key=lambda item: item["priority"]))
+    except Blocked:
+        raise
+    except (OSError, ValueError, TypeError, KeyError, json.JSONDecodeError):
+        raise Blocked("BLOCKED_TOPIC_QUEUE_INVALID") from None
+
+
+# Compatibility export for tests and read-only tooling. Production selection
+# reloads the repository queue for every run so fixture roots and tamper checks
+# exercise exactly the same path.
+TOPICS = load_topic_queue(Path(__file__).resolve().parents[1])
 
 
 class OfficialSourceClient:
@@ -383,7 +424,7 @@ class RealDailyProvider:
         seed = json.loads((self.root / "automation/topic_seed.json").read_bytes())
         titles = set(existing_titles(self.root, registry, seed))
         require(not any(item.get("date") == date for item in registry["items"]), "BLOCKED_DUPLICATE_DATE")
-        for topic in TOPICS:
+        for topic in load_topic_queue(self.root):
             if topic["slug"] not in {item.get("slug") for item in registry["items"]} \
                     and topic["subject"] not in titles \
                     and not self.review_lookup(topic["slug"]) \
