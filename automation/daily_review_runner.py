@@ -8,60 +8,17 @@ import os
 from pathlib import Path
 import re
 import sys
-import tempfile
 
 from daily_review_issue import GitHubIssueIndex, GitHubReviewTransport, load_package
-from durable_budget import DurableBudget, BudgetBlocked
+from durable_budget import BudgetBlocked
+from github_editorial_gate import GitHubEditorialBudget, GitHubEditorialGate
 from kfarmai_daily_autopublish import KST
 from kfarmai_review_approval import Blocked, canonical, require
 from real_daily_provider import OpenAIResponses, OfficialSourceClient, RealDailyProvider
 from source_policy import load_domains
 
 
-ROLE = "kfarmai_daily_runner"
-PROJECT_REF = "xzetqijeucldbfgjuoes"
 WORKFLOW_REF = "dgilink/kfarmai/.github/workflows/kfarmai-daily-autopublish.yml@refs/heads/main"
-COMMANDS = frozenset({"reserve", "dispatch", "settle", "unknown", "freeze",
-                      "issue_claim", "issue_creating", "issue_complete", "status"})
-
-
-def verified_connection_info(psycopg, dsn, ca_file):
-    require(isinstance(dsn, str) and dsn and isinstance(ca_file, str) and ca_file,
-            "DAILY_DATABASE_CREDENTIAL_MISSING")
-    options = psycopg.conninfo.conninfo_to_dict(dsn)
-    host = options.get("host", "")
-    direct = host == f"db.{PROJECT_REF}.supabase.co" and options.get("user") == ROLE
-    session = (re.fullmatch(r"aws-[0-9]+-[a-z0-9-]+\.pooler\.supabase\.com", host)
-               and options.get("user") == f"{ROLE}.{PROJECT_REF}")
-    require((direct or session) and options.get("dbname") == "postgres"
-            and str(options.get("port", "5432")) == "5432"
-            and options.get("hostaddr") is None and options.get("service") is None
-            and options.get("passfile") is None and options.get("options") is None,
-            "DAILY_DATABASE_TARGET_MISMATCH")
-    return psycopg.conninfo.make_conninfo(dsn, sslmode="verify-full",
-                                         sslrootcert=ca_file, connect_timeout=10)
-
-
-class DailyBudgetDatabase:
-    def __init__(self, connection):
-        self.connection = connection
-
-    def check_role(self):
-        require(self.connection.pgconn.ssl_in_use is True, "DAILY_DATABASE_TLS_REQUIRED")
-        with self.connection.cursor() as cursor:
-            cursor.execute("select session_user, current_user, current_database()")
-            role, effective, database = cursor.fetchone()
-        require(role == ROLE and effective == ROLE and database == "postgres",
-                "DAILY_DATABASE_ROLE_REQUIRED")
-
-    def __call__(self, command, payload):
-        require(command in COMMANDS and isinstance(payload, dict), "DAILY_RPC_DENIED")
-        with self.connection.cursor() as cursor:
-            cursor.execute("select kfarmai_private.daily_review_budget(%s,%s::jsonb)",
-                           (command, json.dumps(payload, sort_keys=True)))
-            value = cursor.fetchone()[0]
-        require(isinstance(value, dict), "DAILY_RPC_UNCONFIRMED")
-        return value
 
 
 def verify_context(env, head_sha, *, phase):
@@ -93,62 +50,73 @@ def run_command(args, env):
     require(str(args.run_id) == env.get("GITHUB_RUN_ID"), "DAILY_GITHUB_CONTEXT_MISMATCH")
     if args.command == "generate":
         require(args.date == dt.datetime.now(KST).date().isoformat(), "BLOCKED_BUDGET_DATE")
-    dsn, ca_pem = env.get("KFARMAI_DAILY_DB_DSN"), env.get("KFARMAI_DAILY_DB_CA_PEM")
-    require(isinstance(ca_pem, str) and ca_pem.startswith("-----BEGIN CERTIFICATE-----")
-            and ca_pem.strip().endswith("-----END CERTIFICATE-----") and dsn,
-            "DAILY_DATABASE_CREDENTIAL_MISSING")
-    import psycopg
-    with tempfile.NamedTemporaryFile(mode="w", encoding="ascii", suffix=".crt", delete=True) as ca:
-        ca.write(ca_pem)
-        ca.flush()
-        connection_info = verified_connection_info(psycopg, dsn, ca.name)
-        with psycopg.connect(connection_info, autocommit=True) as connection:
-            rpc = DailyBudgetDatabase(connection)
-            rpc.check_role()
-            budget = DurableBudget(rpc)
-            if args.command == "generate":
-                status = budget.call("status", {})
-                require(status.get("enabled") is True
-                        and status.get("day_kst") == args.date
-                        and status.get("limit") == 150000
-                        and status.get("unconfirmed") == 0,
-                        "DAILY_BUDGET_NOT_READY")
-                root = Path(args.root).resolve()
-                key = env.get("OPENAI_API_KEY")
-                require(isinstance(key, str) and key, "BLOCKED_OPENAI_KEY")
-                provider = RealDailyProvider(root, OfficialSourceClient(load_domains(root)),
-                                             OpenAIResponses(key), budget,
-                                             GitHubIssueIndex(env.get("GH_TOKEN")))
-                recovery = env.get("KFARMAI_DAILY_RECOVERY", "none")
-                result = provider.run(date=args.date, run_id=args.run_id, head_sha=head_sha,
-                                      output=args.output,
-                                      recovery_from=("38209820550" if recovery == "incident_38209820550"
-                                                     else "38218191801" if recovery == "incident_38218191801"
-                                                     else "38222769553" if recovery == "incident_38222769553"
-                                                     else None))
-                return result["outcome"]
-            package = load_package(Path(args.output) / "approval-package")
-            artifact = json.loads(Path(args.artifact_json).read_bytes())
-            outputs = json.loads(Path(args.upload_outputs).read_bytes())
-            raw = Path(args.artifact_zip).read_bytes()
-            transport = GitHubReviewTransport(token=env.get("GH_TOKEN"),
-                repository="dgilink/kfarmai", run_id=args.run_id, head_sha=head_sha,
-                upload_outputs=outputs, artifact_json=artifact, artifact_zip=raw,
-                environment=env)
-            from artifact_issue_contract import review_report
-            result = review_report(package, transport, budget)
+    token = env.get("GH_TOKEN")
+    require(isinstance(token, str) and token, "BLOCKED_GITHUB_TOKEN")
+    gate = GitHubEditorialGate(token=token, run_id=args.run_id, head_sha=head_sha,
+                               environment=env)
+    if args.command == "generate":
+        claim = gate.claim(args.date)
+        budget = GitHubEditorialBudget(gate, claim)
+        try:
+            root = Path(args.root).resolve()
+            key = env.get("OPENAI_API_KEY")
+            require(isinstance(key, str) and key, "BLOCKED_OPENAI_KEY")
+            provider = RealDailyProvider(root, OfficialSourceClient(load_domains(root)),
+                                         OpenAIResponses(key), budget,
+                                         GitHubIssueIndex(token))
+            recovery = env.get("KFARMAI_DAILY_RECOVERY", "none")
+            result = provider.run(date=args.date, run_id=args.run_id, head_sha=head_sha,
+                                  output=args.output,
+                                  recovery_from=("38209820550" if recovery == "incident_38209820550"
+                                                 else "38218191801" if recovery == "incident_38218191801"
+                                                 else "38222769553" if recovery == "incident_38222769553"
+                                                 else None))
             outcome_path = Path(args.output) / "outcome.json"
-            outcome = json.loads(outcome_path.read_bytes())
-            require(outcome.get("status") == "REVIEW_PENDING_UPLOAD"
-                    and outcome.get("date") == args.date
-                    and outcome.get("approval_id") == package["manifest"]["approval_id"]
-                    and outcome.get("manifest_sha256") == package["manifest_sha256"],
-                    "BLOCKED_OUTCOME_BINDING")
-            outcome.update(status="REVIEW", artifact_id=artifact["id"],
-                           issue_number=result["issue"]["number"],
-                           issue_url=result["issue"].get("html_url"), published=False)
+            outcome = result["outcome"]
+            outcome.update(claim_issue_number=claim["number"],
+                           review_channel="github_issue", published=False)
             outcome_path.write_bytes(canonical(outcome) + b"\n")
             return outcome
+        except Exception as error:
+            code = (error.code if isinstance(error, Blocked) else
+                    str(error) if isinstance(error, BudgetBlocked) else
+                    "DAILY_EXECUTION_FAILED")
+            try:
+                gate.hold(claim["number"], code)
+            except Exception:
+                pass
+            raise
+    package = load_package(Path(args.output) / "approval-package")
+    artifact = json.loads(Path(args.artifact_json).read_bytes())
+    outputs = json.loads(Path(args.upload_outputs).read_bytes())
+    raw = Path(args.artifact_zip).read_bytes()
+    transport = GitHubReviewTransport(token=token,
+        repository="dgilink/kfarmai", run_id=args.run_id, head_sha=head_sha,
+        upload_outputs=outputs, artifact_json=artifact, artifact_zip=raw,
+        environment=env)
+    require(transport.live_authorized(package["manifest"]) is True,
+            "LIVE_GITHUB_WRITE_DISABLED")
+    from artifact_issue_contract import validate_upload_identity
+    from approval_package import render_issue
+    name = "review-" + package["manifest"]["approval_id"]
+    found = transport.find_upload(name, package["manifest"]["source_run_id"])
+    artifact_id = validate_upload_identity(found, artifact, package["manifest"])
+    downloaded, downloaded_raw = transport.download(artifact_id)
+    rendered = render_issue(package, downloaded, uploaded_raw=downloaded_raw)
+    outcome_path = Path(args.output) / "outcome.json"
+    outcome = json.loads(outcome_path.read_bytes())
+    require(outcome.get("status") == "REVIEW_PENDING_UPLOAD"
+            and outcome.get("date") == args.date
+            and outcome.get("approval_id") == package["manifest"]["approval_id"]
+            and outcome.get("manifest_sha256") == package["manifest_sha256"]
+            and type(outcome.get("claim_issue_number")) is int,
+            "BLOCKED_OUTCOME_BINDING")
+    issue = gate.finalize(outcome["claim_issue_number"], rendered)
+    outcome.update(status="REVIEW", artifact_id=artifact["id"],
+                   issue_number=issue["number"], issue_url=issue.get("html_url"),
+                   review_channel="github_issue", published=False)
+    outcome_path.write_bytes(canonical(outcome) + b"\n")
+    return outcome
 
 
 def main(argv=None):
