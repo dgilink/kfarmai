@@ -2,6 +2,11 @@
   'use strict';
   if (document.querySelector('[data-v4-shell-nav]')) return;
   const page = location.pathname;
+  const topAlignedPages = new Set(['/facility-vegetables.html', '/agri_map.html']);
+  if (topAlignedPages.has(page)) {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.addEventListener('pageshow', () => requestAnimationFrame(() => window.scrollTo(0, 0)));
+  }
   const normalizeDiagnosisLabel = root => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
