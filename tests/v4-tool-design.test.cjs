@@ -141,6 +141,7 @@ test('pesticide store search stays fully below the fixed global header', () => {
   assert.match(map,/body\.v4-map-page \.kf-search-bar \{[\s\S]*border-top:1px solid #e8e8e8/);
   assert.ok(map.includes('/static/css/v4-shell.css?v=20261029-header3'));
   assert.ok(map.includes('/static/js/v4-shell.js?v=20261029-header3'));
+  assert.match(map,/body\.v4-map-page \.v4-global-action \.v4-nav-icon\{display:block!important;[\s\S]*stroke:currentColor!important/);
   const shell=read('static/js/v4-shell.js');
   assert.match(shell,/topAlignedPages = new Set\(\['\/facility-vegetables\.html', '\/agri_map\.html'\]\)/);
   assert.match(shell,/history\.scrollRestoration = 'manual'/);
