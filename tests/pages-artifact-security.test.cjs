@@ -107,6 +107,14 @@ try {
     assert.ok(!smartfarmCard[1].includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
   });
 
+  test('dynamic knowledge cards use article photos rather than infographic thumbnails', () => {
+    const discovery = fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js'), 'utf8');
+    for (const slug of ['pear-harvest-sorting-cold-storage-five-checks', 'autumn-rain-wheat-barley-sowing-checklist']) {
+      assert.ok(discovery.includes(`/static/kb/${slug}-photo-20261029.webp`), `${slug} uses a photo`);
+      assert.ok(!discovery.includes(`/static/kb/${slug}-infographic.svg`), `${slug} list avoids infographic`);
+    }
+  });
+
   test('all-tab public info opens the same KB list as the agriculture tab', () => {
     const shell = fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js'), 'utf8');
     assert.match(shell, /\['knowledge', '농업정보', '\/kb\/index\.html'\]/);
