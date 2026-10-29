@@ -449,9 +449,12 @@ try {
   await communityRequestRaces();
   // Cross-page visual contract: the four previously disconnected tool surfaces
   // must show the same white KFarmAI header and one active bottom-menu tab.
-  for (const width of [320, 390, 430]) {
+  for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
-    for (const route of ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
+    const toolRoutes = width === 267
+      ? ['/facility-vegetables.html']
+      : ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html'];
+    for (const route of toolRoutes) {
       await navigate(route);
       const toolUi = await evaluate(`(() => {
         const brand=document.querySelector('.v4-global-brand');
@@ -460,22 +463,28 @@ try {
         const nav=document.querySelector('.v4-nav');
         const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
+        const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
+        const surfaces=[document.querySelector('.app'),title,document.querySelector('.content'),...document.querySelectorAll('.content > *')].filter(Boolean);
+        const overflowNodes=surfaces.filter(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}).map(node=>{const rect=node.getBoundingClientRect();return {name:node.tagName+'.'+node.className,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width)}});
         return {
           text:brand?.textContent?.trim(),
           font:brand&&getComputedStyle(brand).fontSize,
           title:!!title && title.textContent.trim().length>0,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
-          overflow:document.documentElement.scrollWidth>innerWidth+1,
-          headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=innerWidth+1&&actions.right<=innerWidth+1,
-          actionsVisible:!!actions&&actions.width>=90&&actions.left>=innerWidth-110&&actions.right>=innerWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
+          overflow:overflowNodes.length>0,
+          overflowNodes,
+          headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=viewportWidth+1&&actions.right<=viewportWidth+1,
+          actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=viewportWidth-110&&actions.right>=viewportWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
+          visual:viewportWidth,
+          narrow:viewportWidth>=320||document.body.classList.contains('v4-sub320-visual-viewport'),
           active:nav?.querySelectorAll('[aria-current="page"]').length,
           activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
           tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
-      assert.deepEqual(toolUi,{text:'kFarmAI',font:'24px',title:true,white:true,overflow:false,headerFits:true,actionsVisible:true,actionIcons:2,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      assert.deepEqual(toolUi,{text:'kFarmAI',font:width < 320?'21px':'24px',title:true,white:true,overflow:false,overflowNodes:[],headerFits:true,actionsVisible:true,actionIcons:2,visual:width,narrow:true,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
       const flatUi = await evaluate(`(() => ({
         loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
@@ -505,12 +514,12 @@ try {
         }))()`);
         assert.ok(compactMarket.sources===1&&!compactMarket.duplicate&&!compactMarket.verbose&&compactMarket.updated&&compactMarket.rows>=3&&compactMarket.firstChip==='전체'&&compactMarket.firstActive&&compactMarket.emptyQuery,route+' '+width+'px compact market contract '+JSON.stringify(compactMarket));
       }
-      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      if ((width === 390 || width === 267 && route === '/facility-vegetables.html') && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot, { recursive:true });
         const capture = await socket.send('Page.captureScreenshot', { format:'png', captureBeyondViewport:false });
         const name = route.slice(1).replace(/[^a-z0-9.-]/gi, '_');
-        fs.writeFileSync(path.join(captureRoot, name + '-390.png'), Buffer.from(capture.data, 'base64'));
+        fs.writeFileSync(path.join(captureRoot, name + '-' + width + '.png'), Buffer.from(capture.data, 'base64'));
       }
     }
   }
@@ -564,9 +573,10 @@ try {
     '/diagnosis.html', '/diagnosis-cases.html', '/public-data.html', '/agri_map.html',
     '/mfg.html', '/news_sub.html', '/links.html', '/crop-guide.html', '/oauth/privacy/',
   ];
-  for (const width of [320, 390, 430]) {
+  for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
-    for (const route of detailRoutes) {
+    const responsiveDetailRoutes = width === 267 ? ['/agri_map.html'] : detailRoutes;
+    for (const route of responsiveDetailRoutes) {
       await navigate(route);
       const detailUi = await evaluate(`(() => {
         const nav=document.querySelector('.v4-nav');
@@ -578,25 +588,31 @@ try {
         const oldMenu=document.querySelector('.kf-menu');
         const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
+        const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
+        const surfaces=[frame,globalHeader,nav,...document.querySelectorAll('.fixed-map-shell,.list-wrap,.map-panel,.kf-search-bar')].filter(Boolean);
+        const overflowNodes=surfaces.filter(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}).map(node=>{const rect=node.getBoundingClientRect();return {name:node.tagName+'.'+node.className,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width)}});
         return {
           detail:document.body.classList.contains('v4-detail-page'),
           h1:!!document.querySelector('h1'),
           titleBelowHeader:!globalHeader||!firstHeading||firstHeading.getBoundingClientRect().top>=globalHeader.getBoundingClientRect().bottom-1,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
-          overflow:document.documentElement.scrollWidth>innerWidth+1,
-          headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=innerWidth+1&&actions.right<=innerWidth+1,
-          actionsVisible:!!actions&&actions.width>=90&&actions.left>=innerWidth-110&&actions.right>=innerWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
+          overflow:overflowNodes.length>0,
+          overflowNodes,
+          headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=viewportWidth+1&&actions.right<=viewportWidth+1,
+          actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=viewportWidth-110&&actions.right>=viewportWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
+          visual:viewportWidth,
+          narrow:viewportWidth>=320||document.body.classList.contains('v4-sub320-visual-viewport'),
           navCount:nav?.querySelectorAll(':scope>a,:scope>button').length,
           active:nav?.querySelectorAll('[aria-current="page"]').length,
           activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
-          frameFull:!frame||Math.abs(frame.getBoundingClientRect().width-innerWidth)<=1,
+          frameFull:!frame||Math.abs(frame.getBoundingClientRect().width-viewportWidth)<=1,
           oldMenuHidden:!oldMenu||getComputedStyle(oldMenu).display==='none',
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
         };
       })()`);
-      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,headerFits:true,actionsVisible:true,actionIcons:2,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,overflowNodes:[],headerFits:true,actionsVisible:true,actionIcons:2,visual:width,narrow:true,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
       if (route === '/agri_map.html') {
         await evaluate('window.scrollTo(0,240)');
         await delay(100);
@@ -609,13 +625,37 @@ try {
         await evaluate("window.dispatchEvent(new Event('pageshow'))");
         await delay(100);
         assert.equal(await evaluate('window.scrollY'),0,route+' '+width+'px pageshow restores the complete title and search bar');
+        if (width === 267) {
+          await evaluate(`(() => {
+            Object.defineProperty(navigator,'geolocation',{configurable:true,value:{
+              getCurrentPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}})}
+            }});
+            window.kakao={maps:{
+              LatLng:function(lat,lng){this.lat=lat;this.lng=lng},
+              CustomOverlay:function(options){this.setMap=map=>{if(map&&!options.content.isConnected)document.getElementById('agriMap').append(options.content)};this.setMap(options.map)},
+              Circle:function(options){this.setMap=()=>{};this.options=options}
+            }};
+            kakaoMap={setCenter(position){window.__locationCenter={lat:position.lat,lng:position.lng}},setLevel(level){window.__locationLevel=level}};
+            document.getElementById('locateButton').disabled=false;
+            requestCurrentLocation();
+          })()`);
+          const locationUi=await evaluate(`(() => ({
+            marker:!!document.querySelector('.current-location-dot'),
+            status:document.getElementById('mapStatus').textContent,
+            busy:document.getElementById('locateButton').getAttribute('aria-busy'),
+            disabled:document.getElementById('locateButton').disabled,
+            center:window.__locationCenter,
+            level:window.__locationLevel
+          }))()`);
+          assert.deepEqual(locationUi,{marker:true,status:'현재 위치 표시',busy:'false',disabled:false,center:{lat:37.5665,lng:126.978},level:4},'267px current-location control centers map and renders red marker');
+        }
       }
-      if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      if ((width === 390 || width === 267 && route === '/agri_map.html') && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot,{recursive:true});
         const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
         const name=route.replace(/^\//,'').replace(/\/$/,'index').replace(/[^a-z0-9.-]/gi,'_');
-        fs.writeFileSync(path.join(captureRoot,name+'-390.png'),Buffer.from(capture.data,'base64'));
+        fs.writeFileSync(path.join(captureRoot,name+'-'+width+'.png'),Buffer.from(capture.data,'base64'));
       }
     }
   }

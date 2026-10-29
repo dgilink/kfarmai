@@ -2,10 +2,35 @@
   'use strict';
   if (document.querySelector('[data-v4-shell-nav]')) return;
   const page = location.pathname;
+  const syncVisualViewportWidth = () => {
+    const visualWidth = Math.round(window.visualViewport?.width || window.innerWidth || 0);
+    const constrain = visualWidth > 0 && visualWidth < window.innerWidth - 1;
+    document.body.classList.toggle('v4-narrow-visual-viewport', constrain);
+    document.body.classList.toggle('v4-sub320-visual-viewport', constrain && visualWidth < 320);
+    if (constrain) document.body.style.setProperty('--v4-visual-viewport-width', `${visualWidth}px`);
+    else document.body.style.removeProperty('--v4-visual-viewport-width');
+  };
+  syncVisualViewportWidth();
+  window.visualViewport?.addEventListener('resize', syncVisualViewportWidth);
+  window.addEventListener('resize', syncVisualViewportWidth);
   const topAlignedPages = new Set(['/facility-vegetables.html', '/agri_map.html']);
   if (topAlignedPages.has(page)) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.addEventListener('pageshow', () => requestAnimationFrame(() => window.scrollTo(0, 0)));
+    const resetInitialScroll = () => {
+      window.scrollTo({top:0, left:0, behavior:'auto'});
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+    const settleAtTop = () => {
+      resetInitialScroll();
+      requestAnimationFrame(resetInitialScroll);
+      window.setTimeout(resetInitialScroll, 120);
+      window.setTimeout(resetInitialScroll, 420);
+    };
+    settleAtTop();
+    window.addEventListener('DOMContentLoaded', settleAtTop, {once:true});
+    window.addEventListener('pageshow', settleAtTop);
+    window.addEventListener('pagehide', resetInitialScroll);
   }
   const normalizeDiagnosisLabel = root => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
