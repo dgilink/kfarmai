@@ -368,13 +368,15 @@ try {
     await assertSingleVisualActive(`${width}px knowledge`);
     const kbContract = await evaluate(`(() => ({
       cards:document.querySelectorAll('#kbGrid .kb-card').length,
-      forbidden:/공식 출처는 글에서 확인|내용과 출처 확인|\\d{4}-\\d{2}-\\d{2}/.test(kbGrid.innerText),
+      sourceCopy:/공식 출처는 글에서 확인|내용과 출처 확인/.test(kbGrid.innerText),
+      dates:[...document.querySelectorAll('#kbGrid .kb-card small')].every(node=>/\\d{4}-\\d{2}-\\d{2}/.test(node.textContent)),
       intro:document.querySelector('main>h1+p')?.textContent||'',
       images:document.querySelectorAll('#kbGrid .kb-list-thumb').length,
       overflow:document.documentElement.scrollWidth>innerWidth+1
     }))()`);
-    assert.ok(kbContract.cards >= 6 && kbContract.images >= 1, `${width}px approved KB list rendered`);
-    assert.equal(kbContract.forbidden, false, `${width}px KB date/source CTA hidden`);
+    assert.ok(kbContract.cards >= 6 && kbContract.images === kbContract.cards, `${width}px approved KB list thumbnails rendered`);
+    assert.equal(kbContract.sourceCopy, false, `${width}px KB redundant source CTA hidden`);
+    assert.equal(kbContract.dates, true, `${width}px KB published dates visible`);
     assert.equal(kbContract.intro, '', `${width}px KB intro removed`);
     assert.equal(kbContract.overflow, false, `${width}px KB no horizontal overflow`);
     const kbLayout = await evaluate(`(() => {
