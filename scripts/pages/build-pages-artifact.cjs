@@ -8,7 +8,15 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const shellVersion = '20261029-paint1';
+// Version the shared presentation bundle from its bytes. Static assets are
+// cached for hours, so a release must change the URL whenever any shell or
+// agriculture-feed UI source changes.
+const shellVersion = crypto.createHash('sha256')
+  .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-shell.css')))
+  .update(fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js')))
+  .update(fs.readFileSync(path.join(repoRoot, 'static/js/agri-info/agri-feed-ui.js')))
+  .update(fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js')))
+  .digest('hex').slice(0, 16);
 const firstPaintHead = '<meta name="theme-color" content="#ffffff" data-v4-theme="light"><meta name="color-scheme" content="light"><style data-v4-first-paint>html,body{background:#fff!important;color-scheme:light}body.v4-global-header-ready{min-width:320px}</style>';
 const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
 
@@ -231,13 +239,15 @@ if (kbStartAt < 0 || kbIndexSource.indexOf(kbIndexStart, kbStartAt + kbIndexStar
 }
 const kbEndAt = kbIndexSource.indexOf('</div>', kbStartAt + kbIndexStart.length);
 if (kbEndAt < 0) throw new Error('KB index listing boundary is incomplete.');
-// Media is limited to approved, local, pre-existing public article assets.
+// Media is limited to reviewed local public article assets.
 const kbListMedia = Object.freeze({
   '/kb/pear-harvest-sorting-cold-storage-five-checks.html': '/static/kb/pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp',
   '/kb/autumn-rain-wheat-barley-sowing-checklist.html': '/static/kb/autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp',
   '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
   '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
-  '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
+  // CC0 1.0 photo: Alabama Extension / Bruce Dupree, via Wikimedia Commons,
+  // File:Irrigation in a Greenhouse.jpg. Used only as the compact list photo.
+  '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg',
   '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
   '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
 });
@@ -298,6 +308,8 @@ fs.writeFileSync(homePath,
 // because this runs only against the generated Pages artifact.
 const shellCssHref = `/static/css/v4-shell.css?v=${shellVersion}`;
 const shellJsSrc = `/static/js/v4-shell.js?v=${shellVersion}`;
+const agriFeedUiSrc = `/static/js/agri-info/agri-feed-ui.js?v=${shellVersion}`;
+const kbDiscoverySrc = `/static/js/kb-discovery.js?v=${shellVersion}`;
 const shellIcon = paths => `<svg class="v4-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
 const searchIcon = shellIcon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
 const accountIcon = shellIcon('<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.1-6 7.5-6s6.8 2 7.5 6"/>');
@@ -326,7 +338,8 @@ function applyGlobalShellToHtml(filePath) {
     .replace(/<meta\s+name=["']color-scheme["'][^>]*>/gi, '')
     .replace(/\/?static\/css\/v4-shell\.css\?v=[^"']+/g, shellCssHref)
     .replace(/\/?static\/js\/v4-shell\.js\?v=[^"']+/g, shellJsSrc)
-    .replace(/\/?static\/js\/kb-discovery\.js\?v=[^"']+/g, '/static/js/kb-discovery.js?v=20261029-list3');
+    .replace(/\/?static\/js\/agri-info\/agri-feed-ui\.js(?:\?v=[^"']*)?/g, agriFeedUiSrc)
+    .replace(/\/?static\/js\/kb-discovery\.js(?:\?v=[^"']*)?/g, kbDiscoverySrc);
   const assets = [];
   if (!/static\/css\/v4-shell\.css/i.test(html)) {
     assets.push(`<link rel="stylesheet" href="${shellCssHref}" data-kfarmai-global-shell="1">`);

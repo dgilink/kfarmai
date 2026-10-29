@@ -89,6 +89,8 @@ try {
     }
     const listRegion = html.split('id="kbGrid"')[1]?.split('</div>')[0] || '';
     assert.ok(!listRegion.includes('-infographic.'), 'list thumbnails must not use infographics');
+    const irrigationPhoto = '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg';
+    assert.ok(listRegion.includes(irrigationPhoto), 'irrigation list uses the greenhouse irrigation photo');
   });
 
   test('all public HTML receives one versioned global shell and grouped cultivation topic', () => {
@@ -100,16 +102,28 @@ try {
     });
     walk(artifactDir);
     assert.ok(htmlFiles.length > 100, 'public screen inventory');
+    const expectedShellVersion = require('node:crypto').createHash('sha256')
+      .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-shell.css')))
+      .update(fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js')))
+      .update(fs.readFileSync(path.join(repoRoot, 'static/js/agri-info/agri-feed-ui.js')))
+      .update(fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js')))
+      .digest('hex').slice(0, 16);
     for (const file of htmlFiles) {
       const html = fs.readFileSync(file, 'utf8');
       if (!/<\/head>/i.test(html)) continue;
-      assert.equal((html.match(/static\/css\/v4-shell\.css\?v=20261029-paint1/g) || []).length, 1, file);
-      assert.equal((html.match(/static\/js\/v4-shell\.js\?v=20261029-paint1/g) || []).length, 1, file);
+      assert.equal((html.match(new RegExp(`static/css/v4-shell\\.css\\?v=${expectedShellVersion}`, 'g')) || []).length, 1, file);
+      assert.equal((html.match(new RegExp(`static/js/v4-shell\\.js\\?v=${expectedShellVersion}`, 'g')) || []).length, 1, file);
       assert.equal((html.match(/data-v4-global-header/g) || []).length, 1, file);
       assert.equal((html.match(/data-v4-first-paint/g) || []).length, 1, file);
       assert.equal((html.match(/name="theme-color" content="#ffffff"/g) || []).length, 1, file);
       assert.match(html,/<body\b[^>]*\bv4-global-header-ready\b/i,file);
     }
+    const agriInfo = fs.readFileSync(path.join(artifactDir, 'agri-info.html'), 'utf8');
+    assert.ok(agriInfo.includes(`/static/js/agri-info/agri-feed-ui.js?v=${expectedShellVersion}`),
+      'agricultural feed UI uses the content-derived cache key');
+    const kbIndex = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
+    assert.ok(kbIndex.includes(`/static/js/kb-discovery.js?v=${expectedShellVersion}`),
+      'KB discovery UI uses the content-derived cache key');
     const kb = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
     assert.equal((kb.match(/data-category="재배노하우"/g) || []).length, 1);
     assert.ok(!kb.includes('data-category="식량작물·재배노하우"'));

@@ -30,7 +30,7 @@ function resolveRequest(rawUrl) {
 const server = http.createServer((request, response) => {
   const target = resolveRequest(request.url || '/');
   if (!target) { response.writeHead(404); response.end('not found'); return; }
-  const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml' }[path.extname(target).toLowerCase()] || 'application/octet-stream';
+  const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml' }[path.extname(target).toLowerCase()] || 'application/octet-stream';
   response.writeHead(200, { 'Content-Type': `${mime}; charset=utf-8`, 'Cache-Control': 'no-store' });
   fs.createReadStream(target).pipe(response);
 });

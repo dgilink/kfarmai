@@ -300,6 +300,8 @@ body.v4-global-header-ready .hero > .topbar { display: none !important; }
   transform: none !important;
 }
 body.v4-global-home .v4-global-header { border-bottom:0; }
+body.v4-global-home .phone > header,
+body.v4-global-home > .phone > header { border-bottom:0 !important; }
 .v4-global-header-inner {
   position: relative;
   display: flex;
