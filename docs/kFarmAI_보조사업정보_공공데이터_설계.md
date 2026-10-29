@@ -130,6 +130,8 @@
 
 OpenAPI의 실제 base URL과 요청 파라미터는 발급된 명세서를 확인한 뒤에만 코드에 반영한다. 화면 주소를 API 주소로 추정하거나 비공개 게시판을 크롤링하지 않는다.
 
+공공데이터포털의 공식 카탈로그 `15156853`(국고보조금 공모사업 상세)은 확인했다. REST/JSON·XML, 개발·운영 자동승인 데이터셋이지만, 실제 오퍼레이션 URL과 파라미터는 활용신청 후 제공되는 명세로 확정해야 한다. 따라서 레지스트리는 `verified_catalog_pending_operation_spec`으로 두며 URL을 추정해 넣지 않는다.
+
 ### 2. 서버 경계
 
 - 프론트엔드는 외부 공공 API를 직접 호출하지 않는다.
@@ -194,3 +196,13 @@ OpenAPI의 실제 base URL과 요청 파라미터는 발급된 명세서를 확�
 7. 운영 승인 후 스케줄 활성화
 
 Production 자동수집 스케줄과 Worker secret 등록은 별도 승인 항목이다.
+
+### 7. 구현된 REVIEW-only 기반
+
+- `automation/policy_support_refresh.py`: 공식 API 응답 JSON을 정규화하고 중복을 제거한다. 외부 호출과 공개 동작은 하지 않는다.
+- `data/schemas/policy-support-review.schema.json`: 검수 산출물 계약이다.
+- 새 후보는 항상 `pending`이며 보조금통합포털의 HTTPS 상세 URL, 공급자 원문 식별자, 제목이 없으면 후보에서 제외한다. 다른 공급자는 URL 허용목록과 필드 매핑을 별도로 검증한 뒤 추가한다.
+- 해시는 정규화한 핵심 필드를 SHA-256으로 계산해 수정 공고를 감지한다.
+- 실제 수집 스케줄, Worker secret, `/api/policy-support`, Production 공개는 아직 활성화하지 않는다.
+
+다음 구현은 활용신청으로 발급받은 공식 오퍼레이션 명세와 `BOJO_OPEN_API_KEY`를 Preview Worker에 등록한 뒤 진행한다. Preview에서는 원문 응답을 REVIEW 산출물로만 보관하고, 사람이 `approved`로 전환한 스냅샷만 공개 데이터에 합친다.

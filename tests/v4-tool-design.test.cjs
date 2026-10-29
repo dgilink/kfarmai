@@ -327,11 +327,14 @@ test('all-menu links are covered by an active full-menu destination', () => {
   for (const target of menuTargets) assert.ok(shell.includes("'" + target + "'"), target);
 });
 
-test('policy support source registry is review-only and contains no guessed endpoint', () => {
+test('policy support source registry is review-only and contains no guessed operation endpoint', () => {
   const registry = JSON.parse(read('data/policy-support-sources.json'));
   assert.equal(registry.publishMode, 'review_only');
   assert.deepEqual(registry.publicReviewStatuses, ['approved']);
   assert.ok(registry.providers.some(provider => provider.id === 'bojo-open-api'));
   assert.ok(registry.providers.every(provider => provider.reviewRequired === true));
-  assert.equal(registry.providers.find(provider => provider.id === 'bojo-open-api').endpointStatus, 'pending_verified_spec');
+  const provider = registry.providers.find(provider => provider.id === 'bojo-open-api');
+  assert.equal(provider.catalogDatasetId, '15156853');
+  assert.equal(provider.endpointStatus, 'verified_catalog_pending_operation_spec');
+  assert.equal(provider.operationUrl, undefined);
 });

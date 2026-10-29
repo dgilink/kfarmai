@@ -7,10 +7,12 @@
       "id": "bojo-open-api",
       "name": "보조금통합포털 OpenAPI",
       "officialUrl": "https://www.bojo.go.kr/ga/retrieveOpnApi.do",
+      "catalogUrl": "https://www.data.go.kr/data/15156853/openapi.do",
+      "catalogDatasetId": "15156853",
       "datasets": ["공모사업", "보조사업현황", "내역사업현황"],
       "transport": "open_api",
       "credentialAlias": "BOJO_OPEN_API_KEY",
-      "endpointStatus": "pending_verified_spec",
+      "endpointStatus": "verified_catalog_pending_operation_spec",
       "schedule": "20 21 * * *",
       "priority": 1,
       "reviewRequired": true

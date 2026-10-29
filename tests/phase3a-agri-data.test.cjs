@@ -57,6 +57,15 @@ test('weather fallback is not labeled as today or realtime', () => {
   assert.doesNotMatch(read('index.html'), /오늘의 농업 영상|최신 농업연구동향|오늘의 농업 이슈/);
 });
 
+test('weather uses the same-origin Worker route and never presents stale metrics', () => {
+  const html = read('agri-weather.html');
+  assert.match(html, /const WEATHER_API_PATH='\/api\/weather\/forecast'/);
+  assert.match(html, /new URL\(WEATHER_API_PATH,window\.location\.origin\)/);
+  assert.doesNotMatch(html, /kfarmai-api\.dgilink\.workers\.dev/);
+  assert.match(html, /if\(weatherData\.fallback!==false\)/);
+  assert.match(html, /최신 기상정보를 불러오지 못했습니다/);
+});
+
 test('KAMIS fallback and trend expose source date or unavailable state', () => {
   const html = read('market-prices.html');
   assert.match(html, /market-updated/);

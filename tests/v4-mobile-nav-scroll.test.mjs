@@ -499,9 +499,10 @@ try {
           collapsed:!document.getElementById('cropOptions').open,
           sources:document.querySelectorAll('.page-source').length,
           longPanels:!!document.getElementById('workPanel')||!!document.getElementById('publicInfoPanel'),
-          updated:/업데이트/.test(document.getElementById('weatherPanel').innerText)
+          selected:document.querySelectorAll('#areaChips .active,#typeChips .active,#categoryChips .active,#cropList .active').length,
+          prompt:/권역을 선택하면 최신 날씨가 표시됩니다/.test(document.getElementById('weatherPanel').innerText)
         }))()`);
-        assert.deepEqual(compactWeather,{noDistrict:true,chooser:true,collapsed:true,sources:1,longPanels:false,updated:true},route+' '+width+'px compact weather contract');
+        assert.deepEqual(compactWeather,{noDistrict:true,chooser:true,collapsed:true,sources:1,longPanels:false,selected:0,prompt:true},route+' '+width+'px compact weather contract');
       }
       if (route === '/market-prices.html') {
         const compactMarket = await evaluate(`(() => ({

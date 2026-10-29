@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kfarmai.com/schemas/policy-support-review.schema.json",
+  "title": "KFarmAI policy support review artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "publishMode", "generatedAt", "sourceId", "counts", "items"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "publishMode": { "const": "review_only" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "sourceId": { "type": "string", "minLength": 1 },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["received", "pending", "duplicates", "rejected"],
+      "properties": {
+        "received": { "type": "integer", "minimum": 0 },
+        "pending": { "type": "integer", "minimum": 0 },
+        "duplicates": { "type": "integer", "minimum": 0 },
+        "rejected": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sourceId", "externalId", "title", "summary", "region", "targets", "categories", "agency", "applicationStart", "applicationEnd", "publishedAt", "updatedAt", "officialUrl", "reviewStatus", "sourceHash"],
+        "properties": {
+          "sourceId": { "type": "string", "minLength": 1 },
+          "externalId": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1, "maxLength": 180 },
+          "summary": { "type": "string", "maxLength": 300 },
+          "region": { "type": "array", "items": { "type": "string" } },
+          "targets": { "type": "array", "items": { "type": "string" } },
+          "categories": { "type": "array", "items": { "type": "string" } },
+          "agency": { "type": "string" },
+          "applicationStart": { "type": ["string", "null"] },
+          "applicationEnd": { "type": ["string", "null"] },
+          "publishedAt": { "type": ["string", "null"] },
+          "updatedAt": { "type": ["string", "null"] },
+          "officialUrl": { "type": "string", "pattern": "^https://" },
+          "reviewStatus": { "const": "pending" },
+          "sourceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    }
+  }
+}
