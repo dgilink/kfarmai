@@ -210,11 +210,13 @@
       ...cachedFeedImages(),
       '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
       '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
+      '/static/kb/greenhouse-irrigation-precheck-hero.webp',
+      '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
     ];
     for (const src of [...new Set(sources)]) {
       if (warmImages.some(image => image.src === new URL(src, location.href).href)) continue;
       const image = new Image();
-      image.decoding = 'async';
+      image.decoding = 'sync';
       image.src = src;
       image.decode?.().catch(() => {});
       warmImages.push(image);

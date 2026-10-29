@@ -232,7 +232,7 @@ const kbIndexCards = kbItems.map((item, index) => {
     throw new Error('Approved KB list image missing: ' + image);
   }
   const thumb = image ? '<img class="kb-list-thumb" src="' + image +
-    '" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="async">' : '';
+    '" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">' : '';
   const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) +
     '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
   return '<a class="kb-card' + (image ? '' : ' is-text-only') +
@@ -276,7 +276,7 @@ const cards = homeItems.slice(0, 4).map(item => {
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
   const image = homeLeadMedia[item.path];
   return `<a class="kb-card${image ? '' : ' is-text-only'}" data-topic="${escapeHtml(kbTopicKey(item.category))}" href="${item.path}">${image
-    ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="async">`
+    ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">`
     : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
 }).join('');
 fs.writeFileSync(homePath,

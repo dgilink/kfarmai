@@ -44,7 +44,7 @@
         image.alt = '';
         image.loading = 'eager';
         image.fetchPriority = 'high';
-        image.decoding = 'async';
+        image.decoding = 'sync';
         link.append(image);
       } else {
         link.classList.add('is-text-only');
