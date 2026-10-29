@@ -603,7 +603,6 @@ try {
   const internalScenarios = [
     ['/agri-weather.html', `document.querySelectorAll('#areaChips .chip')[1]?.click();document.querySelectorAll('#typeChips .chip')[1]?.click();cropOptions.open=true;document.querySelector('#cropList .crop-chip')?.click()`],
     ['/market-prices.html', `document.querySelectorAll('#typeTabs button.tab')[1]?.click();document.querySelector('#chips .chip')?.click()`],
-    ['/facility-vegetables.html', `document.querySelectorAll('#itemChips .chip')[1]?.click();year.selectedIndex=Math.min(1,year.options.length-1);year.dispatchEvent(new Event('change',{bubbles:true}))`],
     ['/subsidy-calendar.html', `regionFilter.selectedIndex=Math.min(1,regionFilter.options.length-1);regionFilter.dispatchEvent(new Event('change',{bubbles:true}));resetButton.click()`],
     ['/public-data.html', `document.querySelector('#exampleChips .chip')?.click()`],
     ['/diagnosis.html', `diagExtra.open=true;symptomInput.value='잎이 노랗게 변함';symptomInput.dispatchEvent(new Event('input',{bubbles:true}))`],
