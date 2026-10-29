@@ -9,7 +9,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const pages = [
   ['agri-weather.html', 'kf-weather', '농업날씨', ['areaChips','typeChips','cropSearch','cropOptions','weatherPanel']],
   ['market-prices.html', 'kf-market', '농산물 시세', ['q','searchBtn','chips','typeTabs','status','list','detail']],
-  ['facility-vegetables.html', 'kf-facility', '시설채소 생산실적', ['itemChips','year','status','results']],
+  ['facility-vegetables.html', 'kf-facility', '시설채소 생산실적', []],
   ['crop-calendar.html', 'kf-crop', '재배달력', ['searchInput','cropGrid','detail']],
   ['subsidy-calendar.html', 'kf-subsidy', '정책·지원', ['regionFilter','targetFilter','categoryFilter','programList']],
 ];
@@ -113,6 +113,19 @@ test('weather and market pages keep only compact user-facing information', () =>
   assert.match(market,/readOverviewCache/,'market restores a recent live overview before refreshing');
   assert.ok(market.includes('시설채소 생산실적'));
   assert.ok(market.includes('href="facility-vegetables.html"'));
+});
+
+test('facility page shows the verified 2024 official snapshot without empty fake filters', () => {
+  const facility=read('facility-vegetables.html');
+  assert.ok(facility.includes('2024년 공식 통계'));
+  assert.ok(facility.includes('갱신 2026-08-25'));
+  assert.ok(facility.includes('52,508<small>ha</small>'));
+  assert.ok(facility.includes('2,210,731<small>톤</small>'));
+  assert.ok(facility.includes('data_id=20220216000000001975'));
+  assert.ok(facility.includes('「2024 시설채소 온실현황 및 채소류 생산실적」'));
+  assert.ok(!facility.includes('최신 연도'));
+  assert.ok(!facility.includes('공식 통계 확인 필요'));
+  assert.ok(!facility.includes('/api/mafra/facility-vegetables'));
 });
 
 test('first paint cache is restored before auth and shared thumbnails are warmed', () => {
