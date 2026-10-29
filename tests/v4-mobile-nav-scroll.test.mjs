@@ -458,19 +458,22 @@ try {
         const title=document.querySelector('.kf-tool-title');
         const controls=[...document.querySelectorAll('input:not([type=hidden]),select')].slice(0,4);
         const nav=document.querySelector('.v4-nav');
+        const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
+        const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         return {
           text:brand?.textContent?.trim(),
           font:brand&&getComputedStyle(brand).fontSize,
           title:!!title && title.textContent.trim().length>0,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           overflow:document.documentElement.scrollWidth>innerWidth+1,
+          headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=innerWidth+1&&actions.right<=innerWidth+1,
           active:nav?.querySelectorAll('[aria-current="page"]').length,
           activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
           tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
-      assert.deepEqual(toolUi,{text:'kFarmAI',font:'24px',title:true,white:true,overflow:false,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      assert.deepEqual(toolUi,{text:'kFarmAI',font:'24px',title:true,white:true,overflow:false,headerFits:true,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
       const flatUi = await evaluate(`(() => ({
         loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
@@ -571,6 +574,8 @@ try {
         const footer=document.querySelector('footer,.agri-v3-footer,.site-footer');
         const controls=[...document.querySelectorAll('input:not([type=hidden]),select,textarea,button:not(.v4-nav button)')].slice(0,8);
         const oldMenu=document.querySelector('.kf-menu');
+        const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
+        const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         return {
           detail:document.body.classList.contains('v4-detail-page'),
           h1:!!document.querySelector('h1'),
@@ -578,6 +583,7 @@ try {
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
           overflow:document.documentElement.scrollWidth>innerWidth+1,
+          headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=innerWidth+1&&actions.right<=innerWidth+1,
           navCount:nav?.querySelectorAll(':scope>a,:scope>button').length,
           active:nav?.querySelectorAll('[aria-current="page"]').length,
           activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
@@ -586,7 +592,7 @@ try {
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
         };
       })()`);
-      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,headerFits:true,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
       if (route === '/agri_map.html') {
         await evaluate('window.scrollTo(0,240)');
         await delay(100);
@@ -596,7 +602,9 @@ try {
           return {top:Math.round(search.top),headerBottom:Math.round(header.bottom),visible:search.top>=header.bottom-1};
         })()`);
         assert.equal(mapSticky.visible,true,route+' '+width+'px search bar stays fully below fixed header '+JSON.stringify(mapSticky));
-        await evaluate('window.scrollTo(0,0)');
+        await evaluate("window.dispatchEvent(new Event('pageshow'))");
+        await delay(100);
+        assert.equal(await evaluate('window.scrollY'),0,route+' '+width+'px pageshow restores the complete title and search bar');
       }
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
