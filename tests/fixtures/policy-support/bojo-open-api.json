@@ -1,0 +1,43 @@
+{
+  "response": {
+    "body": {
+      "items": {
+        "item": [
+          {
+            "pbancId": "BOJO-2026-001",
+            "pbancNm": "시설원예 에너지 절감 지원사업",
+            "pbancCn": "시설원예 농가의 에너지 절감 설비 도입 지원",
+            "pbancInstNm": "농림축산식품부",
+            "rcptBgngYmd": "20261101",
+            "rcptEndYmd": "20261130",
+            "pbancYmd": "20261025",
+            "mdfcnDt": "2026-10-28T09:00:00+09:00",
+            "pbancUrl": "https://www.bojo.go.kr/example/BOJO-2026-001",
+            "region": "전국",
+            "target": "농업인,농업법인",
+            "category": "시설원예"
+          },
+          {
+            "pbancId": "BOJO-2026-001",
+            "pbancNm": "시설원예 에너지 절감 지원사업",
+            "pbancCn": "시설원예 농가의 에너지 절감 설비 도입 지원",
+            "pbancInstNm": "농림축산식품부",
+            "rcptBgngYmd": "20261101",
+            "rcptEndYmd": "20261130",
+            "pbancYmd": "20261025",
+            "mdfcnDt": "2026-10-28T09:00:00+09:00",
+            "pbancUrl": "https://www.bojo.go.kr/example/BOJO-2026-001",
+            "region": "전국",
+            "target": "농업인,농업법인",
+            "category": "시설원예"
+          },
+          {
+            "pbancId": "UNVERIFIED-URL",
+            "pbancNm": "출처 미검증 후보",
+            "pbancUrl": "http://example.com/unverified"
+          }
+        ]
+      }
+    }
+  }
+}
