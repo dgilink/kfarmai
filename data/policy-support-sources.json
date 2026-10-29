@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-29",
+  "publishMode": "review_only",
+  "providers": [
+    {
+      "id": "bojo-open-api",
+      "name": "보조금통합포털 OpenAPI",
+      "officialUrl": "https://www.bojo.go.kr/ga/retrieveOpnApi.do",
+      "datasets": ["공모사업", "보조사업현황", "내역사업현황"],
+      "transport": "open_api",
+      "credentialAlias": "BOJO_OPEN_API_KEY",
+      "endpointStatus": "pending_verified_spec",
+      "schedule": "20 21 * * *",
+      "priority": 1,
+      "reviewRequired": true
+    },
+    {
+      "id": "mafra-guideline-file",
+      "name": "농림축산식품사업 시행지침서",
+      "officialUrl": "https://data.mafra.go.kr/opendata/data/indexOpenDataDetail.do?data_id=20220628000000002121&filter_ty=F",
+      "datasets": ["사업명", "분야", "신청자격", "자금유형", "담당기관"],
+      "transport": "official_file",
+      "credentialAlias": null,
+      "endpointStatus": "manual_file_review",
+      "schedule": "0 22 * * 0",
+      "priority": 2,
+      "reviewRequired": true
+    },
+    {
+      "id": "mafra-subsidy-file",
+      "name": "농림축산식품분야 보조금 현황",
+      "officialUrl": "https://data.mafra.go.kr/opendata/data/indexOpenDataDetail.do?data_id=20220628000000002124",
+      "datasets": ["세부사업", "내역사업", "지원자격", "지원내용", "국고보조금액"],
+      "transport": "official_file",
+      "credentialAlias": null,
+      "endpointStatus": "manual_file_review",
+      "schedule": "0 22 * * 0",
+      "priority": 3,
+      "reviewRequired": true
+    },
+    {
+      "id": "agrix-guideline",
+      "name": "AgriX 농식품사업 시행지침서",
+      "officialUrl": "https://uni.agrix.go.kr/webportal/main/portalBizGuideList.do",
+      "datasets": ["사업 목적", "신청 방법", "신청 자격요건"],
+      "transport": "official_link_index",
+      "credentialAlias": null,
+      "endpointStatus": "link_only",
+      "schedule": null,
+      "priority": 4,
+      "reviewRequired": true
+    },
+    {
+      "id": "local-government-notices",
+      "name": "지자체·농업기술센터 공고",
+      "officialUrl": null,
+      "datasets": ["지역", "신청기간", "대상", "제출서류", "담당부서"],
+      "transport": "allowlisted_collectors",
+      "credentialAlias": null,
+      "endpointStatus": "source_allowlist_required",
+      "schedule": "50 21 * * *",
+      "priority": 5,
+      "reviewRequired": true
+    }
+  ],
+  "normalizedFields": [
+    "sourceId",
+    "externalId",
+    "title",
+    "summary",
+    "region",
+    "targets",
+    "categories",
+    "agency",
+    "applicationStart",
+    "applicationEnd",
+    "publishedAt",
+    "updatedAt",
+    "officialUrl",
+    "sourceHash",
+    "reviewStatus"
+  ],
+  "publicReviewStatuses": ["approved"],
+  "duplicateKey": ["sourceId", "externalId", "sourceHash"]
+}

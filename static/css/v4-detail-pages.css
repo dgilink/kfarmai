@@ -27,6 +27,17 @@ body.v4-detail-page {
   overscroll-behavior-y: auto !important;
 }
 
+/* The Pages artifact injects a fixed global header after the source files are
+   built. Keep the first detail-page content below that header instead of
+   resetting the shell offset back to zero. */
+body.v4-detail-page.v4-global-header-ready {
+  padding-top: var(--v4-global-header-height, 60px) !important;
+}
+
+body.v4-detail-page [id] {
+  scroll-margin-top: calc(var(--v4-global-header-height, 60px) + 12px);
+}
+
 body.v4-detail-page > .phone,
 body.v4-detail-page > .app,
 body.v4-detail-page > main.phone,
@@ -307,6 +318,31 @@ body.v4-privacy-page section { border-top: 1px solid var(--kf-detail-line); }
 /* Nested content pages linked from the full-menu destinations. */
 body.v4-cases-page .header,
 body.v4-public-data-page .hero { position: relative; }
+/* The cases title and its compact page links live inside the legacy header.
+   Restore that content below the shared header while keeping the duplicate
+   legacy logo row hidden. */
+body.v4-global-header-ready.v4-cases-page > .phone > header.header {
+  display: block !important;
+  min-height: 0;
+  border: 0;
+}
+body.v4-global-header-ready.v4-cases-page > .phone > header.header > .top {
+  display: none !important;
+}
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header {
+  display: block !important;
+  min-height: 0;
+  padding: 22px 0 14px;
+  border: 0;
+}
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header > .top,
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header > .sub {
+  display: none !important;
+}
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header > h1 {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  margin: 0 auto;
+}
 body.v4-cases-page .headline,
 body.v4-cases-page .top-links,
 body.v4-public-data-page .hero > h1,
@@ -314,6 +350,7 @@ body.v4-public-data-page .hero > p {
   width: min(calc(100% - 32px), var(--kf-detail-width));
   margin-inline: auto;
 }
+body.v4-public-data-page .hero > h1 { display: block; }
 body.v4-cases-page .content,
 body.v4-public-data-page .content { padding-inline: 0; }
 body.v4-cases-page .top-links { grid-template-columns: repeat(5, minmax(0, 1fr)); }

@@ -247,6 +247,29 @@ test('KAMIS trend pending contract is explicitly UNAVAILABLE', async () => {
   assert.equal(body.isFallback, true);
 });
 
+test('KAMIS market overview returns current unique retail items in one provider request', async () => {
+  const fixture = {
+    price: [
+      { productName: '토마토/토마토', product_cls_name: '소매', lastest_date: '2026-10-28', unit: '1kg', dpr1: '5,146' },
+      { productName: '토마토/토마토', product_cls_name: '도매', lastest_date: '2026-10-28', unit: '5kg', dpr1: '19,920' },
+      { productName: '오이/다다기계통', product_cls_name: '소매', lastest_date: '2026-10-28', unit: '10개', dpr1: '12,300' }
+    ]
+  };
+  let requests = 0;
+  await withFetch(async () => { requests += 1; return Response.json(fixture); }, async () => {
+    const body = await requestFeedUrl(
+      { KAMIS_API_KEY: 'fixture', KAMIS_API_ID: 'fixture' },
+      'https://kfarmai.test/api/kamis/market-overview?limit=40'
+    );
+    assert.equal(body.ok, true);
+    assert.equal(body.fallback, false);
+    assert.equal(body.sourceDate, '2026-10-28');
+    assert.equal(body.items.length, 2);
+    assert.deepEqual(body.items.map(item => item.type), ['retail', 'retail']);
+    assert.equal(requests, 1);
+  });
+});
+
 test('static weather and market fallback files expose their old source dates', () => {
   const weather = JSON.parse(fs.readFileSync(new URL('../../data/agri_weather.json', import.meta.url), 'utf8'));
   const market = JSON.parse(fs.readFileSync(new URL('../../data/market_prices.json', import.meta.url), 'utf8'));

@@ -27,7 +27,7 @@
     labelObserver.observe(document.body, {childList:true, subtree:true, characterData:true});
   }
   const toolPages = new Set([
-    '/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/crop-guide.html',
+    '/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/crop-guide.html',
     '/subsidy-calendar.html', '/diagnosis.html', '/diagnosis-cases.html', '/public-data.html',
     '/agri_map.html', '/mfg.html', '/news_sub.html', '/links.html', '/oauth/privacy/',
   ]);
@@ -121,7 +121,7 @@
     ['농업정보', [['농업정보', '/kb/index.html'], ['정책·지원', '/subsidy-calendar.html'], ['공공정보 확인', '/agri-info.html']]],
     ['AI · 실용 도구', [
       ['AI진단', '/diagnosis.html'], ['농업날씨', '/agri-weather.html'],
-      ['농산물 시세', '/market-prices.html'], ['주변 농약사', '/agri_map.html'],
+      ['농산물 시세', '/market-prices.html'], ['시설채소 생산실적', '/facility-vegetables.html'], ['주변 농약사', '/agri_map.html'],
       ['재배달력', '/crop-calendar.html'],
     ]],
     ['설정 · 도움말', [['언어 설정', '/index.html?panel=my'], ['개인정보처리방침', '/oauth/privacy/']]],

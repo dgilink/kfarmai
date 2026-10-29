@@ -183,9 +183,9 @@ async function communityRequestRaces() {
   await delay(50);
   assert.deepEqual(await evaluate(`({titles:[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent),loading:isLoading,count:document.getElementById('resultCount').textContent})`),
     {titles:['second result'],loading:false,count:'1개'}, 'late responses cannot replace the latest search');
-  await evaluate(`currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
-  assert.equal(await evaluate(`window.__queries[3].filters.some(filter=>Array.isArray(filter)&&filter[0]==='category_id'&&filter[1]==='category-test')`),true,'channel filter uses the latest category');
-  await evaluate(`window.__reply(3,'filtered result')`);
+  await evaluate(`window.__categoryQueryIndex=window.__queries.length;currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
+  assert.equal(await evaluate(`window.__queries[window.__categoryQueryIndex].filters.some(filter=>Array.isArray(filter)&&filter[0]==='category_id'&&filter[1]==='category-test')`),true,'channel filter uses the latest category');
+  await evaluate(`window.__reply(window.__categoryQueryIndex,'filtered result')`);
   await delay(50);
   assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['filtered result'],'filter result replaces previous search');
 
@@ -201,9 +201,9 @@ async function communityRequestRaces() {
       if(userIds.includes('author-1'))window.__resolveSlowProfiles=complete;
       else complete();
     });
-    resetAndLoad();
+    window.__progressiveQueryIndex=window.__queries.length;resetAndLoad();
   })()`);
-  await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[4].resolve({data:[post],count:1,error:null})})()`);
+  await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[window.__progressiveQueryIndex].resolve({data:[post],count:1,error:null})})()`);
   await delay(50);
   assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{title:card?.querySelector('.post-title')?.textContent,loading:!!document.querySelector('#postList .loading'),comments:card?.querySelector('.post-comments')?.textContent||'',reactions:card?.querySelector('.post-reactions')?.textContent||''}})()`),
     {title:'progressive result',loading:false,comments:'',reactions:''}, 'base posts render before metrics and profiles finish');
@@ -451,7 +451,7 @@ try {
   // must show the same white KFarmAI header and one active bottom-menu tab.
   for (const width of [320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
-    for (const route of ['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
+    for (const route of ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
       await navigate(route);
       const toolUi = await evaluate(`(() => {
         const brand=document.querySelector('.v4-global-brand');
@@ -565,6 +565,8 @@ try {
       await navigate(route);
       const detailUi = await evaluate(`(() => {
         const nav=document.querySelector('.v4-nav');
+        const globalHeader=document.querySelector('.v4-global-header');
+        const firstHeading=document.querySelector('h1');
         const frame=document.querySelector('body.v4-detail-page > .phone,body.v4-detail-page > .app,body.v4-detail-page > main.phone,body.v4-detail-page > main.app,body.v4-detail-page > main.page');
         const footer=document.querySelector('footer,.agri-v3-footer,.site-footer');
         const controls=[...document.querySelectorAll('input:not([type=hidden]),select,textarea,button:not(.v4-nav button)')].slice(0,8);
@@ -572,6 +574,7 @@ try {
         return {
           detail:document.body.classList.contains('v4-detail-page'),
           h1:!!document.querySelector('h1'),
+          titleBelowHeader:!globalHeader||!firstHeading||firstHeading.getBoundingClientRect().top>=globalHeader.getBoundingClientRect().bottom-1,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
           overflow:document.documentElement.scrollWidth>innerWidth+1,
@@ -583,7 +586,7 @@ try {
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
         };
       })()`);
-      assert.deepEqual(detailUi, {detail:true,h1:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot,{recursive:true});
@@ -600,6 +603,7 @@ try {
   const internalScenarios = [
     ['/agri-weather.html', `document.querySelectorAll('#areaChips .chip')[1]?.click();document.querySelectorAll('#typeChips .chip')[1]?.click();cropOptions.open=true;document.querySelector('#cropList .crop-chip')?.click()`],
     ['/market-prices.html', `document.querySelectorAll('#typeTabs button.tab')[1]?.click();document.querySelector('#chips .chip')?.click()`],
+    ['/facility-vegetables.html', `document.querySelectorAll('#itemChips .chip')[1]?.click();year.selectedIndex=Math.min(1,year.options.length-1);year.dispatchEvent(new Event('change',{bubbles:true}))`],
     ['/subsidy-calendar.html', `regionFilter.selectedIndex=Math.min(1,regionFilter.options.length-1);regionFilter.dispatchEvent(new Event('change',{bubbles:true}));resetButton.click()`],
     ['/public-data.html', `document.querySelector('#exampleChips .chip')?.click()`],
     ['/diagnosis.html', `diagExtra.open=true;symptomInput.value='잎이 노랗게 변함';symptomInput.dispatchEvent(new Event('input',{bubbles:true}))`],
@@ -633,7 +637,7 @@ try {
   await navigate('/index.html');
   await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
   const allMenuTargets=await evaluate("[...document.querySelectorAll('#v4AllMenu a')].map(a=>({label:a.textContent.trim(),target:new URL(a.href).pathname+new URL(a.href).search}))");
-  assert.equal(allMenuTargets.length, 13, 'all menu exposes thirteen detail links');
+  assert.equal(allMenuTargets.length, 14, 'all menu exposes fourteen detail links');
   for (let index=0;index<allMenuTargets.length;index+=1) {
     await navigate('/index.html');
     await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");

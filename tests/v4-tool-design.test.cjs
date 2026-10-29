@@ -9,6 +9,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const pages = [
   ['agri-weather.html', 'kf-weather', '농업날씨', ['areaChips','typeChips','cropSearch','cropOptions','weatherPanel']],
   ['market-prices.html', 'kf-market', '농산물 시세', ['q','searchBtn','chips','typeTabs','status','list','detail']],
+  ['facility-vegetables.html', 'kf-facility', '시설채소 생산실적', ['itemChips','year','status','results']],
   ['crop-calendar.html', 'kf-crop', '재배달력', ['searchInput','cropGrid','detail']],
   ['subsidy-calendar.html', 'kf-subsidy', '정책·지원', ['regionFilter','targetFilter','categoryFilter','programList']],
 ];
@@ -104,10 +105,14 @@ test('weather and market pages keep only compact user-facing information', () =>
   assert.ok(!market.includes('id="fallbackList"'));
   assert.match(market,/class="page-source">출처:/);
   assert.match(market,/market-updated/);
-  assert.match(market,/listItems=fallbackItems\.filter/,'market renders stable local rows before API');
+  assert.match(market,/fetchMarketOverview/,'market requests a current all-item overview');
+  assert.match(market,/\/api\/kamis\/market-overview/,'market uses the one-request overview endpoint first');
+  assert.match(market,/OVERVIEW_FALLBACK_ITEMS\.map/,'market retains a current per-item compatibility path');
   assert.match(market,/\{name:'전체',initial:''\},\{name:'토마토'/,'market puts all before tomato');
   assert.match(market,/INITIAL_TYPE==='flower'\?'장미':'전체'/,'market defaults to all items');
-  assert.match(market,/selectedItem==='전체'\?fallbackItems/,'market renders the local all-item list immediately');
+  assert.match(market,/readOverviewCache/,'market restores a recent live overview before refreshing');
+  assert.ok(market.includes('시설채소 생산실적'));
+  assert.ok(market.includes('href="facility-vegetables.html"'));
 });
 
 test('first paint cache is restored before auth and shared thumbnails are warmed', () => {
@@ -223,6 +228,7 @@ test('detail presentation removes narrow phone frames, grey tails and rounded sh
   assert.match(css,/footer,[\s\S]*background: #fff !important/);
   assert.match(css,/\.diag-card[\s\S]*width: min\(calc\(100% - 32px\), var\(--kf-detail-width\)\)/);
   assert.match(css,/body\.v4-detail-page > header\.v4-global-header \{[\s\S]*position: fixed/);
+  assert.match(css,/body\.v4-detail-page\.v4-global-header-ready \{[\s\S]*padding-top: var\(--v4-global-header-height, 60px\) !important/);
   assert.match(css,/\.fixed-map-shell,[\s\S]*var\(--kf-detail-width\)/);
   assert.match(css,/\.v4-privacy-page main[\s\S]*grid-template-columns: repeat\(2/);
   assert.match(css,/@media \(max-width: 767px\)/);
@@ -235,8 +241,17 @@ test('detail presentation removes narrow phone frames, grey tails and rounded sh
 test('all-menu links are covered by an active full-menu destination', () => {
   const shell = read('static/js/v4-shell.js');
   const menuTargets = [
-    '/subsidy-calendar.html', '/diagnosis.html', '/agri-weather.html', '/market-prices.html',
+    '/subsidy-calendar.html', '/diagnosis.html', '/agri-weather.html', '/market-prices.html', '/facility-vegetables.html',
     '/agri_map.html', '/crop-calendar.html', '/oauth/privacy/',
   ];
   for (const target of menuTargets) assert.ok(shell.includes("'" + target + "'"), target);
+});
+
+test('policy support source registry is review-only and contains no guessed endpoint', () => {
+  const registry = JSON.parse(read('data/policy-support-sources.json'));
+  assert.equal(registry.publishMode, 'review_only');
+  assert.deepEqual(registry.publicReviewStatuses, ['approved']);
+  assert.ok(registry.providers.some(provider => provider.id === 'bojo-open-api'));
+  assert.ok(registry.providers.every(provider => provider.reviewRequired === true));
+  assert.equal(registry.providers.find(provider => provider.id === 'bojo-open-api').endpointStatus, 'pending_verified_spec');
 });

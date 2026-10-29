@@ -114,3 +114,83 @@
 3. AgriX 농림사업 시행지침과 연도별 사업 정보를 확인 경로로 연결한다.
 4. 지자체 농업기술센터 공고는 지역별 수집 후보 목록을 만들고, 변경 감지와 수동 검수 흐름을 분리한다.
 5. API 키, secret, `.env.local` 내용은 문서와 프론트엔드 코드에 포함하지 않는다.
+
+## 2026-10-29 수집 설계 v1
+
+정책·지원 정보는 `수집 → 정규화 → 중복 제거 → 사람 검수 → 공개`의 다섯 단계로 운영한다. 기존 Daily 농업콘텐츠 자동화와 섞지 않고, 별도 REVIEW-only 파이프라인으로 둔다. 자동 수집 결과를 곧바로 Production에 게시하지 않는다.
+
+### 1. 우선 수집원
+
+기계 판독 우선순위는 `data/policy-support-sources.json`을 단일 레지스트리로 사용한다.
+
+1. 보조금통합포털 OpenAPI의 `공모사업`, `보조사업현황`, `내역사업현황`
+2. 농림축산식품 공공데이터 포털의 시행지침서·보조금 현황 공식 파일
+3. AgriX 시행지침서의 공식 확인 링크
+4. 허용목록에 등록하고 이용조건을 검토한 지자체·농업기술센터 공고
+
+OpenAPI의 실제 base URL과 요청 파라미터는 발급된 명세서를 확인한 뒤에만 코드에 반영한다. 화면 주소를 API 주소로 추정하거나 비공개 게시판을 크롤링하지 않는다.
+
+### 2. 서버 경계
+
+- 프론트엔드는 외부 공공 API를 직접 호출하지 않는다.
+- Worker에는 향후 `GET /api/policy-support` 읽기 전용 경로를 추가한다.
+- 인증정보는 Worker secret `BOJO_OPEN_API_KEY` 같은 별칭으로만 참조한다.
+- 응답 캐시는 성공 6시간, 오류는 `no-store`로 둔다.
+- 공급자 오류 시 마지막 `approved` 스냅샷만 사용하고, 기준일을 숨기지 않는다.
+- Supabase Auth, RLS, Storage 정책은 이 단계에서 변경하지 않는다.
+
+### 3. 정규화 계약
+
+공개 후보는 최소한 아래 필드를 가져야 한다.
+
+```json
+{
+  "sourceId": "bojo-open-api",
+  "externalId": "공급자 원문 식별자",
+  "title": "공모·지원사업명",
+  "summary": "사용자용 1~2문장 요약",
+  "region": ["전국"],
+  "targets": ["농업인"],
+  "categories": ["시설원예"],
+  "agency": "시행기관",
+  "applicationStart": "2026-01-01",
+  "applicationEnd": "2026-02-01",
+  "publishedAt": "2026-01-01",
+  "updatedAt": "2026-01-01T00:00:00+09:00",
+  "officialUrl": "공식 상세 공고 URL",
+  "sourceHash": "원문 정규화 SHA-256",
+  "reviewStatus": "pending"
+}
+```
+
+날짜, 공식 URL, 원문 식별자 중 하나라도 검증할 수 없으면 `approved`로 승격하지 않는다. 신청자격과 지원금액은 원문에 명시된 경우에만 표시한다.
+
+### 4. 중복·변경 감지
+
+- 1차 키: `sourceId + externalId`
+- 2차 키: 정규화한 `title + agency + applicationEnd`
+- 변경 감지: 원문 핵심 필드의 `sourceHash`
+- 같은 사업의 수정 공고는 기존 항목을 덮어쓰지 않고 revision으로 연결한다.
+- 마감일이 지난 공고는 `closed`, 변경·취소 공고는 `changed`로 분리한다.
+
+### 5. 검수와 공개
+
+- `pending`: 자동 수집 직후, 비공개
+- `review`: 필수 필드와 공식 URL 검증 대기, 비공개
+- `approved`: Production 표시 가능
+- `rejected`: 비농업·중복·출처 불명
+- `expired`: 마감 경과
+
+공개 화면은 `approved`만 읽는다. 카드에는 제목, 지역, 대상, 신청기간, 시행기관만 우선 표시하고, 상세 설명은 1~2문장으로 제한한다. 신청 여부는 확정하지 않고 공식 공고 버튼을 제공한다.
+
+### 6. 단계별 구현 순서
+
+1. 소스 레지스트리와 JSON Schema 검증
+2. 보조금통합포털 OpenAPI 명세·키 확인
+3. 로컬 fixture 기반 정규화기와 중복 제거 테스트
+4. Preview Worker의 읽기 전용 `/api/policy-support`
+5. REVIEW 산출물과 승인된 정적 스냅샷 생성
+6. `subsidy-calendar.html`에서 승인 스냅샷 우선 표시
+7. 운영 승인 후 스케줄 활성화
+
+Production 자동수집 스케줄과 Worker secret 등록은 별도 승인 항목이다.
