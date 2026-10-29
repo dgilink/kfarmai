@@ -533,7 +533,7 @@ try {
   await navigate('/subsidy-calendar.html?policyPreview=sample');
   await waitForEvaluation("document.getElementById('countText').textContent.includes('1건')", 3000);
   const policyPreview = await evaluate(`(() => ({
-    sample:!sampleBanner.hidden && /실제 공고·신청 정보가 아닙니다/.test(sampleBanner.textContent),
+    sample:!sampleBanner.hidden && /샘플 화면 · 실제 공고가 아닙니다/.test(sampleBanner.textContent),
     open:approvedList.querySelectorAll('.policy-row').length,
     noApplicationLink:!approvedList.querySelector('a[href]'),
     referenceClosed:!referenceSection.open,

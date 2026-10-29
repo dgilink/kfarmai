@@ -40,6 +40,6 @@ test('sample is clearly marked and official links cannot be injected', () => {
   const page = fs.readFileSync(path.join(root,'subsidy-calendar.html'),'utf8');
   assert.match(page, /id="approvedList"/);
   assert.match(page, /id="referenceSection"/);
-  assert.match(page, /실제 공고·신청 정보가 아닙니다/);
+  assert.match(page, /샘플 화면 · 실제 공고가 아닙니다/);
   assert.match(fs.readFileSync(path.join(root,'static/js/policy-support.js'),'utf8'), /localhost\|127/);
 });
