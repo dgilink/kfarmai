@@ -34,6 +34,8 @@
 <meta name="twitter:image" content="https://kfarmai.com/static/kfarmai-logo-horizontal.png">
 
 <meta name="theme-color" content="#16a34a">
+<link rel="preconnect" href="https://dapi.kakao.com" crossorigin>
+<link rel="preload" href="/static/pesticide_data.js" as="script">
 <link rel="stylesheet" href="style.css">
 <style>
 html, body { min-height:100%; }
@@ -74,6 +76,7 @@ body.v4-map-page .kf-search-bar {
 .shop-tag { display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;background:#eaf5ec;color:#1e6b2e;font-weight:600;margin-left:4px; }
 .shop-tag.user { background:#fff3e0;color:#e65100; }
 #shopList { padding-bottom:120px;touch-action:pan-y; }
+.list-more { display:block;width:calc(100% - 32px);min-height:44px;margin:12px 16px 24px;border:1px solid #1e6b2e;border-radius:0;background:#fff;color:#1e6b2e;font-size:13px;font-weight:800;cursor:pointer; }
 
 @media (max-width:480px) {
   body { min-height:100dvh;overflow-y:auto; }
@@ -117,7 +120,7 @@ body.v4-map-page .kf-search-bar {
 .edit-modal-bg { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;align-items:center;justify-content:center; }
 .edit-modal-bg.show { display:flex; }
 </style>
-<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header7">
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header8">
   <link rel="stylesheet" href="/static/css/v4-detail-pages.css?v=20261029-location1">
 <style>
 body.v4-map-page .v4-global-actions{display:flex!important;visibility:visible!important;opacity:1!important}
@@ -134,7 +137,7 @@ body.v4-map-page.v4-sub320-visual-viewport .kf-search-bar input{min-width:0!impo
 body.v4-map-page.v4-sub320-visual-viewport .kf-search-bar .kf-btn{min-width:0;padding-inline:5px}
 @keyframes location-spin{to{transform:rotate(360deg)}}
 </style>
-<script src="/static/js/v4-shell.js?v=20261029-header7" defer></script>
+<script src="/static/js/v4-shell.js?v=20261029-header8" defer></script>
 </head>
 <body class="v4-page v4-detail-page v4-map-page">
 <header style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);border-bottom:1px solid #f0f0f0;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
@@ -286,6 +289,8 @@ let markerById = {};
 let roadviewClient = null;
 let currentLocationOverlay = null;
 let currentAccuracyCircle = null;
+let mapRenderToken = 0;
+const LIST_BATCH_SIZE = 80;
 
 const REGIONS = ['전체','서울','경기','인천','충남','충북','전남','전북','경남','경북','강원','부산','대구','광주','대전','울산','세종','제주'];
 const CHO = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
@@ -407,18 +412,11 @@ function filterShops() {
   return list;
 }
 
-function renderList(list) {
-  const container = document.getElementById('shopList');
-  document.getElementById('listCount').textContent = list.length + '개 농약사';
-
-  if (!list.length) {
-    container.innerHTML = '<div style="padding:40px;text-align:center;color:#999;">검색 결과가 없습니다</div>';
-    return;
-  }
-
+function shopRowsHtml(list, start, end) {
   let html = '';
-  let lastAlpha = '';
-  list.forEach((shop) => {
+  let lastAlpha = start > 0 ? list[start - 1].name.charAt(0) : '';
+  for (let index = start; index < end; index += 1) {
+    const shop = list[index];
     const first = shop.name.charAt(0);
     if (first !== lastAlpha) {
       html += `<div style="padding:8px 16px;background:#f7f7f5;font-size:12px;font-weight:700;color:#444;border-bottom:1px solid #e8e8e8;">${first}</div>`;
@@ -437,11 +435,47 @@ function renderList(list) {
       </div>
       ${isUser?`<button onclick="event.stopPropagation();openEditModal(${userIdx})" style="flex-shrink:0;background:none;border:1px solid #ddd;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;color:#666;">수정</button>`:''}
     </div>`;
-  });
-  container.innerHTML = html;
-  container.querySelectorAll('.shop-item').forEach(el => {
+  }
+  return html;
+}
+
+function bindShopRows(container) {
+  container.querySelectorAll('.shop-item:not([data-v4-bound])').forEach(el => {
+    el.dataset.v4Bound = 'true';
     el.addEventListener('click', () => focusShop(el.dataset.shopId, true));
   });
+}
+
+function addListMoreButton(container, next, total) {
+  if (next >= total) return;
+  container.insertAdjacentHTML('beforeend', `<button class="list-more" type="button" data-next="${next}">더 보기 (${next}/${total})</button>`);
+  container.querySelector('.list-more')?.addEventListener('click', loadMoreList);
+}
+
+function loadMoreList(event) {
+  const button = event.currentTarget;
+  const start = Number(button.dataset.next || 0);
+  const end = Math.min(start + LIST_BATCH_SIZE, currentList.length);
+  const container = document.getElementById('shopList');
+  button.remove();
+  container.insertAdjacentHTML('beforeend', shopRowsHtml(currentList, start, end));
+  bindShopRows(container);
+  addListMoreButton(container, end, currentList.length);
+}
+
+function renderList(list) {
+  const container = document.getElementById('shopList');
+  document.getElementById('listCount').textContent = list.length + '개 농약사';
+
+  if (!list.length) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:#999;">검색 결과가 없습니다</div>';
+    return;
+  }
+
+  const end = Math.min(LIST_BATCH_SIZE, list.length);
+  container.innerHTML = shopRowsHtml(list, 0, end);
+  bindShopRows(container);
+  addListMoreButton(container, end, list.length);
 }
 
 function clearMarkers() {
@@ -460,10 +494,15 @@ function getInfoContent(shop) {
   </div>`;
 }
 
-function addMarker(shop) {
+function addMarker(shop, direct = false) {
   if (!shop.lat || !shop.lot) return null;
+  if (markerById[shop.id]) {
+    if (direct) markerById[shop.id].setMap(kakaoMap);
+    return markerById[shop.id];
+  }
   const pos = new kakao.maps.LatLng(shop.lat, shop.lot);
-  const marker = new kakao.maps.Marker({ map: kakaoMap, position: pos });
+  const marker = new kakao.maps.Marker({ position: pos });
+  if (direct) marker.setMap(kakaoMap);
   kakao.maps.event.addListener(marker, 'click', function() {
     infowindow.setContent(getInfoContent(shop));
     infowindow.open(kakaoMap, marker);
@@ -489,18 +528,33 @@ function fitMapToBounds(list) {
 
 function renderMap(list, moveMap) {
   if (!kakaoMap) return;
+  const renderToken = ++mapRenderToken;
   clearMarkers();
   const mapTargets = list.filter(shop => shop.lat && shop.lot);
-  mapTargets.forEach(addMarker);
-  if (clusterer) clusterer.clear();
-  clusterer = new kakao.maps.MarkerClusterer({
-    map: kakaoMap,
-    averageCenter: true,
-    minLevel: 6
-  });
-  clusterer.addMarkers(markers);
-  document.getElementById('mapStatus').textContent = mapTargets.length + '개 위치 표시';
-  if (moveMap) fitMapToBounds(mapTargets);
+  document.getElementById('mapStatus').textContent = '위치 준비 중';
+  let index = 0;
+  const schedule = callback => {
+    if ('requestIdleCallback' in window) requestIdleCallback(callback, {timeout:120});
+    else window.setTimeout(() => callback({didTimeout:true,timeRemaining:() => 8}), 0);
+  };
+  const buildBatch = deadline => {
+    if (renderToken !== mapRenderToken) return;
+    const minimumEnd = Math.min(index + 40, mapTargets.length);
+    const batchEnd = Math.min(index + 240, mapTargets.length);
+    while (index < batchEnd && (index < minimumEnd || deadline.didTimeout || deadline.timeRemaining() > 1)) {
+      addMarker(mapTargets[index]);
+      index += 1;
+    }
+    if (index < mapTargets.length) {
+      schedule(buildBatch);
+      return;
+    }
+    clusterer = new kakao.maps.MarkerClusterer({map:kakaoMap,averageCenter:true,minLevel:6});
+    clusterer.addMarkers(markers);
+    document.getElementById('mapStatus').textContent = mapTargets.length + '개 위치 표시';
+    if (moveMap) fitMapToBounds(mapTargets);
+  };
+  schedule(buildBatch);
 }
 
 function setLocationButtonBusy(busy) {
@@ -664,7 +718,7 @@ function focusShop(shopId, scrollToMap) {
     return;
   }
   geocodeShop(shop, function(target) {
-    if (!markerById[target.id]) addMarker(target);
+    if (!markerById[target.id]) addMarker(target, true);
     kakaoMap.setCenter(new kakao.maps.LatLng(target.lat, target.lot));
     kakaoMap.setLevel(4);
     if (markerById[target.id]) {
@@ -734,12 +788,13 @@ function closeMenu() { document.getElementById('overlay').classList.remove('open
 
 buildRegionTabs();
 allShops = getAllShops();
+currentList = filterShops();
+renderList(currentList);
 setLoading('mapLoading', true);
 const KAKAO_MAP_SDK = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=533e5896630c1460c4349d33b3fab95a&autoload=false&libraries=services,clusterer';
 function renderMapFallback() {
   document.getElementById('mapStatus').textContent = '지도 준비 전 목록 표시';
   setLoading('mapLoading', false);
-  renderAll(false);
 }
 function initKakaoMap() {
   if (!window.kakao || !kakao.maps || typeof kakao.maps.load !== 'function') {
@@ -757,10 +812,17 @@ function initKakaoMap() {
     kakao.maps.event.addListener(kakaoMap, 'click', function() {
       infowindow.close();
     });
-    renderAll(false);
-    applyUrlQuery();
     setLocationButtonBusy(false);
-    setLoading('mapLoading', false);
+    let mapRevealed = false;
+    const revealMap = () => {
+      if (mapRevealed) return;
+      mapRevealed = true;
+      setLoading('mapLoading', false);
+    };
+    kakao.maps.event.addListener(kakaoMap, 'tilesloaded', revealMap);
+    window.setTimeout(revealMap, 1200);
+    if (new URLSearchParams(window.location.search).get('q')) applyUrlQuery();
+    else renderMap(currentList, false);
   });
 }
 function loadKakaoMapSdk() {
