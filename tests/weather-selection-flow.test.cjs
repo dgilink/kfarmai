@@ -63,6 +63,7 @@ async function run() {
   assert.equal(calls.some(url => url.includes('/api/weather/forecast')), false, 'no weather request without a region');
   assert.match(get('#weatherPanel').innerHTML, /권역을 선택하면 최신 날씨가 표시됩니다/);
   assert.match(get('#cropOptionCurrent').textContent, /선택 전/);
+  assert.equal(get('#selectedCropSummary').hidden, true);
   assert.doesNotMatch(get('#areaChips').innerHTML, /class="chip[^\"]*active/);
   assert.doesNotMatch(get('#typeChips').innerHTML, /class="chip[^\"]*active/);
   assert.doesNotMatch(get('#cropList').innerHTML, /class="crop-chip active/);
@@ -78,6 +79,7 @@ async function run() {
   get('#typeChips').querySelectorAll()[0].click();
   get('#cropList').querySelectorAll()[0].click();
   assert.match(get('#selectedCropSummary').innerHTML, /베란다·실내/);
+  assert.equal(get('#selectedCropSummary').hidden, false);
   assert.notEqual(get('#cropPanel').innerHTML, '');
 
   weatherFails = true;

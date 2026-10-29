@@ -60,7 +60,7 @@ body.kf-weather .weather-state button{flex:none;border:1px solid #BFE5D2;backgro
         <div class="chips" id="categoryChips"></div>
         <div class="crop-list" id="cropList"></div>
       </details>
-      <div id="selectedCropSummary" class="selected-crop">작물을 선택하면 맞춤 체크포인트가 표시됩니다.</div>
+      <div id="selectedCropSummary" class="selected-crop" hidden></div>
     </div>
     <div id="weatherPanel"></div>
     <div id="summaryPanel"></div>
@@ -139,7 +139,7 @@ function renderRegions(){const areas=Object.keys(regionGroups);if(selectedArea&&
 function cropMatches(profile,q){const query=String(q||'').trim().toLowerCase();if(!query)return true;const text=[profile.name,profile.primaryCategory,profile.category,...profileCategories(profile),...list(profile.aliases),...list(profile.keywords),...list(profile.chosung),initials(profile.name)].join(' ').toLowerCase();return text.includes(query)}
 function selectedProfile(){return selectedCropId?profiles.find(p=>p.id===selectedCropId)||null:null}
 function typePoint(profile){return list(profile.cultivationTypePoints?.[selectedType])[0]||CULTIVATION_TYPES.find(x=>x.name===selectedType)?.note||''}
-function renderSelectedCropSummary(profile){if($('#cropOptionCurrent'))$('#cropOptionCurrent').textContent=profile?.name||'선택 전';$('#selectedCropSummary').innerHTML=profile?`<b>${esc(profile.name)}</b>${selectedType?` · ${esc(selectedType)}`:''}`:'작물을 선택해주세요.'}
+function renderSelectedCropSummary(profile){if($('#cropOptionCurrent'))$('#cropOptionCurrent').textContent=profile?.name||'선택 전';$('#selectedCropSummary').hidden=!profile;$('#selectedCropSummary').innerHTML=profile?`<b>${esc(profile.name)}</b>${selectedType?` · ${esc(selectedType)}`:''}`:''}
 function renderCrops(){renderChips($('#categoryChips'),CATEGORIES,selectedCategory,category=>{selectedCategory=category;renderCrops();renderPanels()});const q=$('#cropSearch').value;let cropList=profiles.filter(p=>(!selectedCategory||selectedCategory==='전체'||profileCategories(p).includes(selectedCategory))&&cropMatches(p,q));if(!cropList.length)cropList=profiles.filter(p=>cropMatches(p,q)).slice(0,18);const current=selectedProfile();renderSelectedCropSummary(current);$('#cropList').innerHTML=cropList.map(p=>`<button class="crop-chip ${p.id===selectedCropId?'active':''}" type="button" aria-pressed="${p.id===selectedCropId}" data-id="${esc(p.id)}" data-name="${esc(p.name)}">${esc(p.icon||'•')} ${esc(p.name)}</button>`).join('')||'<div class="hint">검색 결과가 없습니다.</div>';$('#cropList').querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{selectedCropId=btn.dataset.id===selectedCropId?'':btn.dataset.id;renderCrops();renderPanels();$('#cropOptions').open=false}))}
 function renderWeather(){
   if(!selectedArea){$('#weatherPanel').innerHTML='<article class="card"><div class="label">기상 정보</div><div class="weather-state">권역을 선택하면 최신 날씨가 표시됩니다.</div></article>';return}
