@@ -20,9 +20,9 @@ for (const [file, cls, title, ids] of pages) {
     assert.ok(html.includes('<body class="v4-page kf-tool-page ' + cls + '">'));
     assert.ok(html.includes('class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a>'));
     assert.ok(html.includes('<h1 class="kf-tool-title">' + title + '</h1>'));
-    assert.match(html,/\/static\/css\/v4-shell\.css\?v=202610(?:28-menu1|29-header[3-5])/);
+    assert.match(html,/\/static\/css\/v4-shell\.css\?v=202610(?:28-menu1|29-header[3-6])/);
     assert.match(html,/\/static\/css\/v4-tool-pages\.css\?v=20261029-(?:compact1|narrow1)/);
-    assert.match(html,/\/static\/js\/v4-shell\.js\?v=202610(?:28-menu1|29-header[3-5])/);
+    assert.match(html,/\/static\/js\/v4-shell\.js\?v=202610(?:28-menu1|29-header[3-6])/);
     const header=html.match(/<header class="header">([\s\S]*?)<\/header>/);
     assert.ok(header, 'shared header must exist');
     assert.ok(!header[1].includes('<img'), 'no header image logo');
@@ -88,6 +88,7 @@ test('global shell provides one fixed text header and routes search to home', ()
   assert.match(css,/body\.v4-global-header-ready \{[\s\S]*min-width: 0/);
   assert.match(css,/@media \(max-width: 319px\) \{[\s\S]*\.v4-global-header-inner \{ padding-inline: 8px; \}/);
   assert.match(css,/body\.v4-narrow-visual-viewport \{[\s\S]*--v4-visual-viewport-width/);
+  assert.match(css,/body\.v4-narrow-visual-viewport > \.app,[\s\S]*width: var\(--v4-visual-viewport-width\) !important/);
   assert.match(shell,/visualViewport\?\.width/);
   assert.match(shell,/v4-narrow-visual-viewport/);
   assert.match(css,/\.v4-legacy-header \{ display: none !important; \}/);
@@ -136,18 +137,18 @@ test('facility page shows the verified 2024 official snapshot without empty fake
   assert.ok(!facility.includes('공식 통계 확인 필요'));
   assert.ok(!facility.includes('/api/mafra/facility-vegetables'));
   assert.match(facility,/@media\(max-width:480px\)\{body\.kf-facility \.kf-tool-title\{padding-top:16px;font-size:26px!important\}/);
-  assert.ok(facility.includes('/static/css/v4-shell.css?v=20261029-header5'));
+  assert.ok(facility.includes('/static/css/v4-shell.css?v=20261029-header6'));
   assert.ok(facility.includes('/static/css/v4-tool-pages.css?v=20261029-narrow1'));
-  assert.ok(facility.includes('/static/js/v4-shell.js?v=20261029-header5'));
+  assert.ok(facility.includes('/static/js/v4-shell.js?v=20261029-header6'));
 });
 
 test('pesticide store search stays fully below the fixed global header', () => {
   const map=read('agri_map.html');
   assert.match(map,/body\.v4-map-page \.kf-search-bar \{[\s\S]*top:var\(--v4-global-header-height,60px\)/);
   assert.match(map,/body\.v4-map-page \.kf-search-bar \{[\s\S]*border-top:1px solid #e8e8e8/);
-  assert.ok(map.includes('/static/css/v4-shell.css?v=20261029-header5'));
+  assert.ok(map.includes('/static/css/v4-shell.css?v=20261029-header6'));
   assert.ok(map.includes('/static/css/v4-detail-pages.css?v=20261029-location1'));
-  assert.ok(map.includes('/static/js/v4-shell.js?v=20261029-header5'));
+  assert.ok(map.includes('/static/js/v4-shell.js?v=20261029-header6'));
   assert.match(map,/body\.v4-map-page \.v4-global-action \.v4-nav-icon\{display:block!important;[\s\S]*stroke:currentColor!important/);
   assert.match(map,/id="locateButton"[\s\S]*aria-label="내 위치로 이동"/);
   assert.match(map,/navigator\.geolocation\.getCurrentPosition/);
@@ -255,9 +256,9 @@ test('full-menu destinations and their first detail pages use the responsive V4 
     const html = read(file);
     assert.ok(html.includes('v4-page v4-detail-page'), file + ' detail page body');
     assert.ok(html.includes(pageClass), file + ' specific body class');
-    assert.match(html,/\/static\/css\/v4-shell\.css\?v=202610(?:28-menu1|29-header[3-5])/, file + ' shell CSS');
+    assert.match(html,/\/static\/css\/v4-shell\.css\?v=202610(?:28-menu1|29-header[3-6])/, file + ' shell CSS');
     assert.match(html,/\/static\/css\/v4-detail-pages\.css\?v=20261029-(?:compact3|location1)/, file + ' detail CSS');
-    assert.match(html,/\/static\/js\/v4-shell\.js\?v=202610(?:28-menu1|29-header[3-5])/, file + ' shell JS');
+    assert.match(html,/\/static\/js\/v4-shell\.js\?v=202610(?:28-menu1|29-header[3-6])/, file + ' shell JS');
     const scripts=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
     for (const [,attributes,source] of scripts) {
       if (!source.trim() || /\bsrc\s*=/i.test(attributes)

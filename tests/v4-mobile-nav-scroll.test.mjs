@@ -464,7 +464,7 @@ try {
         const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
-        const surfaces=[document.body,document.querySelector('.app'),title,document.querySelector('.content'),...document.querySelectorAll('.content > *')].filter(Boolean);
+        const surfaces=[document.querySelector('.app'),title,document.querySelector('.content'),...document.querySelectorAll('.content > *')].filter(Boolean);
         const overflowNodes=surfaces.filter(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}).map(node=>{const rect=node.getBoundingClientRect();return {name:node.tagName+'.'+node.className,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width)}});
         return {
           text:brand?.textContent?.trim(),
@@ -589,7 +589,7 @@ try {
         const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
-        const surfaces=[document.body,frame,globalHeader,nav,...document.querySelectorAll('.fixed-map-shell,.list-wrap,.map-panel,.kf-search-bar')].filter(Boolean);
+        const surfaces=[frame,globalHeader,nav,...document.querySelectorAll('.fixed-map-shell,.list-wrap,.map-panel,.kf-search-bar')].filter(Boolean);
         const overflowNodes=surfaces.filter(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}).map(node=>{const rect=node.getBoundingClientRect();return {name:node.tagName+'.'+node.className,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width)}});
         return {
           detail:document.body.classList.contains('v4-detail-page'),

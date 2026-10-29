@@ -349,6 +349,18 @@ body.v4-narrow-visual-viewport .v4-menu {
   width: var(--v4-visual-viewport-width) !important;
   max-width: var(--v4-visual-viewport-width) !important;
 }
+body.v4-narrow-visual-viewport > .app,
+body.v4-narrow-visual-viewport > .phone,
+body.v4-narrow-visual-viewport > main {
+  width: var(--v4-visual-viewport-width) !important;
+  max-width: var(--v4-visual-viewport-width) !important;
+}
+body.v4-map-page.v4-narrow-visual-viewport > .fixed-map-shell,
+body.v4-map-page.v4-narrow-visual-viewport > .list-wrap {
+  width: calc(var(--v4-visual-viewport-width) - 20px) !important;
+  max-width: calc(var(--v4-visual-viewport-width) - 20px) !important;
+  margin-inline: 10px !important;
+}
 body.v4-narrow-visual-viewport .v4-global-header-inner { padding-inline: 8px; }
 body.v4-narrow-visual-viewport .v4-global-brand { font-size: 21px; }
 body.v4-narrow-visual-viewport .v4-global-actions { flex-basis: 84px; min-width: 84px; gap: 0; }
