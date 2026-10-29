@@ -62,10 +62,19 @@ try {
     for (const [index, [, href, contents]] of cards.entries()) {
       assert.equal(href, items[index].path, 'registry order and link preserved');
       assert.match(contents, /^((?:<img class="kb-list-thumb"[^>]+>)?)<span class="kb-list-copy"><small>[^<]+<\/small><strong>[^<]+<\/strong><\/span><span class="kb-list-arrow" aria-hidden="true">›<\/span>$/);
-      assert.ok(!contents.includes('저장 관리 핵심') && !contents.includes('2026-10-28'));
+      assert.ok(contents.includes(items[index].date), 'published date shown in every row');
+      assert.ok(contents.startsWith('<img class="kb-list-thumb"'), 'representative thumbnail shown in every row');
     }
-    assert.ok(cards[0][0].includes('class="kb-card is-text-only"'),
-      'newest approved text-only article may not be squeezed into image grid columns');
+    assert.ok(cards[0][0].includes('class="kb-card"'), 'newest article keeps the uniform thumbnail row');
+  });
+
+  test('requested article visuals are replaced only in the generated public artifact', () => {
+    const irrigation = fs.readFileSync(path.join(artifactDir, 'kb/greenhouse-irrigation-precheck.html'), 'utf8');
+    const strawberry = fs.readFileSync(path.join(artifactDir, 'kb/strawberry-winter-light-humidity-check.html'), 'utf8');
+    assert.ok(irrigation.includes('greenhouse-irrigation-precheck-infographic-restyle-20261029.svg'));
+    assert.ok(strawberry.includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
+    assert.ok(!strawberry.includes('Keepsake_Strawberry_by_USDA'));
+    assert.ok(!strawberry.includes('온실 사진: USDA/ARS'));
   });
 
   test('all public HTML receives one versioned global shell and grouped cultivation topic', () => {

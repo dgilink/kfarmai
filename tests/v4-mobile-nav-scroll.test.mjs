@@ -368,13 +368,15 @@ try {
     await assertSingleVisualActive(`${width}px knowledge`);
     const kbContract = await evaluate(`(() => ({
       cards:document.querySelectorAll('#kbGrid .kb-card').length,
-      forbidden:/공식 출처는 글에서 확인|내용과 출처 확인|\\d{4}-\\d{2}-\\d{2}/.test(kbGrid.innerText),
+      sourceCopy:/공식 출처는 글에서 확인|내용과 출처 확인/.test(kbGrid.innerText),
+      dates:[...document.querySelectorAll('#kbGrid .kb-card small')].every(node=>/\\d{4}-\\d{2}-\\d{2}/.test(node.textContent)),
       intro:document.querySelector('main>h1+p')?.textContent||'',
       images:document.querySelectorAll('#kbGrid .kb-list-thumb').length,
       overflow:document.documentElement.scrollWidth>innerWidth+1
     }))()`);
-    assert.ok(kbContract.cards >= 6 && kbContract.images >= 1, `${width}px approved KB list rendered`);
-    assert.equal(kbContract.forbidden, false, `${width}px KB date/source CTA hidden`);
+    assert.ok(kbContract.cards >= 6 && kbContract.images === kbContract.cards, `${width}px approved KB list thumbnails rendered`);
+    assert.equal(kbContract.sourceCopy, false, `${width}px KB redundant source CTA hidden`);
+    assert.equal(kbContract.dates, true, `${width}px KB published dates visible`);
     assert.equal(kbContract.intro, '', `${width}px KB intro removed`);
     assert.equal(kbContract.overflow, false, `${width}px KB no horizontal overflow`);
     const kbLayout = await evaluate(`(() => {
@@ -648,7 +650,9 @@ try {
         if (width === 267) {
           await evaluate(`(() => {
             Object.defineProperty(navigator,'geolocation',{configurable:true,value:{
-              getCurrentPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}})}
+              getCurrentPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}})},
+              watchPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}});return 1},
+              clearWatch(){}
             }});
             window.kakao={maps:{
               LatLng:function(lat,lng){this.lat=lat;this.lng=lng},
@@ -667,7 +671,7 @@ try {
             center:window.__locationCenter,
             level:window.__locationLevel
           }))()`);
-          assert.deepEqual(locationUi,{marker:true,status:'현재 위치 표시',busy:'false',disabled:false,center:{lat:37.5665,lng:126.978},level:4},'267px current-location control centers map and renders red marker');
+          assert.deepEqual(locationUi,{marker:true,status:'현재 위치 표시 · 약 18m',busy:'false',disabled:false,center:{lat:37.5665,lng:126.978},level:4},'267px current-location control centers map, reports accuracy and renders red marker');
         }
       }
       if ((width === 390 || width === 267 && route === '/agri_map.html') && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
@@ -719,7 +723,7 @@ try {
   await navigate('/index.html');
   await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
   const allMenuTargets=await evaluate("[...document.querySelectorAll('#v4AllMenu a')].map(a=>({label:a.textContent.trim(),target:new URL(a.href).pathname+new URL(a.href).search}))");
-  assert.equal(allMenuTargets.length, 14, 'all menu exposes fourteen detail links');
+  assert.equal(allMenuTargets.length, 13, 'all menu exposes thirteen detail links after language settings removal');
   for (let index=0;index<allMenuTargets.length;index+=1) {
     await navigate('/index.html');
     await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");

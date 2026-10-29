@@ -7,15 +7,14 @@
   const search = document.getElementById('kbSearch');
   const topics = document.getElementById('kbTopics');
   const status = document.getElementById('kbStatus');
-  // Only approved, already-published KB media may be used for the home lead.
-  const homeImages = Object.freeze({
-    '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp'
-  });
   const listImages = Object.freeze({
+    '/kb/pear-harvest-sorting-cold-storage-five-checks.html': '/static/kb/pear-harvest-sorting-cold-storage-five-checks-infographic.svg',
+    '/kb/autumn-rain-wheat-barley-sowing-checklist.html': '/static/kb/autumn-rain-wheat-barley-sowing-checklist-infographic.svg',
     '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
     '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
     '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
-    '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero.svg'
+    '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
+    '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'
   });
   const safePath = (value) => {
     try {
@@ -30,7 +29,7 @@
     link.href = item.path;
     link.dataset.topic = topicKey(item.category);
     const meta = document.createElement('small');
-    meta.textContent = compactList ? item.category : `${item.category} · ${item.date}`;
+    meta.textContent = `${item.category} · ${item.date}`;
     const title = document.createElement('strong');
     title.textContent = item.title;
     if (compactList) {
@@ -119,7 +118,7 @@
         date: String(value.date || ''),
         path: safePath(value.path),
         image: listImages[safePath(value.path)] || '',
-        homeImage: homeImages[safePath(value.path)] || ''
+        homeImage: listImages[safePath(value.path)] || ''
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
       renderTopics();

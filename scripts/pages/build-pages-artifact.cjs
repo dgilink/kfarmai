@@ -18,6 +18,7 @@ const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v
 const approvedVisualRestyles = new Set([
   'greenhouse-irrigation-precheck.html',
   'greenhouse-heating-preflight-notes.html',
+  'strawberry-winter-light-humidity-check.html',
 ]);
 function replaceVisualOnce(text, before, after, label) {
   if (text.indexOf(before) < 0 || text.indexOf(before) !== text.lastIndexOf(before)) {
@@ -36,7 +37,7 @@ function renderApprovedVisualRestyle(buffer, name) {
       'irrigation hero');
     html = replaceVisualOnce(html,
       '<img src="/static/kb/greenhouse-irrigation-precheck-infographic.svg" alt="관수 전 세 단계 확인 포인트">',
-      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-infographic-restyle-20261028.svg" alt="관수 전 세 단계 확인 포인트" loading="lazy"></figure>',
+      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-infographic-restyle-20261029.svg" alt="관수 전 세 단계 확인 포인트" loading="lazy"></figure>',
       'irrigation infographic');
     html = replaceVisualOnce(html, '<main><article>',
       '<main><article class="knowledge-article">', 'irrigation article');
@@ -63,6 +64,18 @@ function renderApprovedVisualRestyle(buffer, name) {
       '자료 확인: 2026-10-19 · 사진: USDAgov/Holly Hess (PD).',
       'heating provenance');
     html = replaceVisualOnce(html, '</head>', css + '</head>', 'heating head');
+  } else if (name === 'strawberry-winter-light-humidity-check.html') {
+    const oldPhoto = 'https://commons.wikimedia.org/wiki/Special:FilePath/Keepsake_Strawberry_by_USDA_(20210216-ARS-LSC-0004).jpg?width=1280';
+    const localPhoto = 'https://kfarmai.com/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp';
+    if (html.split(oldPhoto).length !== 4) throw new Error('Unexpected approved strawberry photo anchors');
+    html = html.replaceAll(oldPhoto, localPhoto);
+    html = replaceVisualOnce(html,
+      `src="${localPhoto}" alt="딸기 재배 온실의 실제 식물과 재배 시설"`,
+      'src="/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp" alt="국내 딸기 시설재배 환경을 참고한 대표 이미지"',
+      'strawberry local hero');
+    html = replaceVisualOnce(html,
+      '<li><a href="https://commons.wikimedia.org/wiki/File:Keepsake_Strawberry_by_USDA_(20210216-ARS-LSC-0004).jpg" target="_blank" rel="noopener noreferrer">온실 사진: USDA/ARS, 공개 이미지</a></li>',
+      '', 'strawberry retired photo credit');
   }
   return Buffer.from(html, 'utf8');
 }
@@ -220,10 +233,13 @@ const kbEndAt = kbIndexSource.indexOf('</div>', kbStartAt + kbIndexStart.length)
 if (kbEndAt < 0) throw new Error('KB index listing boundary is incomplete.');
 // Media is limited to approved, local, pre-existing public article assets.
 const kbListMedia = Object.freeze({
+  '/kb/pear-harvest-sorting-cold-storage-five-checks.html': '/static/kb/pear-harvest-sorting-cold-storage-five-checks-infographic.svg',
+  '/kb/autumn-rain-wheat-barley-sowing-checklist.html': '/static/kb/autumn-rain-wheat-barley-sowing-checklist-infographic.svg',
   '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
   '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
   '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
-  '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
+  '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
+  '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
 });
 const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
 const kbIndexCards = kbItems.map((item, index) => {
@@ -233,7 +249,7 @@ const kbIndexCards = kbItems.map((item, index) => {
   }
   const thumb = image ? '<img class="kb-list-thumb" src="' + image +
     '" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">' : '';
-  const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) +
+  const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) + ' · ' + item.date +
     '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
   return '<a class="kb-card' + (image ? '' : ' is-text-only') +
     '" data-topic="' + escapeHtml(kbTopicKey(item.category)) + '" href="' + item.path + '">' + thumb + copy +
@@ -262,19 +278,12 @@ const kbTopicButtons = [['', '전체'], ...kbTopicNames.map(name => [name, name]
 fs.writeFileSync(kbIndexPath, kbIndexWithCards.slice(0, kbTopicsAt) + kbTopicsStart +
   '\n      ' + kbTopicButtons + '\n    ' + kbIndexWithCards.slice(kbTopicsEnd), 'utf8');
 
-// The home lead may use only media already declared by an approved public article.
-// No image is invented for NO_IMAGE content.
-const homeLeadMedia = Object.freeze({
-  '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
-});
-// Keep a local, rights-verified hero early in the editorial home sequence.
-// Articles without a local image remain valid text cards rather than loading a new external image.
-const homeItems = [...kbItems].sort((a, b) =>
-  Number(Boolean(homeLeadMedia[b.path])) - Number(Boolean(homeLeadMedia[a.path])) || b.date.localeCompare(a.date));
+// Home follows the same newest-first registry order and compact thumbnail system.
+const homeItems = [...kbItems];
 const cards = homeItems.slice(0, 4).map(item => {
   const meta = `<small>${escapeHtml(item.category)} · ${item.date}</small>`;
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
-  const image = homeLeadMedia[item.path];
+  const image = kbListMedia[item.path];
   return `<a class="kb-card${image ? '' : ' is-text-only'}" data-topic="${escapeHtml(kbTopicKey(item.category))}" href="${item.path}">${image
     ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">`
     : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
@@ -317,7 +326,7 @@ function applyGlobalShellToHtml(filePath) {
     .replace(/<meta\s+name=["']color-scheme["'][^>]*>/gi, '')
     .replace(/\/?static\/css\/v4-shell\.css\?v=[^"']+/g, shellCssHref)
     .replace(/\/?static\/js\/v4-shell\.js\?v=[^"']+/g, shellJsSrc)
-    .replace(/\/?static\/js\/kb-discovery\.js\?v=[^"']+/g, '/static/js/kb-discovery.js?v=20261029-topics2');
+    .replace(/\/?static\/js\/kb-discovery\.js\?v=[^"']+/g, '/static/js/kb-discovery.js?v=20261029-list3');
   const assets = [];
   if (!/static\/css\/v4-shell\.css/i.test(html)) {
     assets.push(`<link rel="stylesheet" href="${shellCssHref}" data-kfarmai-global-shell="1">`);

@@ -52,6 +52,16 @@ test('shared CSS prevents rounded tool elements and preserves price tab layout',
   assert.ok(!/rgba\([^\n]*gradient\(/.test(css));
 });
 
+test('crop calendar uses compressed representative images and idle prewarming', () => {
+  const calendar=read('crop-calendar.html');
+  const crops=read('static/crop-pages.js');
+  assert.match(crops,/target\.file\.replace\(\/\\\.png\$\/, "\.webp"\)/);
+  assert.match(calendar,/function warmRepresentativeImages\(\)/);
+  assert.match(calendar,/requestIdleCallback\(warm,\{timeout:1200\}\)/);
+  assert.match(calendar,/decoding="async"/);
+  assert.equal(fs.readdirSync(path.join(root,'static/crops')).filter(name=>/-ai\.webp$/.test(name)&&name!=='crop-representative-grid-23-ai.webp').length,23);
+});
+
 test('agricultural information list leaves search on home and uses topic badges', () => {
   const kb=read('kb/index.html');
   const home=read('index.html');
@@ -68,6 +78,12 @@ test('agricultural information list leaves search on home and uses topic badges'
   assert.match(discovery,/selectedCategory/);
   assert.match(discovery,/renderTopics/);
   assert.match(discovery,/includes\('재배노하우'\) \? '재배노하우'/);
+  assert.match(discovery,/meta\.textContent = `\$\{item\.category\} · \$\{item\.date\}`/);
+  assert.ok(kb.includes('과수·수확후관리 · 2026-10-28'));
+  assert.ok(kb.includes('strawberry-winter-light-humidity-check-hero-20261029.webp'));
+  assert.ok(!home.includes('언어 설정'));
+  assert.ok(!home.includes('toggleLanguage()'));
+  assert.ok(!read('static/js/v4-shell.js').includes("['언어 설정'"));
 });
 
 test('global shell provides one fixed text header and routes search to home', () => {
@@ -153,7 +169,9 @@ test('pesticide store search stays fully below the fixed global header', () => {
   assert.ok(map.includes('/static/js/v4-shell.js?v=20261029-header8'));
   assert.match(map,/body\.v4-map-page \.v4-global-action \.v4-nav-icon\{display:block!important;[\s\S]*stroke:currentColor!important/);
   assert.match(map,/id="locateButton"[\s\S]*aria-label="내 위치로 이동"/);
-  assert.match(map,/navigator\.geolocation\.getCurrentPosition/);
+  assert.match(map,/navigator\.geolocation\.watchPosition/);
+  assert.match(map,/maximumAge:0/);
+  assert.match(map,/accuracy <= 30/);
   assert.match(map,/className = 'current-location-dot'/);
   assert.match(map,/kakao\.maps\.CustomOverlay/);
   assert.match(map,/kakaoMap\.setCenter\(position\)/);

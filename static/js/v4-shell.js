@@ -154,7 +154,7 @@
       ['농산물 시세', '/market-prices.html'], ['시설채소 생산실적', '/facility-vegetables.html'], ['주변 농약사', '/agri_map.html'],
       ['재배달력', '/crop-calendar.html'],
     ]],
-    ['설정 · 도움말', [['언어 설정', '/index.html?panel=my'], ['개인정보처리방침', '/oauth/privacy/']]],
+    ['도움말', [['개인정보처리방침', '/oauth/privacy/']]],
   ];
   menu.innerHTML = '<h2 id="v4MenuTitle">전체</h2><div class="v4-menu-groups">' +
     groups.map(([heading, links]) => `<section><h3>${heading}</h3><ul>${links.map(([label, href]) =>
@@ -238,10 +238,10 @@
     if (navigator.connection?.saveData) return;
     const sources = [
       ...cachedFeedImages(),
+      '/static/kb/pear-harvest-sorting-cold-storage-five-checks-infographic.svg',
+      '/static/kb/autumn-rain-wheat-barley-sowing-checklist-infographic.svg',
+      '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
       '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
-      '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
-      '/static/kb/greenhouse-irrigation-precheck-hero.webp',
-      '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
     ];
     for (const src of [...new Set(sources)]) {
       if (warmImages.some(image => image.src === new URL(src, location.href).href)) continue;

@@ -1885,7 +1885,6 @@
         </a>
       </div>
       <div class="header-actions">
-        <button class="lang-toggle" id="langToggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button>
         <button class="header-write-btn" type="button" onclick="openModal('question-help')">질문하기</button>
         <button class="login-top-btn" id="headerLoginBtn" type="button" onclick="safeOpenMyPanel()">로그인/가입</button>
         <div class="bell" id="headerProfile" onclick="safeOpenMyPanel()">
@@ -2234,7 +2233,6 @@
         <div class="my-row clickable" onclick="openMySubview('myBlocksView')"><span>차단한 사용자 관리</span><span class="count" id="myBlockCount">0</span></div>
         <a class="my-row clickable" id="myAdminReports" href="admin-reports.html" hidden><span>신고 관리</span><span>›</span></a>
         <div class="my-row clickable" onclick="openMySubview('myAccountView')"><span>계정 설정</span><span>›</span></div>
-        <div class="my-row"><span>언어 설정</span><button class="lang-toggle" type="button" onclick="toggleLanguage()"><span class="kr active">KR</span><span class="divider">|</span><span class="en">EN</span></button></div>
         <div class="my-row logout" onclick="logout()">로그아웃</div>
       </div>
       <div class="my-subview" id="myAccountView">
@@ -2333,7 +2331,7 @@
 <script src="static/fert_data.js"></script>
 <script src="static/crop-pages.js?v=20260706-regional"></script>
 <script src="static/js/agri-info/agri-feed-ui.js"></script>
-<script src="static/js/kb-discovery.js?v=20261028-topics1" defer></script>
+<script src="static/js/kb-discovery.js?v=20261029-list3" defer></script>
 <script src="static/js/public-data/diagnosis-report-bridge.js"></script>
 <script>
 (function(){
@@ -2651,58 +2649,6 @@ let homeFeedTouchActive = false;
 let pendingHomeFeedUpdates = [];
 const COMMUNITY_FEED_CACHE_KEY = 'kfarmai_public_feed_v2';
 const COMMUNITY_FEED_CACHE_TTL = 5 * 60 * 1000;
-const I18N = {
-  ko: {
-    community: '커뮤니티',
-    diagnosis: 'AI 참고',
-    diagnosisShort: 'AI 참고',
-    agriData: '농업정보',
-    qa: '질문',
-    nearby: '주변',
-    recentQuestions: '방금 올라온 질문',
-    exploreChannels: '커뮤니티 둘러보기',
-    heroTitle: '이상하다 싶을 때,<br/>바로 여기',
-    searchPlaceholder: '식물·작물 증상을 검색해보세요'
-  },
-  en: {
-    community: 'Community',
-    diagnosis: 'AI Diagnosis',
-    diagnosisShort: 'AI Diagnosis',
-    agriData: 'Agri Info',
-    qa: 'Q&A',
-    nearby: 'Nearby',
-    recentQuestions: 'Recent Questions',
-    exploreChannels: 'Explore Community',
-    heroTitle: 'When Something Feels Off,<br/>Start Here',
-    searchPlaceholder: 'Search plant and crop symptoms...'
-  }
-};
-function initLanguage(){
-  const saved = localStorage.getItem('kfarmai_lang') || 'ko';
-  applyLanguage(saved);
-}
-function applyLanguage(lang){
-  const useLang = lang === 'en' ? 'en' : 'ko';
-  localStorage.setItem('kfarmai_lang', useLang);
-  document.documentElement.lang = useLang;
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const key = el.dataset.i18n;
-    if(I18N[useLang][key]) el.innerHTML = I18N[useLang][key];
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
-    const key = el.dataset.i18nPlaceholder;
-    if(I18N[useLang][key]) el.placeholder = I18N[useLang][key];
-  });
-  document.querySelectorAll('.lang-toggle').forEach(btn=>{
-    btn.querySelector('.kr')?.classList.toggle('active', useLang === 'ko');
-    btn.querySelector('.en')?.classList.toggle('active', useLang === 'en');
-  });
-}
-function toggleLanguage(){
-  const next = (localStorage.getItem('kfarmai_lang') || 'ko') === 'ko' ? 'en' : 'ko';
-  applyLanguage(next);
-}
-initLanguage();
 prepareQuestionListShell();
 // Restore shared cards before the auth request so text and cached thumbnails
 // already occupy their final slots when the home tab becomes visible.
