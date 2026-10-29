@@ -83,7 +83,8 @@ test('global shell provides one fixed text header and routes search to home', ()
   assert.match(css,/font: 900 24px/);
   assert.match(css,/\.v4-global-header-inner \{[\s\S]*box-sizing: border-box/);
   assert.match(css,/\.v4-global-header-inner \{[\s\S]*max-width: 100%/);
-  assert.match(css,/\.v4-global-actions \{ display: flex; flex: 0 0 auto/);
+  assert.match(css,/\.v4-global-actions \{[\s\S]*display: flex !important;[\s\S]*flex: 0 0 92px;[\s\S]*min-width: 92px/);
+  assert.match(css,/\.v4-global-action \{[\s\S]*display: inline-flex !important;[\s\S]*flex: 0 0 44px/);
   assert.match(css,/\.v4-legacy-header \{ display: none !important; \}/);
   assert.ok(!channel.includes('id="searchInput"'));
   assert.match(builder,/applyGlobalShellTree\(outputDir\)/);
