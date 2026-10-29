@@ -91,8 +91,8 @@ test('home community section has one visible heading', () => {
   assert.equal((home.match(/class="section-title">커뮤니티<\/div>/g)||[]).length,1);
   assert.ok(!home.includes('커뮤니티 Feed'));
   assert.match(home,/class="community-feed-section" aria-label="커뮤니티 최신 글"/);
-  assert.match(home,/class="section-head question-section-head recent-question-head feed-more-head"/);
-  assert.match(read('static/css/v4-1-main.css'),/\.section-head\.feed-more-head \{ justify-content:flex-end; \}/);
+  assert.doesNotMatch(home,/feed-more-head|index\.html\?view=questions&amp;sort=latest/);
+  assert.match(read('static/css/v4-shell.css'),/body\.v4-global-home \.v4-global-header \{ border-bottom:0; \}/);
 });
 
 test('global shell provides one fixed text header and routes search to home', () => {

@@ -299,6 +299,7 @@ body.v4-global-header-ready .hero > .topbar { display: none !important; }
   box-shadow: none;
   transform: none !important;
 }
+body.v4-global-home .v4-global-header { border-bottom:0; }
 .v4-global-header-inner {
   position: relative;
   display: flex;
