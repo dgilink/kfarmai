@@ -329,6 +329,20 @@ body.v4-global-header-ready.v4-cases-page > .phone > header.header {
 body.v4-global-header-ready.v4-cases-page > .phone > header.header > .top {
   display: none !important;
 }
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header {
+  display: block !important;
+  min-height: 0;
+  padding: 22px 0 14px;
+  border: 0;
+}
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header > .top,
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header > .sub {
+  display: none !important;
+}
+body.v4-global-header-ready.v4-crop-guide-page > .app > header.header > h1 {
+  width: min(calc(100% - 32px), var(--kf-detail-width));
+  margin: 0 auto;
+}
 body.v4-cases-page .headline,
 body.v4-cases-page .top-links,
 body.v4-public-data-page .hero > h1,
