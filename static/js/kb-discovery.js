@@ -28,6 +28,7 @@
     const link = document.createElement('a');
     link.className = 'kb-card';
     link.href = item.path;
+    link.dataset.topic = topicKey(item.category);
     const meta = document.createElement('small');
     meta.textContent = compactList ? item.category : `${item.category} · ${item.date}`;
     const title = document.createElement('strong');
@@ -41,7 +42,8 @@
         image.className = 'kb-list-thumb';
         image.src = item.image;
         image.alt = '';
-        image.loading = 'lazy';
+        image.loading = 'eager';
+        image.fetchPriority = 'high';
         image.decoding = 'async';
         link.append(image);
       } else {

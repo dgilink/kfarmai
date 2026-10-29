@@ -105,6 +105,31 @@ test('weather and market pages keep only compact user-facing information', () =>
   assert.match(market,/class="page-source">출처:/);
   assert.match(market,/market-updated/);
   assert.match(market,/listItems=fallbackItems\.filter/,'market renders stable local rows before API');
+  assert.match(market,/\{name:'전체',initial:''\},\{name:'토마토'/,'market puts all before tomato');
+  assert.match(market,/INITIAL_TYPE==='flower'\?'장미':'전체'/,'market defaults to all items');
+  assert.match(market,/selectedItem==='전체'\?fallbackItems/,'market renders the local all-item list immediately');
+});
+
+test('first paint cache is restored before auth and shared thumbnails are warmed', () => {
+  const home=read('index.html');
+  const channel=read('channel.html');
+  const shell=read('static/js/v4-shell.js');
+  assert.ok(home.indexOf("restoreHomeFeedCache(document.getElementById('recentFeed'))") < home.indexOf('async function initSupabaseApp()'));
+  assert.ok(channel.indexOf('const restoredFeed=restorePublicFeedCache()') < channel.indexOf('await sb.auth.getSession()'));
+  assert.match(shell,/cachedFeedImages/);
+  assert.match(shell,/image\.decode\?\.\(\)/);
+  assert.match(shell,/pointerdown', warmNavigation/);
+});
+
+test('semantic palette separates topics, metadata and tool values', () => {
+  const shellCss=read('static/css/v4-shell.css');
+  const toolCss=read('static/css/v4-tool-pages.css');
+  for (const token of ['--v4-blue','--v4-amber','--v4-purple','--v4-teal']) assert.ok(shellCss.includes(token));
+  assert.match(shellCss,/\.post-tag/);
+  assert.match(shellCss,/\.kb-card\[data-topic="재배노하우"\]/);
+  assert.match(toolCss,/body\.kf-weather \.metric:nth-child/);
+  assert.match(toolCss,/body\.kf-crop #detail \.item:nth-of-type/);
+  assert.match(toolCss,/body\.kf-market \.result-count/);
 });
 
 test('tool pages display full-menu tab as sole active destination', () => {

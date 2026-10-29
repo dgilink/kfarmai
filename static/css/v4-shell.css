@@ -5,6 +5,11 @@
   --v4-canvas: #ffffff;
   --v4-surface: #f4f7f4;
   --v4-green: #126c43;
+  --v4-blue: #245b93;
+  --v4-amber: #8b4b08;
+  --v4-purple: #65479a;
+  --v4-teal: #0f6f67;
+  --v4-rose: #983a5f;
 }
 html { background: #fff; }
 
@@ -83,6 +88,25 @@ body.v4-page button { border-radius: 0; }
 body.v4-page .insight-desc,
 body.v4-page .section-copy { display: none; }
 body.v4-page .topic-tag-list a { border-radius: 0; background: #fff; border-color: var(--v4-line); color: var(--v4-ink); }
+/* Semantic colour roles: navigation/actions stay green; categories, tags,
+   authors and sources use distinct accessible hues instead of one accent. */
+body.v4-page .post-tag,
+body.v4-page .question-list-tag { color: var(--v4-purple); background: #f2edfa; }
+body.v4-page .category-badge { color: var(--v4-amber); background: #fff2df; }
+body.v4-page .post-author,
+body.v4-page .feed-author { color: var(--v4-blue); }
+body.v4-page .q-card .ch-badge + .ch-badge { color: var(--v4-amber); background: #fff2df; }
+body.v4-page .kb-card[data-topic="과수·수확후관리"] small { color: var(--v4-blue); }
+body.v4-page .kb-card[data-topic="재배노하우"] small { color: var(--v4-purple); }
+body.v4-page .kb-card[data-topic="스마트팜"] small { color: var(--v4-teal); }
+body.v4-page .kb-topic:nth-child(2) { color: var(--v4-blue); border-color: #aebfd2; }
+body.v4-page .kb-topic:nth-child(3) { color: var(--v4-amber); border-color: #d8bea1; }
+body.v4-page .kb-topic:nth-child(4) { color: var(--v4-purple); border-color: #c4b5d8; }
+body.v4-page .kb-topic:nth-child(5) { color: var(--v4-teal); border-color: #a9cbc7; }
+body.v4-page .kb-topic:nth-child(2)[aria-pressed="true"] { background: var(--v4-blue); border-color: var(--v4-blue); color: #fff; }
+body.v4-page .kb-topic:nth-child(3)[aria-pressed="true"] { background: var(--v4-amber); border-color: var(--v4-amber); color: #fff; }
+body.v4-page .kb-topic:nth-child(4)[aria-pressed="true"] { background: var(--v4-purple); border-color: var(--v4-purple); color: #fff; }
+body.v4-page .kb-topic:nth-child(5)[aria-pressed="true"] { background: var(--v4-teal); border-color: var(--v4-teal); color: #fff; }
 body.v4-page .identity { background: #fff; border: 0; border-radius: 0; box-shadow: none; padding-block: 8px 16px; }
 body.v4-page .identity-title,
 body.v4-page .identity-text,

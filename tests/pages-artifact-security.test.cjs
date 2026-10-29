@@ -57,7 +57,7 @@ try {
     const end = html.indexOf('</div>', start);
     assert.ok(start > 0 && end > start, 'approved KB listing present');
     const list = html.slice(start, end);
-    const cards = [...list.matchAll(/<a class="kb-card(?: is-text-only)?" href="(\/kb\/[a-z0-9-]+\.html)">([\s\S]*?)<\/a>/g)];
+    const cards = [...list.matchAll(/<a class="kb-card(?: is-text-only)?" data-topic="[^"]+" href="(\/kb\/[a-z0-9-]+\.html)">([\s\S]*?)<\/a>/g)];
     assert.equal(cards.length, items.length, 'all approved registry articles render at first paint');
     for (const [index, [, href, contents]] of cards.entries()) {
       assert.equal(href, items[index].path, 'registry order and link preserved');
@@ -80,9 +80,11 @@ try {
     for (const file of htmlFiles) {
       const html = fs.readFileSync(file, 'utf8');
       if (!/<\/head>/i.test(html)) continue;
-      assert.equal((html.match(/static\/css\/v4-shell\.css\?v=20261029-compact1/g) || []).length, 1, file);
-      assert.equal((html.match(/static\/js\/v4-shell\.js\?v=20261029-compact1/g) || []).length, 1, file);
+      assert.equal((html.match(/static\/css\/v4-shell\.css\?v=20261029-paint1/g) || []).length, 1, file);
+      assert.equal((html.match(/static\/js\/v4-shell\.js\?v=20261029-paint1/g) || []).length, 1, file);
       assert.equal((html.match(/data-v4-global-header/g) || []).length, 1, file);
+      assert.equal((html.match(/data-v4-first-paint/g) || []).length, 1, file);
+      assert.equal((html.match(/name="theme-color" content="#ffffff"/g) || []).length, 1, file);
       assert.match(html,/<body\b[^>]*\bv4-global-header-ready\b/i,file);
     }
     const kb = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');

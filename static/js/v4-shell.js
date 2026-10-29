@@ -190,6 +190,37 @@
   nav.append(menuButton);
   document.body.append(menu, nav);
   const warmTargets = ['/index.html', '/channel.html', '/kb/index.html'];
+  const warmImages = [];
+  const cachedFeedImages = () => {
+    try {
+      const cached = JSON.parse(localStorage.getItem('kfarmai_public_feed_v2') || 'null');
+      if (!Array.isArray(cached?.posts)) return [];
+      return cached.posts.flatMap(post => {
+        const value = post?.image_urls;
+        if (Array.isArray(value)) return value;
+        if (typeof value !== 'string') return [];
+        try { const parsed = JSON.parse(value); return Array.isArray(parsed) ? parsed : [value]; }
+        catch { return [value]; }
+      }).filter(value => /^https?:\/\//.test(String(value))).slice(0, 3);
+    } catch { return []; }
+  };
+  const warmVisibleMedia = () => {
+    if (navigator.connection?.saveData) return;
+    const sources = [
+      ...cachedFeedImages(),
+      '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
+      '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
+    ];
+    for (const src of [...new Set(sources)]) {
+      if (warmImages.some(image => image.src === new URL(src, location.href).href)) continue;
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = src;
+      image.decode?.().catch(() => {});
+      warmImages.push(image);
+    }
+  };
+  window.KFWarmVisibleMedia = warmVisibleMedia;
   const warmNavigation = () => {
     if (navigator.connection?.saveData) return;
     for (const href of warmTargets) {
@@ -201,9 +232,11 @@
       link.as = 'document';
       document.head.append(link);
     }
+    warmVisibleMedia();
   };
   if ('requestIdleCallback' in window) requestIdleCallback(warmNavigation, {timeout:1200});
   else window.setTimeout(warmNavigation, 350);
+  nav.addEventListener('pointerdown', warmNavigation, {passive:true});
 
   const tabIndex = { home: 0, community: 1, knowledge: 2 }[active];
   const swipeIgnoreSelector = [

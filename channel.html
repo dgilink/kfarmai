@@ -508,11 +508,14 @@ async function init(){
   bindAutoResizeTextareas();
   sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
   applyChannels(defaultChannels());
+  // Paint the shared public-feed cache before auth/network work. The session
+  // check may take a visible fraction of a second on mobile, but it must not
+  // leave the list blank while switching tabs.
+  const restoredFeed=restorePublicFeedCache();
   const {data:{session}}=await sb.auth.getSession();
   currentUser=session?.user||null;
   if(currentUser)hydrateCurrentProfile(currentUser);
   blockedUsersReady=refreshBlockedUsers();
-  const restoredFeed=restorePublicFeedCache();
   sb.auth.onAuthStateChange(async (event,session)=>{if(event==='INITIAL_SESSION')return; currentUser=session?.user||null; blockedUsersReady=refreshBlockedUsers(); await blockedUsersReady; if(currentUser){hydrateCurrentProfile(currentUser);closeLoginModal();if(channels.length)await setupComposeDraft(currentUser);}else await setupComposeDraft(null); resetAndLoad();});
   const channelSearch=document.getElementById('searchInput');
   if(channelSearch){
@@ -817,6 +820,7 @@ function publicFeedCacheEligible(channel,search,category,pageOffset){
 function cachePublicFeed(posts,totalCount,profileMap={}){
   try{
     localStorage.setItem(COMMUNITY_FEED_CACHE_KEY,JSON.stringify({savedAt:Date.now(),posts:(posts||[]).slice(0,PAGE_SIZE),totalCount:Number(totalCount||0),profileMap}));
+    window.KFWarmVisibleMedia?.();
   }catch(_){ }
 }
 function restorePublicFeedCache(){
