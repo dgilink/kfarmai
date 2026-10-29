@@ -337,6 +337,22 @@ body.v4-global-header-ready .hero > .topbar { display: none !important; }
   .v4-global-actions { flex-basis: 84px; min-width: 84px; gap: 0; }
   .v4-global-action { flex-basis: 42px; width: 42px; }
 }
+body.v4-narrow-visual-viewport {
+  width: var(--v4-visual-viewport-width) !important;
+  max-width: var(--v4-visual-viewport-width) !important;
+  overflow-x: hidden !important;
+}
+body.v4-narrow-visual-viewport .v4-global-header,
+body.v4-narrow-visual-viewport .v4-nav,
+body.v4-narrow-visual-viewport .v4-menu {
+  right: auto !important;
+  width: var(--v4-visual-viewport-width) !important;
+  max-width: var(--v4-visual-viewport-width) !important;
+}
+body.v4-narrow-visual-viewport .v4-global-header-inner { padding-inline: 8px; }
+body.v4-narrow-visual-viewport .v4-global-brand { font-size: 21px; }
+body.v4-narrow-visual-viewport .v4-global-actions { flex-basis: 84px; min-width: 84px; gap: 0; }
+body.v4-narrow-visual-viewport .v4-global-action { flex-basis: 42px; width: 42px; }
 .v4-global-action {
   display: inline-flex !important;
   flex: 0 0 44px;

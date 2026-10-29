@@ -2,6 +2,16 @@
   'use strict';
   if (document.querySelector('[data-v4-shell-nav]')) return;
   const page = location.pathname;
+  const syncVisualViewportWidth = () => {
+    const visualWidth = Math.round(window.visualViewport?.width || window.innerWidth || 0);
+    const constrain = visualWidth > 0 && visualWidth < 320 && visualWidth < window.innerWidth - 1;
+    document.body.classList.toggle('v4-narrow-visual-viewport', constrain);
+    if (constrain) document.body.style.setProperty('--v4-visual-viewport-width', `${visualWidth}px`);
+    else document.body.style.removeProperty('--v4-visual-viewport-width');
+  };
+  syncVisualViewportWidth();
+  window.visualViewport?.addEventListener('resize', syncVisualViewportWidth);
+  window.addEventListener('resize', syncVisualViewportWidth);
   const topAlignedPages = new Set(['/facility-vegetables.html', '/agri_map.html']);
   if (topAlignedPages.has(page)) {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
