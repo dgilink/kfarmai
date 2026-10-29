@@ -524,6 +524,26 @@ try {
     }
   }
 
+  // Samsung Internet can expose a visual viewport that is slightly narrower
+  // than its layout viewport. The global actions must still occupy the exact
+  // same right-side coordinates on list, tool and map pages.
+  for (const width of [320, 390]) {
+    await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
+    const actionPositions = [];
+    for (const route of ['/kb/index.html', '/facility-vegetables.html', '/agri_map.html']) {
+      await navigate(route);
+      actionPositions.push(await evaluate(`(() => {
+        const actions=[...document.querySelectorAll('.v4-global-action')].map(node=>{const rect=node.getBoundingClientRect();return Math.round((rect.left+rect.right)*10/2)/10});
+        return {route:${JSON.stringify(route)},actions,viewport:Math.round(window.visualViewport?.width||innerWidth)};
+      })()`));
+    }
+    const expected = actionPositions[0].actions;
+    for (const sample of actionPositions) {
+      assert.deepEqual(sample.actions, expected, width+'px shared header action positions '+JSON.stringify(actionPositions));
+      assert.equal(sample.viewport, width, width+'px visual viewport');
+    }
+  }
+
   // The selected crop details must be a single white reading surface. Text
   // rows may use dividers, but no bordered wrapper may contain more cards.
   for (const width of [320, 390, 430]) {
