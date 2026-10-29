@@ -464,12 +464,13 @@ try {
         const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
+        const surfaces=[document.body,document.querySelector('.app'),title,document.querySelector('.content'),...document.querySelectorAll('.content > *')].filter(Boolean);
         return {
           text:brand?.textContent?.trim(),
           font:brand&&getComputedStyle(brand).fontSize,
           title:!!title && title.textContent.trim().length>0,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
-          overflow:document.body.scrollWidth>viewportWidth+1||document.body.getBoundingClientRect().width>viewportWidth+1,
+          overflow:surfaces.some(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}),
           headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=viewportWidth+1&&actions.right<=viewportWidth+1,
           actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=viewportWidth-110&&actions.right>=viewportWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
@@ -586,13 +587,14 @@ try {
         const headerInner=document.querySelector('.v4-global-header-inner')?.getBoundingClientRect();
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
+        const surfaces=[document.body,frame,globalHeader,nav,...document.querySelectorAll('.fixed-map-shell,.list-wrap,.map-panel,.kf-search-bar')].filter(Boolean);
         return {
           detail:document.body.classList.contains('v4-detail-page'),
           h1:!!document.querySelector('h1'),
           titleBelowHeader:!globalHeader||!firstHeading||firstHeading.getBoundingClientRect().top>=globalHeader.getBoundingClientRect().bottom-1,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
-          overflow:document.body.scrollWidth>viewportWidth+1||document.body.getBoundingClientRect().width>viewportWidth+1,
+          overflow:surfaces.some(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}),
           headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=viewportWidth+1&&actions.right<=viewportWidth+1,
           actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=viewportWidth-110&&actions.right>=viewportWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
