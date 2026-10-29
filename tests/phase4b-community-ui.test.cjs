@@ -12,6 +12,7 @@ const post = read('post.html');
 const diagnosis = read('diagnosis.html');
 const model = read('static/js/community/community-model.js');
 const css = read('static/css/community-v3.css');
+const shell = read('static/js/v4-shell.js');
 const migration = read('supabase/migrations/20261002130000_v3_community_feed_metrics.sql');
 const rollback = read('supabase/rollback/20261002130000_v3_community_feed_metrics_down.sql');
 const contract = read('docs/v3-phase4b-community-ui.md');
@@ -33,6 +34,15 @@ test('legacy channels are not primary home navigation', () => {
 test('community feed precedes agricultural summary', () => assert.ok(homeCore.indexOf('community-feed-section') < homeCore.indexOf('home-agri-summary-section')));
 test('home feed offers latest unanswered and helpful', () => {
   for (const sort of ['latest','unanswered','helpful']) assert.match(homeCore, new RegExp(`data-feed-sort="${sort}"`));
+});
+test('home community feed has no duplicate more row', () => {
+  assert.doesNotMatch(homeCore, /feed-more-head|href="index\.html\?view=questions&amp;sort=latest"/);
+});
+test('community naming is consistent in the fixed tab, menu, and page title', () => {
+  assert.match(shell, /\['community', '커뮤니티', '\/channel\.html'\]/);
+  assert.match(shell, /\['질문 · 커뮤니티', \[\['커뮤니티', '\/channel\.html'\]/);
+  assert.match(channel, /<h1 class="v41-page-title">커뮤니티<\/h1>/);
+  assert.doesNotMatch(shell, /\['community', '소통'/);
 });
 test('home has tag exploration', () => {
   assert.match(homeCore, /관심 주제/);
