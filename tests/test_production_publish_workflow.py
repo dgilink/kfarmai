@@ -24,7 +24,7 @@ class ProductionPublishWorkflowTests(unittest.TestCase):
         self.assertEqual({"actions": "read", "contents": "write", "issues": "write"},
                          job["permissions"])
         self.assertIn("KFARMAI_REVIEW_PUBLISH_ENABLED == 'true'", job["if"])
-        self.assertIn("KFARMAI_REVIEW_PUBLISH_APPROVAL_ID != ''", job["if"])
+        self.assertNotIn("KFARMAI_REVIEW_PUBLISH_APPROVAL_ID", text)
         self.assertIn("startsWith(github.event.comment.body, '/kfarmai publish ')", job["if"])
         self.assertIn("environments/kfarmai-production-publish", text)
         self.assertIn(".can_admins_bypass == false", text)

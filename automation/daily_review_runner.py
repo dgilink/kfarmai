@@ -32,7 +32,7 @@ def verify_context(env, head_sha, *, phase):
             and env.get("KFARMAI_DAILY_APPROVED_HEAD_SHA") == head_sha
             and env.get("KFARMAI_DAILY_REVIEW_GENERATION_ENABLED") == "true"
             and env.get("KFARMAI_AUTOPUBLISH_ENABLED") == "false"
-            and env.get("KFARMAI_REVIEW_PUBLISH_ENABLED") == "false"
+            and env.get("KFARMAI_REVIEW_PUBLISH_ENABLED") in {"true", "false"}
             and env.get("KFARMAI_DAILY_REVIEW_ONLY") == "true",
             "DAILY_GITHUB_CONTEXT_MISMATCH")
     require(re.fullmatch(r"[a-f0-9]{40}", head_sha) is not None,

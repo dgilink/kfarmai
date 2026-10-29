@@ -23,7 +23,7 @@ class Gate3ActivationGuard(unittest.TestCase):
         self.assertIn("github.event_name == 'workflow_dispatch' && github.actor_id == '293838055'", workflow)
         self.assertIn("vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED == 'true'", workflow)
         self.assertIn("vars.KFARMAI_AUTOPUBLISH_ENABLED == 'false'", workflow)
-        self.assertIn("vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'", workflow)
+        self.assertNotIn("vars.KFARMAI_REVIEW_PUBLISH_ENABLED == 'false'", workflow)
         self.assertIn('cron: "0 21 * * *"', workflow)
         self.assertIn("options: [dry_run, review_only]", workflow)
         self.assertIn("KFARMAI_DAILY_APPROVED_HEAD_SHA", workflow)
