@@ -86,6 +86,15 @@ test('agricultural information list leaves search on home and uses topic badges'
   assert.ok(!read('static/js/v4-shell.js').includes("['언어 설정'"));
 });
 
+test('home community section has one visible heading', () => {
+  const home=read('index.html');
+  assert.equal((home.match(/class="section-title">커뮤니티<\/div>/g)||[]).length,1);
+  assert.ok(!home.includes('커뮤니티 Feed'));
+  assert.match(home,/class="community-feed-section" aria-label="커뮤니티 최신 글"/);
+  assert.match(home,/class="section-head question-section-head recent-question-head feed-more-head"/);
+  assert.match(read('static/css/v4-1-main.css'),/\.section-head\.feed-more-head \{ justify-content:flex-end; \}/);
+});
+
 test('global shell provides one fixed text header and routes search to home', () => {
   const shell=read('static/js/v4-shell.js');
   const css=read('static/css/v4-shell.css');
