@@ -44,7 +44,6 @@ jobs:
       actions: read
       contents: read
       issues: write
-      id-token: write
     env:
       PYTHONUTF8: "1"
       KFARMAI_DAILY_REVIEW_GENERATION_ENABLED: ${{ vars.KFARMAI_DAILY_REVIEW_GENERATION_ENABLED }}
@@ -53,8 +52,6 @@ jobs:
       KFARMAI_DAILY_REVIEW_ONLY: ${{ vars.KFARMAI_DAILY_REVIEW_ONLY }}
       KFARMAI_DAILY_APPROVED_HEAD_SHA: ${{ vars.KFARMAI_DAILY_APPROVED_HEAD_SHA }}
       KFARMAI_DAILY_RECOVERY: ${{ inputs.recovery || 'none' }}
-      KFARMAI_DAILY_DB_DSN: ${{ secrets.KFARMAI_DAILY_DB_DSN }}
-      KFARMAI_DAILY_DB_CA_PEM: ${{ secrets.KFARMAI_DAILY_DB_CA_PEM }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       GH_TOKEN: ${{ github.token }}
 
@@ -156,28 +153,6 @@ jobs:
             --artifact-zip "$RUNNER_TEMP/daily-artifact.zip" \
             --upload-outputs "$RUNNER_TEMP/daily-upload.json"
 
-      - name: Send bound KFarmAI REVIEW email
-        if: steps.upload.outcome == 'success'
-        shell: bash
-        run: |
-          set -euo pipefail
-          output="$RUNNER_TEMP/daily-review"
-          request="$RUNNER_TEMP/daily-review-email-request.json"
-          response="$RUNNER_TEMP/daily-review-email-response.json"
-          python automation/daily_review_email_dispatch.py \
-            --package "$output/approval-package" \
-            --artifact "$RUNNER_TEMP/daily-artifact.json" \
-            --outcome "$output/outcome.json" \
-            --output "$request"
-          audience='https://xzetqijeucldbfgjuoes.supabase.co/functions/v1/daily-review-approval'
-          oidc="$(curl --fail-with-body --silent --show-error \
-            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${audience}" | jq -er .value)"
-          curl --fail-with-body --silent --show-error \
-            -H "Authorization: Bearer $oidc" -H 'Content-Type: application/json' \
-            --data-binary @"$request" "$audience" > "$response"
-          jq -e '.state == "SENT" and .published == false and (.provider_message_id | type == "string")' "$response" > /dev/null
-
       - name: REVIEW only summary
         if: always() && steps.generate.outcome == 'success'
         shell: bash
@@ -189,7 +164,7 @@ jobs:
           if p.is_file():
               x=json.loads(p.read_text())
               print('## KFarmAI Daily REVIEW')
-              for key in ('status','title','approval_id','manifest_sha256','artifact_id','issue_url','estimated_cost_microusd'):
+              for key in ('status','title','approval_id','manifest_sha256','artifact_id','issue_url','review_channel','estimated_cost_microusd'):
                   if x.get(key) is not None:
                       print(f'- {key}: {x[key]}')
               print('- published: false')

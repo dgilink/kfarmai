@@ -29,8 +29,11 @@ class Gate3ActivationGuard(unittest.TestCase):
         self.assertIn("KFARMAI_DAILY_APPROVED_HEAD_SHA", workflow)
         self.assertIn("daily_review_runner.py generate", workflow)
         self.assertIn("daily_review_runner.py finalize", workflow)
-        self.assertIn("daily_review_email_dispatch.py", workflow)
-        self.assertIn("id-token: write", workflow)
+        self.assertIn("issues: write", workflow)
+        self.assertNotIn("daily_review_email_dispatch.py", workflow)
+        self.assertNotIn("id-token: write", workflow)
+        self.assertNotIn("KFARMAI_DAILY_DB_DSN", workflow)
+        self.assertNotIn("daily-review-approval", workflow)
         self.assertNotIn("git push", workflow)
 
     def test_legacy_paid_transport_stays_disabled(self):
