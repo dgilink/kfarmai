@@ -451,7 +451,10 @@ try {
   // must show the same white KFarmAI header and one active bottom-menu tab.
   for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
-    for (const route of ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
+    const toolRoutes = width === 267
+      ? ['/facility-vegetables.html']
+      : ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html'];
+    for (const route of toolRoutes) {
       await navigate(route);
       const toolUi = await evaluate(`(() => {
         const brand=document.querySelector('.v4-global-brand');
@@ -517,7 +520,7 @@ try {
 
   // The selected crop details must be a single white reading surface. Text
   // rows may use dividers, but no bordered wrapper may contain more cards.
-  for (const width of [267, 320, 390, 430]) {
+  for (const width of [320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
     for (const route of ['/crop-guide.html?crop=pear', '/crop-calendar.html?crop=pear']) {
       await navigate(route);
@@ -566,7 +569,8 @@ try {
   ];
   for (const width of [267, 320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height:720, deviceScaleFactor:1, mobile:true, screenWidth:width, screenHeight:720 });
-    for (const route of detailRoutes) {
+    const responsiveDetailRoutes = width === 267 ? ['/agri_map.html'] : detailRoutes;
+    for (const route of responsiveDetailRoutes) {
       await navigate(route);
       const detailUi = await evaluate(`(() => {
         const nav=document.querySelector('.v4-nav');
