@@ -27,6 +27,17 @@ body.v4-detail-page {
   overscroll-behavior-y: auto !important;
 }
 
+/* The Pages artifact injects a fixed global header after the source files are
+   built. Keep the first detail-page content below that header instead of
+   resetting the shell offset back to zero. */
+body.v4-detail-page.v4-global-header-ready {
+  padding-top: var(--v4-global-header-height, 60px) !important;
+}
+
+body.v4-detail-page [id] {
+  scroll-margin-top: calc(var(--v4-global-header-height, 60px) + 12px);
+}
+
 body.v4-detail-page > .phone,
 body.v4-detail-page > .app,
 body.v4-detail-page > main.phone,

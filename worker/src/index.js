@@ -75,6 +75,10 @@ export default {
         return handleKamisPriceSummary(url, env, cors);
       }
 
+      if (url.pathname === '/api/kamis/market-overview') {
+        return handleKamisMarketOverview(url, env, cors);
+      }
+
       if (url.pathname === '/api/kamis/price-trend') {
         return handleKamisPriceTrend(url, env, cors);
       }
@@ -323,6 +327,42 @@ async function handleKamisPriceSummary(url, env, cors) {
       status: error?.status || null
     });
     return json(priceSummaryFallback(item, LOCAL_MARKET_FALLBACK_SOURCE_DATE, requestedType, reason, fetchedAt), 200, cors, NO_STORE);
+  }
+}
+
+async function handleKamisMarketOverview(url, env, cors) {
+  const date = cleanDate(url.searchParams.get('date')) || todayKst();
+  const limit = Math.min(80, Math.max(1, Number.parseInt(url.searchParams.get('limit') || '40', 10) || 40));
+  const fetchedAt = new Date().toISOString();
+
+  try {
+    const kamis = await fetchKamisDailySalesList(env, '', date);
+    if (kamis.fallback) throw Object.assign(new Error(kamis.reason || 'kamis_overview_fallback'), { code: kamis.reason });
+    const items = buildMarketOverviewItems(kamis.items, date, limit);
+    if (!items.length) throw new Error('kamis_overview_empty_items');
+    const sourceDate = sourceDateFromItems(items) || kamis.sourceDate || date;
+    return json({
+      ok: true,
+      source: 'KAMIS',
+      sourceDate,
+      fetchedAt,
+      fallback: false,
+      items: items.map(item => ({ ...item, sourceDate: item.sourceDate || sourceDate })),
+      notice: SAFE_MARKET_NOTICE
+    }, 200, cors, KAMIS_SUCCESS_CACHE);
+  } catch (error) {
+    const reason = normalizeKamisErrorReason(error);
+    console.error('kamis_market_overview_failed', { reason, requestedDate: date, status: error?.status || null });
+    return json({
+      ok: false,
+      source: 'local_fallback',
+      sourceDate: LOCAL_MARKET_FALLBACK_SOURCE_DATE,
+      fetchedAt,
+      fallback: true,
+      reason,
+      items: [],
+      notice: '최신 전체 품목 시세를 불러오지 못했습니다. 품목별 조회 또는 공식 정보를 확인하세요.'
+    }, 200, cors, NO_STORE);
   }
 }
 
@@ -940,7 +980,7 @@ function normalizeKamisItems(payload, itemQuery, date) {
       return {
         item,
         market: pick(row, ['market_name', 'marketName', 'market', 'countyname', 'product_cls_name', '시장명'], '공공 시세'),
-        date: pick(row, ['lastest_day', 'day1', 'regday', 'date', 'yyyy', '조사일자'], date),
+        date: pick(row, ['lastest_date', 'lastest_day', 'day1', 'regday', 'date', 'yyyy', '조사일자'], date),
         unit: pick(row, ['unit', 'unit_name', 'unitName', '단위'], '확인 필요'),
         price: toNullableNumber(pick(row, ['dpr1', 'price', 'dpr2', 'avg_price', '가격'], null)),
         memo: '시장 흐름 참고자료입니다.',
@@ -948,6 +988,26 @@ function normalizeKamisItems(payload, itemQuery, date) {
       };
     })
     .filter(row => matchesText(row.item, itemQuery));
+}
+
+function buildMarketOverviewItems(kamisItems, date, limit) {
+  const priced = (kamisItems || []).filter(row => row.item && Number.isFinite(row.price));
+  const retail = priced.filter(row => {
+    const text = [row.type, row.market].join(' ').toLowerCase();
+    return text.includes('소매') || text.includes('retail') || text.includes('01');
+  });
+  const source = retail.length ? retail : priced;
+  const seen = new Set();
+  return source
+    .filter(row => {
+      const key = String(row.item || '').trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .map(row => normalizePriceTypeItem('retail', row, row.item, date, false))
+    .sort((a, b) => String(a.itemName).localeCompare(String(b.itemName), 'ko'))
+    .slice(0, limit);
 }
 
 function buildPriceSummaryItems(item, date, kamisItems, fallback) {

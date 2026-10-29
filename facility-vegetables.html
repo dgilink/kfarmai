@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<title>시설채소 생산실적 - kFarmAI</title>
+<meta name="description" content="품목·통계연도별 시설채소 재배면적과 생산량을 확인하는 kFarmAI 농업정보 화면입니다.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://kfarmai.com/facility-vegetables.html">
+<link rel="icon" href="/static/kfarmai-logo-horizontal.png">
+<link rel="stylesheet" href="/static/css/v4-shell.css?v=20261028-menu1">
+<link rel="stylesheet" href="/static/css/v4-tool-pages.css?v=20261029-compact1">
+<script src="/static/js/v4-shell.js?v=20261028-menu1" defer></script>
+<style>
+body.kf-facility .filter-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+body.kf-facility .year-select{min-height:44px;padding:0 36px 0 12px;border:1px solid #d9e0da;background:#fff;color:#17202a;font:800 14px/1.2 inherit}
+body.kf-facility .facility-status{min-height:34px;display:flex;align-items:center;border-bottom:1px solid #d9e0da;color:#596660;font-size:12px;font-weight:800}
+body.kf-facility .facility-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:11px 0;border-bottom:1px solid #d9e0da;background:#fff}
+body.kf-facility .facility-row h2{margin:0;font-size:15px;line-height:1.3;color:#17202a}
+body.kf-facility .facility-row .region{color:#315b9d;font-size:11px;font-weight:800}
+body.kf-facility .facility-row .year{grid-column:2;grid-row:1/3;color:#596660;font-size:11px;font-weight:800;text-align:right}
+body.kf-facility .metrics{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:5px;background:#d9e0da;border:1px solid #d9e0da}
+body.kf-facility .metric{min-width:0;padding:8px;background:#fff}
+body.kf-facility .metric span{display:block;color:#596660;font-size:10px;font-weight:800}
+body.kf-facility .metric strong{display:block;margin-top:2px;color:#126c43;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.kf-facility .empty{padding:18px 0;border-bottom:1px solid #d9e0da;color:#596660;font-size:13px;line-height:1.55}
+body.kf-facility .source-link{display:inline-flex;min-height:40px;align-items:center;margin-top:12px;color:#315b9d;font-size:12px;font-weight:900;text-decoration:none}
+@media(max-width:390px){body.kf-facility .metrics{grid-template-columns:1fr 1fr}body.kf-facility .metric:last-child{grid-column:1/-1}}
+</style>
+</head>
+<body class="v4-page kf-tool-page kf-facility">
+<main class="app">
+  <header class="header"><div class="top"><a class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a></div></header>
+  <h1 class="kf-tool-title">시설채소 생산실적</h1>
+  <section class="content">
+    <div class="filter-row">
+      <div class="chip-wrap"><div id="itemChips" class="chips" aria-label="시설채소 품목"></div></div>
+      <select id="year" class="year-select" aria-label="통계연도"></select>
+    </div>
+    <div id="status" class="facility-status" aria-live="polite">공식 통계 확인 중</div>
+    <div class="section-title">조회 결과 <span id="resultCount" class="result-count"></span></div>
+    <div id="results" aria-live="polite"></div>
+    <a class="source-link" href="https://data.mafra.go.kr/" target="_blank" rel="noopener noreferrer">출처: 농림축산식품 공공데이터포털</a>
+  </section>
+</main>
+<script>
+'use strict';
+const ITEMS=['전체','토마토','오이','파프리카','애호박','가지'];
+const API_BASE=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'https://kfarmai.com':location.origin;
+const chips=document.getElementById('itemChips');
+const yearEl=document.getElementById('year');
+const statusEl=document.getElementById('status');
+const resultsEl=document.getElementById('results');
+const countEl=document.getElementById('resultCount');
+let selectedItem='전체';
+function esc(value){return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
+function renderChips(){chips.innerHTML=ITEMS.map(item=>`<button class="chip ${item===selectedItem?'active':''}" type="button" data-item="${esc(item)}">${esc(item)}</button>`).join('');chips.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{selectedItem=button.dataset.item;renderChips();load();}));}
+function renderYears(){const current=new Date().getFullYear();const years=[];for(let year=current;year>=2013;year-=1)years.push(year);yearEl.innerHTML='<option value="">최신 연도</option>'+years.map(year=>`<option value="${year}">${year}년</option>`).join('');}
+function numberText(value,unit){const number=Number(String(value??'').replace(/,/g,''));return Number.isFinite(number)&&String(value??'').trim()!==''?`${number.toLocaleString('ko-KR')} ${unit}`:'확인 필요';}
+function render(items){countEl.textContent=items.length?`${items.length}건`:'';if(!items.length){resultsEl.innerHTML='<div class="empty">표시할 공식 통계가 없습니다. 품목·연도를 바꾸거나 공식 제공처를 확인해주세요.</div>';return;}resultsEl.innerHTML=items.map(item=>`<article class="facility-row"><div><h2>${esc(item.item||'시설채소')}</h2><div class="region">${esc(item.region||'전국')}</div></div><div class="year">${esc(item.year||yearEl.value)}년</div><div class="metrics"><div class="metric"><span>재배면적</span><strong>${esc(numberText(item.area,'ha'))}</strong></div><div class="metric"><span>생산량</span><strong>${esc(numberText(item.production,'톤'))}</strong></div><div class="metric"><span>단수</span><strong>${esc(numberText(item.yield,'kg'))}</strong></div></div></article>`).join('');}
+async function load(){const requestedYear=yearEl.value;const yearLabel=requestedYear?`${requestedYear}년`:'최신 연도';statusEl.textContent='공식 통계 확인 중';statusEl.setAttribute('aria-busy','true');try{const url=new URL('/api/mafra/facility-vegetables',API_BASE);if(selectedItem!=='전체')url.searchParams.set('item',selectedItem);if(requestedYear)url.searchParams.set('year',requestedYear);const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error('facility_http');const data=await response.json();const items=Array.isArray(data.items)?data.items:[];if(data.fallback||!items.length){statusEl.textContent=`${yearLabel} · 공식 통계 확인 필요`;render([]);}else{const resolvedYear=items[0]?.year?`${items[0].year}년`:yearLabel;statusEl.textContent=`${resolvedYear} · 업데이트 완료`;render(items);}}catch(error){statusEl.textContent=`${yearLabel} · 공식 통계 확인 필요`;render([]);}finally{statusEl.removeAttribute('aria-busy');}}
+yearEl.addEventListener('change',load);
+renderYears();renderChips();load();
+</script>
+</body>
+</html>

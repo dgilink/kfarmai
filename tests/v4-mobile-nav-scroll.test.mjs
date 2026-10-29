@@ -451,7 +451,7 @@ try {
   // must show the same white KFarmAI header and one active bottom-menu tab.
   for (const width of [320, 390, 430]) {
     await socket.send('Emulation.setDeviceMetricsOverride', { width, height: 720, deviceScaleFactor: 1, mobile: true, screenWidth: width, screenHeight: 720 });
-    for (const route of ['/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
+    for (const route of ['/agri-weather.html', '/market-prices.html', '/facility-vegetables.html', '/crop-calendar.html', '/subsidy-calendar.html']) {
       await navigate(route);
       const toolUi = await evaluate(`(() => {
         const brand=document.querySelector('.v4-global-brand');
@@ -565,6 +565,8 @@ try {
       await navigate(route);
       const detailUi = await evaluate(`(() => {
         const nav=document.querySelector('.v4-nav');
+        const globalHeader=document.querySelector('.v4-global-header');
+        const firstHeading=document.querySelector('h1');
         const frame=document.querySelector('body.v4-detail-page > .phone,body.v4-detail-page > .app,body.v4-detail-page > main.phone,body.v4-detail-page > main.app,body.v4-detail-page > main.page');
         const footer=document.querySelector('footer,.agri-v3-footer,.site-footer');
         const controls=[...document.querySelectorAll('input:not([type=hidden]),select,textarea,button:not(.v4-nav button)')].slice(0,8);
@@ -572,6 +574,7 @@ try {
         return {
           detail:document.body.classList.contains('v4-detail-page'),
           h1:!!document.querySelector('h1'),
+          titleBelowHeader:!globalHeader||!firstHeading||firstHeading.getBoundingClientRect().top>=globalHeader.getBoundingClientRect().bottom-1,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
           overflow:document.documentElement.scrollWidth>innerWidth+1,
@@ -583,7 +586,7 @@ try {
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
         };
       })()`);
-      assert.deepEqual(detailUi, {detail:true,h1:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot,{recursive:true});
@@ -600,6 +603,7 @@ try {
   const internalScenarios = [
     ['/agri-weather.html', `document.querySelectorAll('#areaChips .chip')[1]?.click();document.querySelectorAll('#typeChips .chip')[1]?.click();cropOptions.open=true;document.querySelector('#cropList .crop-chip')?.click()`],
     ['/market-prices.html', `document.querySelectorAll('#typeTabs button.tab')[1]?.click();document.querySelector('#chips .chip')?.click()`],
+    ['/facility-vegetables.html', `document.querySelectorAll('#itemChips .chip')[1]?.click();year.selectedIndex=Math.min(1,year.options.length-1);year.dispatchEvent(new Event('change',{bubbles:true}))`],
     ['/subsidy-calendar.html', `regionFilter.selectedIndex=Math.min(1,regionFilter.options.length-1);regionFilter.dispatchEvent(new Event('change',{bubbles:true}));resetButton.click()`],
     ['/public-data.html', `document.querySelector('#exampleChips .chip')?.click()`],
     ['/diagnosis.html', `diagExtra.open=true;symptomInput.value='잎이 노랗게 변함';symptomInput.dispatchEvent(new Event('input',{bubbles:true}))`],
@@ -633,7 +637,7 @@ try {
   await navigate('/index.html');
   await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
   const allMenuTargets=await evaluate("[...document.querySelectorAll('#v4AllMenu a')].map(a=>({label:a.textContent.trim(),target:new URL(a.href).pathname+new URL(a.href).search}))");
-  assert.equal(allMenuTargets.length, 13, 'all menu exposes thirteen detail links');
+  assert.equal(allMenuTargets.length, 14, 'all menu exposes fourteen detail links');
   for (let index=0;index<allMenuTargets.length;index+=1) {
     await navigate('/index.html');
     await evaluate("document.querySelector('.v4-nav button[aria-controls=v4AllMenu]').click()");
