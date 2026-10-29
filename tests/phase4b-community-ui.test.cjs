@@ -38,7 +38,10 @@ test('home has tag exploration', () => {
   assert.match(homeCore, /관심 주제/);
   assert.ok((homeCore.match(/view=questions&amp;tag=|view=questions&tag=/g) || []).length >= 6);
 });
-test('home has primary write call to action', () => assert.match(homeCore, /openModal\('question-help'\)[\s\S]{0,80}질문하기/));
+test('home omits duplicate shortcut cards and legacy write entry', () => {
+  assert.doesNotMatch(homeCore, /v4-quick-actions|openModal\('question-help'\)/);
+  assert.doesNotMatch(index.match(/<div class="header-actions">[\s\S]*?<\/div>\s*<form/)?.[0] || '', /header-write-btn/);
+});
 test('home AI and agricultural info are compact secondary entries', () => {
   assert.match(homeCore, /ai-compact-card/);
   assert.match(homeCore, /오늘의 농업정보/);

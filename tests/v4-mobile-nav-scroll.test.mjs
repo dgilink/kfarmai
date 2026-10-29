@@ -740,12 +740,7 @@ try {
 
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
   await navigate('/index.html');
-  await evaluate("openModal('question-help')");
-  await delay(250);
-  assert.ok(await evaluate("document.querySelector('.modal-overlay.open')!==null"), 'home compose modal opens');
-  await ignoredHorizontalSwipe('#postContent');
-  assert.equal(await evaluate('location.pathname'), '/index.html', 'modal editing swipe ignored');
-  await evaluate("document.querySelector('.modal-overlay.open')?.classList.remove('open'); document.body.style.removeProperty('overflow')");
+  assert.deepEqual(await evaluate(`({legacyActions:document.querySelectorAll('.header-write-btn,.v4-quick-actions').length,quickLinks:document.querySelectorAll('.v4-quick-actions a').length})`), {legacyActions:0,quickLinks:0}, 'home has no duplicate shortcut cards or legacy composer entry');
   await navigate('/channel.html');
   await evaluate('openWriteFlow()');
   await delay(250);
