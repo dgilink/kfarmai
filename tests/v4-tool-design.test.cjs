@@ -126,6 +126,13 @@ test('facility page shows the verified 2024 official snapshot without empty fake
   assert.ok(!facility.includes('최신 연도'));
   assert.ok(!facility.includes('공식 통계 확인 필요'));
   assert.ok(!facility.includes('/api/mafra/facility-vegetables'));
+  assert.match(facility,/@media\(max-width:480px\)\{body\.kf-facility \.kf-tool-title\{padding-top:16px;font-size:26px!important\}/);
+});
+
+test('pesticide store search stays fully below the fixed global header', () => {
+  const map=read('agri_map.html');
+  assert.match(map,/body\.v4-map-page \.kf-search-bar \{[\s\S]*top:var\(--v4-global-header-height,60px\)/);
+  assert.match(map,/body\.v4-map-page \.kf-search-bar \{[\s\S]*border-top:1px solid #e8e8e8/);
 });
 
 test('first paint cache is restored before auth and shared thumbnails are warmed', () => {
