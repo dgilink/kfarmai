@@ -493,9 +493,12 @@ try {
           duplicate:!!document.getElementById('fallbackList'),
           verbose:/KAMIS 최근 조사자료|많이 확인하는 품목 참고|시장 흐름 참고자료입니다/.test(document.body.innerText),
           updated:/업데이트/.test(document.getElementById('status').innerText),
-          rows:document.querySelectorAll('#list .price-card').length
+          rows:document.querySelectorAll('#list .price-card').length,
+          firstChip:document.querySelector('#chips .chip')?.textContent.trim(),
+          firstActive:document.querySelector('#chips .chip')?.classList.contains('active'),
+          emptyQuery:document.getElementById('q').value===''
         }))()`);
-        assert.ok(compactMarket.sources===1&&!compactMarket.duplicate&&!compactMarket.verbose&&compactMarket.updated&&compactMarket.rows>=1,route+' '+width+'px compact market contract '+JSON.stringify(compactMarket));
+        assert.ok(compactMarket.sources===1&&!compactMarket.duplicate&&!compactMarket.verbose&&compactMarket.updated&&compactMarket.rows>=3&&compactMarket.firstChip==='전체'&&compactMarket.firstActive&&compactMarket.emptyQuery,route+' '+width+'px compact market contract '+JSON.stringify(compactMarket));
       }
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);

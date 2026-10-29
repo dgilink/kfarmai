@@ -2704,6 +2704,9 @@ function toggleLanguage(){
 }
 initLanguage();
 prepareQuestionListShell();
+// Restore shared cards before the auth request so text and cached thumbnails
+// already occupy their final slots when the home tab becomes visible.
+restoreHomeFeedCache(document.getElementById('recentFeed'));
 async function initSupabaseApp(){
   await hydrateCommunityCategorySelect();
   const {data:{session}}=await _sb.auth.getSession();
@@ -3506,7 +3509,7 @@ async function loadFeed(sort=homeFeedSort){
   }
 }
 function cacheHomeFeed(posts,profileMap={}){
-  try{localStorage.setItem(COMMUNITY_FEED_CACHE_KEY,JSON.stringify({savedAt:Date.now(),posts:(posts||[]).slice(0,6),totalCount:Number((posts||[]).length),profileMap}));}catch(_){}
+  try{localStorage.setItem(COMMUNITY_FEED_CACHE_KEY,JSON.stringify({savedAt:Date.now(),posts:(posts||[]).slice(0,6),totalCount:Number((posts||[]).length),profileMap}));window.KFWarmVisibleMedia?.();}catch(_){}
 }
 function restoreHomeFeedCache(feed){
   try{

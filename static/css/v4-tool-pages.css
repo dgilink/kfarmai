@@ -1,5 +1,5 @@
 /* KFarmAI V4.1 tool-page presentation. Data and interactions are unchanged. */
-:root { --kf-ink:#17202a; --kf-muted:#596660; --kf-green:#126c43; --kf-line:#d9e0da; }
+:root { --kf-ink:#17202a; --kf-muted:#596660; --kf-green:#126c43; --kf-blue:#245b93; --kf-amber:#8b4b08; --kf-purple:#65479a; --kf-teal:#0f6f67; --kf-rose:#983a5f; --kf-line:#d9e0da; }
 html { background:#fff; }
 body.kf-tool-page { margin:0; min-width:320px; background:#fff; color:var(--kf-ink); font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif; }
 body.kf-tool-page .app { width:100%; max-width:none; min-height:100dvh; margin:0; border:0; border-radius:0; box-shadow:none; background:#fff; }
@@ -88,10 +88,21 @@ body.kf-market .tab { width:100%; white-space:normal; min-width:0; }
 body.kf-market .tab:not(.active) { border-color:var(--kf-line); background:#fff; color:var(--kf-ink); }
 body.kf-market .price-card { width:100%; min-width:0; }
 body.kf-market .pill { background:#fff; color:var(--kf-green); }
+body.kf-market .section-title { color:var(--kf-ink); }
+body.kf-market .result-count { color:var(--kf-purple); }
+body.kf-market .price-kind { color:var(--kf-blue); }
 body.kf-market .swipe-hint { display:none; }
 body.kf-subsidy .filters { grid-template-columns:minmax(0,1fr); }
 body.kf-subsidy .reset { background:#fff; color:var(--kf-green); border:1px solid var(--kf-line); }
 body.kf-subsidy .badge { background:#fff; border:1px solid var(--kf-line); color:var(--kf-green); }
+body.kf-subsidy .badge.blue { color:var(--kf-blue); }
+body.kf-subsidy .badge.orange { color:var(--kf-amber); }
+body.kf-subsidy .badge.gray { color:var(--kf-purple); }
+body.kf-subsidy .subsidy-card .title { color:var(--kf-ink); }
+body.kf-subsidy .subsidy-card .label:nth-of-type(4n+1) { color:var(--kf-blue); }
+body.kf-subsidy .subsidy-card .label:nth-of-type(4n+2) { color:var(--kf-amber); }
+body.kf-subsidy .subsidy-card .label:nth-of-type(4n+3) { color:var(--kf-purple); }
+body.kf-subsidy .subsidy-card .label:nth-of-type(4n) { color:var(--kf-teal); }
 body.kf-crop .representative-image img { border-radius:0; }
 body.kf-crop .crop-card { border-radius:0; box-shadow:none; }
 body.kf-crop .crop-icon { border-radius:0; background:transparent; }
@@ -132,6 +143,12 @@ body.kf-crop #detail .stage-step-image figcaption { padding:8px 0 0; text-align:
 body.kf-crop #detail .representative-image { margin-inline:0; }
 body.kf-crop #detail .representative-image img,
 body.kf-crop #detail .stage-image img { border:0; }
+body.kf-crop #detail .section-title { color:var(--kf-blue); }
+body.kf-crop #detail .item:nth-of-type(4n+1) > b { color:var(--kf-blue); }
+body.kf-crop #detail .item:nth-of-type(4n+2) > b { color:var(--kf-amber); }
+body.kf-crop #detail .item:nth-of-type(4n+3) > b { color:var(--kf-purple); }
+body.kf-crop #detail .item:nth-of-type(4n) > b { color:var(--kf-teal); }
+body.kf-crop #detail .month b { color:var(--kf-purple); }
 @media (min-width:600px) {
   body.kf-subsidy .filters { grid-template-columns:repeat(3,minmax(0,1fr)); }
   body.kf-market .tabs { grid-template-columns:repeat(3,minmax(0,1fr)); }
@@ -176,6 +193,10 @@ body.kf-weather .summary:not(.safe),
 body.kf-weather .point p,
 body.kf-weather .source-card p { display:none !important; }
 body.kf-weather .metric { padding: 10px; }
+body.kf-weather .label { color:var(--kf-blue); }
+body.kf-weather .metric:nth-child(3n+1) b { color:var(--kf-blue); }
+body.kf-weather .metric:nth-child(3n+2) b { color:var(--kf-teal); }
+body.kf-weather .metric:nth-child(3n) b { color:var(--kf-amber); }
 body.kf-weather .weather-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 body.kf-weather .work-card,
 body.kf-weather .point,

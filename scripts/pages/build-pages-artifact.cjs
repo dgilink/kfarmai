@@ -8,7 +8,8 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const shellVersion = '20261029-compact1';
+const shellVersion = '20261029-paint1';
+const firstPaintHead = '<meta name="theme-color" content="#ffffff" data-v4-theme="light"><meta name="color-scheme" content="light"><style data-v4-first-paint>html,body{background:#fff!important;color-scheme:light}body.v4-global-header-ready{min-width:320px}</style>';
 const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
@@ -224,18 +225,18 @@ const kbListMedia = Object.freeze({
   '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
   '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
 });
+const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
 const kbIndexCards = kbItems.map((item, index) => {
   const image = kbListMedia[item.path];
   if (image && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
     throw new Error('Approved KB list image missing: ' + image);
   }
   const thumb = image ? '<img class="kb-list-thumb" src="' + image +
-    '" alt="" width="92" height="62" loading="' + (index < 2 ? 'eager' : 'lazy') +
-    '"' + (index < 2 ? ' fetchpriority="high"' : '') + ' decoding="async">' : '';
+    '" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">' : '';
   const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) +
     '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
   return '<a class="kb-card' + (image ? '' : ' is-text-only') +
-    '" href="' + item.path + '">' + thumb + copy +
+    '" data-topic="' + escapeHtml(kbTopicKey(item.category)) + '" href="' + item.path + '">' + thumb + copy +
     '<span class="kb-list-arrow" aria-hidden="true">›</span></a>';
 }).join('\n      ');
 const kbIndexStaticStart = kbIndexStart.slice(0, -1) + ' data-kb-static="1">';
@@ -253,7 +254,6 @@ if (kbTopicsAt < 0 || kbIndexWithCards.indexOf(kbTopicsStart, kbTopicsAt + kbTop
 }
 const kbTopicsEnd = kbIndexWithCards.indexOf('</div>', kbTopicsAt + kbTopicsStart.length);
 if (kbTopicsEnd < 0) throw new Error('KB topic badge boundary is incomplete.');
-const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
 const kbTopicNames = [...new Set(kbItems.map(item => kbTopicKey(item.category)).filter(Boolean))].sort();
 const kbTopicButtons = [['', '전체'], ...kbTopicNames.map(name => [name, name])]
   .map(([value, label], index) => '<button class="kb-topic" type="button" data-category="' +
@@ -275,8 +275,8 @@ const cards = homeItems.slice(0, 4).map(item => {
   const meta = `<small>${escapeHtml(item.category)} · ${item.date}</small>`;
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
   const image = homeLeadMedia[item.path];
-  return `<a class="kb-card${image ? '' : ' is-text-only'}" href="${item.path}">${image
-    ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="async">`
+  return `<a class="kb-card${image ? '' : ' is-text-only'}" data-topic="${escapeHtml(kbTopicKey(item.category))}" href="${item.path}">${image
+    ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">`
     : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
 }).join('');
 fs.writeFileSync(homePath,
@@ -313,6 +313,8 @@ function applyGlobalShellToHtml(filePath) {
   // documents or screens and must remain byte-minimal.
   if (!/<\/head>/i.test(html)) return;
   html = html
+    .replace(/<meta\s+name=["']theme-color["'][^>]*>/gi, '')
+    .replace(/<meta\s+name=["']color-scheme["'][^>]*>/gi, '')
     .replace(/\/?static\/css\/v4-shell\.css\?v=[^"']+/g, shellCssHref)
     .replace(/\/?static\/js\/v4-shell\.js\?v=[^"']+/g, shellJsSrc)
     .replace(/\/?static\/js\/kb-discovery\.js\?v=[^"']+/g, '/static/js/kb-discovery.js?v=20261029-topics2');
@@ -323,7 +325,7 @@ function applyGlobalShellToHtml(filePath) {
   if (!/static\/js\/v4-shell\.js/i.test(html)) {
     assets.push(`<script src="${shellJsSrc}" defer data-kfarmai-global-shell="1"></script>`);
   }
-  if (assets.length) html = html.replace(/<\/head>/i, assets.join('') + '</head>');
+  html = html.replace(/<\/head>/i, firstPaintHead + assets.join('') + '</head>');
   if (!/data-v4-global-header/i.test(html)) {
     const relativePath = path.relative(outputDir, filePath).split(path.sep).join('/');
     const isHome = relativePath === 'index.html';
