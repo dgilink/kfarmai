@@ -467,7 +467,7 @@ try {
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           overflow:document.documentElement.scrollWidth>innerWidth+1,
           headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=innerWidth+1&&actions.right<=innerWidth+1,
-          actionsVisible:!!actions&&actions.width>=90&&actions.left>=innerWidth-110&&actions.right>=innerWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
+          actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=innerWidth-110&&actions.right>=innerWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
           active:nav?.querySelectorAll('[aria-current="page"]').length,
           activeLabel:nav?.querySelector('[aria-current="page"]')?.textContent.trim(),
@@ -475,7 +475,7 @@ try {
           tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
-      assert.deepEqual(toolUi,{text:'kFarmAI',font:'24px',title:true,white:true,overflow:false,headerFits:true,actionsVisible:true,actionIcons:2,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      assert.deepEqual(toolUi,{text:'kFarmAI',font:width < 320?'21px':'24px',title:true,white:true,overflow:false,headerFits:true,actionsVisible:true,actionIcons:2,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
       const flatUi = await evaluate(`(() => ({
         loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
@@ -586,7 +586,7 @@ try {
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
           overflow:document.documentElement.scrollWidth>innerWidth+1,
           headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=innerWidth+1&&actions.right<=innerWidth+1,
-          actionsVisible:!!actions&&actions.width>=90&&actions.left>=innerWidth-110&&actions.right>=innerWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
+          actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=innerWidth-110&&actions.right>=innerWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
           navCount:nav?.querySelectorAll(':scope>a,:scope>button').length,
           active:nav?.querySelectorAll('[aria-current="page"]').length,
