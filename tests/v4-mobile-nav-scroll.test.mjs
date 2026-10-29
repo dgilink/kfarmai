@@ -22,6 +22,8 @@ function resolveRequest(rawUrl) {
   const url = new URL(rawUrl, `http://127.0.0.1:${port}`);
   let relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
   if (!relative || relative.endsWith('/')) relative += 'index.html';
+  // Serve a test fixture only from this local CDP server; it is excluded from Pages.
+  if (relative === 'tests/fixtures/policy-support/approved.sample.json') return path.join(repoRoot, relative);
   const target = path.resolve(root, relative);
   if (!target.startsWith(`${root}${path.sep}`) || !fs.existsSync(target) || !fs.statSync(target).isFile()) return null;
   return target;
@@ -525,6 +527,27 @@ try {
         fs.writeFileSync(path.join(captureRoot, name + '-' + width + '.png'), Buffer.from(capture.data, 'base64'));
       }
     }
+  }
+
+  await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });
+  await navigate('/subsidy-calendar.html?policyPreview=sample');
+  await waitForEvaluation("document.getElementById('countText').textContent.includes('1건')", 3000);
+  const policyPreview = await evaluate(`(() => ({
+    sample:!sampleBanner.hidden && /샘플 화면 · 실제 공고가 아닙니다/.test(sampleBanner.textContent),
+    open:approvedList.querySelectorAll('.policy-row').length,
+    noApplicationLink:!approvedList.querySelector('a[href]'),
+    referenceClosed:!referenceSection.open,
+    overflow:document.documentElement.scrollWidth > innerWidth+1
+  }))()`);
+  assert.deepEqual(policyPreview,{sample:true,open:1,noApplicationLink:true,referenceClosed:true,overflow:false},'sample policy records remain distinct and fit 390px');
+  await evaluate("statusFilter.value='마감';statusFilter.dispatchEvent(new Event('change',{bubbles:true}))");
+  assert.equal(await evaluate("approvedList.querySelector('.policy-row h3')?.textContent.includes('청년농 교육')"),true,'closed policy filter');
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    await evaluate("statusFilter.value='접수 중';statusFilter.dispatchEvent(new Event('change',{bubbles:true}))");
+    const captureRoot = path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture = await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'policy-support-sample-390.png'),Buffer.from(capture.data,'base64'));
   }
 
   // Samsung Internet can expose a visual viewport that is slightly narrower

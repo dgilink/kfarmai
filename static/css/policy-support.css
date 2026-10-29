@@ -1,0 +1,29 @@
+body.kf-subsidy{background:#fff}
+body.kf-subsidy .app{max-width:none;background:#fff}
+body.kf-subsidy .content{padding:12px 14px 96px;max-width:860px;margin:auto}
+body.kf-subsidy .filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+body.kf-subsidy .select{min-width:0;border-radius:0;height:44px;font-size:13px}
+body.kf-subsidy .policy-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:12px 0 9px;border-top:2px solid #17202a}
+body.kf-subsidy .policy-heading h2{font-size:18px;line-height:1.35}
+body.kf-subsidy .policy-heading span{color:#596660;font-size:11px}
+body.kf-subsidy .toolbar{margin:2px 0 10px}
+body.kf-subsidy .policy-row{position:relative;padding:14px 0;border-bottom:1px solid #d9e0da;background:#fff}
+body.kf-subsidy .policy-row-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+body.kf-subsidy .policy-state{flex:none;color:#596660;font-size:11px;font-weight:800}
+body.kf-subsidy .policy-state.open{color:#126c43}
+body.kf-subsidy .policy-period{min-width:0;color:#596660;font-size:11px;text-align:right}
+body.kf-subsidy .policy-row h3{margin:7px 0 5px;font-size:15px;line-height:1.38;overflow-wrap:anywhere}
+body.kf-subsidy .policy-row-meta{color:#40505f;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+body.kf-subsidy .policy-link,body.kf-subsidy .policy-sample-link{display:inline-flex;margin-top:9px;color:#126c43;font-size:12px;font-weight:800}
+body.kf-subsidy .policy-empty{padding:19px 0;color:#596660;font-size:13px;line-height:1.5}
+body.kf-subsidy .policy-reference-section{margin-top:20px;border-top:1px solid #d9e0da}
+body.kf-subsidy .policy-reference-section summary{padding:14px 0;font-size:15px;font-weight:850;cursor:pointer}
+body.kf-subsidy .policy-reference-links{display:flex;gap:12px;margin-top:8px;font-size:12px;font-weight:800;color:#2457a6}
+body.kf-subsidy .policy-note{margin:0 0 12px;color:#596660;font-size:12px;line-height:1.5}
+body.kf-subsidy .sample-banner{padding:10px 0;color:#9a3412;font-size:13px;font-weight:850}
+body.kf-subsidy .flow{margin-top:20px;border-top:1px solid #d9e0da;padding-top:12px}
+body.kf-subsidy .flow-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.kf-subsidy .flow-row a{border:1px solid #d9e0da;border-radius:0;padding:10px;box-shadow:none;margin:0}
+body.kf-subsidy .flow-row .title{font-size:12px}
+body.kf-subsidy .flow-row .summary{display:none}
+@media (max-width:360px){body.kf-subsidy .policy-row-head{align-items:flex-start;flex-direction:column;gap:2px}body.kf-subsidy .policy-period{text-align:left}}
