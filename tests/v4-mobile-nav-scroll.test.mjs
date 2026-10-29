@@ -587,6 +587,17 @@ try {
         };
       })()`);
       assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      if (route === '/agri_map.html') {
+        await evaluate('window.scrollTo(0,240)');
+        await delay(100);
+        const mapSticky=await evaluate(`(() => {
+          const header=document.querySelector('.v4-global-header').getBoundingClientRect();
+          const search=document.querySelector('.kf-search-bar').getBoundingClientRect();
+          return {top:Math.round(search.top),headerBottom:Math.round(header.bottom),visible:search.top>=header.bottom-1};
+        })()`);
+        assert.equal(mapSticky.visible,true,route+' '+width+'px search bar stays fully below fixed header '+JSON.stringify(mapSticky));
+        await evaluate('window.scrollTo(0,0)');
+      }
       if (width === 390 && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
         const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
         fs.mkdirSync(captureRoot,{recursive:true});
