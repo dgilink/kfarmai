@@ -648,7 +648,9 @@ try {
         if (width === 267) {
           await evaluate(`(() => {
             Object.defineProperty(navigator,'geolocation',{configurable:true,value:{
-              getCurrentPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}})}
+              getCurrentPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}})},
+              watchPosition(success){success({coords:{latitude:37.5665,longitude:126.978,accuracy:18}});return 1},
+              clearWatch(){}
             }});
             window.kakao={maps:{
               LatLng:function(lat,lng){this.lat=lat;this.lng=lng},

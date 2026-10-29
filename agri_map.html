@@ -289,6 +289,10 @@ let markerById = {};
 let roadviewClient = null;
 let currentLocationOverlay = null;
 let currentAccuracyCircle = null;
+let currentLocationWatchId = null;
+let currentLocationTimeoutId = null;
+let currentLocationRequestToken = 0;
+let bestCurrentLocation = null;
 let mapRenderToken = 0;
 const LIST_BATCH_SIZE = 80;
 
@@ -564,7 +568,7 @@ function setLocationButtonBusy(busy) {
   button.setAttribute('aria-busy', busy ? 'true' : 'false');
 }
 
-function showCurrentLocation(latitude, longitude, accuracy) {
+function showCurrentLocation(latitude, longitude, accuracy, refining) {
   const position = new kakao.maps.LatLng(latitude, longitude);
   if (currentLocationOverlay) currentLocationOverlay.setMap(null);
   if (currentAccuracyCircle) currentAccuracyCircle.setMap(null);
@@ -595,7 +599,15 @@ function showCurrentLocation(latitude, longitude, accuracy) {
   }
   kakaoMap.setCenter(position);
   kakaoMap.setLevel(4);
-  document.getElementById('mapStatus').textContent = '현재 위치 표시';
+  const accuracyText = Number.isFinite(accuracy) ? ` · 약 ${Math.round(accuracy)}m` : '';
+  document.getElementById('mapStatus').textContent = (refining ? '위치 정확도 보정 중' : '현재 위치 표시') + accuracyText;
+}
+
+function stopCurrentLocationWatch() {
+  if (currentLocationWatchId !== null) navigator.geolocation.clearWatch(currentLocationWatchId);
+  if (currentLocationTimeoutId !== null) clearTimeout(currentLocationTimeoutId);
+  currentLocationWatchId = null;
+  currentLocationTimeoutId = null;
 }
 
 function requestCurrentLocation() {
@@ -607,20 +619,44 @@ function requestCurrentLocation() {
     document.getElementById('mapStatus').textContent = '위치 기능을 지원하지 않음';
     return;
   }
+  stopCurrentLocationWatch();
+  currentLocationRequestToken += 1;
+  const requestToken = currentLocationRequestToken;
+  bestCurrentLocation = null;
   setLocationButtonBusy(true);
-  document.getElementById('mapStatus').textContent = '현재 위치 확인 중';
-  navigator.geolocation.getCurrentPosition(position => {
-    showCurrentLocation(position.coords.latitude, position.coords.longitude, position.coords.accuracy);
-    setLocationButtonBusy(false);
+  document.getElementById('mapStatus').textContent = '고정밀 현재 위치 확인 중';
+  currentLocationWatchId = navigator.geolocation.watchPosition(position => {
+    if (requestToken !== currentLocationRequestToken) return;
+    const accuracy = Number(position.coords.accuracy);
+    if (!bestCurrentLocation || !Number.isFinite(bestCurrentLocation.accuracy) ||
+        (Number.isFinite(accuracy) && accuracy < bestCurrentLocation.accuracy)) {
+      bestCurrentLocation = {latitude:position.coords.latitude, longitude:position.coords.longitude, accuracy};
+      showCurrentLocation(bestCurrentLocation.latitude, bestCurrentLocation.longitude, bestCurrentLocation.accuracy, accuracy > 30);
+    }
+    if (Number.isFinite(accuracy) && accuracy <= 30) {
+      stopCurrentLocationWatch();
+      showCurrentLocation(position.coords.latitude, position.coords.longitude, accuracy, false);
+      setLocationButtonBusy(false);
+    }
   }, error => {
+    if (requestToken !== currentLocationRequestToken) return;
     const messages = {
       1: '위치 권한을 허용해주세요',
       2: '현재 위치를 확인할 수 없음',
       3: '위치 확인 시간이 초과됨'
     };
-    document.getElementById('mapStatus').textContent = messages[error.code] || '현재 위치를 확인할 수 없음';
+    stopCurrentLocationWatch();
+    if (bestCurrentLocation) showCurrentLocation(bestCurrentLocation.latitude, bestCurrentLocation.longitude, bestCurrentLocation.accuracy, false);
+    else document.getElementById('mapStatus').textContent = messages[error.code] || '현재 위치를 확인할 수 없음';
     setLocationButtonBusy(false);
-  }, {enableHighAccuracy:true, timeout:10000, maximumAge:30000});
+  }, {enableHighAccuracy:true, timeout:15000, maximumAge:0});
+  currentLocationTimeoutId = setTimeout(() => {
+    if (requestToken !== currentLocationRequestToken) return;
+    stopCurrentLocationWatch();
+    if (bestCurrentLocation) showCurrentLocation(bestCurrentLocation.latitude, bestCurrentLocation.longitude, bestCurrentLocation.accuracy, false);
+    else document.getElementById('mapStatus').textContent = '위치 확인 시간이 초과됨';
+    setLocationButtonBusy(false);
+  }, 15000);
 }
 
 document.getElementById('locateButton').addEventListener('click', requestCurrentLocation);

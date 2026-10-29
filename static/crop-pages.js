@@ -355,7 +355,7 @@ window.KFARM_CROP_PAGE_DATA = (() => {
     if (!target) return null;
     return {
       type: "ai-generated",
-      url: `/static/crops/${target.file}`,
+      url: `/static/crops/${target.file.replace(/\.png$/, ".webp")}`,
       alt: target.alt,
       caption: `AI로 생성한 ${cropName} 재배 참고 이미지입니다.`,
       note: "실제 품종, 생육상태, 재배환경은 다를 수 있습니다."
