@@ -36,12 +36,14 @@ const done = arguments[arguments.length - 1];
     ownerId: arguments[0], kind: 'create', form: document.getElementById('fixture'),
     anchor: document.getElementById('fixtureSubmit'), fields: ['fixtureTitle', 'fixtureBody'],
     capture: () => ({files: window.fixtureFiles, tags: []}),
-    open: () => {}, apply: row => {window.fixtureFiles = Array.from(row.files || []);},
+    open: () => {window.fixtureOpenCount = (window.fixtureOpenCount || 0) + 1;},
+    apply: row => {window.fixtureFiles = Array.from(row.files || []);},
   });
   const restored = await window.fixtureDraft.restore();
   done({restored, title: document.getElementById('fixtureTitle').value,
     body: document.getElementById('fixtureBody').value,
-    files: window.fixtureFiles.map(file => file.name), draftId: window.fixtureDraft.draftId});
+    files: window.fixtureFiles.map(file => file.name), draftId: window.fixtureDraft.draftId,
+    openCount: window.fixtureOpenCount || 0});
 })().catch(error => done({error: String(error)}));
 '''
 
@@ -52,7 +54,15 @@ with tempfile.TemporaryDirectory(prefix='kfarmai-phase7hr-chrome-') as profile:
         driver.get(URL)
         assert driver.execute_script('return !!window.KFComposeDraft')
         first = driver.execute_async_script(MOUNT, 'owner-a')
-        assert first['restored'] is False, first
+        assert first['restored'] is False and first['openCount'] == 0, first
+        blank = driver.execute_async_script(r'''
+const done=arguments[arguments.length-1];
+(async()=>{await fixtureDraft.saveNow();done(true);})().catch(e=>done({error:String(e)}));
+''')
+        assert blank is True, blank
+        driver.get(URL + '?empty-draft=1')
+        empty_restore = driver.execute_async_script(MOUNT, 'owner-a')
+        assert empty_restore['restored'] is False and empty_restore['openCount'] == 0, empty_restore
         saved = driver.execute_async_script(r'''
 const done=arguments[arguments.length-1];
 (async()=>{

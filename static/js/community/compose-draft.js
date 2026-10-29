@@ -100,8 +100,16 @@
       timer = setTimeout(() => { saveNow().catch(() => {}); }, 180);
     }
 
+    function hasRestorableContent(draft) {
+      if (!draft || draft.ownerId !== options.ownerId) return false;
+      const meaningfulFields = Object.entries(draft.fields || {}).some(([name, value]) =>
+        !['channelSelect', 'postCategory'].includes(name) && typeof value === 'string' && value.trim().length > 0);
+      return meaningfulFields || (draft.files || []).length > 0 || (draft.tags || []).length > 0 ||
+        (draft.existingUrls || []).length > 0 || Object.keys(draft.receipts || {}).length > 0 || !!draft.submission;
+    }
+
     async function restore() {
-      if (!row || row.ownerId !== options.ownerId) return false;
+      if (!hasRestorableContent(row)) return false;
       await options.open();
       for (const id of options.fields || []) {
         const element = document.getElementById(id);

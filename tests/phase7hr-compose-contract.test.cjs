@@ -12,7 +12,7 @@ for (const name of ['index.html', 'channel.html', 'post.html']) {
     if (!source.trim() || /type\s*=\s*["']application\/ld\+json/i.test(attributes)) continue;
     new vm.Script(source, { filename: name });
   }
-  assert.match(html, /compose-draft\.js\?v=phase7h-r1/);
+  assert.match(html, /compose-draft\.js\?v=phase7h-r2-empty-restore/);
   assert.match(html, /secure-image-upload\.js\?v=phase7h-r1/);
   assert.doesNotMatch(html, /storage\.from\(['"]post-images['"]\)\.upload\(/);
   assert.match(html, /clearAfterSuccess/);
@@ -31,4 +31,5 @@ new vm.Script(draft, { filename: 'compose-draft.js' });
 assert.match(draft, /indexedDB\.open/);
 assert.match(draft, /SHA-256/);
 assert.match(draft, /beforeunload/);
+assert.match(draft, /hasRestorableContent/);
 console.log('PHASE7HR_COMPOSE_CONTRACT_PASS');
