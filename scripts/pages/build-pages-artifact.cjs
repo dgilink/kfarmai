@@ -27,6 +27,7 @@ const approvedVisualRestyles = new Set([
   'greenhouse-irrigation-precheck.html',
   'greenhouse-heating-preflight-notes.html',
   'strawberry-winter-light-humidity-check.html',
+  'strawberry-small-smartfarm.html',
 ]);
 function replaceVisualOnce(text, before, after, label) {
   if (text.indexOf(before) < 0 || text.indexOf(before) !== text.lastIndexOf(before)) {
@@ -84,6 +85,11 @@ function renderApprovedVisualRestyle(buffer, name) {
     html = replaceVisualOnce(html,
       '<li><a href="https://commons.wikimedia.org/wiki/File:Keepsake_Strawberry_by_USDA_(20210216-ARS-LSC-0004).jpg" target="_blank" rel="noopener noreferrer">온실 사진: USDA/ARS, 공개 이미지</a></li>',
       '', 'strawberry retired photo credit');
+  } else if (name === 'strawberry-small-smartfarm.html') {
+    html = replaceVisualOnce(html,
+      '원문 사진·도표·첨부 이미지는 사용하지 않았습니다.</p></div>\n      <nav class="related-grid"',
+      '원문 사진·도표·첨부 이미지는 사용하지 않았습니다.</p></div>\n      <figure><img src="/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp" alt="딸기 온실 환경 센서와 관수 제어장치 AI 생성 참고 이미지" loading="eager" decoding="async"><figcaption>AI 생성 참고 이미지 · 특정 실증 농가의 사진이 아닙니다.</figcaption></figure>\n      <nav class="related-grid"',
+      'smartfarm reference image');
   }
   return Buffer.from(html, 'utf8');
 }
@@ -249,7 +255,7 @@ const kbListMedia = Object.freeze({
   // File:Irrigation in a Greenhouse.jpg. Used only as the compact list photo.
   '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg',
   '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
-  '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
+  '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp',
 });
 const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
 const kbIndexCards = kbItems.map((item, index) => {

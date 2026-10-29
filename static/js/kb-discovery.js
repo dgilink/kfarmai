@@ -14,7 +14,7 @@
     '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
     '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg',
     '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
-    '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'
+    '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp'
   });
   const safePath = (value) => {
     try {

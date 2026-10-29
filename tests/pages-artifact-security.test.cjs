@@ -71,6 +71,7 @@ try {
   test('requested article visuals are replaced only in the generated public artifact', () => {
     const irrigation = fs.readFileSync(path.join(artifactDir, 'kb/greenhouse-irrigation-precheck.html'), 'utf8');
     const strawberry = fs.readFileSync(path.join(artifactDir, 'kb/strawberry-winter-light-humidity-check.html'), 'utf8');
+    const smartfarm = fs.readFileSync(path.join(artifactDir, 'kb/strawberry-small-smartfarm.html'), 'utf8');
     assert.equal((irrigation.match(/greenhouse-irrigation-precheck-photo-20261029\.jpg/g) || []).length, 1,
       'detail shows one real irrigation photo');
     assert.ok(!irrigation.includes('greenhouse-irrigation-precheck-infographic'),
@@ -78,6 +79,10 @@ try {
     assert.ok(strawberry.includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
     assert.ok(!strawberry.includes('Keepsake_Strawberry_by_USDA'));
     assert.ok(!strawberry.includes('온실 사진: USDA/ARS'));
+    assert.ok(smartfarm.includes('/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp'));
+    assert.ok(smartfarm.includes('AI 생성 참고 이미지'));
+    assert.ok(smartfarm.includes('특정 실증 농가의 사진이 아닙니다.'));
+    assert.ok(!smartfarm.includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
   });
 
   test('knowledge list thumbnails use photos instead of article infographics', () => {
@@ -94,6 +99,18 @@ try {
     assert.ok(!listRegion.includes('-infographic.'), 'list thumbnails must not use infographics');
     const irrigationPhoto = '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg';
     assert.ok(listRegion.includes(irrigationPhoto), 'irrigation list uses the greenhouse irrigation photo');
+    const smartfarmCard = listRegion.match(/href="\/kb\/strawberry-small-smartfarm\.html">([\s\S]*?)<\/a>/);
+    const winterCard = listRegion.match(/href="\/kb\/strawberry-winter-light-humidity-check\.html">([\s\S]*?)<\/a>/);
+    assert.ok(smartfarmCard && winterCard, 'both strawberry articles are in the KB list');
+    assert.ok(smartfarmCard[1].includes('/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp'));
+    assert.ok(winterCard[1].includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
+    assert.ok(!smartfarmCard[1].includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
+  });
+
+  test('all-tab public info opens the same KB list as the agriculture tab', () => {
+    const shell = fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js'), 'utf8');
+    assert.match(shell, /\['knowledge', '농업정보', '\/kb\/index\.html'\]/);
+    assert.match(shell, /\['공공정보 확인', '\/kb\/index\.html'\]/);
   });
 
   test('all public HTML receives one versioned global shell and grouped cultivation topic', () => {
