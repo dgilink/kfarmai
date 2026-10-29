@@ -22,6 +22,8 @@ function resolveRequest(rawUrl) {
   const url = new URL(rawUrl, `http://127.0.0.1:${port}`);
   let relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
   if (!relative || relative.endsWith('/')) relative += 'index.html';
+  // Serve a test fixture only from this local CDP server; it is excluded from Pages.
+  if (relative === 'tests/fixtures/policy-support/approved.sample.json') return path.join(repoRoot, relative);
   const target = path.resolve(root, relative);
   if (!target.startsWith(`${root}${path.sep}`) || !fs.existsSync(target) || !fs.statSync(target).isFile()) return null;
   return target;
