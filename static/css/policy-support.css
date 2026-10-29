@@ -23,7 +23,7 @@ body.kf-subsidy .policy-note{margin:0 0 12px;color:#596660;font-size:12px;line-h
 body.kf-subsidy .sample-banner{padding:10px 0;color:#9a3412;font-size:13px;font-weight:850}
 body.kf-subsidy .flow{margin-top:20px;border-top:1px solid #d9e0da;padding-top:12px}
 body.kf-subsidy .flow-row{grid-template-columns:repeat(2,minmax(0,1fr))}
-body.kf-subsidy .flow-row a{border:1px solid #d9e0da;border-radius:4px;padding:10px;box-shadow:none;margin:0}
+body.kf-subsidy .flow-row a{border:1px solid #d9e0da;border-radius:0;padding:10px;box-shadow:none;margin:0}
 body.kf-subsidy .flow-row .title{font-size:12px}
 body.kf-subsidy .flow-row .summary{display:none}
 @media (max-width:360px){body.kf-subsidy .policy-row-head{align-items:flex-start;flex-direction:column;gap:2px}body.kf-subsidy .policy-period{text-align:left}}
