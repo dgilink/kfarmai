@@ -15,11 +15,11 @@ from kfarmai_review_approval import (
     REPOSITORY, canonical, digest, parse_json, read_archive, require, verify_package,
 )
 
-ALLOWED_SVG_TAGS = {"svg", "rect", "circle", "text"}
+ALLOWED_SVG_TAGS = {"svg", "rect", "circle", "text", "line"}
 ALLOWED_SVG_ATTRS = {
     "xmlns", "width", "height", "viewBox", "x", "y", "rx", "r", "cx", "cy",
     "fill", "stroke", "font-size", "font-weight", "font-family", "text-anchor",
-    "dominant-baseline",
+    "dominant-baseline", "x1", "y1", "x2", "y2", "stroke-width",
 }
 
 
