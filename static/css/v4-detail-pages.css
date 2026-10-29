@@ -318,6 +318,17 @@ body.v4-privacy-page section { border-top: 1px solid var(--kf-detail-line); }
 /* Nested content pages linked from the full-menu destinations. */
 body.v4-cases-page .header,
 body.v4-public-data-page .hero { position: relative; }
+/* The cases title and its compact page links live inside the legacy header.
+   Restore that content below the shared header while keeping the duplicate
+   legacy logo row hidden. */
+body.v4-global-header-ready.v4-cases-page > .phone > header.header {
+  display: block !important;
+  min-height: 0;
+  border: 0;
+}
+body.v4-global-header-ready.v4-cases-page > .phone > header.header > .top {
+  display: none !important;
+}
 body.v4-cases-page .headline,
 body.v4-cases-page .top-links,
 body.v4-public-data-page .hero > h1,
