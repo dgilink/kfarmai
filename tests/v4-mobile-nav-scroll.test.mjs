@@ -671,7 +671,7 @@ try {
             center:window.__locationCenter,
             level:window.__locationLevel
           }))()`);
-          assert.deepEqual(locationUi,{marker:true,status:'현재 위치 표시',busy:'false',disabled:false,center:{lat:37.5665,lng:126.978},level:4},'267px current-location control centers map and renders red marker');
+          assert.deepEqual(locationUi,{marker:true,status:'현재 위치 표시 · 약 18m',busy:'false',disabled:false,center:{lat:37.5665,lng:126.978},level:4},'267px current-location control centers map, reports accuracy and renders red marker');
         }
       }
       if ((width === 390 || width === 267 && route === '/agri_map.html') && process.env.KFARMAI_UI_SCREENSHOT_DIR) {
