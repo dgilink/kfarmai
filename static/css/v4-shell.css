@@ -302,7 +302,9 @@ body.v4-global-header-ready .hero > .topbar { display: none !important; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-sizing: border-box;
   width: min(100%, 1180px);
+  max-width: 100%;
   min-height: 60px;
   margin-inline: auto;
   padding: 0 16px;
@@ -317,7 +319,7 @@ body.v4-global-header-ready .hero > .topbar { display: none !important; }
   text-decoration: none;
   white-space: nowrap;
 }
-.v4-global-actions { display: flex; align-items: center; gap: 4px; }
+.v4-global-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; }
 .v4-global-action {
   display: inline-flex;
   align-items: center;
