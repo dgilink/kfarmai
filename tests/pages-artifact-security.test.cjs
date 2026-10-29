@@ -71,7 +71,10 @@ try {
   test('requested article visuals are replaced only in the generated public artifact', () => {
     const irrigation = fs.readFileSync(path.join(artifactDir, 'kb/greenhouse-irrigation-precheck.html'), 'utf8');
     const strawberry = fs.readFileSync(path.join(artifactDir, 'kb/strawberry-winter-light-humidity-check.html'), 'utf8');
-    assert.ok(irrigation.includes('greenhouse-irrigation-precheck-infographic-restyle-20261029-v2.svg'));
+    assert.equal((irrigation.match(/greenhouse-irrigation-precheck-photo-20261029\.jpg/g) || []).length, 1,
+      'detail shows one real irrigation photo');
+    assert.ok(!irrigation.includes('greenhouse-irrigation-precheck-infographic'),
+      'detail removes the duplicated infographic');
     assert.ok(strawberry.includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
     assert.ok(!strawberry.includes('Keepsake_Strawberry_by_USDA'));
     assert.ok(!strawberry.includes('온실 사진: USDA/ARS'));

@@ -749,6 +749,24 @@ try {
   assert.equal(await evaluate('location.pathname'), '/channel.html', 'community writing swipe ignored');
 
   await socket.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 720, deviceScaleFactor: 1, mobile: true });
+  await navigate('/kb/greenhouse-irrigation-precheck.html');
+  await waitForEvaluation("(() => { const image=document.querySelector('main article img'); return !!image&&image.complete&&image.naturalWidth>0; })()", 5000);
+  const irrigationDetail = await evaluate(`(() => {
+    const article=document.querySelector('main article');
+    const images=[...article.querySelectorAll('img')];
+    return {images:images.length,photo:images[0]?.getAttribute('src'),naturalWidth:images[0]?.naturalWidth,
+      infographic:article.innerHTML.includes('infographic'),overflow:document.documentElement.scrollWidth>innerWidth+1};
+  })()`);
+  assert.equal(irrigationDetail.images, 1, 'irrigation article contains one visual image');
+  assert.equal(irrigationDetail.photo, '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg');
+  assert.ok(irrigationDetail.naturalWidth > 0 && !irrigationDetail.infographic && !irrigationDetail.overflow,
+    `irrigation article photo renders without infographic or horizontal overflow ${JSON.stringify(irrigationDetail)}`);
+  if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+    const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+    fs.mkdirSync(captureRoot,{recursive:true});
+    const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+    fs.writeFileSync(path.join(captureRoot,'kb-irrigation-detail-390.png'),Buffer.from(capture.data,'base64'));
+  }
   await navigate('/index.html');
   await evaluate("document.querySelector('.v4-nav button').click(); history.pushState({},'',location.pathname+'?menu=1'); history.back()");
   await delay(300);

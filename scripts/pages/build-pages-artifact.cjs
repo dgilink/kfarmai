@@ -41,11 +41,11 @@ function renderApprovedVisualRestyle(buffer, name) {
   if (name === 'greenhouse-irrigation-precheck.html') {
     html = replaceVisualOnce(html,
       '<img src="/static/kb/greenhouse-irrigation-precheck-hero.webp" alt="온실 관수 설비 점검 항목 안내 이미지">',
-      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-hero.webp" alt="온실 관수 설비 점검 항목 안내 이미지" loading="eager"></figure>',
+      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg" alt="온실 내부 관수 장치 사진" loading="eager"></figure>',
       'irrigation hero');
     html = replaceVisualOnce(html,
       '<img src="/static/kb/greenhouse-irrigation-precheck-infographic.svg" alt="관수 전 세 단계 확인 포인트">',
-      '<figure class="kf-full-media"><img src="/static/kb/greenhouse-irrigation-precheck-infographic-restyle-20261029-v2.svg" alt="관수 전 센서, 배관, 토출과 기록 세 단계 확인 포인트" loading="lazy"></figure>',
+      '',
       'irrigation infographic');
     html = replaceVisualOnce(html, '<main><article>',
       '<main><article class="knowledge-article">', 'irrigation article');
