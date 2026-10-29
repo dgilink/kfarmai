@@ -87,8 +87,8 @@ function renderApprovedVisualRestyle(buffer, name) {
       '', 'strawberry retired photo credit');
   } else if (name === 'strawberry-small-smartfarm.html') {
     html = replaceVisualOnce(html,
-      '원문 사진·도표·첨부 이미지는 사용하지 않았습니다.</p></div>\n      <nav class="related-grid"',
-      '원문 사진·도표·첨부 이미지는 사용하지 않았습니다.</p></div>\n      <figure><img src="/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp" alt="딸기 온실 환경 센서와 관수 제어장치 AI 생성 참고 이미지" loading="eager" decoding="async"><figcaption>AI 생성 참고 이미지 · 특정 실증 농가의 사진이 아닙니다.</figcaption></figure>\n      <nav class="related-grid"',
+      '원문 사진·도표·첨부 이미지는 사용하지 않았습니다.</p></div>',
+      '원문 사진·도표·첨부 이미지는 사용하지 않았습니다.</p></div><figure><img src="/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp" alt="딸기 온실 환경 센서와 관수 제어장치 AI 생성 참고 이미지" loading="eager" decoding="async"><figcaption>AI 생성 참고 이미지 · 특정 실증 농가의 사진이 아닙니다.</figcaption></figure>',
       'smartfarm reference image');
   }
   return Buffer.from(html, 'utf8');
