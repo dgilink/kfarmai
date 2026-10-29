@@ -4,8 +4,9 @@
   const page = location.pathname;
   const syncVisualViewportWidth = () => {
     const visualWidth = Math.round(window.visualViewport?.width || window.innerWidth || 0);
-    const constrain = visualWidth > 0 && visualWidth < 320 && visualWidth < window.innerWidth - 1;
+    const constrain = visualWidth > 0 && visualWidth < window.innerWidth - 1;
     document.body.classList.toggle('v4-narrow-visual-viewport', constrain);
+    document.body.classList.toggle('v4-sub320-visual-viewport', constrain && visualWidth < 320);
     if (constrain) document.body.style.setProperty('--v4-visual-viewport-width', `${visualWidth}px`);
     else document.body.style.removeProperty('--v4-visual-viewport-width');
   };

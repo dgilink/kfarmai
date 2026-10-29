@@ -361,10 +361,10 @@ body.v4-map-page.v4-narrow-visual-viewport > .list-wrap {
   max-width: calc(var(--v4-visual-viewport-width) - 20px) !important;
   margin-inline: 10px !important;
 }
-body.v4-narrow-visual-viewport .v4-global-header-inner { padding-inline: 8px; }
-body.v4-narrow-visual-viewport .v4-global-brand { font-size: 21px; }
-body.v4-narrow-visual-viewport .v4-global-actions { flex-basis: 84px; min-width: 84px; gap: 0; }
-body.v4-narrow-visual-viewport .v4-global-action { flex-basis: 42px; width: 42px; }
+body.v4-sub320-visual-viewport .v4-global-header-inner { padding-inline: 8px; }
+body.v4-sub320-visual-viewport .v4-global-brand { font-size: 21px; }
+body.v4-sub320-visual-viewport .v4-global-actions { flex-basis: 84px; min-width: 84px; gap: 0; }
+body.v4-sub320-visual-viewport .v4-global-action { flex-basis: 42px; width: 42px; }
 .v4-global-action {
   display: inline-flex !important;
   flex: 0 0 44px;
