@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from __future__ import annotations
-import argparse, base64, datetime as dt, html, json, os, re, urllib.error, urllib.parse, urllib.request
+import argparse, base64, datetime as dt, hashlib, html, json, os, re, urllib.error, urllib.parse, urllib.request
 from pathlib import Path
 from xml.sax.saxutils import escape as xesc
 
@@ -81,45 +81,99 @@ def risk_gate(a,cfg):
         risk="REVIEW"; reasons.append("not_auto_category")
     return risk, "; ".join(reasons) or a.get("risk_reason","")
 
+INFOGRAPHIC_PALETTES = (
+    {"canvas": "#fff8f2", "accent": "#d94835", "accent_soft": "#f3b562",
+     "ink": "#241b18", "muted": "#6f554b", "hairline": "#dfc7bc"},
+    {"canvas": "#f3fbfa", "accent": "#007f7b", "accent_soft": "#e3a008",
+     "ink": "#122524", "muted": "#466765", "hairline": "#b9d8d5"},
+    {"canvas": "#faf6ff", "accent": "#6d3bb5", "accent_soft": "#21a0a0",
+     "ink": "#251b32", "muted": "#665575", "hairline": "#d8cae7"},
+    {"canvas": "#f7f9ff", "accent": "#2251a3", "accent_soft": "#e36b3d",
+     "ink": "#15213a", "muted": "#52627d", "hairline": "#cbd5e7"},
+)
+# Backwards-compatible union used by revision tooling that validates SVG colors.
 INFOGRAPHIC_PALETTE = {
-    "blue": "#0f62fe", "blue_60": "#0043ce", "blue_80": "#002d9c",
-    "canvas": "#ffffff", "surface_1": "#f4f4f4", "hairline": "#e0e0e0",
-    "ink": "#161616", "ink_muted": "#525252", "ink_subtle": "#8c8c8c",
+    f"{name}_{index}": value
+    for index, palette in enumerate(INFOGRAPHIC_PALETTES)
+    for name, value in palette.items()
 }
 
 
+def infographic_palette(article):
+    """Choose a deterministic topic palette instead of a fixed brand template."""
+    identity = "|".join(str(article.get(key, "")) for key in
+                        ("category", "infographic_title", "title"))
+    index = hashlib.sha256(identity.encode("utf-8")).digest()[0] % len(INFOGRAPHIC_PALETTES)
+    return INFOGRAPHIC_PALETTES[index]
+
+
 def render_svg(a,path):
-    """Render the publication SVG with centered cards and a restrained Carbon palette."""
+    """Render a mobile-readable 16:9 editorial infographic without card chrome."""
     items=a["infographic_items"][:5]
-    def lines(value, width):
+    if len(items) < 3:
+        raise ValueError("INFOGRAPHIC_ITEM_COUNT")
+
+    def lines(value, width, maximum=2):
         value=" ".join(value.split())
-        if not value or len(value)>width*2:
+        if not value:
             raise ValueError("INFOGRAPHIC_TEXT_OVERFLOW")
-        return [value[i:i+width] for i in range(0,len(value),width)]
-    title_lines=lines(a["infographic_title"],24)
-    title_height=60*len(title_lines)
-    row_start=150+title_height
-    height=row_start+len(items)*140+35
-    rows=[]
-    for i,t in enumerate(items,1):
-        y=row_start+(i-1)*140
-        body=lines(t,30)
-        center=y+62
-        rows += [
-            f'<rect x="60" y="{y}" width="1080" height="124" rx="12" fill="#ffffff" stroke="#e0e0e0"/>',
-            f'<circle cx="108" cy="{center}" r="25" fill="#0f62fe"/>',
-            f'<text x="108" y="{center}" text-anchor="middle" dominant-baseline="middle" font-size="25" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#ffffff">{i}</text>',
-            *[f'<text x="160" y="{center+(j-(len(body)-1)/2)*38:g}" dominant-baseline="middle" font-size="28" font-weight="700" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#161616">{xesc(line)}</text>'
-              for j,line in enumerate(body)]
-        ]
-    svg = (
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="{height}" viewBox="0 0 1200 {height}">'
-        f'<rect width="1200" height="{height}" fill="#f4f4f4"/>'
-        f'<rect x="60" y="38" width="8" height="{max(48,title_height-5)}" fill="#0f62fe"/>'
-        + "".join(f'<text x="84" y="{85+j*55}" font-size="42" font-weight="700" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#161616">{xesc(line)}</text>'
-                  for j,line in enumerate(title_lines))
-        + f'<text x="84" y="{95+title_height}" font-size="21" font-family="Noto Sans CJK KR,Noto Sans KR,sans-serif" fill="#525252">KFarmAI 현장 체크</text>'
-        + "".join(rows) + '</svg>'
+        words=value.split(" ")
+        output=[]
+        current=""
+        for word in words:
+            if len(word)>width:
+                if current:
+                    output.append(current)
+                    current=""
+                output.extend(word[offset:offset+width] for offset in range(0,len(word),width))
+                continue
+            candidate=(current+" "+word).strip()
+            if current and len(candidate)>width:
+                output.append(current)
+                current=word
+            else:
+                current=candidate
+        if current:
+            output.append(current)
+        if len(output)>maximum or any(len(line)>width for line in output):
+            raise ValueError("INFOGRAPHIC_TEXT_OVERFLOW")
+        return output
+
+    palette=infographic_palette(a)
+    title_lines=lines(a["infographic_title"],23)
+    title_top=116
+    title_step=66
+    grid_top=280 if len(title_lines)==2 else 220
+    columns=2
+    rows_count=(len(items)+columns-1)//columns
+    row_height=(625-grid_top)//rows_count
+    blocks=[]
+    for index,value in enumerate(items,1):
+        column=(index-1)%columns
+        row=(index-1)//columns
+        x=54+column*558
+        y=grid_top+row*row_height
+        body=lines(value,25)
+        number_color=palette["accent"] if index%2 else palette["accent_soft"]
+        blocks.extend([
+            f'<text x="{x}" y="{y+48}" font-size="46" font-weight="800" '
+            f'font-family="Noto Sans KR,sans-serif" fill="{number_color}">{index:02d}</text>',
+            *[f'<text x="{x+78}" y="{y+34+line_index*42}" font-size="34" font-weight="700" '
+              f'font-family="Noto Sans KR,sans-serif" fill="{palette["ink"]}">{xesc(line)}</text>'
+              for line_index,line in enumerate(body)],
+            f'<line x1="{x}" y1="{y+row_height-16}" x2="{x+510}" y2="{y+row_height-16}" '
+            f'stroke="{palette["hairline"]}" stroke-width="2"/>'
+        ])
+    svg=(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">'
+        f'<rect width="1200" height="675" fill="{palette["canvas"]}"/>'
+        f'<text x="54" y="47" font-size="26" font-weight="700" '
+        f'font-family="Noto Sans KR,sans-serif" fill="{palette["accent"]}">KFarmAI · 현장 확인 포인트</text>'
+        +"".join(f'<text x="54" y="{title_top+line_index*title_step}" font-size="60" font-weight="800" '
+                  f'font-family="Noto Sans KR,sans-serif" fill="{palette["ink"]}">{xesc(line)}</text>'
+                  for line_index,line in enumerate(title_lines))
+        +f'<line x1="54" y1="{grid_top-28}" x2="1146" y2="{grid_top-28}" stroke="{palette["accent"]}" stroke-width="5"/>'
+        +"".join(blocks)+'</svg>'
     )
     path.parent.mkdir(parents=True,exist_ok=True); path.write_text(svg,encoding="utf-8")
 

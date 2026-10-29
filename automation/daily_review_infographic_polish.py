@@ -13,7 +13,7 @@ from pathlib import Path
 from approval_package import prepare_package, render_issue, write_package
 from daily_review_email_dispatch import build_request
 from daily_review_issue import load_package
-from kfarmai_daily_autopublish import INFOGRAPHIC_PALETTE, render_svg
+from kfarmai_daily_autopublish import infographic_palette, render_svg
 from kfarmai_review_approval import REPOSITORY, canonical, parse_json, read_archive, require, verify_package
 
 OLD_APPROVAL = "review-39236736411-r2-fb2cfdd0ee4c"
@@ -46,19 +46,20 @@ def old_package(raw: bytes, artifact: dict) -> tuple[dict[str, bytes], dict, dic
     return files, intent, manifest
 
 
-def validate_svg(svg: bytes) -> None:
+def validate_svg(svg: bytes, article: dict) -> None:
     text = svg.decode("utf-8")
-    colors = {value.lower() for value in INFOGRAPHIC_PALETTE.values()}
+    palette = infographic_palette(article)
+    colors = {value.lower() for value in palette.values()}
     used = {value.lower() for value in re.findall(r"#[0-9a-fA-F]{6}", text)}
-    require(used <= colors and {"#0f62fe", "#ffffff", "#f4f4f4", "#e0e0e0",
-                                "#161616", "#525252"} <= used,
+    require(used <= colors and {palette["canvas"], palette["accent"], palette["ink"],
+                                palette["hairline"]} <= used,
             "BLOCKED_POLISH_PALETTE")
-    require(text.count('<circle cx="108"') == 4
-            and text.count('dominant-baseline="middle"') == 8,
+    require('width="1200" height="675"' in text and text.count("<rect") == 1
+            and 'width="8"' not in text and 'rx="' not in text,
             "BLOCKED_POLISH_ALIGNMENT")
     forbidden = ("AI 정보는 참고용입니다", "일반 참고정보입니다", "최신 공식자료와 현장 상태")
     require(not any(value in text for value in forbidden), "BLOCKED_POLISH_FOOTER")
-    require("#2e7d4f" not in text and "#f4f8f2" not in text and "#d8e4d4" not in text,
+    require("#f4f4f4" not in text and min(map(int, re.findall(r'font-size="(\d+)"', text))) >= 26,
             "BLOCKED_POLISH_PALETTE")
 
 
@@ -73,10 +74,10 @@ def build(args) -> dict:
         svg_path = Path(directory) / "infographic.svg"
         render_svg(article, svg_path)
         svg = svg_path.read_bytes()
-    validate_svg(svg)
+    validate_svg(svg, article)
     package = prepare_package(
         article=article,
-        review_reason="인포그래픽 AI footer 제거, 카드 중앙 정렬, IBM Carbon 팔레트 최종 검수 필요",
+        review_reason="16:9 편집형 인포그래픽, 큰 글자, 주제별 동적 팔레트 최종 검수 필요",
         source_check=source_check,
         html_bytes=files["publish/" + intent["html"]],
         hero_bytes=files["publish/" + intent["hero"]],
