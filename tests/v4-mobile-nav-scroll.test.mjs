@@ -183,9 +183,9 @@ async function communityRequestRaces() {
   await delay(50);
   assert.deepEqual(await evaluate(`({titles:[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent),loading:isLoading,count:document.getElementById('resultCount').textContent})`),
     {titles:['second result'],loading:false,count:'1개'}, 'late responses cannot replace the latest search');
-  await evaluate(`currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
-  assert.equal(await evaluate(`window.__queries[3].filters.some(filter=>Array.isArray(filter)&&filter[0]==='category_id'&&filter[1]==='category-test')`),true,'channel filter uses the latest category');
-  await evaluate(`window.__reply(3,'filtered result')`);
+  await evaluate(`window.__categoryQueryIndex=window.__queries.length;currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
+  assert.equal(await evaluate(`window.__queries[window.__categoryQueryIndex].filters.some(filter=>Array.isArray(filter)&&filter[0]==='category_id'&&filter[1]==='category-test')`),true,'channel filter uses the latest category');
+  await evaluate(`window.__reply(window.__categoryQueryIndex,'filtered result')`);
   await delay(50);
   assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['filtered result'],'filter result replaces previous search');
 
@@ -201,9 +201,9 @@ async function communityRequestRaces() {
       if(userIds.includes('author-1'))window.__resolveSlowProfiles=complete;
       else complete();
     });
-    resetAndLoad();
+    window.__progressiveQueryIndex=window.__queries.length;resetAndLoad();
   })()`);
-  await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[4].resolve({data:[post],count:1,error:null})})()`);
+  await evaluate(`(() => {const post=window.__post('progressive result');post.user_id='author-1';window.__queries[window.__progressiveQueryIndex].resolve({data:[post],count:1,error:null})})()`);
   await delay(50);
   assert.deepEqual(await evaluate(`(() => {const card=document.querySelector('#postList .post-card');return{title:card?.querySelector('.post-title')?.textContent,loading:!!document.querySelector('#postList .loading'),comments:card?.querySelector('.post-comments')?.textContent||'',reactions:card?.querySelector('.post-reactions')?.textContent||''}})()`),
     {title:'progressive result',loading:false,comments:'',reactions:''}, 'base posts render before metrics and profiles finish');
