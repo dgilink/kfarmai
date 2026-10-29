@@ -8,7 +8,7 @@ const crypto = require('node:crypto');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
-const shellVersion = '20261029-stable1';
+const shellVersion = '20261029-compact1';
 const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
@@ -224,13 +224,14 @@ const kbListMedia = Object.freeze({
   '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-hero.webp',
   '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero.svg',
 });
-const kbIndexCards = kbItems.map(item => {
+const kbIndexCards = kbItems.map((item, index) => {
   const image = kbListMedia[item.path];
   if (image && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
     throw new Error('Approved KB list image missing: ' + image);
   }
   const thumb = image ? '<img class="kb-list-thumb" src="' + image +
-    '" alt="" loading="lazy" decoding="async">' : '';
+    '" alt="" width="92" height="62" loading="' + (index < 2 ? 'eager' : 'lazy') +
+    '"' + (index < 2 ? ' fetchpriority="high"' : '') + ' decoding="async">' : '';
   const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) +
     '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
   return '<a class="kb-card' + (image ? '' : ' is-text-only') +
@@ -275,7 +276,7 @@ const cards = homeItems.slice(0, 4).map(item => {
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
   const image = homeLeadMedia[item.path];
   return `<a class="kb-card${image ? '' : ' is-text-only'}" href="${item.path}">${image
-    ? `<img class="kb-list-thumb" src="${image}" alt="" loading="eager" decoding="async">`
+    ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="async">`
     : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
 }).join('');
 fs.writeFileSync(homePath,

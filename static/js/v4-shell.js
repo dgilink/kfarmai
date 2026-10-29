@@ -2,8 +2,29 @@
   'use strict';
   if (document.querySelector('[data-v4-shell-nav]')) return;
   const page = location.pathname;
+  const normalizeDiagnosisLabel = root => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const node of nodes) {
+      if (node.parentElement?.closest('script,style,template')) continue;
+      if (node.nodeValue?.includes('AI 참고 진단')) node.nodeValue = node.nodeValue.replaceAll('AI 참고 진단', 'AI진단');
+    }
+  };
   if (/^\/kb\/[a-z0-9-]+\.html$/.test(page)) {
     document.body.classList.add('v4-page', 'v4-kb-article');
+  }
+  if (!page.startsWith('/kb/') && !page.startsWith('/q/')) {
+    normalizeDiagnosisLabel(document.body);
+    const labelObserver = new MutationObserver(records => {
+      for (const record of records) {
+        for (const node of record.addedNodes) if (node.nodeType === Node.ELEMENT_NODE) normalizeDiagnosisLabel(node);
+        if (record.target?.nodeType === Node.TEXT_NODE && record.target.nodeValue?.includes('AI 참고 진단')) {
+          record.target.nodeValue = record.target.nodeValue.replaceAll('AI 참고 진단', 'AI진단');
+        }
+      }
+    });
+    labelObserver.observe(document.body, {childList:true, subtree:true, characterData:true});
   }
   const toolPages = new Set([
     '/agri-weather.html', '/market-prices.html', '/crop-calendar.html', '/crop-guide.html',
@@ -98,8 +119,8 @@
     ['계정 · 내 활동', [['마이페이지', '/index.html?panel=my']]],
     ['질문 · 커뮤니티', [['소통', '/channel.html'], ['글쓰기', '/channel.html?write=1']]],
     ['농업정보', [['농업정보', '/kb/index.html'], ['정책·지원', '/subsidy-calendar.html'], ['공공정보 확인', '/agri-info.html']]],
-    ['AI 참고 · 실용 도구', [
-      ['AI 참고 진단', '/diagnosis.html'], ['농업날씨', '/agri-weather.html'],
+    ['AI · 실용 도구', [
+      ['AI진단', '/diagnosis.html'], ['농업날씨', '/agri-weather.html'],
       ['농산물 시세', '/market-prices.html'], ['주변 농약사', '/agri_map.html'],
       ['재배달력', '/crop-calendar.html'],
     ]],

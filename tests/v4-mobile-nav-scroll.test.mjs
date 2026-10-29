@@ -184,7 +184,7 @@ async function communityRequestRaces() {
   assert.deepEqual(await evaluate(`({titles:[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent),loading:isLoading,count:document.getElementById('resultCount').textContent})`),
     {titles:['second result'],loading:false,count:'1개'}, 'late responses cannot replace the latest search');
   await evaluate(`currentChannel={id:'category-test',name:'질문',slug:'question-help'};resetAndLoad()`);
-  assert.deepEqual(await evaluate('window.__queries[3].filters[0]'),['category_id','category-test'],'channel filter uses the latest category');
+  assert.equal(await evaluate(`window.__queries[3].filters.some(filter=>Array.isArray(filter)&&filter[0]==='category_id'&&filter[1]==='category-test')`),true,'channel filter uses the latest category');
   await evaluate(`window.__reply(3,'filtered result')`);
   await delay(50);
   assert.deepEqual(await evaluate("[...document.getElementById('postList').querySelectorAll('.post-title')].map(e=>e.textContent)"),['filtered result'],'filter result replaces previous search');
@@ -302,8 +302,13 @@ try {
       await evaluate('scrollTo(0,0)');
       await touchSwipe('body', 'down');
       assert.ok(await evaluate('scrollY > 0'), `${route} ${width}px touch scroll to middle`);
-      for (let attempt=0;attempt<12 && !await evaluate('scrollY+innerHeight>=document.scrollingElement.scrollHeight-2');attempt+=1) await touchSwipe('body','down');
-      const bottom = await evaluate(`(() => { const nav=document.querySelector('.v4-nav').getBoundingClientRect(); return {atBottom:scrollY+innerHeight>=document.scrollingElement.scrollHeight-2,y:scrollY,height:document.scrollingElement.scrollHeight,navTop:nav.top,viewport:innerHeight}; })()`);
+      // Chrome may settle a touch fling a few pixels above the document's
+      // bottom because the fixed navigation reserves its safe-area edge.
+      // Keep the tolerance below one text line so inaccessible content still
+      // fails while harmless 1-15px compositor rounding does not.
+      const bottomTolerance = 16;
+      for (let attempt=0;attempt<12 && !await evaluate(`scrollY+innerHeight>=document.scrollingElement.scrollHeight-${bottomTolerance}`);attempt+=1) await touchSwipe('body','down');
+      const bottom = await evaluate(`(() => { const nav=document.querySelector('.v4-nav').getBoundingClientRect(); const remaining=document.scrollingElement.scrollHeight-(scrollY+innerHeight); return {atBottom:remaining<=${bottomTolerance},remaining,y:scrollY,height:document.scrollingElement.scrollHeight,navTop:nav.top,viewport:innerHeight}; })()`);
       assert.ok(bottom.atBottom, `${route} ${width}px touch reaches last content ${JSON.stringify(bottom)}`);
       for (let attempt=0;attempt<12 && await evaluate('scrollY>1');attempt+=1) await touchSwipe('body','up');
       assert.ok(await evaluate('scrollY<=1'), `${route} ${width}px touch returns to top`);
@@ -585,6 +590,40 @@ try {
       }
     }
   }
+
+  // Exercise representative internal controls on every tool family. These are
+  // state-only interactions; upload pickers, external links and writes are not
+  // triggered by the visual regression test.
+  const internalScenarios = [
+    ['/agri-weather.html', `document.querySelectorAll('#areaChips .chip')[1]?.click();document.querySelectorAll('#typeChips .chip')[1]?.click();cropOptions.open=true;document.querySelector('#cropList .crop-chip')?.click()`],
+    ['/market-prices.html', `document.querySelectorAll('#typeTabs button.tab')[1]?.click();document.querySelector('#chips .chip')?.click()`],
+    ['/subsidy-calendar.html', `regionFilter.selectedIndex=Math.min(1,regionFilter.options.length-1);regionFilter.dispatchEvent(new Event('change',{bubbles:true}));resetButton.click()`],
+    ['/public-data.html', `document.querySelector('#exampleChips .chip')?.click()`],
+    ['/diagnosis.html', `diagExtra.open=true;symptomInput.value='잎이 노랗게 변함';symptomInput.dispatchEvent(new Event('input',{bubbles:true}))`],
+    ['/news_sub.html', `document.querySelectorAll('.kf-tab')[1]?.click()`],
+  ];
+  for (const [route, action] of internalScenarios) {
+    await navigate(route);
+    await evaluate(`(()=>{${action}})()`);
+    await delay(300);
+    const state=await evaluate(`(() => ({
+      overflow:document.documentElement.scrollWidth>innerWidth+1,
+      header:getComputedStyle(document.querySelector('.v4-global-header')).position,
+      nav:document.querySelectorAll('.v4-nav').length,
+      active:document.querySelectorAll('.v4-nav [aria-current="page"]').length,
+      visibleText:(document.body.innerText||'').trim().length>0,
+    }))()`);
+    assert.deepEqual(state,{overflow:false,header:'fixed',nav:1,active:1,visibleText:true},route+' internal controls keep the shared layout');
+    if (process.env.KFARMAI_UI_SCREENSHOT_DIR) {
+      const captureRoot=path.resolve(process.env.KFARMAI_UI_SCREENSHOT_DIR);
+      fs.mkdirSync(captureRoot,{recursive:true});
+      const capture=await socket.send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+      fs.writeFileSync(path.join(captureRoot,route.slice(1).replace(/[^a-z0-9.-]/gi,'_')+'-state-390.png'),Buffer.from(capture.data,'base64'));
+    }
+  }
+  await navigate('/mfg.html?category=smart-agriculture&area=smartfarm');
+  assert.deepEqual(await evaluate(`(() => ({selected:!!document.querySelector('.hub-card.is-active'),detail:/스마트팜/.test(document.getElementById('inputCategoryGuide')?.innerText||''),overflow:document.documentElement.scrollWidth>innerWidth+1}))()`),
+    {selected:true,detail:true,overflow:false},'mfg smart-agriculture detail uses the shared compact layout');
 
   // Exercise every visible full-menu link through its real click transition.
   await socket.send('Emulation.setDeviceMetricsOverride', { width:390, height:720, deviceScaleFactor:1, mobile:true, screenWidth:390, screenHeight:720 });

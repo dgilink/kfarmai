@@ -295,8 +295,8 @@
       matchingTargets: matchingTargets.length ? matchingTargets : ['ncpms', 'psis', 'agriWeather', 'cropGuide'],
       confidenceLevel: result.confidenceLevel || 'reference',
       needPublicDataMatching: true,
-      cautionText: firstText(result.cautionText, result.safetyNotice) || '이 결과는 AI 참고 진단이며 최종 판단이 아닙니다.',
-      nextActions: ['공공데이터 매칭 보고서 생성', 'AI 참고 진단 결과 저장', '관계기관 확인'],
+      cautionText: firstText(result.cautionText, result.safetyNotice) || 'AI 분석은 참고용이며 최종 판단이 아닙니다.',
+      nextActions: ['공공데이터 매칭 보고서 생성', 'AI진단 결과 저장', '관계기관 확인'],
       imageUrl: firstImageUrl(
         inputContext.imageUrl,
         inputContext.image_url,
