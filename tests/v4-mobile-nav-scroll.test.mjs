@@ -465,12 +465,14 @@ try {
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
         const surfaces=[document.body,document.querySelector('.app'),title,document.querySelector('.content'),...document.querySelectorAll('.content > *')].filter(Boolean);
+        const overflowNodes=surfaces.filter(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}).map(node=>{const rect=node.getBoundingClientRect();return {name:node.tagName+'.'+node.className,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width)}});
         return {
           text:brand?.textContent?.trim(),
           font:brand&&getComputedStyle(brand).fontSize,
           title:!!title && title.textContent.trim().length>0,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
-          overflow:surfaces.some(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}),
+          overflow:overflowNodes.length>0,
+          overflowNodes,
           headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=viewportWidth+1&&actions.right<=viewportWidth+1,
           actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=viewportWidth-110&&actions.right>=viewportWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
@@ -482,7 +484,7 @@ try {
           tabs:${JSON.stringify(route)}.includes('market-prices')?getComputedStyle(document.querySelector('#typeTabs')).display!=='none':true
         };
       })()`);
-      assert.deepEqual(toolUi,{text:'kFarmAI',font:width < 320?'21px':'24px',title:true,white:true,overflow:false,headerFits:true,actionsVisible:true,actionIcons:2,visual:width,narrow:true,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
+      assert.deepEqual(toolUi,{text:'kFarmAI',font:width < 320?'21px':'24px',title:true,white:true,overflow:false,overflowNodes:[],headerFits:true,actionsVisible:true,actionIcons:2,visual:width,narrow:true,active:1,activeLabel:'전체',squared:true,tabs:true}, route+' '+width+'px consistent flat tool design');
       const flatUi = await evaluate(`(() => ({
         loading:[...document.querySelectorAll('.loading')].every(el=>getComputedStyle(el).borderRadius==='0px'),
         cropIcon:[...document.querySelectorAll('.crop-icon')].every(el=>getComputedStyle(el).borderRadius==='0px'&&getComputedStyle(el).backgroundColor==='rgba(0, 0, 0, 0)')
@@ -588,13 +590,15 @@ try {
         const actions=document.querySelector('.v4-global-actions')?.getBoundingClientRect();
         const viewportWidth=Math.round(window.visualViewport?.width||innerWidth);
         const surfaces=[document.body,frame,globalHeader,nav,...document.querySelectorAll('.fixed-map-shell,.list-wrap,.map-panel,.kf-search-bar')].filter(Boolean);
+        const overflowNodes=surfaces.filter(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}).map(node=>{const rect=node.getBoundingClientRect();return {name:node.tagName+'.'+node.className,left:Math.round(rect.left),right:Math.round(rect.right),width:Math.round(rect.width)}});
         return {
           detail:document.body.classList.contains('v4-detail-page'),
           h1:!!document.querySelector('h1'),
           titleBelowHeader:!globalHeader||!firstHeading||firstHeading.getBoundingClientRect().top>=globalHeader.getBoundingClientRect().bottom-1,
           white:getComputedStyle(document.body).backgroundColor==='rgb(255, 255, 255)',
           footerWhite:!footer||getComputedStyle(footer).backgroundColor==='rgb(255, 255, 255)'||getComputedStyle(footer).backgroundColor==='rgba(0, 0, 0, 0)',
-          overflow:surfaces.some(node=>{const rect=node.getBoundingClientRect();return rect.left < -1 || rect.right > viewportWidth + 1}),
+          overflow:overflowNodes.length>0,
+          overflowNodes,
           headerFits:!!headerInner&&headerInner.left>=-1&&headerInner.right<=viewportWidth+1&&actions.right<=viewportWidth+1,
           actionsVisible:!!actions&&actions.width>=${width < 320 ? 83 : 90}&&actions.left>=viewportWidth-110&&actions.right>=viewportWidth-17&&getComputedStyle(document.querySelector('.v4-global-actions')).visibility==='visible',
           actionIcons:[...document.querySelectorAll('.v4-global-action .v4-nav-icon')].filter(icon=>{const rect=icon.getBoundingClientRect();const style=getComputedStyle(icon);return rect.width>=22&&rect.height>=22&&style.visibility==='visible'&&style.opacity==='1'}).length,
@@ -608,7 +612,7 @@ try {
           squared:controls.every(el=>getComputedStyle(el).borderRadius==='0px'),
         };
       })()`);
-      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,headerFits:true,actionsVisible:true,actionIcons:2,visual:width,narrow:true,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
+      assert.deepEqual(detailUi, {detail:true,h1:true,titleBelowHeader:true,white:true,footerWhite:true,overflow:false,overflowNodes:[],headerFits:true,actionsVisible:true,actionIcons:2,visual:width,narrow:true,navCount:4,active:1,activeLabel:'전체',frameFull:true,oldMenuHidden:true,squared:true}, route+' '+width+'px responsive detail design');
       if (route === '/agri_map.html') {
         await evaluate('window.scrollTo(0,240)');
         await delay(100);
