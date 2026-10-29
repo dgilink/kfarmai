@@ -106,6 +106,7 @@ try {
       .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-shell.css')))
       .update(fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js')))
       .update(fs.readFileSync(path.join(repoRoot, 'static/js/agri-info/agri-feed-ui.js')))
+      .update(fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js')))
       .digest('hex').slice(0, 16);
     for (const file of htmlFiles) {
       const html = fs.readFileSync(file, 'utf8');
@@ -120,6 +121,9 @@ try {
     const agriInfo = fs.readFileSync(path.join(artifactDir, 'agri-info.html'), 'utf8');
     assert.ok(agriInfo.includes(`/static/js/agri-info/agri-feed-ui.js?v=${expectedShellVersion}`),
       'agricultural feed UI uses the content-derived cache key');
+    const kbIndex = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
+    assert.ok(kbIndex.includes(`/static/js/kb-discovery.js?v=${expectedShellVersion}`),
+      'KB discovery UI uses the content-derived cache key');
     const kb = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
     assert.equal((kb.match(/data-category="재배노하우"/g) || []).length, 1);
     assert.ok(!kb.includes('data-category="식량작물·재배노하우"'));
