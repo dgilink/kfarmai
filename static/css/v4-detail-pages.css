@@ -336,6 +336,7 @@ body.v4-public-data-page .hero > p {
   width: min(calc(100% - 32px), var(--kf-detail-width));
   margin-inline: auto;
 }
+body.v4-public-data-page .hero > h1 { display: block; }
 body.v4-cases-page .content,
 body.v4-public-data-page .content { padding-inline: 0; }
 body.v4-cases-page .top-links { grid-template-columns: repeat(5, minmax(0, 1fr)); }
