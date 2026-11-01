@@ -44,7 +44,9 @@ check('Main swipe touch listeners remain passive with intact guarded targets',()
   assert.match(shell,/\{ passive: true, capture: true \}/);
   assert.match(shell,/swipeTouchId/);
   assert.match(shell,/insideHorizontalScroller/);
-  assert.doesNotMatch(shell,/document\.addEventListener\('touchmove'[\s\S]*?preventDefault\(/);
+  const moveHandler=shell.split("document.addEventListener('touchmove'")[1]?.split("document.addEventListener('touchend'")[0] || '';
+  assert.ok(moveHandler.length>0);
+  assert.doesNotMatch(moveHandler,/preventDefault\(/);
 });
 check('Community reuses a bounded public feed cache but does not cache signed-in posts',()=>{
   assert.match(channel,/localStorage\.setItem\(COMMUNITY_FEED_CACHE_KEY/);
