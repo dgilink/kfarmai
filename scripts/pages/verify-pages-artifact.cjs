@@ -1,3 +1,4 @@
+const { isLocalPhoto, isRasterFile } = require('./kb-list-photo.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -125,7 +126,8 @@ const files = walk(artifactDir);
 if (exists('data/kb-index.json')) {
   const kbIndex = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-index.json'), 'utf8'));
   if (!Array.isArray(kbIndex.items) || kbIndex.items.some((item) =>
-    Object.keys(item).sort().join(',') !== 'category,date,path,title'
+    !['category,date,path,title', 'category,date,image,path,title'].includes(Object.keys(item).sort().join(','))
+    || ('image' in item && (!isLocalPhoto(item.image) || !isRasterFile(artifactDir, item.image)))
     || !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path)
     || !exists(item.path.slice(1)))) {
     errors.push('KB index is not a safe published-content projection');

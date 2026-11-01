@@ -63,7 +63,7 @@ try {
       assert.equal(href, items[index].path, 'registry order and link preserved');
       assert.match(contents, /^((?:<img class="kb-list-thumb"[^>]+>)?)<span class="kb-list-copy"><small>[^<]+<\/small><strong>[^<]+<\/strong><\/span><span class="kb-list-arrow" aria-hidden="true">›<\/span>$/);
       assert.ok(contents.includes(items[index].date), 'published date shown in every row');
-      assert.ok(contents.startsWith('<img class="kb-list-thumb"'), 'representative thumbnail shown in every row');
+      assert.equal(contents.startsWith('<img class="kb-list-thumb"'), Boolean(items[index].image), 'photo when available, text fallback otherwise');
     }
     assert.ok(cards[0][0].includes('class="kb-card"'), 'newest article keeps the uniform thumbnail row');
   });
@@ -85,6 +85,8 @@ try {
     assert.ok(!smartfarm.includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
   });
 
+  function itemsWithPhotos() { return JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-index.json'), 'utf8')).items.filter(item => item.image); }
+
   test('knowledge list thumbnails use photos instead of article infographics', () => {
     const html = fs.readFileSync(path.join(artifactDir, 'kb/index.html'), 'utf8');
     const home = fs.readFileSync(path.join(artifactDir, 'index.html'), 'utf8');
@@ -92,23 +94,23 @@ try {
       'pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp',
       'autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp',
     ]) {
-      assert.ok(html.includes(`/static/kb/${file}`), file);
-      assert.ok(home.includes(`/static/kb/${file}`), file);
+      assert.ok(html.includes(`/static/kb/thumbnails/${file.replace(/\.webp$/, '')}-`), file);
+      assert.ok(itemsWithPhotos().some(item => item.image.includes(file.replace(/\.webp$/, ''))), file);
     }
     const listRegion = html.split('id="kbGrid"')[1]?.split('</div>')[0] || '';
     assert.ok(!listRegion.includes('-infographic.'), 'list thumbnails must not use infographics');
-    const irrigationPhoto = '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg';
+    const irrigationPhoto = '/static/kb/thumbnails/greenhouse-irrigation-precheck-photo-20261029-';
     assert.ok(listRegion.includes(irrigationPhoto), 'irrigation list uses the greenhouse irrigation photo');
     const smartfarmCard = listRegion.match(/href="\/kb\/strawberry-small-smartfarm\.html">([\s\S]*?)<\/a>/);
     const winterCard = listRegion.match(/href="\/kb\/strawberry-winter-light-humidity-check\.html">([\s\S]*?)<\/a>/);
     assert.ok(smartfarmCard && winterCard, 'both strawberry articles are in the KB list');
-    assert.ok(smartfarmCard[1].includes('/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp'));
-    assert.ok(winterCard[1].includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
-    assert.ok(!smartfarmCard[1].includes('/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp'));
+    assert.ok(smartfarmCard[1].includes('/static/kb/thumbnails/strawberry-small-smartfarm-sensor-reference-20261029-'));
+    assert.ok(winterCard[1].includes('/static/kb/thumbnails/strawberry-winter-light-humidity-check-hero-20261029-'));
+    assert.ok(!smartfarmCard[1].includes('/static/kb/thumbnails/strawberry-winter-light-humidity-check-hero-20261029-'));
   });
 
   test('dynamic knowledge cards use article photos rather than infographic thumbnails', () => {
-    const discovery = fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js'), 'utf8');
+    const discovery = fs.readFileSync(path.join(repoRoot, 'scripts/pages/kb-list-photo.cjs'), 'utf8');
     for (const slug of ['pear-harvest-sorting-cold-storage-five-checks', 'autumn-rain-wheat-barley-sowing-checklist']) {
       assert.ok(discovery.includes(`/static/kb/${slug}-photo-20261029.webp`), `${slug} uses a photo`);
       assert.ok(!discovery.includes(`/static/kb/${slug}-infographic.svg`), `${slug} list avoids infographic`);
@@ -132,6 +134,7 @@ try {
     assert.ok(htmlFiles.length > 100, 'public screen inventory');
     const expectedShellVersion = require('node:crypto').createHash('sha256')
       .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-shell.css')))
+      .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-1-main.css')))
       .update(fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js')))
       .update(fs.readFileSync(path.join(repoRoot, 'static/js/agri-info/agri-feed-ui.js')))
       .update(fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js')))
@@ -182,6 +185,23 @@ try {
   ];
   test('internal and development files are absent', () => {
     for (const file of mustNotExist) assert.ok(!fs.existsSync(path.join(artifactDir, file)), file);
+  });
+
+  test('photo projection rejects remote, missing and infographic URLs and unknown fields', () => {
+    const target = path.join(artifactDir, 'data/kb-index.json');
+    const original = fs.readFileSync(target, 'utf8');
+    for (const mutation of [
+      item => item.image = 'https://example.com/photo.jpg',
+      item => item.image = '/static/kb/missing-photo.jpg',
+      item => item.image = '/static/kb/kimchi-cabbage-heading-problems-infographic.svg',
+      item => item.private_metadata = 'not-public',
+    ]) {
+      const registry = JSON.parse(original);
+      mutation(registry.items[0]);
+      fs.writeFileSync(target, JSON.stringify(registry));
+      assert.notEqual(run('scripts/pages/verify-pages-artifact.cjs', [artifactDir]).status, 0);
+    }
+    fs.writeFileSync(target, original);
   });
 
   test('guard rejects a forbidden SQL file', () => {

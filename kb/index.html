@@ -39,8 +39,8 @@
     .kb-topic[aria-pressed="true"] { border-color:#126c43; background:#126c43; color:#fff; }
     .kb-grid { display:block; border-top:2px solid #17202a; }
     body.kb-index-page .kb-card { display:grid; grid-template-columns:88px minmax(0,1fr) 20px; align-items:center; gap:12px; min-height:78px; padding:10px 2px; border:0; border-bottom:1px solid #d8ded9; border-radius:0; background:#fff; color:#17202a; box-shadow:none; text-decoration:none; }
-    .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 20px; min-height:64px; }
-    .kb-list-thumb { display:block; width:88px; height:64px; object-fit:cover; background:#f1f4f1; }
+    body.kb-index-page .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 20px; min-height:64px; }
+    .kb-list-thumb { display:block; width:88px; height:auto; aspect-ratio:16/9; object-fit:cover; }
     .kb-list-copy { min-width:0; display:grid; gap:3px; }
     .kb-card strong { display:block; min-width:0; overflow:hidden; color:#17202a; font-size:15px; line-height:1.45; text-overflow:ellipsis; white-space:nowrap; }
     .kb-card small { overflow:hidden; color:#126c43; font-size:11px; font-weight:800; text-overflow:ellipsis; white-space:nowrap; }
@@ -51,8 +51,8 @@
       main { padding-top:20px; }
       body.kb-index-page .kb-card { grid-template-columns:78px minmax(0,1fr) 18px; gap:10px; min-height:76px; padding:10px 2px; }
       body.kb-index-page .kb-card.is-text-only { grid-template-columns:minmax(0,1fr) 18px; min-height:62px; }
-      .kb-list-thumb { width:78px; height:58px; }
-      .kb-card strong { display:-webkit-box; overflow:hidden; line-height:1.4; white-space:normal; word-break:keep-all; overflow-wrap:break-word; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+      .kb-list-thumb { width:78px; height:auto; aspect-ratio:16/9; }
+      .kb-card strong { display:-webkit-box; overflow:hidden; line-height:1.4; white-space:normal; word-break:keep-all; overflow-wrap:break-word; -webkit-box-orient:vertical; -webkit-line-clamp:3; }
     }
   </style>
   <script src="/static/js/v4-shell.js?v=20261029-header8" defer></script>
@@ -76,8 +76,8 @@
       <button class="kb-topic" type="button" data-category="스마트팜" aria-pressed="false">스마트팜</button>
     </div>
     <div id="kbGrid" class="kb-grid" aria-live="polite">
-      <a class="kb-card" data-topic="과수·수확후관리" href="/kb/pear-harvest-sorting-cold-storage-five-checks.html"><img class="kb-list-thumb" src="/static/kb/pear-harvest-sorting-cold-storage-five-checks-infographic.svg" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>과수·수확후관리 · 2026-10-28</small><strong>수확한 배 오래 보관하려면? 저장온도 0℃·습도 85~90%와 선별 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
-      <a class="kb-card" data-topic="재배노하우" href="/kb/autumn-rain-wheat-barley-sowing-checklist.html"><img class="kb-list-thumb" src="/static/kb/autumn-rain-wheat-barley-sowing-checklist-infographic.svg" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>식량작물·재배노하우 · 2026-10-27</small><strong>가을비에 늦어진 밀·보리 파종, 지금 확인할 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
+      <a class="kb-card" data-topic="과수·수확후관리" href="/kb/pear-harvest-sorting-cold-storage-five-checks.html"><img class="kb-list-thumb" src="/static/kb/pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>과수·수확후관리 · 2026-10-28</small><strong>수확한 배 오래 보관하려면? 저장온도 0℃·습도 85~90%와 선별 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
+      <a class="kb-card" data-topic="재배노하우" href="/kb/autumn-rain-wheat-barley-sowing-checklist.html"><img class="kb-list-thumb" src="/static/kb/autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>식량작물·재배노하우 · 2026-10-27</small><strong>가을비에 늦어진 밀·보리 파종, 지금 확인할 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
       <a class="kb-card" data-topic="재배노하우" href="/kb/strawberry-winter-light-humidity-check.html"><img class="kb-list-thumb" src="/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>식물병·재배노하우 · 2026-10-24</small><strong>겨울 앞둔 딸기 하우스, 빛·습도·보온 5가지 점검</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
       <a class="kb-card" data-topic="스마트팜" href="/kb/greenhouse-heating-preflight-notes.html"><img class="kb-list-thumb" src="/static/kb/greenhouse-heating-preflight-notes-hero.webp" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>스마트팜 · 2026-10-19</small><strong>겨울철 온실 난방 전 틈새·난방기·배관 확인 포인트</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
     </div>

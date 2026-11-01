@@ -5,6 +5,7 @@ const repoRoot = path.resolve(__dirname, '..', '..');
 const outputArg = process.argv.find((arg) => arg.startsWith('--output='));
 const outputDir = path.resolve(repoRoot, outputArg ? outputArg.slice('--output='.length) : '_site');
 const crypto = require('node:crypto');
+const { selectListPhoto } = require('./kb-list-photo.cjs');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
@@ -13,6 +14,7 @@ const crypto = require('node:crypto');
 // agriculture-feed UI source changes.
 const shellVersion = crypto.createHash('sha256')
   .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-shell.css')))
+  .update(fs.readFileSync(path.join(repoRoot, 'static/css/v4-1-main.css')))
   .update(fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js')))
   .update(fs.readFileSync(path.join(repoRoot, 'static/js/agri-info/agri-feed-ui.js')))
   .update(fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js')))
@@ -215,8 +217,6 @@ for (const entry of fs.readdirSync(path.join(outputDir, 'kb'), { withFileTypes: 
   const destination = path.join(outputDir, 'kb', entry.name);
   fs.writeFileSync(destination, renderKbV4(fs.readFileSync(destination), entry.name));
 }
-fs.writeFileSync(path.join(outputDir, 'data/kb-index.json'),
-  `${JSON.stringify({items: kbItems})}\n`, 'utf8');
 
 // Render the already-approved registry projection into the public home copy.
 // This avoids a late client-side card replacement becoming the LCP element.
@@ -245,26 +245,24 @@ if (kbStartAt < 0 || kbIndexSource.indexOf(kbIndexStart, kbStartAt + kbIndexStar
 }
 const kbEndAt = kbIndexSource.indexOf('</div>', kbStartAt + kbIndexStart.length);
 if (kbEndAt < 0) throw new Error('KB index listing boundary is incomplete.');
-// Media is limited to reviewed local public article assets.
-const kbListMedia = Object.freeze({
-  '/kb/pear-harvest-sorting-cold-storage-five-checks.html': '/static/kb/pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp',
-  '/kb/autumn-rain-wheat-barley-sowing-checklist.html': '/static/kb/autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp',
-  '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
-  '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
-  // CC0 1.0 photo: Alabama Extension / Bruce Dupree, via Wikimedia Commons,
-  // File:Irrigation in a Greenhouse.jpg. Used only as the compact list photo.
-  '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg',
-  '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
-  '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp',
-});
+// One public photo projection drives first paint and client-side filtering.
+// Read only the verified, rendered article; immutable sources stay untouched.
+for (const item of kbItems) {
+  const html = fs.readFileSync(path.join(outputDir, item.path.slice(1)), 'utf8');
+  const image = selectListPhoto(outputDir, item.path, html);
+  if (image) item.image = image;
+}
+fs.writeFileSync(path.join(outputDir, 'data/kb-index.json'),
+  `${JSON.stringify({items: kbItems})}\n`, 'utf8');
+
 const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
 const kbIndexCards = kbItems.map((item, index) => {
-  const image = kbListMedia[item.path];
+  const image = item.image;
   if (image && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
     throw new Error('Approved KB list image missing: ' + image);
   }
   const thumb = image ? '<img class="kb-list-thumb" src="' + image +
-    '" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">' : '';
+    '" alt="" width="320" height="180" loading="' + (index < 4 ? 'eager' : 'lazy') + '" decoding="async">' : '';
   const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) + ' · ' + item.date +
     '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
   return '<a class="kb-card' + (image ? '' : ' is-text-only') +
@@ -296,12 +294,12 @@ fs.writeFileSync(kbIndexPath, kbIndexWithCards.slice(0, kbTopicsAt) + kbTopicsSt
 
 // Home follows the same newest-first registry order and compact thumbnail system.
 const homeItems = [...kbItems];
-const cards = homeItems.slice(0, 4).map(item => {
+const cards = homeItems.slice(0, 4).map((item, index) => {
   const meta = `<small>${escapeHtml(item.category)} · ${item.date}</small>`;
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
-  const image = kbListMedia[item.path];
+  const image = item.image;
   return `<a class="kb-card${image ? '' : ' is-text-only'}" data-topic="${escapeHtml(kbTopicKey(item.category))}" href="${item.path}">${image
-    ? `<img class="kb-list-thumb" src="${image}" alt="" width="92" height="62" loading="eager" fetchpriority="high" decoding="sync">`
+    ? `<img class="kb-list-thumb" src="${image}" alt="" width="320" height="180" loading="eager"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">`
     : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
 }).join('');
 fs.writeFileSync(homePath,
@@ -345,6 +343,7 @@ function applyGlobalShellToHtml(filePath) {
     .replace(/\/?static\/css\/v4-shell\.css\?v=[^"']+/g, shellCssHref)
     .replace(/\/?static\/js\/v4-shell\.js\?v=[^"']+/g, shellJsSrc)
     .replace(/\/?static\/js\/agri-info\/agri-feed-ui\.js(?:\?v=[^"']*)?/g, agriFeedUiSrc)
+    .replace(/\/?static\/css\/v4-1-main\.css(?:\?v=[^"']*)?/g, `/static/css/v4-1-main.css?v=${shellVersion}`)
     .replace(/\/?static\/js\/kb-discovery\.js(?:\?v=[^"']*)?/g, kbDiscoverySrc);
   const assets = [];
   if (!/static\/css\/v4-shell\.css/i.test(html)) {

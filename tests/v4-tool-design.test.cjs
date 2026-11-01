@@ -257,7 +257,7 @@ test('home and community share stable first-paint feed cache and prioritize visi
   assert.match(home,/fetchpriority="high"/);
   assert.match(channel,/thumbLoading=index<2\?'eager':'lazy'/);
   assert.match(channel,/width="84" height="84"/);
-  assert.match(builder,/width="92" height="62"/);
+  assert.match(builder,/width="320" height="180"/);
 });
 
 test('AI diagnosis uses the compact name and white responsive upload surface', () => {

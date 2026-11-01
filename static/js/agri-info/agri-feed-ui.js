@@ -22,10 +22,7 @@
   ]);
 
   let feedPromise;
-  const KB_HOME_MEDIA = Object.freeze({
-    '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg',
-    '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp'
-  });
+
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -261,24 +258,29 @@
       const source = await response.json();
       const items = (Array.isArray(source?.items) ? source.items : []).map(item => ({
         title: String(item?.title || '').trim(), category: String(item?.category || '').trim(),
-        date: String(item?.date || '').trim(), path: safeUrl(item?.path)
+        date: String(item?.date || '').trim(), path: safeUrl(item?.path),
+        image: typeof item?.image === 'string' && /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(item.image)
+          && !/infographic|diagram/i.test(item.image) ? item.image : ''
       })).filter(item => item.title && item.category && /^\d{4}-\d{2}-\d{2}$/.test(item.date)
         && item.path && new URL(item.path).pathname.startsWith('/kb/'))
         .sort((a, b) => b.date.localeCompare(a.date));
       root.replaceChildren(...items.map(item => {
         const link = element('a', 'agri-kb-row');
         link.href = new URL(item.path).pathname;
-        const media = KB_HOME_MEDIA[new URL(item.path).pathname];
+        const media = item.image;
         if (media) {
           const image = element('img', 'agri-kb-thumb');
           image.src = media;
           image.alt = '';
           image.loading = 'lazy';
+          image.decoding = 'async';
+          image.width = 320;
+          image.height = 180;
           image.addEventListener('error', () => image.remove(), { once: true });
           link.append(image);
         }
         const copy = element('span', 'agri-kb-copy');
-        copy.append(element('small', '', item.category), element('strong', '', item.title));
+        copy.append(element('small', '', `${item.category} · ${item.date}`), element('strong', '', item.title));
         link.append(copy, element('span', 'agri-kb-arrow', '›'));
         return link;
       }));

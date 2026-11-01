@@ -3,19 +3,28 @@
   const indexGrid = document.getElementById('kbGrid');
   const homeGrid = document.getElementById('homeKbCards');
   if (!indexGrid && !homeGrid) return;
+  // Capture also covers pre-rendered images, before the static-home fast exit.
+  const dropBrokenPhoto = image => {
+    const link = image.closest('.kb-card');
+    if (!link) return;
+    image.remove();
+    link.classList.add('is-text-only');
+  };
+  for (const grid of [indexGrid, homeGrid].filter(Boolean)) {
+    grid.addEventListener('error', event => {
+      if (event.target.matches?.('img.kb-list-thumb')) dropBrokenPhoto(event.target);
+    }, true);
+    for (const image of grid.querySelectorAll('img.kb-list-thumb')) {
+      if (image.complete && !image.naturalWidth) dropBrokenPhoto(image);
+    }
+  }
   if (!indexGrid && homeGrid?.dataset.kbStatic === '1') return;
   const search = document.getElementById('kbSearch');
   const topics = document.getElementById('kbTopics');
   const status = document.getElementById('kbStatus');
-  const listImages = Object.freeze({
-    '/kb/pear-harvest-sorting-cold-storage-five-checks.html': '/static/kb/pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp',
-    '/kb/autumn-rain-wheat-barley-sowing-checklist.html': '/static/kb/autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp',
-    '/kb/autumn-cabbage-october-disease-field-checklist.html': '/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png',
-    '/kb/greenhouse-heating-preflight-notes.html': '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
-    '/kb/greenhouse-irrigation-precheck.html': '/static/kb/greenhouse-irrigation-precheck-photo-20261029.jpg',
-    '/kb/strawberry-winter-light-humidity-check.html': '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
-    '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp'
-  });
+  const safePhoto = value => typeof value === 'string' &&
+    /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(value) &&
+    !/infographic|diagram|checklist-(?:graphic|chart)/i.test(value) ? value : '';
   const safePath = (value) => {
     try {
       const url = new URL(value, location.origin);
@@ -23,7 +32,7 @@
         /^\/kb\/[a-z0-9-]+\.html$/.test(url.pathname) ? url.pathname : null;
     } catch { return null; }
   };
-  const card = (item, compactList = false) => {
+  const card = (item, index = 0) => {
     const link = document.createElement('a');
     link.className = 'kb-card';
     link.href = item.path;
@@ -32,46 +41,27 @@
     meta.textContent = `${item.category} · ${item.date}`;
     const title = document.createElement('strong');
     title.textContent = item.title;
-    if (compactList) {
-      const copy = document.createElement('span');
-      copy.className = 'kb-list-copy';
-      copy.append(meta, title);
-      if (item.image) {
-        const image = document.createElement('img');
-        image.className = 'kb-list-thumb';
-        image.src = item.image;
-        image.alt = '';
-        image.loading = 'eager';
-        image.fetchPriority = 'high';
-        image.decoding = 'sync';
-        link.append(image);
-      } else {
-        link.classList.add('is-text-only');
-      }
-      const arrow = document.createElement('span');
-      arrow.className = 'kb-list-arrow';
-      arrow.setAttribute('aria-hidden', 'true');
-      arrow.textContent = '›';
-      link.append(copy, arrow);
-      return link;
-    }
-    const action = document.createElement('span');
-    action.className = 'kb-list-arrow';
-    action.setAttribute('aria-hidden', 'true');
-    action.textContent = '›';
-    if (homeGrid && item.homeImage) {
+    const copy = document.createElement('span');
+    copy.className = 'kb-list-copy';
+    copy.append(meta, title);
+    if (item.image) {
       const image = document.createElement('img');
-      image.src = item.homeImage;
+      image.className = 'kb-list-thumb';
+      image.src = item.image;
       image.alt = '';
-      image.loading = 'eager';
+      image.width = 320;
+      image.height = 180;
+      image.loading = index < 4 ? 'eager' : 'lazy';
       image.decoding = 'async';
-      const copy = document.createElement('span');
-      copy.className = 'v41-kb-copy';
-      copy.append(meta, title);
-      link.append(image, copy);
+      link.append(image);
     } else {
-      link.append(meta, title, action);
+      link.classList.add('is-text-only');
     }
+    const arrow = document.createElement('span');
+    arrow.className = 'kb-list-arrow';
+    arrow.setAttribute('aria-hidden', 'true');
+    arrow.textContent = '›';
+    link.append(copy, arrow);
     return link;
   };
   let items = [];
@@ -101,12 +91,12 @@
       // The Pages artifact already contains the complete approved list. Keep its
       // first-paint nodes (and in-progress image loads) until a real filter action.
       const keepServerList = initialIndexDraw && indexGrid.dataset.kbStatic === '1' && !q && !selectedCategory;
-      if (!keepServerList) indexGrid.replaceChildren(...matches.map(item => card(item, true)));
+      if (!keepServerList) indexGrid.replaceChildren(...matches.map((item, index) => card(item, index)));
       initialIndexDraw = false;
       if (status) status.textContent = matches.length ? `${matches.length}개 참고자료` :
         '일치하는 글이 없습니다. 검색어를 바꿔보세요.';
     }
-    if (homeGrid) homeGrid.replaceChildren(...items.slice(0, 4).map(item => card(item, true)));
+    if (homeGrid) homeGrid.replaceChildren(...items.slice(0, 4).map((item, index) => card(item, index)));
   }
   fetch('/data/kb-index.json', {cache: 'no-store'})
     .then(response => { if (!response.ok) throw Error('registry'); return response.json(); })
@@ -117,8 +107,7 @@
         category: String(value.category || ''),
         date: String(value.date || ''),
         path: safePath(value.path),
-        image: listImages[safePath(value.path)] || '',
-        homeImage: listImages[safePath(value.path)] || ''
+        image: safePhoto(value.image)
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
       renderTopics();
