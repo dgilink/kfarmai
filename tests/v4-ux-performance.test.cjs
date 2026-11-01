@@ -20,6 +20,7 @@ check('Only adjacent public HTML documents warm in idle, not private data APIs',
   assert.match(shell,/const warmTargets = \['\/index\.html', '\/channel\.html', '\/kb\/index\.html'\]/);
   assert.match(shell,/warmTargets\[currentIndex - 1\], warmTargets\[currentIndex \+ 1\]/);
   assert.match(shell,/requestIdleCallback\(warmNavigation/);
+  assert.match(shell,/event\?\.type === 'pointerdown' && !event\.target\.closest\?\.\('a'\)/);
   const warmSection=shell.split('const warmTargets = ')[1].split('const tabIndex =')[0];
   assert.doesNotMatch(warmSection,/fetch\s*\(/);
   assert.doesNotMatch(warmSection,/\bprerender\b/);
