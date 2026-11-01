@@ -270,7 +270,9 @@
     else window.setTimeout(run, 600);
   };
   window.KFWarmVisibleMedia = warmVisibleMedia;
-  const warmNavigation = () => {
+  const warmNavigation = event => {
+    // Opening the full menu is a UI-only action: never start a fetch on its pointerdown.
+    if (event?.type === 'pointerdown' && !event.target.closest?.('a')) return;
     if (!canWarm()) return;
     const currentIndex = warmTargets.indexOf(location.pathname === '/' ? '/index.html' : location.pathname);
     if (currentIndex < 0) return;
