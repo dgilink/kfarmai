@@ -287,7 +287,8 @@
     if (href) warmDocument(href);
   };
   nav.addEventListener('pointerover', warmNavTarget, {passive:true});
-  nav.addEventListener('pointerdown', warmNavTarget, {passive:true});
+  // Preserve existing pointerdown warming contract while keeping its workload adjacent-only.
+  nav.addEventListener('pointerdown', warmNavigation, {passive:true});
   nav.addEventListener('focusin', warmNavTarget);
 
   const tabIndex = { home: 0, community: 1, knowledge: 2 }[active];
