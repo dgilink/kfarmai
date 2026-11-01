@@ -103,6 +103,172 @@
       ],
       "image_credit": "Choe YongWoo (CC0)",
       "image_source": "https://commons.wikimedia.org/wiki/File:Korean_pear_2.jpg"
+    },
+    {
+      "category": "식물병",
+      "date": "2026-11-01",
+      "slug": "kimchi-cabbage-heading-problems",
+      "title": "김장 배추가 안 차고 잎이 이상할 때 확인할 5가지",
+      "url": "https://kfarmai.com/kb/kimchi-cabbage-heading-problems.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://ncpms.rda.go.kr/npms/consult/ConsultDtlR.np?dgnssReqNo=8738",
+        "https://www.rda.go.kr/middlePopOpenPopNongsaroDBView.do?no=2346",
+        "https://psis.rda.go.kr/"
+      ],
+      "image_credit": "KFarmAI 기존 검수 자산",
+      "image_source": "/static/kb/autumn-cabbage-october-disease-field-checklist-hero.png"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-01",
+      "slug": "kimchi-cabbage-harvest-timing",
+      "title": "김장 배추 수확시기, 너무 일러도 늦어도 안 되는 이유",
+      "url": "https://kfarmai.com/kb/kimchi-cabbage-harvest-timing.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?boardId=farmlcltinfo&currPage=7&dataNo=100000783326&mode=updateCnt&prgId=day_farmlcltinfoEntry"
+      ],
+      "image_credit": "Wikimedia Commons 공개 이미지",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Gyeongju-Hanok%20and%20vegetable%20field-01.jpg?width=1280"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-01",
+      "slug": "kimchi-radish-harvest-storage",
+      "title": "김장 무 수확시기와 수확 후 저장할 때 주의할 점",
+      "url": "https://kfarmai.com/kb/kimchi-radish-harvest-storage.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.nongsaro.go.kr/portal/ps/psb/psby/vodPlay.ps?menuId=PS65512&mvpNo=2075"
+      ],
+      "image_credit": "Choe YongWoo, CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Korean%20radish%20field.jpg?width=1280"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-01",
+      "slug": "late-garlic-planting-winter-care",
+      "title": "마늘을 늦게 심었다면? 겨울 오기 전 꼭 확인할 월동 관리",
+      "url": "https://kfarmai.com/kb/late-garlic-planting-winter-care.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000806269&mode=view&prgId=day_farmprmninfoEntry"
+      ],
+      "image_credit": "Steve46814, CC BY-SA 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Goheunggun-Garlic%20harvest%204243-06.JPG?width=1280"
+    },
+    {
+      "category": "식물병·재배노하우",
+      "date": "2026-11-01",
+      "slug": "onion-winter-care-downy-mildew",
+      "title": "양파 겨울나기, 한파 전에 해야 할 보온·배수·노균병 관리",
+      "url": "https://kfarmai.com/kb/onion-winter-care-downy-mildew.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000806269&mode=view&prgId=day_farmprmninfoEntry",
+        "https://psis.rda.go.kr/"
+      ],
+      "image_credit": "Robert, CC BY 3.0",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Andong-Gohari-Harvesting%20onions-02.jpg?width=1280"
+    },
+    {
+      "category": "식물병",
+      "date": "2026-11-01",
+      "slug": "strawberry-gray-mold-powdery-mildew-winter",
+      "title": "겨울 딸기 잿빛곰팡이병·흰가루병, 습도 관리가 중요한 이유",
+      "url": "https://kfarmai.com/kb/strawberry-gray-mold-powdery-mildew-winter.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?boardId=farmlcltinfo&dataNo=100000799868&mode=updateCnt&prgId=day_farmlcltinfoEntry",
+        "https://ncpms.rda.go.kr/npms/SicknsInfoDtlR.np?sicknsListNo=D00000459&totalSearchYn=Y",
+        "https://psis.rda.go.kr/"
+      ],
+      "image_credit": "USDA/ARS 공개 이미지",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Keepsake_Strawberry_by_USDA_(20210216-ARS-LSC-0004).jpg?width=1280"
+    },
+    {
+      "category": "식물병·재배노하우",
+      "date": "2026-11-01",
+      "slug": "winter-tomato-condensation-morning-care",
+      "title": "겨울 토마토 하우스 결로, 잿빛곰팡이병 줄이는 아침 관리",
+      "url": "https://kfarmai.com/kb/winter-tomato-condensation-morning-care.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?boardId=farmlcltinfo&dataNo=100000791156&mode=updateCnt&prgId=day_farmlcltinfoEntry",
+        "https://psis.rda.go.kr/"
+      ],
+      "image_credit": "Choi Kwang-mo, CC0",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/2020-05-09%2013.18.44%20tomato%20greenhouse.jpg?width=1280"
+    },
+    {
+      "category": "스마트팜",
+      "date": "2026-11-01",
+      "slug": "greenhouse-heating-cost-saving-guide",
+      "title": "겨울 시설하우스 난방비 줄이는 방법, 먼저 점검할 6가지",
+      "url": "https://kfarmai.com/kb/greenhouse-heating-cost-saving-guide.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000793479&mode=view&prgId=day_farmprmninfoEntry",
+        "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo&dataNo=100000800704&mode=updateCnt&prgId=day_farmprmninfoEntry"
+      ],
+      "image_credit": "KFarmAI 기존 검수 자산",
+      "image_source": "/static/kb/greenhouse-heating-preflight-notes-hero.webp"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-01",
+      "slug": "winter-strawberry-pollination-bees",
+      "title": "겨울 딸기 재배, 화분매개벌은 언제부터 준비해야 할까",
+      "url": "https://kfarmai.com/kb/winter-strawberry-pollination-bees.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo&dataNo=100000813244&mode=updateCnt&prgId=day_farmprmninfoEntry",
+        "https://psis.rda.go.kr/"
+      ],
+      "image_credit": "Wikimedia Commons 공개 이미지",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Strawberry%20greenhouse.jpg?width=1280"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-01",
+      "slug": "2027-organic-agri-input-support",
+      "title": "2027 유기농업자재지원, 11~12월 신청 전에 확인할 것",
+      "url": "https://kfarmai.com/kb/2027-organic-agri-input-support.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://www.mafra.go.kr/bbs/home/792/582080/artclView.do"
+      ],
+      "image_credit": "KFarmAI 기존 검수 실사 자산",
+      "image_source": "/static/kb/autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp"
+    },
+    {
+      "category": "아쿠아팜",
+      "date": "2026-11-01",
+      "slug": "land-based-aquafarm-winter-checklist",
+      "title": "육상 아쿠아팜 겨울 준비, 저수온보다 먼저 확인할 5가지",
+      "url": "https://kfarmai.com/kb/land-based-aquafarm-winter-checklist.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://nifs.go.kr/cmmn/file/climatechange_02.pdf",
+        "https://www.nifs.go.kr/cmmn/file/farm/farm_28.pdf"
+      ],
+      "image_credit": "NOAA, Public Domain",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Shrimp%20hatchery.jpg?width=1280"
+    },
+    {
+      "category": "아쿠아팜·스마트팜",
+      "date": "2026-11-01",
+      "slug": "ras-do-land-based-aquaculture-basics",
+      "title": "RAS와 DO, 겨울 육상양식장에서 꼭 알아야 할 기본 개념",
+      "url": "https://kfarmai.com/kb/ras-do-land-based-aquaculture-basics.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "source_urls": [
+        "https://nifs.go.kr/cmmn/file/climatechange_02.pdf",
+        "https://www.nifs.go.kr/cmmn/file/farm/farm_28.pdf"
+      ],
+      "image_credit": "NOAA, Public Domain",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Shrimp%20postlarvae%20stocking.jpg?width=1280"
     }
   ]
 }
