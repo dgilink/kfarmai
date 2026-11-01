@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1450" viewBox="0 0 1200 1450" role="img" aria-labelledby="title desc">
+  <title id="title">양파 월동 전 포장 점검 순서</title>
+  <desc id="desc">배수로, 피복 고정, 뿌리와 잎 상태를 순서대로 살펴보는 세 단계 현장 점검도</desc>
+  <rect width="1200" height="1450" fill="#fff"/>
+  <path d="M64 105h1072" stroke="#126c43" stroke-width="8"/>
+  <text x="64" y="75" fill="#172019" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="58" font-weight="800">양파 월동 전 포장 점검</text>
+  <text x="64" y="165" fill="#52635a" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="31">한파 전에 물길과 피복, 포기 상태를 차례로 확인하세요</text>
+
+  <text x="64" y="262" fill="#126c43" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="36" font-weight="800">01  배수로 확인</text>
+  <text x="64" y="314" fill="#172019" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="32">이랑 사이와 밭 가장자리의 물길을 잇습니다</text>
+  <path d="M100 455h320l85-100h190l85 100h320" fill="none" stroke="#73583b" stroke-width="14" stroke-linejoin="round"/>
+  <path d="M422 445v75h90l45-75m225 0 45 75h95v-75" fill="none" stroke="#1883a5" stroke-width="12" stroke-linecap="round"/>
+  <path d="m498 514-30 24m30-24-35-8m364 8 30 24m-30-24 35-8" fill="none" stroke="#1883a5" stroke-width="10" stroke-linecap="round"/>
+  <path d="M580 454v-90m0 35-39-40m39 40 42-43M680 454v-90m0 35-39-40m39 40 42-43" fill="none" stroke="#26764f" stroke-width="13" stroke-linecap="round"/>
+  <path d="M64 590h1072" stroke="#d8ded9" stroke-width="3"/>
+
+  <text x="64" y="674" fill="#126c43" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="36" font-weight="800">02  피복 고정 확인</text>
+  <text x="64" y="726" fill="#172019" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="32">바람에 들리지 않고 배수구를 막지 않도록</text>
+  <path d="M110 944h980" stroke="#73583b" stroke-width="14" stroke-linecap="round"/>
+  <path d="M205 915q390-260 790 0" fill="none" stroke="#a7c8ae" stroke-width="28" stroke-linecap="round"/>
+  <path d="m205 916-35 42m825-42 35 42" fill="none" stroke="#52635a" stroke-width="14" stroke-linecap="round"/>
+  <path d="M510 943v-99m0 34-32-34m32 34 31-34m180 99v-99m0 34-32-34m32 34 31-34" fill="none" stroke="#26764f" stroke-width="13" stroke-linecap="round"/>
+  <path d="M64 1010h1072" stroke="#d8ded9" stroke-width="3"/>
+
+  <text x="64" y="1090" fill="#126c43" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="36" font-weight="800">03  뿌리·잎 상태 확인</text>
+  <text x="64" y="1142" fill="#172019" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="32">들뜬 포기와 의심 병반을 따로 살펴봅니다</text>
+  <path d="M120 1300h370m145 0h410" stroke="#73583b" stroke-width="11" stroke-linecap="round"/>
+  <path d="M290 1300v-126m0 64-50-60m50 60 48-69m480 131v-130m0 59-57-62m57 62 51-61" fill="none" stroke="#26764f" stroke-width="16" stroke-linecap="round"/>
+  <path d="M290 1300q-45 90-105 30m105-30q38 91 105 25m423-25q-38 79-89 30m89-30q41 85 96 29" fill="none" stroke="#73583b" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="855" cy="1195" r="15" fill="none" stroke="#9b6537" stroke-width="7"/>
+  <text x="64" y="1402" fill="#52635a" font-family="Noto Sans KR,Malgun Gothic,sans-serif" font-size="25">병해 의심 시 지역 기술센터와 농약안전정보시스템(PSIS)을 확인하세요</text>
+</svg>

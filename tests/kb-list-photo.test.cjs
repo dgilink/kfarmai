@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { isLocalPhoto, selectListPhoto, reviewedPhotos } = require('../scripts/pages/kb-list-photo.cjs');
+const { isLocalPhoto, isRasterFile, selectListPhoto, reviewedPhotos } = require('../scripts/pages/kb-list-photo.cjs');
 const repo = path.resolve(__dirname, '..');
 
 function fixture(run) {
@@ -67,3 +67,33 @@ test('a stale thumbnail filename cannot replace changed photo bytes', () => fixt
 test('a missing reviewed photo fails the build instead of selecting its old infographic hero', () => fixture(root => {
   assert.throws(() => selectListPhoto(root, '/kb/greenhouse-irrigation-precheck.html', ''), /Reviewed KB photo missing/);
 }));
+
+test('all November 1 articles use a real local photo for the list and keep reader infographics in the body', () => {
+  const slugs = [
+    'kimchi-cabbage-heading-problems', 'kimchi-cabbage-harvest-timing',
+    'kimchi-radish-harvest-storage', 'late-garlic-planting-winter-care',
+    'onion-winter-care-downy-mildew', 'strawberry-gray-mold-powdery-mildew-winter',
+    'winter-tomato-condensation-morning-care', 'greenhouse-heating-cost-saving-guide',
+    'winter-strawberry-pollination-bees', '2027-organic-agri-input-support',
+    'land-based-aquafarm-winter-checklist', 'ras-do-land-based-aquaculture-basics',
+  ];
+  for (const slug of slugs) {
+    const articlePath = `/kb/${slug}.html`;
+    const html = fs.readFileSync(path.join(repo, articlePath.slice(1)), 'utf8');
+    assert.equal((html.match(/data-media-role="hero_photo"/g) || []).length, 1, slug);
+    assert.equal((html.match(/reader-infographic-20261101\.webp/g) || []).length, 1, slug);
+    const image = selectListPhoto(repo, articlePath, html);
+    assert.match(image, /^\/static\/kb\/thumbnails\/.*-[a-f0-9]{12}\.webp$/, slug);
+    assert.doesNotMatch(image, /infographic/, slug);
+    assert.ok(isRasterFile(repo, image), slug);
+    assert.ok(fs.statSync(path.join(repo, image.slice(1))).size < 40000, slug);
+  }
+});
+
+test('the additional onion field diagram stays in the article and never becomes a list image', () => {
+  const articlePath = '/kb/onion-winter-care-downy-mildew.html';
+  const html = fs.readFileSync(path.join(repo, articlePath.slice(1)), 'utf8');
+  assert.match(html, /src="\/static\/kb\/onion-winter-care-field-check-20261101\.svg"/);
+  assert.match(html, /src="\/static\/kb\/late-garlic-planting-winter-care-reader-infographic-20261101\.webp"/);
+  assert.doesNotMatch(selectListPhoto(repo, articlePath, html), /infographic|field-check/);
+});

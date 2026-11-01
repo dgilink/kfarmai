@@ -44,6 +44,6 @@ test('unverified licenses are never called freely reusable',()=>pages.forEach(pa
 test('pages provide no dead core links',()=>pages.forEach(page=>assert.doesNotMatch(page,/href="(?:#|javascript:|)"/i)));
 test('heading hierarchy starts at H1 and never skips levels',()=>pages.forEach(page=>{const levels=[...page.matchAll(/<h([1-3])\b/g)].map(match=>Number(match[1]));assert.equal(levels[0],1);for(let i=1;i<levels.length;i++)assert.ok(levels[i]-levels[i-1]<=1)}));
 test('legacy input detail pages remain present',()=>['santo.html','seed.html','cpa.html','fert.html'].forEach(file=>assert.ok(exists(file),file)));
-test('only the two approved priority SEO page filenames exist',()=>{const names=fs.readdirSync(path.join(root,'kb')).filter(name=>/aquaculture|aquafarm|ras/i.test(name));assert.deepEqual(names.sort(),[path.basename(waterPath),path.basename(rasPath)].sort())});
+test('both approved priority SEO page filenames remain present alongside later articles',()=>{const names=fs.readdirSync(path.join(root,'kb')).filter(name=>/aquaculture|aquafarm|ras/i.test(name));for(const priority of [path.basename(waterPath),path.basename(rasPath)])assert.ok(names.includes(priority),priority)});
 
 process.stdout.write('Phase 5B-3 priority SEO contracts: '+passed+'/'+passed+' PASS\n');
