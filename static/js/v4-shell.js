@@ -219,8 +219,26 @@
   window.addEventListener('popstate', closeMenu);
   nav.append(menuButton);
   document.body.append(menu, nav);
+  // Read-only navigation hints: warm only the closest next tab rather than
+  // eagerly competing with the current page's API, images and text painting.
   const warmTargets = ['/index.html', '/channel.html', '/kb/index.html'];
-  const warmImages = [];
+  const warmedDocuments = new Set();
+  const warmedImages = new Set();
+  let imageWarmPending = false;
+  const canWarm = () => {
+    const connection = navigator.connection;
+    return !connection?.saveData && !/(?:^|-)2g$/.test(connection?.effectiveType || '');
+  };
+  const warmDocument = href => {
+    if (!canWarm() || !warmTargets.includes(href) || href === location.pathname
+        || location.pathname === '/' && href === '/index.html' || warmedDocuments.has(href)) return;
+    warmedDocuments.add(href);
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = href;
+    link.as = 'document';
+    document.head.append(link);
+  };
   const cachedFeedImages = () => {
     try {
       const cached = JSON.parse(localStorage.getItem('kfarmai_public_feed_v2') || 'null');
@@ -231,44 +249,49 @@
         if (typeof value !== 'string') return [];
         try { const parsed = JSON.parse(value); return Array.isArray(parsed) ? parsed : [value]; }
         catch { return [value]; }
-      }).filter(value => /^https?:\/\//.test(String(value))).slice(0, 3);
+      }).filter(value => /^https?:\/\//.test(String(value))).slice(0, 2);
     } catch { return []; }
   };
   const warmVisibleMedia = () => {
-    if (navigator.connection?.saveData) return;
-    const sources = [
-      ...cachedFeedImages(),
-      '/static/kb/pear-harvest-sorting-cold-storage-five-checks-infographic.svg',
-      '/static/kb/autumn-rain-wheat-barley-sowing-checklist-infographic.svg',
-      '/static/kb/strawberry-winter-light-humidity-check-hero-20261029.webp',
-      '/static/kb/greenhouse-heating-preflight-notes-hero.webp',
-    ];
-    for (const src of [...new Set(sources)]) {
-      if (warmImages.some(image => image.src === new URL(src, location.href).href)) continue;
-      const image = new Image();
-      image.decoding = 'sync';
-      image.src = src;
-      image.decode?.().catch(() => {});
-      warmImages.push(image);
-    }
+    if (!canWarm() || imageWarmPending) return;
+    imageWarmPending = true;
+    const run = () => {
+      imageWarmPending = false;
+      for (const src of cachedFeedImages()) {
+        if (warmedImages.has(src)) continue;
+        warmedImages.add(src);
+        const image = new Image();
+        image.decoding = 'async';
+        image.src = src;
+        image.decode?.().catch(() => {});
+      }
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(run, {timeout:1600});
+    else window.setTimeout(run, 600);
   };
   window.KFWarmVisibleMedia = warmVisibleMedia;
-  const warmNavigation = () => {
-    if (navigator.connection?.saveData) return;
-    for (const href of warmTargets) {
-      if (location.pathname === href || location.pathname === '/' && href === '/index.html') continue;
-      if (document.head.querySelector(`link[rel="prefetch"][href="${href}"]`)) continue;
-      const link = document.createElement('link');
-      link.rel = 'prefetch';
-      link.href = href;
-      link.as = 'document';
-      document.head.append(link);
+  const warmNavigation = event => {
+    // Opening the full menu is a UI-only action: never start a fetch on its pointerdown.
+    if (event?.type === 'pointerdown' && !event.target.closest?.('a')) return;
+    if (!canWarm()) return;
+    const currentIndex = warmTargets.indexOf(location.pathname === '/' ? '/index.html' : location.pathname);
+    if (currentIndex < 0) return;
+    for (const href of [warmTargets[currentIndex - 1], warmTargets[currentIndex + 1]]) {
+      if (href) warmDocument(href);
     }
-    warmVisibleMedia();
   };
   if ('requestIdleCallback' in window) requestIdleCallback(warmNavigation, {timeout:1200});
   else window.setTimeout(warmNavigation, 350);
+  // Warm the actual target on mouse hover/keyboard focus; never fetch private
+  // endpoints, never pre-render authenticated routes in the background.
+  const warmNavTarget = event => {
+    const href = event.target.closest?.('a')?.getAttribute('href');
+    if (href) warmDocument(href);
+  };
+  nav.addEventListener('pointerover', warmNavTarget, {passive:true});
+  // Preserve existing pointerdown warming contract while keeping its workload adjacent-only.
   nav.addEventListener('pointerdown', warmNavigation, {passive:true});
+  nav.addEventListener('focusin', warmNavTarget);
 
   const tabIndex = { home: 0, community: 1, knowledge: 2 }[active];
   const swipeIgnoreSelector = [
@@ -287,8 +310,9 @@
   };
   const insideHorizontalScroller = target => {
     for (let node = target; node && node !== document.body; node = node.parentElement) {
+      if (node.scrollWidth <= node.clientWidth + 2) continue;
       const style = getComputedStyle(node);
-      if (node.scrollWidth > node.clientWidth + 2 && /auto|scroll/.test(style.overflowX)) return true;
+      if (/auto|scroll/.test(style.overflowX)) return true;
     }
     return false;
   };

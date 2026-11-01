@@ -775,7 +775,50 @@ try {
   await socket.once('Page.loadEventFired');
   await delay(250);
   assert.deepEqual(await evaluate(`({navs:document.querySelectorAll('.v4-nav').length,menus:document.querySelectorAll('#v4AllMenu').length,active:document.querySelectorAll('.v4-nav:not(.is-menu-open) [aria-current="page"]').length})`), { navs: 1, menus: 1, active: 1 }, 'reload has no duplicate shell');
+  // CDP lab probe only: field INP and real-device frame drops remain UNVERIFIED.
+  const uxProbe = await evaluate(`(async () => {
+    let longTasks = 0, longTaskMs = 0, cls = 0;
+    const supported = PerformanceObserver.supportedEntryTypes || [];
+    const observers = [];
+    if (supported.includes('longtask')) {
+      const o = new PerformanceObserver(list => {
+        for (const e of list.getEntries()) { longTasks++; longTaskMs += e.duration; }
+      });
+      o.observe({type:'longtask', buffered:true}); observers.push(o);
+    }
+    if (supported.includes('layout-shift')) {
+      const o = new PerformanceObserver(list => {
+        for (const e of list.getEntries()) if (!e.hadRecentInput) cls += e.value;
+      });
+      o.observe({type:'layout-shift', buffered:true}); observers.push(o);
+    }
+    const menu = document.querySelector('#v4AllMenu');
+    const button = document.querySelector('.v4-nav button[aria-controls="v4AllMenu"]');
+    const started = performance.now();
+    button.click();
+    const menuOpenMs = performance.now() - started;
+    const menuShown = menu && !menu.hidden;
+    const menuFrameMs = await new Promise(resolve =>
+      requestAnimationFrame(() => resolve(performance.now() - started)));
+    button.click();
+    await new Promise(resolve => requestAnimationFrame(() => resolve()));
+    for (const o of observers) o.disconnect();
+    return {
+      menuShown, menuClosed:menu.hidden,
+      menuOpenMs:Math.round(menuOpenMs*100)/100,
+      menuFrameMs:Math.round(menuFrameMs*100)/100,
+      fullDocumentNavigation:performance.getEntriesByType('navigation').length === 1,
+      prefetch:[...document.querySelectorAll('link[rel="prefetch"]')].map(l => new URL(l.href).pathname),
+      longtaskSupported:supported.includes('longtask'),
+      longTasks, longTaskMs:Math.round(longTaskMs),
+      layoutShiftSupported:supported.includes('layout-shift'),
+      cls:Math.round(cls*10000)/10000
+    };
+  })()`);
+  assert.ok(uxProbe.menuShown && uxProbe.menuClosed, 'menu opens/closes without DOM rebuilding');
+  assert.ok(uxProbe.menuOpenMs <= 100, 'lab menu response <=100ms: ' + JSON.stringify(uxProbe));
   assert.deepEqual(fatal, [], `browser fatal errors: ${fatal.join(' | ')}`);
+  console.log('V4 UX Perf CDP probe: ' + JSON.stringify(uxProbe));
   console.log(`V4 mobile nav/scroll browser: ${widths.length * routes.length}/${widths.length * routes.length} page-width checks PASS`);
 } finally {
   try { await socket?.send('Browser.close'); } catch {}
