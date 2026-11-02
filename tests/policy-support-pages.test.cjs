@@ -29,6 +29,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
   assert.equal(cards[0].dataset.state, 'open');
   assert.ok(cards.slice(1).every(card => card.dataset.state === 'unknown'));
+  assert.ok(cards.every(card => card.children[0].children[3].textContent === '접수중'));
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
@@ -54,17 +55,20 @@ test('only reviewed official notices have one discoverable static detail each', 
   assert.equal(sitemap.split('<loc>https://kfarmai.com/subsidy-calendar.html</loc>').length - 1, 1);
 });
 
-test('prototype business types are removed and start dates are not invented', () => {
+test('unknown start dates are shown in red on details, without inventing dates', () => {
   assert.doesNotMatch(index, /사업 유형 안내|programList|subsidy_programs\.json/);
   assert.match(index, /지원사업 공고/);
   for (const item of publication.items.filter(item => !item.applicationStart)) {
     const html = read(`policy/${item.slug}.html`);
-    assert.match(html, /시작일 원문 확인/);
+    assert.match(html, /<strong class="policy-start-unverified">시작일 원문 확인<\/strong>/);
   }
+  assert.match(read('static/css/policy-support.css'), /\.policy-start-unverified \{ color:#b42318; font-weight:800; \}/);
+  assert.match(read('static/js/policy-support.js'), /unknown:'접수중'/);
+  assert.doesNotMatch(index, /data-status="unknown"|접수 확인/);
   assert.match(read('static/js/policy-support.js'), /if \(!card\.dataset\.start\) return 'unknown'/);
 });
 
-test('search, region and status filters keep unknown starts distinct from open', () => {
+test('open filter includes unknown starts while preserving distinct data state', () => {
   const element = (value = '') => ({value, hidden:false, dataset:{}, events:{},
     addEventListener(name, callback) { this.events[name] = callback; },
     setAttribute(name, value) { this[name] = value; }});
@@ -81,7 +85,7 @@ test('search, region and status filters keep unknown starts distinct from open',
   });
   const fields = {policySearch:element(),regionFilter:element(),targetFilter:element(),
     categoryFilter:element(),resetButton:element(),policyEmpty:element(),noticeCount:element()};
-  const buttons = ['all','open','unknown','closed'].map(status => {
+  const buttons = ['all','open','closed'].map(status => {
     const button = element(); button.dataset.status = status; return button;
   });
   const document = {
@@ -93,9 +97,9 @@ test('search, region and status filters keep unknown starts distinct from open',
   }});
   assert.equal(fields.noticeCount.textContent, '5건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '1건');
-  buttons[2].events.click();
-  assert.equal(fields.noticeCount.textContent, '4건');
+  assert.equal(fields.noticeCount.textContent, '5건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 4);
+  assert.ok(cards.every(card => card.statusLabel.textContent === '접수중'));
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
   assert.equal(fields.noticeCount.textContent, '2건');

@@ -165,6 +165,7 @@ body.v4-home .home-policy-category { color:#6d28d9; }
 body.v4-home .home-policy-date { color:#52616f; }
 body.v4-home .home-policy-status { margin-left:auto; color:#9a5700; white-space:nowrap; }
 body.v4-home .home-policy-item[data-state="open"] .home-policy-status { color:#047857; }
+body.v4-home .home-policy-item[data-state="unknown"] .home-policy-status { color:#047857; }
 body.v4-home .home-policy-item[data-state="closed"] .home-policy-status { color:#b42318; }
 body.v4-home .home-policy-title { display:-webkit-box; overflow:hidden; margin:4px 0; font-size:15px; line-height:1.35; -webkit-box-orient:vertical; -webkit-line-clamp:3; word-break:keep-all; }
 body.v4-home .home-policy-foot { display:block; color:#52616f; font-size:11px; line-height:1.4; }

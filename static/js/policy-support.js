@@ -23,14 +23,14 @@
     for (const card of cards) {
       const current = state(card, today);
       card.querySelector('.policy-live-status').textContent = ({
-        open:'접수중', upcoming:'접수예정', unknown:'접수 확인', closed:'마감'
+        open:'접수중', upcoming:'접수예정', unknown:'접수중', closed:'마감'
       })[current];
       card.dataset.state = current;
       const match = (!text || card.dataset.search.includes(text)) &&
         (!region.value || card.dataset.region.split(' ').includes(region.value) || card.dataset.region === '전국') &&
         (!target.value || card.dataset.target.split(' ').includes(target.value)) &&
         (!category.value || card.dataset.category.split(' ').includes(category.value)) &&
-        (status === 'all' || status === current);
+        (status === 'all' || status === current || (status === 'open' && current === 'unknown'));
       card.hidden = !match;
       if (match) visible++;
     }

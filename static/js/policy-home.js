@@ -12,7 +12,7 @@
   };
   const status = item => {
     if (today > item.applicationEnd) return ['마감', 'closed'];
-    if (!item.applicationStart) return ['접수 확인', 'unknown'];
+    if (!item.applicationStart) return ['접수중', 'unknown'];
     if (today < item.applicationStart) return ['접수예정', 'upcoming'];
     return ['접수중', 'open'];
   };
