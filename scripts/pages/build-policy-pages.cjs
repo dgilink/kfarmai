@@ -36,7 +36,7 @@ const shell = (title, description, canonical, body, structured = '') => `<!DOCTY
 <meta property="og:url" content="https://kfarmai.com${canonical}"><meta property="og:type" content="article">
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header8">
 <link rel="stylesheet" href="/static/css/v4-tool-pages.css?v=20261029-compact1">
-<link rel="stylesheet" href="/static/css/policy-support.css?v=20261102-3">
+<link rel="stylesheet" href="/static/css/policy-support.css?v=20261102-4">
 <script src="/static/js/v4-shell.js?v=20261029-header8" defer></script>${structured}
 </head><body class="v4-page kf-tool-page kf-subsidy"><main class="app">
 <header class="header"><div class="top"><a class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a></div></header>
@@ -45,7 +45,7 @@ ${body}</main></body></html>
 
 const sorted = [...items].sort((a,b) => a.applicationEnd.localeCompare(b.applicationEnd));
 const cards = sorted.map(item => `<article class="policy-result" data-region="${esc(item.region.join(' '))}" data-target="${esc(item.targets.join(' '))}" data-category="${esc(item.categories.join(' '))}" data-start="${esc(item.applicationStart || '')}" data-end="${esc(item.applicationEnd)}" data-search="${esc([item.title,item.summary,item.agency,item.support,item.eligibility,...item.region,...item.targets,...item.categories].join(' ').toLocaleLowerCase('ko'))}">
-<a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span>${esc(item.region.join(' · '))} · ${esc(item.categories.join(' · '))} · ${esc(item.publishedAt)}</span><span class="policy-live-status">일정 확인</span></div>
+<a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span class="policy-meta-group"><span class="policy-region">${esc(item.region.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-category">${esc(item.categories.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-published">${esc(item.publishedAt)}</span></span><span class="policy-live-status">일정 확인</span></div>
 <h3>${esc(item.title)}</h3>
 <div class="policy-card-foot"><span>${date(item.applicationEnd)}까지 · ${esc(item.agency)}</span><span aria-hidden="true">›</span></div></a></article>`).join('\n');
 const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 신청 공고를 지역, 대상, 분야, 신청기한별로 검색하고 상세 조건과 공식 원문을 확인하세요.', '/subsidy-calendar.html', `
@@ -67,7 +67,7 @@ const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 �
 <a href="https://uni.agrix.go.kr/webportal/main/portalBizGuideList.do" target="_blank" rel="noopener noreferrer">AgriX <span>농식품사업 지침 ↗</span></a>
 <a href="https://www.mafra.go.kr/" target="_blank" rel="noopener noreferrer">농림축산식품부 <span>공고 ↗</span></a></div></section>
 <p class="policy-endnote">신청 대상·지역·자부담과 마감 시간은 공고마다 다릅니다. 신청 전 공식 원문을 확인하세요.</p></div>
-<script src="/static/js/policy-support.js?v=20261102-3" defer></script>`);
+<script src="/static/js/policy-support.js?v=20261102-4" defer></script>`);
 fs.writeFileSync(path.join(root,'subsidy-calendar.html'), index);
 
 const detailDir = path.join(root, 'policy');
