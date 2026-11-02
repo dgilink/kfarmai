@@ -41,10 +41,10 @@ test('frontend uses only the normalized agri-feed endpoint', () => {
   assert.doesNotMatch(ui, /\/api\/(?:weather|kamis|ncpms|psis|nongsaro|mafra|auction)\//);
 });
 
-test('home and agri tab use compact summary roots', () => {
-  assert.match(index, /id="homeAgriFeed"/);
+test('home policy and agri tab use distinct compact roots', () => {
+  assert.match(index, /id="homePolicyFeed"/);
   assert.match(index, /id="agriTabFeed"/);
-  assert.match(index, /href="agri-info\.html">더보기/);
+  assert.match(index, /href="subsidy-calendar\.html">더보기/);
   assert.doesNotMatch(index, /id="agriVideoHero"|id="agriResearchList"|id="agriIssueGrid"/);
 });
 

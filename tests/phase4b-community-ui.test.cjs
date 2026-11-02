@@ -31,7 +31,7 @@ test('home has exactly four canonical category cards', () => {
 test('legacy channels are not primary home navigation', () => {
   for (const label of ['식물 병원','식물 질문방','작물 상담방','식집사 모임','나눔·직거래']) assert.doesNotMatch(homeCore, new RegExp(label));
 });
-test('community feed precedes agricultural summary', () => assert.ok(homeCore.indexOf('community-feed-section') < homeCore.indexOf('home-agri-summary-section')));
+test('community feed precedes policy notice preview', () => assert.ok(homeCore.indexOf('community-feed-section') < homeCore.indexOf('home-policy-summary-section')));
 test('home feed offers latest unanswered and helpful', () => {
   for (const sort of ['latest','unanswered','helpful']) assert.match(homeCore, new RegExp(`data-feed-sort="${sort}"`));
 });
@@ -52,9 +52,10 @@ test('home omits duplicate shortcut cards and legacy write entry', () => {
   assert.doesNotMatch(homeCore, /v4-quick-actions|openModal\('question-help'\)/);
   assert.doesNotMatch(index.match(/<div class="header-actions">[\s\S]*?<\/div>\s*<form/)?.[0] || '', /header-write-btn/);
 });
-test('home AI and agricultural info are compact secondary entries', () => {
-  assert.match(homeCore, /ai-compact-card/);
-  assert.match(homeCore, /오늘의 농업정보/);
+test('home shows policy notices without the extra AI shortcut', () => {
+  assert.doesNotMatch(homeCore, /ai-compact-card|오늘의 농업정보/);
+  assert.match(homeCore, /id="homePolicyFeed"/);
+  assert.match(homeCore, /지원사업 공고/);
 });
 test('home core local links resolve to repository files', () => {
   const links = [...homeCore.matchAll(/href="([^"#?]+)(?:[?#][^"]*)?"/g)].map(match => match[1]);

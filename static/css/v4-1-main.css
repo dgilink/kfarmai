@@ -155,6 +155,21 @@ body.v4-home .home-agri-summary-section .agri-summary-card:last-child { border-b
 body.v4-home .home-agri-summary-section .agri-section-link { display:inline-flex; min-height:32px; margin-top:8px; padding:0; border:0; background:#fff; color:var(--v41-green); white-space:nowrap; }
 body.v4-home .home-agri-summary-section .agri-status { border:1px solid currentColor; }
 body.v4-home .home-agri-summary-section .agri-summary-more { border:0; }
+body.v4-home .home-policy-summary-section { min-width:0; margin-top:24px; padding:0; border:0; border-radius:0; box-shadow:none; background:#fff; }
+body.v4-home .home-policy-list { display:block; }
+body.v4-home .home-policy-item { position:relative; display:block; padding:12px 22px 12px 0; border-bottom:1px solid var(--v41-line); color:var(--v41-ink); text-decoration:none; }
+body.v4-home .home-policy-item:focus-visible { outline:2px solid #1d4ed8; outline-offset:2px; }
+body.v4-home .home-policy-meta { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 8px; font-size:11px; line-height:1.4; font-weight:800; }
+body.v4-home .home-policy-region { color:#1d4ed8; }
+body.v4-home .home-policy-category { color:#6d28d9; }
+body.v4-home .home-policy-date { color:#52616f; }
+body.v4-home .home-policy-status { margin-left:auto; color:#9a5700; white-space:nowrap; }
+body.v4-home .home-policy-item[data-state="open"] .home-policy-status { color:#047857; }
+body.v4-home .home-policy-item[data-state="closed"] .home-policy-status { color:#b42318; }
+body.v4-home .home-policy-title { display:-webkit-box; overflow:hidden; margin:4px 0; font-size:15px; line-height:1.35; -webkit-box-orient:vertical; -webkit-line-clamp:3; word-break:keep-all; }
+body.v4-home .home-policy-foot { display:block; color:#52616f; font-size:11px; line-height:1.4; }
+body.v4-home .home-policy-arrow { position:absolute; right:2px; bottom:11px; color:#52616f; font-size:20px; line-height:1; }
+body.v4-home .home-policy-fallback { display:block; padding:15px 0; color:var(--v41-green); font-weight:750; }
 @media (max-width:767px) {
   body.v4-home .home-kb-section, body.v4-home .community-home-layout { margin-bottom:24px; }
   body.v4-home .community-home-layout { display:block; }

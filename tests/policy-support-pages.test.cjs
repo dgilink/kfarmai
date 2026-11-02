@@ -10,6 +10,28 @@ const publication = JSON.parse(read('data/policy-support-notices.json'));
 const index = read('subsidy-calendar.html');
 const sitemap = read('sitemap.xml');
 
+test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
+  const node = tag => ({tag, children:[], dataset:{}, append(...children) { this.children.push(...children); },
+    replaceChildren(...children) { this.children = children; }});
+  const root = node('div');
+  root.children = [node('a')]; // Direct listing fallback until public data loads.
+  const document = {getElementById:id => id === 'homePolicyFeed' ? root : null,
+    createElement:node, createDocumentFragment:() => node('fragment')};
+  const payload = {...publication, items:[...publication.items,
+    {...publication.items[0], slug:'not-approved', reviewStatus:'pending'},
+    {...publication.items[0], slug:'past-notice', applicationEnd:'2026-01-01'}]};
+  vm.runInNewContext(read('static/js/policy-home.js'), {document,
+    fetch:async () => ({ok:true,json:async () => payload}),
+    Date:class extends Date { static now() { return Date.parse('2026-11-02T00:00:00Z'); } }});
+  await new Promise(resolve => setImmediate(resolve));
+  const cards = root.children[0].children;
+  assert.equal(cards.length, 3);
+  assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
+  assert.equal(cards[0].dataset.state, 'open');
+  assert.ok(cards.slice(1).every(card => card.dataset.state === 'unknown'));
+  assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
+});
+
 test('only reviewed official notices have one discoverable static detail each', () => {
   assert.equal(publication.items.length, 5);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);

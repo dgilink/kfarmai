@@ -99,7 +99,7 @@ async function run() {
         const home = document.querySelector('.page');
         const categories = [...document.querySelectorAll('.v3-category-card')];
         const feed = document.querySelector('.community-feed-section');
-        const agri = document.querySelector('.home-agri-summary-section');
+        const policy = document.querySelector('.home-policy-summary-section');
         return {
           innerWidth,
           scrollWidth: document.documentElement.scrollWidth,
@@ -108,7 +108,7 @@ async function run() {
           phoneWidth: phone ? Math.round(phone.getBoundingClientRect().width) : 0,
           categoryCount: categories.length,
           categoryColumns: document.querySelector('.v3-category-grid') ? getComputedStyle(document.querySelector('.v3-category-grid')).gridTemplateColumns.split(' ').length : 0,
-          feedBeforeAgri: Boolean(feed && agri && (feed.compareDocumentPosition(agri) & Node.DOCUMENT_POSITION_FOLLOWING)),
+          feedBeforePolicy: Boolean(feed && policy && (feed.compareDocumentPosition(policy) & Node.DOCUMENT_POSITION_FOLLOWING)),
           primaryWriteVisible: Boolean(document.querySelector('.community-primary-cta')?.offsetParent),
           forbiddenCoreCopy: /공모전|MVP|데모|시제품|준비중/i.test(home?.innerText || ''),
           coreActionsReady: ['openModal','setHomeFeedSort','safeOpenMyPanel','runSearch'].every(name => typeof window[name] === 'function')
@@ -117,7 +117,7 @@ async function run() {
       assert.ok(metrics.scrollWidth <= metrics.innerWidth + 1, `${width}px home horizontal overflow`);
       assert.ok(metrics.pageScrollWidth <= metrics.pageClientWidth + 1, `${width}px home page overflow`);
       assert.equal(metrics.categoryCount, 4, `${width}px canonical categories`);
-      assert.equal(metrics.feedBeforeAgri, true, `${width}px feed hierarchy`);
+      assert.equal(metrics.feedBeforePolicy, true, `${width}px feed hierarchy`);
       assert.equal(metrics.primaryWriteVisible, true, `${width}px write CTA`);
       assert.equal(metrics.forbiddenCoreCopy, false, `${width}px production copy`);
       assert.equal(metrics.coreActionsReady, true, `${width}px core actions`);
