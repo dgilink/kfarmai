@@ -37,6 +37,7 @@ try {
   ];
   test('required public runtime files exist', () => {
     for (const file of mustExist) assert.ok(fs.existsSync(path.join(artifactDir, file)), file);
+    assert.ok(!fs.existsSync(path.join(artifactDir, 'data/subsidy_programs.json')));
   });
 
   test('home KB cards are rendered from the approved registry projection', () => {

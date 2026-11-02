@@ -117,6 +117,7 @@ const publicDirectories = new Map([
   ['static', new Set(['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.avif', '.ico', '.woff', '.woff2', '.ttf', '.otf'])],
   ['data', new Set(['.json'])],
   ['kb', new Set(['.html'])],
+  ['policy', new Set(['.html'])],
   ['q', new Set(['.html'])],
   ['oauth', new Set(['.html'])],
 ]);
@@ -162,6 +163,7 @@ function walkFiles(directory, allowedExtensions, relativeBase = directory) {
       continue;
     }
     if (entry.isFile() && allowedExtensions.has(path.extname(entry.name).toLowerCase())) {
+      if (relativePath === 'data/subsidy_programs.json') continue; // retired prototype types
       copyFile(relativePath);
     }
   }

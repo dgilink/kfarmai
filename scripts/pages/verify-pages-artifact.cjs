@@ -1,6 +1,7 @@
 const { isLocalPhoto, isRasterFile } = require('./kb-list-photo.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 
 const repoRoot = path.resolve(__dirname, '..', '..');
 const artifactDir = path.resolve(repoRoot, process.argv[2] || '_site');
@@ -18,6 +19,7 @@ const mustExist = [
   'kb/index.html',
   'data/kb-index.json',
   'data/policy-support-notices.json',
+  'subsidy-calendar.html',
   'kb/ras-recirculating-aquaculture.html',
   'kb/land-aquaculture-water-quality.html',
   'oauth/index.html',
@@ -148,9 +150,15 @@ if (exists('data/policy-support-notices.json')) {
     };
     if (publication.schemaVersion !== 1 || !Array.isArray(items) || items.some(item => {
       const key = `${item.sourceId}:${item.externalId}`;
+      const hash = crypto.createHash('sha256').update(JSON.stringify(Object.fromEntries(
+        Object.entries(item).filter(([field]) => field !== 'sourceHash')
+      ))).digest('hex');
       const invalid = item.reviewStatus !== 'approved' || !item.sourceId || !item.externalId || !item.title || !item.agency ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(item.verifiedAt || '') || !/^[a-f0-9]{64}$/.test(item.sourceHash || '') ||
-        !isOfficial(item.officialUrl) || identifiers.has(key);
+        !/^\d{4}-\d{2}-\d{2}$/.test(item.verifiedAt || '') || item.sourceHash !== hash ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(item.applicationEnd || '') ||
+        !/^[a-z0-9-]+$/.test(item.slug || '') || !isOfficial(item.officialUrl) || identifiers.has(key) ||
+        !exists(`policy/${item.slug}.html`) ||
+        !fs.readFileSync(path.join(artifactDir, 'subsidy-calendar.html'), 'utf8').includes(`/policy/${item.slug}.html`);
       identifiers.add(key);
       return invalid;
     })) errors.push('policy support public data contains an unapproved, invalid or duplicate notice');

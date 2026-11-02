@@ -11,7 +11,7 @@ const pages = [
   ['market-prices.html', 'kf-market', '농산물 시세', ['q','searchBtn','chips','typeTabs','status','list','detail']],
   ['facility-vegetables.html', 'kf-facility', '시설채소 생산실적', []],
   ['crop-calendar.html', 'kf-crop', '재배달력', ['searchInput','cropGrid','detail']],
-  ['subsidy-calendar.html', 'kf-subsidy', '정책·지원', ['regionFilter','targetFilter','categoryFilter','programList']],
+  ['subsidy-calendar.html', 'kf-subsidy', '정책·지원', ['regionFilter','targetFilter','categoryFilter','noticeList']],
 ];
 
 for (const [file, cls, title, ids] of pages) {
