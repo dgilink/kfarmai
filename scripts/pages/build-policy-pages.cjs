@@ -36,7 +36,7 @@ const shell = (title, description, canonical, body, structured = '') => `<!DOCTY
 <meta property="og:url" content="https://kfarmai.com${canonical}"><meta property="og:type" content="article">
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header8">
 <link rel="stylesheet" href="/static/css/v4-tool-pages.css?v=20261029-compact1">
-<link rel="stylesheet" href="/static/css/policy-support.css?v=20261102-2">
+<link rel="stylesheet" href="/static/css/policy-support.css?v=20261102-3">
 <script src="/static/js/v4-shell.js?v=20261029-header8" defer></script>${structured}
 </head><body class="v4-page kf-tool-page kf-subsidy"><main class="app">
 <header class="header"><div class="top"><a class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a></div></header>
@@ -45,31 +45,29 @@ ${body}</main></body></html>
 
 const sorted = [...items].sort((a,b) => a.applicationEnd.localeCompare(b.applicationEnd));
 const cards = sorted.map(item => `<article class="policy-result" data-region="${esc(item.region.join(' '))}" data-target="${esc(item.targets.join(' '))}" data-category="${esc(item.categories.join(' '))}" data-start="${esc(item.applicationStart || '')}" data-end="${esc(item.applicationEnd)}" data-search="${esc([item.title,item.summary,item.agency,item.support,item.eligibility,...item.region,...item.targets,...item.categories].join(' ').toLocaleLowerCase('ko'))}">
-<a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span class="policy-live-status">신청 기한</span><span>${esc(item.region.join(' · '))}</span><span>${esc(item.categories.join(' · '))}</span><span>${esc(item.publishedAt)}</span></div>
-<h3>${esc(item.title)}</h3><p>${esc(item.summary)}</p>
-<div class="policy-card-foot"><span>${esc(item.agency)} · ${date(item.applicationEnd)}까지</span><span aria-hidden="true">›</span></div></a></article>`).join('\n');
+<a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span>${esc(item.region.join(' · '))} · ${esc(item.categories.join(' · '))} · ${esc(item.publishedAt)}</span><span class="policy-live-status">일정 확인</span></div>
+<h3>${esc(item.title)}</h3>
+<div class="policy-card-foot"><span>${date(item.applicationEnd)}까지 · ${esc(item.agency)}</span><span aria-hidden="true">›</span></div></a></article>`).join('\n');
 const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 신청 공고를 지역, 대상, 분야, 신청기한별로 검색하고 상세 조건과 공식 원문을 확인하세요.', '/subsidy-calendar.html', `
 <h1 class="kf-tool-title">정책·지원</h1><div class="content">
-<p class="policy-lead">농업 지원사업 공고를 지역과 분야별로 찾고, 공고별 신청 조건을 확인하세요.</p>
 <section class="policy-section policy-find" aria-label="지원사업 검색">
-<label for="policySearch">사업명·지역·대상 검색</label>
+<label for="policySearch">지원사업 검색</label>
 <input id="policySearch" type="search" placeholder="예: 유기농업자재, 전북, 농업법인" autocomplete="off">
 <div class="filters"><select id="regionFilter" class="select" aria-label="지역 선택"><option value="">전체 지역</option><option>전국</option><option>전북</option></select>
 <select id="targetFilter" class="select" aria-label="대상 선택"><option value="">전체 대상</option><option>농업인</option><option>농업법인</option></select>
 <select id="categoryFilter" class="select" aria-label="분야 선택"><option value="">전체 분야</option><option>친환경</option><option>농기계</option><option>유통·가공</option></select></div>
-<button id="resetButton" class="reset" type="button">검색·필터 초기화</button></section>
+<button id="resetButton" class="reset" type="button">초기화</button></section>
 <section id="announcements" class="policy-section" aria-labelledby="announcementsTitle">
 <div class="policy-section-head"><h2 id="announcementsTitle">지원사업 공고</h2><span id="noticeCount" aria-live="polite">${items.length}건</span></div>
-<p class="policy-hint">2026.11.02 원문 확인 · 접수처·마감 시간과 변경 사항은 각 공고 원문을 확인하세요.</p>
 <div class="policy-status-filters" role="group" aria-label="접수 상태">
-<button type="button" data-status="all" aria-pressed="true">전체</button><button type="button" data-status="open" aria-pressed="false">접수중</button><button type="button" data-status="unknown" aria-pressed="false">시작일 미확인</button><button type="button" data-status="closed" aria-pressed="false">마감</button></div>
+<button type="button" data-status="all" aria-pressed="true">전체</button><button type="button" data-status="open" aria-pressed="false">접수중</button><button type="button" data-status="unknown" aria-pressed="false">확인 필요</button><button type="button" data-status="closed" aria-pressed="false">마감</button></div>
 <div id="noticeList">${cards}</div><p id="policyEmpty" class="policy-empty" hidden>조건에 맞는 공고가 없습니다. 검색어나 필터를 바꿔보세요.</p></section>
 <section id="official-sources" class="policy-section policy-sources" aria-labelledby="sourceTitle"><h2 id="sourceTitle">공식 공고 검색처</h2>
 <div class="policy-source-links"><a href="https://www.bojo.go.kr/da/getDA001200View.do" target="_blank" rel="noopener noreferrer">보조금통합포털 <span>공모사업 ↗</span></a>
 <a href="https://uni.agrix.go.kr/webportal/main/portalBizGuideList.do" target="_blank" rel="noopener noreferrer">AgriX <span>농식품사업 지침 ↗</span></a>
 <a href="https://www.mafra.go.kr/" target="_blank" rel="noopener noreferrer">농림축산식품부 <span>공고 ↗</span></a></div></section>
 <p class="policy-endnote">신청 대상·지역·자부담과 마감 시간은 공고마다 다릅니다. 신청 전 공식 원문을 확인하세요.</p></div>
-<script src="/static/js/policy-support.js?v=20261102-2" defer></script>`);
+<script src="/static/js/policy-support.js?v=20261102-3" defer></script>`);
 fs.writeFileSync(path.join(root,'subsidy-calendar.html'), index);
 
 const detailDir = path.join(root, 'policy');
