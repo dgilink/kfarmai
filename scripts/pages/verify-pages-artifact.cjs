@@ -17,6 +17,7 @@ const mustExist = [
   'agri-info.html',
   'kb/index.html',
   'data/kb-index.json',
+  'data/policy-support-notices.json',
   'kb/ras-recirculating-aquaculture.html',
   'kb/land-aquaculture-water-quality.html',
   'oauth/index.html',
@@ -131,6 +132,30 @@ if (exists('data/kb-index.json')) {
     || !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path)
     || !exists(item.path.slice(1)))) {
     errors.push('KB index is not a safe published-content projection');
+  }
+}
+if (exists('data/policy-support-notices.json')) {
+  try {
+    const publication = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/policy-support-notices.json'), 'utf8'));
+    const items = publication.items;
+    const identifiers = new Set();
+    const isOfficial = raw => {
+      try {
+        const url = new URL(raw);
+        return url.protocol === 'https:' && !url.username && !url.password &&
+          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname));
+      } catch { return false; }
+    };
+    if (publication.schemaVersion !== 1 || !Array.isArray(items) || items.some(item => {
+      const key = `${item.sourceId}:${item.externalId}`;
+      const invalid = item.reviewStatus !== 'approved' || !item.sourceId || !item.externalId || !item.title || !item.agency ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(item.verifiedAt || '') || !/^[a-f0-9]{64}$/.test(item.sourceHash || '') ||
+        !isOfficial(item.officialUrl) || identifiers.has(key);
+      identifiers.add(key);
+      return invalid;
+    })) errors.push('policy support public data contains an unapproved, invalid or duplicate notice');
+  } catch {
+    errors.push('policy support public data is not valid JSON');
   }
 }
 for (const relativePath of files) {

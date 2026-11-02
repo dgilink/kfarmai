@@ -1,0 +1,40 @@
+/* Policy notices and evergreen program types are separate reading surfaces. */
+body.kf-subsidy .policy-lead { margin:0 0 15px; color:var(--kf-muted); font-size:15px; line-height:1.5; }
+body.kf-subsidy .policy-jump { display:flex; gap:6px; margin:0 0 24px; }
+body.kf-subsidy .policy-jump a { flex:1; min-width:0; padding:10px 4px; border:1px solid var(--kf-line); color:var(--kf-green); text-align:center; font-size:13px; font-weight:750; }
+body.kf-subsidy .policy-section { margin:0 0 26px; scroll-margin-top:80px; }
+body.kf-subsidy .policy-section h2 { margin:0; font-size:21px; letter-spacing:-.045em; }
+body.kf-subsidy .policy-hint { margin:6px 0 12px; color:var(--kf-muted); font-size:13px; line-height:1.5; }
+body.kf-subsidy .policy-source-links { border-top:2px solid var(--kf-ink); }
+body.kf-subsidy .policy-source-links a { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:52px; border-bottom:1px solid var(--kf-line); color:var(--kf-ink); font-size:15px; font-weight:750; }
+body.kf-subsidy .policy-source-links a span { color:var(--kf-green); font-size:12px; white-space:nowrap; }
+body.kf-subsidy .policy-find { padding:16px 0; border-block:1px solid var(--kf-line); }
+body.kf-subsidy .policy-find label { display:block; margin-bottom:8px; font-size:14px; font-weight:800; }
+body.kf-subsidy #policySearch { width:100%; height:46px; padding:0 12px; border:1px solid var(--kf-line); background:#fff; color:var(--kf-ink); font:inherit; }
+body.kf-subsidy .filters { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:8px 0; }
+body.kf-subsidy .select { width:100%; min-width:0; height:44px; padding:0 6px; font-size:13px; }
+body.kf-subsidy .reset { min-height:40px; padding:7px 10px; font-size:13px; font-weight:750; }
+body.kf-subsidy .policy-section-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; border-bottom:2px solid var(--kf-ink); padding-bottom:10px; }
+body.kf-subsidy .policy-section-head span { color:var(--kf-green); font-size:13px; font-weight:800; white-space:nowrap; }
+body.kf-subsidy .policy-status-filters { display:flex; gap:5px; margin:12px 0 3px; overflow-x:auto; }
+body.kf-subsidy .policy-status-filters button { flex:1; min-width:65px; min-height:38px; border:1px solid var(--kf-line); background:#fff; color:var(--kf-ink); font-size:13px; font-weight:750; }
+body.kf-subsidy .policy-status-filters button[aria-pressed="true"] { border-color:var(--kf-green); background:var(--kf-green); color:#fff; }
+body.kf-subsidy .policy-result { padding:17px 0; border-bottom:1px solid var(--kf-line); }
+body.kf-subsidy .policy-meta { display:flex; flex-wrap:wrap; gap:4px 10px; color:var(--kf-green); font-size:12px; font-weight:750; }
+body.kf-subsidy .policy-result h3 { margin:6px 0; font-size:18px; line-height:1.4; letter-spacing:-.025em; }
+body.kf-subsidy .policy-result p { margin:0 0 10px; color:var(--kf-muted); font-size:13px; line-height:1.5; }
+body.kf-subsidy .policy-result dl { display:grid; grid-template-columns:70px minmax(0,1fr); gap:5px 7px; margin:0; font-size:13px; line-height:1.4; }
+body.kf-subsidy .policy-result dt { font-weight:750; }
+body.kf-subsidy .policy-result dd { min-width:0; margin:0; overflow-wrap:anywhere; }
+body.kf-subsidy .policy-official-link { display:inline-block; margin-top:12px; padding:8px 0; color:var(--kf-green); font-size:13px; font-weight:800; }
+body.kf-subsidy .policy-empty { margin:0; padding:18px 0; border-bottom:1px solid var(--kf-line); color:var(--kf-muted); font-size:14px; line-height:1.5; }
+body.kf-subsidy .policy-endnote { margin:0; border-top:1px solid var(--kf-line); padding-top:12px; color:var(--kf-muted); font-size:12px; line-height:1.5; }
+@media (max-width:359px) {
+  body.kf-subsidy .policy-jump a { font-size:12px; }
+  body.kf-subsidy .filters { grid-template-columns:1fr; }
+}
+@media (min-width:768px) {
+  body.kf-subsidy .policy-source-links { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 18px; }
+  body.kf-subsidy .policy-source-links a { align-items:flex-start; flex-direction:column; justify-content:center; gap:3px; }
+  body.kf-subsidy #programList { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 26px; }
+}

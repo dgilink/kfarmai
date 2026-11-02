@@ -204,6 +204,24 @@ try {
     fs.writeFileSync(target, original);
   });
 
+  test('public policy data rejects pending notices and nonofficial destinations', () => {
+    const target = path.join(artifactDir, 'data/policy-support-notices.json');
+    const original = fs.readFileSync(target, 'utf8');
+    const record = {
+      sourceId: 'bojo-open-api', externalId: 'test-1', sourceHash: 'a'.repeat(64),
+      title: '검증용 공고', agency: '농림축산식품부', verifiedAt: '2026-11-02',
+      officialUrl: 'https://www.bojo.go.kr/', reviewStatus: 'pending'
+    };
+    try {
+      for (const mutation of [item => item, item => ({ ...item, reviewStatus: 'approved', officialUrl: 'https://example.com/' })]) {
+        fs.writeFileSync(target, JSON.stringify({ schemaVersion: 1, items: [mutation(record)] }));
+        assert.notEqual(run('scripts/pages/verify-pages-artifact.cjs', [artifactDir]).status, 0);
+      }
+    } finally {
+      fs.writeFileSync(target, original);
+    }
+  });
+
   test('guard rejects a forbidden SQL file', () => {
     fs.writeFileSync(path.join(artifactDir, 'leak.sql'), 'select 1;', 'utf8');
     const rejected = run('scripts/pages/verify-pages-artifact.cjs', [artifactDir]);
