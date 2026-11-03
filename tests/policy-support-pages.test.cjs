@@ -27,8 +27,9 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].dataset.state, 'open');
-  assert.ok(cards.slice(1).every(card => card.dataset.state === 'unknown'));
+  assert.equal(cards[0].href, '/policy/2027-local-agri-field-rnd.html');
+  assert.equal(cards[0].dataset.state, 'unknown');
+  assert.ok(cards.some(card => card.dataset.state === 'open'));
   assert.ok(cards.every(card => card.children[0].children[3].textContent === '접수중'));
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });

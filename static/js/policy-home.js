@@ -28,10 +28,9 @@
     })
     .then(publication => {
       if (publication.schemaVersion !== 1 || !Array.isArray(publication.items)) return;
-      const priority = {open:0,unknown:1,upcoming:2,closed:3};
       const items = publication.items.filter(safe).filter(item => item.applicationEnd >= today)
-        .sort((a, b) => priority[status(a)[1]] - priority[status(b)[1]] ||
-          a.applicationEnd.localeCompare(b.applicationEnd) || b.publishedAt.localeCompare(a.publishedAt))
+        .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) ||
+          a.applicationEnd.localeCompare(b.applicationEnd))
         .slice(0, 3);
       if (!items.length) return;
       const fragment = document.createDocumentFragment();
