@@ -43,7 +43,8 @@ const shell = (title, description, canonical, body, structured = '') => `<!DOCTY
 ${body}</main></body></html>
 `;
 
-const sorted = [...items].sort((a,b) => a.applicationEnd.localeCompare(b.applicationEnd));
+const sorted = [...items].sort((a,b) => b.publishedAt.localeCompare(a.publishedAt) ||
+  a.applicationEnd.localeCompare(b.applicationEnd));
 const todayKst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 const listingStatus = item => item.applicationEnd < todayKst ? '마감' :
   item.applicationStart && item.applicationStart > todayKst ? '접수예정' : '접수중';

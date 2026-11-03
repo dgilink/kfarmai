@@ -10,6 +10,16 @@ const publication = JSON.parse(read('data/policy-support-notices.json'));
 const index = read('subsidy-calendar.html');
 const sitemap = read('sitemap.xml');
 
+test('static notice list shows the newest publication dates first', () => {
+  const listedSlugs = [...index.matchAll(/class="policy-result"[\s\S]*?href="\/policy\/([a-z0-9-]+)\.html"/g)]
+    .map(match => match[1]);
+  const expected = [...publication.items].sort((a, b) =>
+    b.publishedAt.localeCompare(a.publishedAt) || a.applicationEnd.localeCompare(b.applicationEnd));
+  assert.deepEqual(listedSlugs, expected.map(item => item.slug));
+  assert.equal(listedSlugs[0], '2027-local-agri-field-rnd');
+  assert.equal(listedSlugs[1], '2027-namyangju-organic-fertilizer-extra');
+});
+
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
   const node = tag => ({tag, children:[], dataset:{}, append(...children) { this.children.push(...children); },
     replaceChildren(...children) { this.children = children; }});
