@@ -44,8 +44,11 @@ ${body}</main></body></html>
 `;
 
 const sorted = [...items].sort((a,b) => a.applicationEnd.localeCompare(b.applicationEnd));
+const todayKst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+const listingStatus = item => item.applicationEnd < todayKst ? '마감' :
+  item.applicationStart && item.applicationStart > todayKst ? '접수예정' : '접수중';
 const cards = sorted.map(item => `<article class="policy-result" data-region="${esc(item.region.join(' '))}" data-target="${esc(item.targets.join(' '))}" data-category="${esc(item.categories.join(' '))}" data-start="${esc(item.applicationStart || '')}" data-end="${esc(item.applicationEnd)}" data-search="${esc([item.title,item.summary,item.agency,item.support,item.eligibility,...item.region,...item.targets,...item.categories].join(' ').toLocaleLowerCase('ko'))}">
-<a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span class="policy-meta-group"><span class="policy-region">${esc(item.region.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-category">${esc(item.categories.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-published">${esc(item.publishedAt)}</span></span><span class="policy-live-status">접수중</span></div>
+<a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span class="policy-meta-group"><span class="policy-region">${esc(item.region.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-category">${esc(item.categories.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-published">${esc(item.publishedAt)}</span></span><span class="policy-live-status">${listingStatus(item)}</span></div>
 <h3>${esc(item.title)}</h3>
 <div class="policy-card-foot"><span>${date(item.applicationEnd)}까지 · ${esc(item.agency)}</span><span aria-hidden="true">›</span></div></a></article>`).join('\n');
 const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 신청 공고를 지역, 대상, 분야, 신청기한별로 검색하고 상세 조건과 공식 원문을 확인하세요.', '/subsidy-calendar.html', `
@@ -53,7 +56,7 @@ const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 �
 <section class="policy-section policy-find" aria-label="지원사업 검색">
 <label for="policySearch">지원사업 검색</label>
 <input id="policySearch" type="search" placeholder="예: 유기농업자재, 전북, 농업법인" autocomplete="off">
-<div class="filters"><select id="regionFilter" class="select" aria-label="지역 선택"><option value="">전체 지역</option><option>전국</option><option>전북</option></select>
+<div class="filters"><select id="regionFilter" class="select" aria-label="지역 선택"><option value="">전체 지역</option><option>전국</option><option>전북</option><option>경기</option></select>
 <select id="targetFilter" class="select" aria-label="대상 선택"><option value="">전체 대상</option><option>농업인</option><option>농업법인</option><option>지방정부</option></select>
 <select id="categoryFilter" class="select" aria-label="분야 선택"><option value="">전체 분야</option><option>친환경</option><option>농기계</option><option>유통·가공</option><option>연구개발</option></select></div>
 <button id="resetButton" class="reset" type="button">초기화</button></section>

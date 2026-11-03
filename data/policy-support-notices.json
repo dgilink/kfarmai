@@ -170,6 +170,35 @@
       "officialUrl": "https://mafra.go.kr/bbs/home/791/611151/download.do",
       "reviewStatus": "approved",
       "sourceHash": "806f5b48146fcb4649af90a36a6919f4e504b4d0532069fa033d645e3f8d3d65"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "nyj-89768",
+      "slug": "2027-namyangju-organic-fertilizer-extra",
+      "title": "남양주시 2027년 유기질비료 추가·변경 신청",
+      "summary": "남양주시 농업경영체의 유기질비료 추가·변경 신청을 받습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "남양주시 농업기술센터 농업기술과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-02",
+      "verifiedAt": "2026-11-03",
+      "support": "유기질비료 3종과 부숙유기질비료 2종 구입비 일부 지원. 지원액과 배정량은 공고문·시행지침 확인.",
+      "eligibility": "농업경영정보를 등록한 농업경영체로서 남양주시 관내 농지에서 농산물을 생산하는 농업인·농업법인.",
+      "application": "2026년 11월 9일부터 12월 4일까지 농지 소재지 읍·면·동사무소 산업팀에 방문 신청. 문의 031-590-2774.",
+      "note": "정기 신청의 추가·변경 접수입니다. 접수 시작 전에는 신청할 수 없으며, 세부 품목·배정 기준은 원문 첨부 지침을 확인하세요.",
+      "officialUrl": "https://www.nyj.go.kr/main/selectEminwonWebView.do?cpn=3&key=2492&pk=89768",
+      "reviewStatus": "approved",
+      "sourceHash": "59e364628c99f8e79326734acb7e7bc98e95627e7f1283e38c692c9ba5a43145"
     }
   ]
 }

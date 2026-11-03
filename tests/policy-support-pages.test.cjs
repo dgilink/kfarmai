@@ -29,13 +29,13 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
   assert.equal(cards[0].href, '/policy/2027-local-agri-field-rnd.html');
   assert.equal(cards[0].dataset.state, 'unknown');
-  assert.ok(cards.some(card => card.dataset.state === 'open'));
-  assert.ok(cards.every(card => card.children[0].children[3].textContent === '접수중'));
+  assert.ok(cards.some(card => card.dataset.state === 'upcoming'));
+  assert.equal(cards.filter(card => card.children[0].children[3].textContent === '접수예정').length, 1);
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 6);
+  assert.equal(publication.items.length, 7);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -69,6 +69,13 @@ test('unknown start dates are shown in red on details, without inventing dates',
   assert.match(read('static/js/policy-support.js'), /if \(!card\.dataset\.start\) return 'unknown'/);
 });
 
+test('future local application is listed as upcoming before JavaScript runs', () => {
+  const card = index.split('href="/policy/2027-namyangju-organic-fertilizer-extra.html"')[1]?.split('</article>')[0];
+  assert.ok(card);
+  assert.match(card, /class="policy-live-status">접수예정<\/span>/);
+  assert.match(index, /<option>경기<\/option>/);
+});
+
 test('open filter includes unknown starts while preserving distinct data state', () => {
   const element = (value = '') => ({value, hidden:false, dataset:{}, events:{},
     addEventListener(name, callback) { this.events[name] = callback; },
@@ -96,11 +103,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-02T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '6건');
+  assert.equal(fields.noticeCount.textContent, '7건');
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '6건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 5);
-  assert.ok(cards.every(card => card.statusLabel.textContent === '접수중'));
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 1);
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
   assert.equal(fields.noticeCount.textContent, '2건');
@@ -108,5 +115,5 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '6건');
+  assert.equal(fields.noticeCount.textContent, '7건');
 });
