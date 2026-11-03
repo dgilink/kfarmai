@@ -22,9 +22,19 @@
   const search = document.getElementById('kbSearch');
   const topics = document.getElementById('kbTopics');
   const status = document.getElementById('kbStatus');
-  const safePhoto = value => typeof value === 'string' &&
-    /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(value) &&
-    !/infographic|diagram|checklist-(?:graphic|chart)/i.test(value) ? value : '';
+  // Exactly four reviewed external photograph URLs, no user-controlled remote image src.
+  const approvedExternalPhotos = Object.freeze({
+    "/kb/2026-public-rice-reserve-purchase-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20(autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake)..JPG?width=1280",
+    "/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Daegu%20EXCO%204.jpg?width=1280",
+    "/kb/suncheon-2026-young-returning-farmer-land-rent-support.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Damyang-Rice%20paddy%20field-01.jpg?width=1280",
+    "/kb/2027-ai-agricultural-machinery-sharing-centers-plan.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Kioti%20KL7320%20tractor%20MD1.jpg?width=1280"
+  });
+  const safePhoto = (value, articlePath) => {
+    if (typeof value !== 'string') return '';
+    const local = /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(value) &&
+      !/infographic|diagram|checklist-(?:graphic|chart)/i.test(value);
+    return local || approvedExternalPhotos[articlePath] === value ? value : '';
+  };
   const safePath = (value) => {
     try {
       const url = new URL(value, location.origin);
@@ -107,7 +117,7 @@
         category: String(value.category || ''),
         date: String(value.date || ''),
         path: safePath(value.path),
-        image: safePhoto(value.image)
+        image: safePhoto(value.image, safePath(value.path))
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
       renderTopics();

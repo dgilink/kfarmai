@@ -13,6 +13,19 @@ const reviewedPhotos = Object.freeze({
   '/kb/strawberry-small-smartfarm.html': '/static/kb/strawberry-small-smartfarm-sensor-reference-20261029.webp',
 });
 
+// Approved external hero photographs for this four-article revision only.
+// Security: exact article and exact URL required; no arbitrary remote images.
+const approvedRemotePhotos = Object.freeze({
+  "/kb/2026-public-rice-reserve-purchase-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20(autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake)..JPG?width=1280",
+  "/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Daegu%20EXCO%204.jpg?width=1280",
+  "/kb/suncheon-2026-young-returning-farmer-land-rent-support.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Damyang-Rice%20paddy%20field-01.jpg?width=1280",
+  "/kb/2027-ai-agricultural-machinery-sharing-centers-plan.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Kioti%20KL7320%20tractor%20MD1.jpg?width=1280"
+});
+function isApprovedExternalPhoto(articlePath, url) {
+  return typeof articlePath === 'string' && typeof url === 'string' &&
+    Object.prototype.hasOwnProperty.call(approvedRemotePhotos, articlePath) &&
+    approvedRemotePhotos[articlePath] === url;
+}
 function isLocalPhoto(value) {
   return typeof value === 'string' &&
     /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(value) &&
@@ -43,10 +56,14 @@ function selectListPhoto(root, articlePath, html) {
   const reviewed = reviewedPhotos[articlePath];
   if (reviewed && !isRasterFile(root, reviewed)) throw Error('Reviewed KB photo missing or invalid: ' + articlePath);
   const source = reviewed || candidates.find(value => isRasterFile(root, value));
-  if (!source) return '';
+  if (!source) {
+    const remote = approvedRemotePhotos[articlePath];
+    return isApprovedExternalPhoto(articlePath, remote) &&
+      markup.includes('data-media-role="hero_photo" src="' + remote + '"') ? remote : '';
+  }
   const hash = crypto.createHash('sha256').update(fs.readFileSync(path.join(root, source.slice(1)))).digest('hex').slice(0, 12);
   const thumb = `/static/kb/thumbnails/${path.basename(source, path.extname(source))}-${hash}.webp`;
   return isRasterFile(root, thumb) ? thumb : source;
 }
 
-module.exports = { isLocalPhoto, isRasterFile, selectListPhoto, reviewedPhotos };
+module.exports = { isLocalPhoto, isRasterFile, isApprovedExternalPhoto, selectListPhoto, reviewedPhotos };

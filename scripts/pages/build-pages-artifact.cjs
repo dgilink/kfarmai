@@ -5,7 +5,7 @@ const repoRoot = path.resolve(__dirname, '..', '..');
 const outputArg = process.argv.find((arg) => arg.startsWith('--output='));
 const outputDir = path.resolve(repoRoot, outputArg ? outputArg.slice('--output='.length) : '_site');
 const crypto = require('node:crypto');
-const { selectListPhoto } = require('./kb-list-photo.cjs');
+const { selectListPhoto, isApprovedExternalPhoto } = require('./kb-list-photo.cjs');
 
 // V4 presentation v1 changes only the deployed copy. Approved source bytes and
 // registry html_sha256 remain immutable; the audit verifies this exact transform.
@@ -260,7 +260,7 @@ fs.writeFileSync(path.join(outputDir, 'data/kb-index.json'),
 const kbTopicKey = category => String(category || '').includes('재배노하우') ? '재배노하우' : String(category || '');
 const kbIndexCards = kbItems.map((item, index) => {
   const image = item.image;
-  if (image && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
+  if (image && !isApprovedExternalPhoto(item.path, image) && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
     throw new Error('Approved KB list image missing: ' + image);
   }
   const thumb = image ? '<img class="kb-list-thumb" src="' + image +
