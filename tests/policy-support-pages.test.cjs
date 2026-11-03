@@ -34,7 +34,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 5);
+  assert.equal(publication.items.length, 6);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -95,10 +95,10 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-02T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '5건');
+  assert.equal(fields.noticeCount.textContent, '6건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '5건');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 4);
+  assert.equal(fields.noticeCount.textContent, '6건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 5);
   assert.ok(cards.every(card => card.statusLabel.textContent === '접수중'));
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
@@ -107,5 +107,5 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '5건');
+  assert.equal(fields.noticeCount.textContent, '6건');
 });

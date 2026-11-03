@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-02",
+  "updatedAt": "2026-11-03",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -142,6 +142,34 @@
       "officialUrl": "https://www.jeongeup.go.kr/buseo/board/view.jeongeup?boardId=BBS_0000012&contentsSid=2153&dataSid=1421881&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
       "reviewStatus": "approved",
       "sourceHash": "897ab9a6a26d6057fd4d76ebb239e0c9a4a831dc2cf26d18ddad519b6c842697"
+    },
+    {
+      "sourceId": "mafra-official-notices",
+      "externalId": "791-582118",
+      "slug": "2027-local-agri-field-rnd",
+      "title": "2027년 농업농촌 현장애로 단기해결 기술개발사업 지역주도 문제해결 공모",
+      "summary": "지방정부가 농업 현장 문제를 제안하고 민간 연구팀·농가와 실증하는 R&D 공모입니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "지방정부"
+      ],
+      "categories": [
+        "연구개발"
+      ],
+      "agency": "농림축산식품부",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-02",
+      "verifiedAt": "2026-11-03",
+      "support": "지역주도 현장문제 해결형 R&D 7개 과제 선정 예정. 2027년 정부안 26억 2,500만원, 국비:지방비 2:1 매칭. 국회 예산 확정에 따라 변동 가능.",
+      "eligibility": "지방정부가 1차 사업 참여 신청 주체입니다. 민간 연구기관·기업·대학·농가 등은 후보 지방정부 확정 이후 지방정부 주도의 컨소시엄 선정·구성 절차에 참여합니다.",
+      "application": "사업 참여 희망 지방정부는 2026년 11월 20일까지 사업 참여 신청서와 지방비 매칭 확약서를 농림축산식품부에 제출. 세부 제출 경로·RFP는 원문 첨부자료 확인.",
+      "note": "이번 기한은 지방정부의 1차 참여 신청 기한입니다. 기업·농가의 직접 신청 기한이 아니며, 접수 시작일은 원문에 명시되지 않았습니다.",
+      "officialUrl": "https://mafra.go.kr/bbs/home/791/611151/download.do",
+      "reviewStatus": "approved",
+      "sourceHash": "806f5b48146fcb4649af90a36a6919f4e504b4d0532069fa033d645e3f8d3d65"
     }
   ]
 }
