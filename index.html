@@ -3963,7 +3963,7 @@ function initSearch(){
   input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSearch();}});
   input.addEventListener('search',()=>runSearch());
   input.addEventListener('input',debounce(()=>renderSearchDropdown(input.value.trim()),180));
-  input.addEventListener('focus',()=>{if(input.value.trim().length>=2)renderSearchDropdown(input.value.trim());});
+  input.addEventListener('focus',()=>{if(input.value.trim().length>=1)renderSearchDropdown(input.value.trim());});
   document.addEventListener('click',e=>{if(!document.getElementById('searchBox')?.contains(e.target))closeSearchDropdown();});
 }
 function debounce(fn,delay){let timer;return(...args)=>{clearTimeout(timer);timer=setTimeout(()=>fn(...args),delay);};}
@@ -3971,13 +3971,15 @@ async function renderSearchDropdown(raw){
   const dd=document.getElementById('searchDropdown');
   if(!dd)return;
   const kw=normalizeKeyword(raw);
-  if(kw.length<2){closeSearchDropdown();return;}
+  if(kw.length<1){closeSearchDropdown();return;}
   dd.classList.add('open');
   dd.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
-  const [posts,staticItems]=await Promise.all([searchPosts(kw,3),searchStaticIndex(kw,8)]);
+  const [posts,staticItems]=await Promise.all([searchPosts(kw,3),searchStaticIndex(kw,10)]);
+  const entityItems=[...getShopSuggestions(kw,5),...getMaterialSuggestions(kw,6)];
   const recent=getRecentSearches();
   dd.innerHTML=[
-    renderSuggestSection('관련 농업정보',staticItems.slice(0,8).map(item=>staticSuggestHtml(item,kw))),
+    renderSuggestSection('관련 농업정보',staticItems.slice(0,10).map(item=>staticSuggestHtml(item,kw))),
+    renderSuggestSection('농약사·농자재',entityItems.map(item=>linkSuggestHtml(item,kw,item.type==='map'?'농약사':'농자재'))),
     renderSuggestSection('커뮤니티',posts.map(p=>postSuggestHtml(p,kw))),
     renderRecentSection(recent)
   ].filter(Boolean).join('');
@@ -3991,8 +3993,13 @@ function postSuggestHtml(post,kw){
   const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     return `<div class="s-item" onclick="runSearch(decodeURIComponent('${encodeURIComponent(kw)}'))"><div class="s-main"><div><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post))}</span></div><div class="s-title">${highlightText(post.title,kw)}</div><div class="s-meta">${escHtml(displayNameForPost(post))} · ${getTimeAgo(post.created_at)}</div></div></div>`;
 }
+function appendSearchQuery(url,query){
+  const value=String(url||'index.html');
+  const sep=value.includes('?')?'&':'?';
+  return `${value}${sep}q=${encodeURIComponent(query||"")}`;
+}
 function linkSuggestHtml(item,kw,kind){
-  const url=`${item.url}?q=${encodeURIComponent(item.query||kw)}`;
+  const url=appendSearchQuery(item.url,item.query||kw);
   return `<a class="s-item" href="${url}"><div class="s-main"><div class="s-title">${highlightText(item.text,kw)}</div><div class="s-meta">${escHtml(item.meta||`${kind}에서 보기`)}</div></div></a>`;
 }
 function renderRecentSection(items){
@@ -4032,7 +4039,8 @@ async function runSearch(raw){
   if(!feed)return;
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
   const [posts,staticItems]=await Promise.all([searchPosts(kw,30),searchStaticIndex(kw,40)]);
-  renderSearchResults(kw,posts,staticItems);
+  const entityItems=[...getShopSuggestions(kw,20),...getMaterialSuggestions(kw,20)];
+  renderSearchResults(kw,posts,staticItems,entityItems);
 }
 async function searchPosts(kw,limit){
   if(!window._sb)return [];
@@ -4054,9 +4062,9 @@ async function searchPosts(kw,limit){
     return await attachCommentCounts(list);
   }catch(e){return [];}
 }
-function renderSearchResults(kw,posts,staticItems=[]){
+function renderSearchResults(kw,posts,staticItems=[],entityItems=[]){
   const feed=document.getElementById('recentFeed');
-  const total=posts.length+staticItems.length;
+  const total=posts.length+staticItems.length+entityItems.length;
   const head=`<div class="search-result-head"><span>'${escHtml(kw)}' 검색 결과 ${total}개</span><button class="search-close" onclick="clearSearchResults()">×</button></div>`;
   const grouped=groupStaticResults(staticItems);
   const staticHtml=[
@@ -4067,6 +4075,7 @@ function renderSearchResults(kw,posts,staticItems=[]){
     renderStaticResultGroup('농자재·지역정보',grouped.materials,kw),
     renderStaticResultGroup('AI 참고확인',grouped.ai,kw)
   ].join('');
+  const entityHtml=entityItems.length?'<div class="search-group-title">농약사·농자재</div>'+entityItems.map(item=>resultLinkCard(item,kw,item.type==='map'?'농약사':'농자재')).join(''):'';
   const postHtml=posts.map(post=>{
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
@@ -4079,10 +4088,11 @@ function renderSearchResults(kw,posts,staticItems=[]){
     feed.innerHTML=head+actionCards+renderNoSearchResults(kw);
     return;
   }
-  feed.innerHTML=head+staticHtml+(postHtml?'<div class="search-group-title">커뮤니티</div>'+postHtml:'');
+  feed.innerHTML=head+staticHtml+entityHtml+(postHtml?'<div class="search-group-title">커뮤니티</div>'+postHtml:'');
 }
 function resultLinkCard(item,kw,badge){
-  return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${escHtml(item.badge||badge)}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
+  const url=appendSearchQuery(item.url,item.query||kw);
+  return `<a class="q-card" href="${url}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${escHtml(item.badge||badge)}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
 }
 async function loadStaticSearchIndex(){
   if(staticSearchIndex)return staticSearchIndex;
@@ -4151,7 +4161,8 @@ function buildCropRegionalSearchIndex(){
     return [
       {type:'지역 재배달력',title:`${crop.name} 지역 재배달력`,description:'지역과 재배유형 기준으로 월별 작업과 이번 달 할 일을 확인합니다.',url:`crop-calendar.html?crop=${encodeURIComponent(crop.id)}`,keywords:[...cropTerms,...regionKeywords,...topicKeywords],searchText:text},
       {type:'재배가이드',title:`${crop.name} 재배가이드`,description:'선택 지역 관리 포인트와 공공데이터 참고 경로를 확인합니다.',url:`crop-guide.html?crop=${encodeURIComponent(crop.id)}`,keywords:[...cropTerms,'재배가이드','관리포인트',...regionKeywords],searchText:text},
-      {type:'농업날씨',title:`${crop.name} 농업날씨 체크`,description:'지역별 기온, 강수, 바람 상태를 함께 확인하는 참고자료입니다.',url:'agri-weather.html',keywords:[...cropTerms,'농업날씨','날씨','강풍','장마','고온','저온'],searchText:text}
+      {type:'농업날씨',title:`${crop.name} 농업날씨 체크`,description:'지역별 기온, 강수, 바람 상태를 함께 확인하는 참고자료입니다.',url:'agri-weather.html',keywords:[...cropTerms,'농업날씨','날씨','강풍','장마','고온','저온'],searchText:text},
+      {type:'농산물 시세',title:`${crop.name} 농산물 시세`,description:'공공 시세 페이지에서 품목별 시장 흐름을 확인합니다.',url:`market-prices.html?item=${encodeURIComponent(crop.name)}`,keywords:[...cropTerms,'농산물 시세','시세','가격','KAMIS'],searchText:text}
     ];
   });
 }
@@ -4208,9 +4219,14 @@ function clearSearchResults(){
   loadFeed();
 }
 function closeSearchDropdown(){document.getElementById('searchDropdown')?.classList.remove('open');}
+function matchesSearchTokens(text,kw){
+  const tokens=normalizeKeyword(kw).split(' ').filter(Boolean);
+  if(tokens.length<=1)return matchesSearchText(text,kw);
+  return tokens.every(token=>matchesSearchText(text,token));
+}
 function getShopSuggestions(kw,limit=2){
   const shops=typeof data!=='undefined'?data:[];
-  const matched=shops.filter(shop=>matchesSearchText([shop.name,shop.addr,shop.tel,shop.item,'농약사 농약방'].join(' '),kw)).slice(0,limit).map(shop=>({
+  const matched=shops.filter(shop=>matchesSearchTokens([shop.name,shop.addr,shop.tel,shop.item,'농약사 농약방 농자재'].join(' '),kw)).slice(0,limit).map(shop=>({
     type:'map',
     url:'agri_map.html',
     query:shop.name,
@@ -4233,7 +4249,7 @@ function getMaterialSuggestions(kw,limit=6){
   datasets.forEach(ds=>{
     ds.items.forEach(item=>{
       const text=[ds.kind,item.company,item.products,item.addr,item.tel].join(' ');
-      if(matchesSearchText(text,kw)){
+      if(matchesSearchTokens(text,kw)){
         results.push({
           type:'material',
           url:ds.url,
