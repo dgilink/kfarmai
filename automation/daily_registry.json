@@ -340,6 +340,77 @@
       ],
       "image_credit": "Acroterion (CC BY-SA 4.0); Scoty6776 (CC BY 3.0); Alain Seguin (CC BY-SA 3.0)",
       "image_source": "https://commons.wikimedia.org/wiki/File:Kioti_KL7320_tractor_MD1.jpg"
+    },
+    {
+      "category": "병해충·농약안전",
+      "date": "2026-11-05",
+      "slug": "2026-winter-varroa-mite-control-checklist",
+      "title": "2026 꿀벌응애 집중 방제, 11월 25일까지 양봉농가 확인사항",
+      "url": "https://kfarmai.com/kb/2026-winter-varroa-mite-control-checklist.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "시행 중 · 전국",
+      "source_urls": [
+        "https://www.mafra.go.kr/bbs/home/796/582141/artclView.do",
+        "https://jp.go.kr/kor/cop/bbs/BBSMSTR_000000000134/selectBoardArticle.do?nttId=B00000062671wc0aN1yp"
+      ],
+      "infographic_assets": [
+        "/static/kb/2026-winter-varroa-mite-control-checklist-info-1.svg",
+        "/static/kb/2026-winter-varroa-mite-control-checklist-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2026-winter-varroa-mite-control-checklist-related-badge.svg"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-05",
+      "slug": "2027-uiseong-youth-farmer-startup-infrastructure",
+      "title": "의성 2027 청년농 창농기반 추가 모집, 11월 9일 마감·총사업비 2억 원",
+      "url": "https://kfarmai.com/kb/2027-uiseong-youth-farmer-startup-infrastructure.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "접수 중 · 경북 의성",
+      "source_urls": [
+        "https://www.usc.go.kr/uisungatec/main.do",
+        "https://www.usc.go.kr/ko/page.do?boardType=notice&mnu_uid=157"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-uiseong-youth-farmer-startup-infrastructure-info-1.svg",
+        "/static/kb/2027-uiseong-youth-farmer-startup-infrastructure-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2027-uiseong-youth-farmer-startup-infrastructure-related-badge.svg"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-05",
+      "slug": "2027-iksan-rural-convergence-industry-loan",
+      "title": "익산 2027 농촌융복합산업 융자지원, 11월 25일까지 신청 방법",
+      "url": "https://kfarmai.com/kb/2027-iksan-rural-convergence-industry-loan.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "접수 중 · 전북 익산",
+      "source_urls": [
+        "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127596"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-iksan-rural-convergence-industry-loan-info-1.svg",
+        "/static/kb/2027-iksan-rural-convergence-industry-loan-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2027-iksan-rural-convergence-industry-loan-related-badge.svg"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-05",
+      "slug": "2027-rural-basic-income-pilot-34-counties-selection",
+      "title": "2027 농어촌 기본소득 34개 군 신청, 11월 19일 잠정 선정 예정",
+      "url": "https://kfarmai.com/kb/2027-rural-basic-income-pilot-34-counties-selection.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "선정 예정 · 최종 미확정",
+      "source_urls": [
+        "https://www.mafra.go.kr/bbs/home/792/582148/artclView.do",
+        "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjE0OCUyRmFydGNsVmlldy5kbyUzRg%3D%3D"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-rural-basic-income-pilot-34-counties-selection-info-1.svg",
+        "/static/kb/2027-rural-basic-income-pilot-34-counties-selection-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2027-rural-basic-income-pilot-34-counties-selection-related-badge.svg"
     }
   ]
 }
