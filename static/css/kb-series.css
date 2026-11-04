@@ -279,14 +279,14 @@
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  margin:0 0 10px;
+  margin:0 0 14px;
 }
 .kb-series-kicker{
   display:inline-flex;
   align-items:center;
-  min-height:26px;
+  min-height:30px;
   margin:0;
-  padding:4px 9px;
+  padding:6px 12px;
   background:var(--series-accent);
   color:var(--series-ink);
   font-size:11px;
@@ -311,7 +311,7 @@
 }
 .kb-series-summary,.kb-series-meta{display:none}
 .kb-series-list{
-  margin-top:12px;
+  margin-top:14px;
   border-top:2px solid var(--series-accent);
 }
 .kb-series-list:empty,.kb-related-list:empty{display:none}
@@ -350,9 +350,9 @@
 @media(max-width:620px){
   .kb-series-hub{padding-top:8px}
   .kb-series-hero{padding:6px 0 8px}
-  .kb-series-topline{margin-bottom:8px}
+  .kb-series-topline{margin-bottom:12px}
   .kb-series-hub h1{font-size:34px}
-  .kb-series-list{margin-top:10px}
+  .kb-series-list{margin-top:12px}
   .kb-series-item{
     grid-template-columns:40px minmax(0,1fr) 16px;
     min-height:68px;
