@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || a.applicationEnd.localeCompare(b.applicationEnd));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-buyeo-organic-farming-materials');
-  assert.equal(listedSlugs[1], '2027-namyangju-organic-farming-materials');
+  assert.equal(listedSlugs[0], '2027-jeongeup-organic-farming-materials');
+  assert.equal(listedSlugs[1], '2027-jangsu-organic-farming-materials');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,14 +37,14 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-buyeo-organic-farming-materials.html');
-  assert.equal(cards[0].dataset.state, 'open');
-  assert.equal(cards[2].dataset.state, 'unknown');
+  assert.equal(cards[0].href, '/policy/2027-jeongeup-organic-farming-materials.html');
+  assert.equal(cards[0].dataset.state, 'unknown');
+  assert.equal(cards[2].dataset.state, 'open');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 10);
+  assert.equal(publication.items.length, 14);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -112,10 +112,10 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '10건');
+  assert.equal(fields.noticeCount.textContent, '14건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '9건');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 6);
+  assert.equal(fields.noticeCount.textContent, '13건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 10);
   assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 1);
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
@@ -124,5 +124,5 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '10건');
+  assert.equal(fields.noticeCount.textContent, '14건');
 });
