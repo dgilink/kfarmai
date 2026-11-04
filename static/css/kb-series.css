@@ -361,3 +361,49 @@
   .kb-series-num{width:34px;height:34px}
   .kb-related-head{margin-top:18px}
 }
+
+/* Series hub v5 — full-width responsive band */
+.kb-series-hero{padding:8px 0 0}
+.kb-series-topline{
+  width:100%;
+  min-height:48px;
+  box-sizing:border-box;
+  margin:0 0 16px;
+  padding:9px 12px;
+  background:var(--series-accent);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.kb-series-topline .kb-series-kicker{
+  min-height:0;
+  margin:0;
+  padding:0;
+  background:transparent;
+  color:var(--series-ink);
+  font-size:12px;
+  line-height:1.2;
+}
+.kb-series-topline .series-count{
+  min-width:48px;
+  min-height:30px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:4px 9px;
+  border:1px solid var(--series-ink);
+  background:transparent;
+  color:var(--series-ink);
+}
+.kb-series-hub h1{margin:0}
+.kb-series-list{margin-top:16px}
+@media(max-width:620px){
+  .kb-series-hero{padding-top:6px}
+  .kb-series-topline{
+    min-height:48px;
+    margin-bottom:16px;
+    padding:9px 12px;
+  }
+  .kb-series-list{margin-top:16px}
+}

@@ -1605,7 +1605,7 @@
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header8">
 <link rel="stylesheet" href="/static/css/v4-1-main.css?v=20261102-policy2">
 <script src="/static/js/v4-shell.js?v=20261029-header9" defer></script>
-<link rel="stylesheet" href="/static/css/kb-series.css?v=20261104-5" data-kb-series-home="1"></head>
+<link rel="stylesheet" href="/static/css/kb-series.css?v=20261104-6" data-kb-series-home="1"></head>
 <body class="v3-home v4-page v4-home">
 
 <!-- ===================== SVG ICON DEFS ===================== -->
@@ -3974,10 +3974,11 @@ async function renderSearchDropdown(raw){
   if(kw.length<2){closeSearchDropdown();return;}
   dd.classList.add('open');
   dd.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
-  const posts=await searchPosts(kw,3);
+  const [posts,staticItems]=await Promise.all([searchPosts(kw,3),searchStaticIndex(kw,8)]);
   const recent=getRecentSearches();
   dd.innerHTML=[
-    renderSuggestSection('커뮤니티 게시글',posts.map(p=>postSuggestHtml(p,kw))),
+    renderSuggestSection('관련 농업정보',staticItems.slice(0,8).map(item=>staticSuggestHtml(item,kw))),
+    renderSuggestSection('커뮤니티',posts.map(p=>postSuggestHtml(p,kw))),
     renderRecentSection(recent)
   ].filter(Boolean).join('');
 }
@@ -4030,8 +4031,8 @@ async function runSearch(raw){
   const feed=document.getElementById('recentFeed');
   if(!feed)return;
   feed.innerHTML='<div class="feed-loading"><div class="spinner"></div>검색 중...</div>';
-  const posts=await searchPosts(kw,30);
-  renderSearchResults(kw,posts);
+  const [posts,staticItems]=await Promise.all([searchPosts(kw,30),searchStaticIndex(kw,40)]);
+  renderSearchResults(kw,posts,staticItems);
 }
 async function searchPosts(kw,limit){
   if(!window._sb)return [];
@@ -4053,21 +4054,32 @@ async function searchPosts(kw,limit){
     return await attachCommentCounts(list);
   }catch(e){return [];}
 }
-function renderSearchResults(kw,posts){
+function renderSearchResults(kw,posts,staticItems=[]){
   const feed=document.getElementById('recentFeed');
-  const total=posts.length;
+  const total=posts.length+staticItems.length;
   const head=`<div class="search-result-head"><span>'${escHtml(kw)}' 검색 결과 ${total}개</span><button class="search-close" onclick="clearSearchResults()">×</button></div>`;
-  const actionCards=renderSearchActionCards(kw);
-  if(!total){feed.innerHTML=head+actionCards+renderNoSearchResults(kw);return;}
+  const grouped=groupStaticResults(staticItems);
+  const staticHtml=[
+    renderStaticResultGroup('농업정보·심층연재',grouped.knowledge,kw),
+    renderStaticResultGroup('정책·지원',grouped.policy,kw),
+    renderStaticResultGroup('관련 질문',grouped.questions,kw),
+    renderStaticResultGroup('공공정보·도구',[...grouped.publicData,...grouped.tools],kw),
+    renderStaticResultGroup('농자재·지역정보',grouped.materials,kw),
+    renderStaticResultGroup('AI 참고확인',grouped.ai,kw)
+  ].join('');
   const postHtml=posts.map(post=>{
     const slug=post.channels?.slug||'';
     const badgeClass=CHANNEL_BADGE_COLORS[slug]||'green';
     const postUrl=post.id?`post.html?v=20260705d&id=${encodeURIComponent(post.id)}`:'channel.html';
     const symptom=post.crop_tag||extractCategoryFromContent(post.content);
-    const clickAttr=post.id?``:'';
-    return `<a class="q-card" href="${postUrl}"${clickAttr} style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post)||'커뮤니티')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'커뮤니티'}</span><span>${commentCountLabel(post)}</span>${postLikeButton(post)}<span>${getTimeAgo(post.created_at)}</span></div></a>`;
+    return `<a class="q-card" href="${postUrl}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post)||'커뮤니티')}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${highlightText(post.title,kw)}</div>${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta wrap"><span>${post.region_tag?escHtml(post.region_tag):'커뮤니티'}</span><span>${commentCountLabel(post)}</span>${postLikeButton(post)}<span>${getTimeAgo(post.created_at)}</span></div></a>`;
   }).join('');
-  feed.innerHTML=head+actionCards+(posts.length?'<div class="search-group-title">커뮤니티 결과</div>'+postHtml:'');
+  if(!total){
+    const actionCards=renderSearchActionCards(kw);
+    feed.innerHTML=head+actionCards+renderNoSearchResults(kw);
+    return;
+  }
+  feed.innerHTML=head+staticHtml+(postHtml?'<div class="search-group-title">커뮤니티</div>'+postHtml:'');
 }
 function resultLinkCard(item,kw,badge){
   return `<a class="q-card" href="${item.url}?q=${encodeURIComponent(item.query||kw)}" style="display:block;text-decoration:none;color:inherit"><span class="ch-badge teal">${escHtml(item.badge||badge)}</span><div class="q-title">${highlightText(item.text,kw)}</div><div class="q-meta"><span>${escHtml(item.meta||'정보 보기')}</span></div></a>`;
@@ -4075,10 +4087,50 @@ function resultLinkCard(item,kw,badge){
 async function loadStaticSearchIndex(){
   if(staticSearchIndex)return staticSearchIndex;
   if(!staticSearchIndexPromise){
-    staticSearchIndexPromise=fetch('data/search_index.json',{cache:'no-store'})
-      .then(res=>res.ok?res.json():[])
-      .then(list=>staticSearchIndex=Array.isArray(list)?list:[])
-      .catch(()=>staticSearchIndex=[]);
+    staticSearchIndexPromise=Promise.all([
+      fetch('data/search_index.json',{cache:'no-store'}).then(res=>res.ok?res.json():[]).catch(()=>[]),
+      fetch('data/kb-index.json',{cache:'no-store'}).then(res=>res.ok?res.json():{items:[]}).catch(()=>({items:[]})),
+      fetch('data/kb-series.json',{cache:'no-store'}).then(res=>res.ok?res.json():{series:[]}).catch(()=>({series:[]})),
+      fetch('data/policy-support-notices.json',{cache:'no-store'}).then(res=>res.ok?res.json():{items:[]}).catch(()=>({items:[]}))
+    ]).then(([base,kb,series,policy])=>{
+      const kbItems=(Array.isArray(kb?.items)?kb.items:[]).map((item,index)=>({
+        id:`kb-${index}-${item.path||''}`,
+        type:item.series_id?'연재 글':'농업정보',
+        title:String(item.title||''),
+        description:[item.category,item.series_title,item.content_level,item.date].filter(Boolean).join(' · '),
+        keywords:[item.category,item.series_title,item.content_level].filter(Boolean),
+        url:String(item.path||'').replace(/^\/+/, ''),
+        source:'kb'
+      }));
+      const seriesItems=(Array.isArray(series?.series)?series.series:[]).map((item,index)=>({
+        id:`series-${index}-${item.id||''}`,
+        type:'심층연재',
+        title:String(item.title||''),
+        description:String(item.subtitle||item.description||''),
+        keywords:[item.axis,item.subtitle,...(item.items||[]).map(row=>row.title)].filter(Boolean),
+        url:String(item.path||'').replace(/^\/+/, ''),
+        source:'series'
+      }));
+      const policyItems=(Array.isArray(policy?.items)?policy.items:[])
+        .filter(item=>item.reviewStatus==='approved'&&item.slug&&item.title)
+        .map((item,index)=>({
+          id:`policy-${index}-${item.slug}`,
+          type:'정책·지원',
+          title:String(item.title||''),
+          description:[item.agency,item.summary,item.applicationEnd?('마감 '+item.applicationEnd):''].filter(Boolean).join(' · '),
+          keywords:[item.agency,...(item.region||[]),...(item.targets||[]),...(item.categories||[]),item.support,item.eligibility,item.application].filter(Boolean),
+          url:`policy/${item.slug}.html`,
+          source:'policy'
+        }));
+      const merged=[...(Array.isArray(base)?base:[]),...kbItems,...seriesItems,...policyItems];
+      const seen=new Set();
+      staticSearchIndex=merged.filter(item=>{
+        const key=`${item.url||''}|${item.title||''}`;
+        if(!item.title||!item.url||seen.has(key))return false;
+        seen.add(key);return true;
+      });
+      return staticSearchIndex;
+    }).catch(()=>staticSearchIndex=[]);
   }
   return staticSearchIndexPromise;
 }
@@ -4122,15 +4174,17 @@ async function searchStaticIndex(kw,limit=20){
   }).filter(item=>item.score>0).sort((a,b)=>b.score-a.score).slice(0,limit);
 }
 function staticSuggestHtml(item,kw){
-  return `<a class="s-item" href="${safeSearchUrl(item.url)}"><div class="s-main"><div class="s-title">${highlightText(item.title,kw)}</div><div class="s-meta">${escHtml(item.type||'통합 검색')}</div></div></a>`;
+  const meta=[item.type,(item.description||'').slice(0,58)].filter(Boolean).join(' · ');
+  return `<a class="s-item" href="${safeSearchUrl(item.url)}"><div class="s-main"><div class="s-title">${highlightText(item.title,kw)}</div><div class="s-meta">${escHtml(meta||'통합 검색')}</div></div></a>`;
 }
 function groupStaticResults(items){
-  const grouped={ai:[],questions:[],knowledge:[],community:[],publicData:[],tools:[],materials:[]};
+  const grouped={ai:[],questions:[],knowledge:[],policy:[],community:[],publicData:[],tools:[],materials:[]};
   items.forEach(item=>{
     const type=item.type||'';
     if(type.includes('진단'))grouped.ai.push(item);
+    else if(type.includes('정책')||type.includes('지원'))grouped.policy.push(item);
     else if(type.includes('관련 질문')||type.includes('질문·정보'))grouped.questions.push(item);
-    else if(type.includes('지식'))grouped.knowledge.push(item);
+    else if(type.includes('지식')||type.includes('농업정보')||type.includes('연재'))grouped.knowledge.push(item);
     else if(type.includes('커뮤니티'))grouped.community.push(item);
     else if(type.includes('공공정보')||type.includes('공공데이터'))grouped.publicData.push(item);
     else if(type.includes('도구')||type.includes('계산기'))grouped.tools.push(item);
