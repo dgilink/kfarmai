@@ -116,9 +116,23 @@ walk(path.join(ROOT, 'kb')).forEach(file => items.push(htmlItem(file, 'kb', '농
   ['tools-fertilizer.html', '계산기 도구', '액비 계산기'],
   ['tools-pesticide.html', '계산기 도구', '농약 희석 계산기'],
   ['agri_map.html', '농약사·업체', '주변 농약방 위치 보기'],
+  ['mfg.html', '농자재 업체', '제조·공급업체 정보'],
   ['santo.html', '농자재 업체', '상토 업체 정보'],
+  ['seed.html', '농자재 업체', '종자 업체 정보'],
   ['fert.html', '농자재 업체', '비료 업체 정보'],
-  ['cpa.html', '농자재 업체', '작물보호제 업체 정보']
+  ['cpa.html', '농자재 업체', '작물보호제 업체 정보'],
+  ['agri-weather.html', '농업 서비스', '농업날씨'],
+  ['market-prices.html', '농업 서비스', '농산물 시세'],
+  ['facility-vegetables.html', '농업 서비스', '시설채소 생산실적'],
+  ['crop-calendar.html', '농업 서비스', '작물 재배달력'],
+  ['crop-guide.html', '농업 서비스', '작물 재배가이드'],
+  ['subsidy-calendar.html', '정책·지원', '농업 정책·지원사업'],
+  ['agri-info.html', '농업 서비스', '농업정보'],
+  ['agri-news.html', '농업 서비스', '농업 소식'],
+  ['agri-research.html', '농업 서비스', '농업 연구동향'],
+  ['agri-videos.html', '농업 서비스', '농업 영상'],
+  ['news_sub.html', '농업 서비스', '관련 소식'],
+  ['links.html', '농업 서비스', '농업 관련기관·사이트']
 ].forEach(([url, type, fallbackTitle]) => {
   const file = path.join(ROOT, url);
   if (fs.existsSync(file)) {
