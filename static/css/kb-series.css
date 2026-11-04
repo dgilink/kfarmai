@@ -456,3 +456,28 @@
   }
   .kb-series-list{margin-top:10px}
 }
+
+/* Series hub v7 — hairline separators */
+.kb-series-hero{
+  padding-bottom:16px;
+  border-bottom:1px solid #e0e0e0;
+}
+.kb-series-intro{
+  margin-top:12px;
+  margin-bottom:0;
+}
+.kb-series-list{
+  margin-top:12px;
+  border-top:0;
+}
+.kb-related-head{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid #e0e0e0;
+}
+@media(max-width:620px){
+  .kb-series-hero{padding-bottom:14px}
+  .kb-series-intro{margin-top:10px}
+  .kb-series-list{margin-top:10px}
+  .kb-related-head{margin-top:18px;padding-top:16px}
+}
