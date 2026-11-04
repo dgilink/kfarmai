@@ -18,9 +18,10 @@ const shellVersion = crypto.createHash('sha256')
   .update(fs.readFileSync(path.join(repoRoot, 'static/js/v4-shell.js')))
   .update(fs.readFileSync(path.join(repoRoot, 'static/js/agri-info/agri-feed-ui.js')))
   .update(fs.readFileSync(path.join(repoRoot, 'static/js/kb-discovery.js')))
+  .update(fs.readFileSync(path.join(repoRoot, 'static/css/kb-series.css')))
   .digest('hex').slice(0, 16);
 const firstPaintHead = '<meta name="theme-color" content="#ffffff" data-v4-theme="light"><meta name="color-scheme" content="light"><style data-v4-first-paint>html,body{background:#fff!important;color-scheme:light}body.v4-global-header-ready{min-width:320px}</style>';
-const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
+const kbPresentationV1 = Buffer.from('<link rel="stylesheet" href="/static/css/v4-shell.css?v=' + shellVersion + '" data-kfarmai-presentation="v4-1"><link rel="stylesheet" href="/static/css/kb-series.css?v=' + shellVersion + '" data-kb-series="1"><script src="/static/js/v4-shell.js?v=' + shellVersion + '" defer data-kfarmai-presentation="v4-1"></script>');
 
 // Preserve original, approved HTML and its SHA-256 in Git. Changes below apply
 // ONLY to the generated public artifact; immutable approval source stays intact.
@@ -188,6 +189,16 @@ for (const [directory, extensions] of publicDirectories) {
 // reviewed-content discovery projection after verifying local article paths.
 const registry = JSON.parse(fs.readFileSync(path.join(repoRoot, 'automation/daily_registry.json'), 'utf8'));
 if (!Array.isArray(registry.items)) throw new Error('Invalid KB registry.');
+const seriesRegistry = JSON.parse(fs.readFileSync(path.join(repoRoot, 'automation/kb_series.json'), 'utf8'));
+if (!Array.isArray(seriesRegistry.series)) throw new Error('Invalid KB series registry.');
+const seriesIds = new Set();
+const seriesById = new Map(seriesRegistry.series.map((series) => {
+  const id = String(series.id || '');
+  if (!/^[a-z0-9-]+$/.test(id) || seriesIds.has(id)
+      || series.path !== `/kb/series/${id}.html`) throw new Error('Invalid KB series definition.');
+  seriesIds.add(id);
+  return [id, series];
+}));
 const kbItems = registry.items.map((item) => {
   const slug = String(item.slug || '');
   const date = String(item.date || '');
@@ -211,13 +222,75 @@ const kbItems = registry.items.map((item) => {
     if (hash !== item.html_sha256) throw new Error(`Approved KB source hash mismatch: ${slug}`);
     fs.writeFileSync(path.join(outputDir, 'kb', `${slug}.html`), source);
   }
+  const seriesId = item.series_id ? String(item.series_id) : '';
+  if (seriesId && !seriesById.has(seriesId)) throw new Error('Unknown KB series id.');
+  const seriesOrder = seriesId ? Number(item.series_order) : 0;
+  if (seriesId && (!Number.isInteger(seriesOrder) || seriesOrder < 1)) throw new Error('Invalid KB series order.');
   return { title: String(item.title || ''), category: String(item.category || ''),
-    date, path: `/kb/${slug}.html` };
+    date, path: `/kb/${slug}.html`, series_id: seriesId,
+    series_title: seriesId ? String(seriesById.get(seriesId).title || '') : '',
+    series_order: seriesOrder, content_level: seriesId ? String(item.content_level || '') : '' };
 }).sort((a, b) => b.date.localeCompare(a.date));
+
+const escapeSeriesHtml = value => String(value).replace(/[&<>"']/g, char =>
+  ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
+const publicSeries = seriesRegistry.series.map((series) => {
+  const items = kbItems.filter(item => item.series_id === series.id)
+    .sort((a, b) => a.series_order - b.series_order);
+  const related = (Array.isArray(series.related_slugs) ? series.related_slugs : [])
+    .map(slug => kbItems.find(item => item.path === `/kb/${slug}.html`)).filter(Boolean)
+    .filter(item => !items.some(seriesItem => seriesItem.path === item.path));
+  return {id:series.id,title:String(series.title||''),axis:String(series.axis||''),
+    subtitle:String(series.subtitle||''),description:String(series.description||''),
+    path:series.path,items,related};
+});
+fs.mkdirSync(path.join(outputDir, 'data'), {recursive:true});
+fs.writeFileSync(path.join(outputDir, 'data/kb-series.json'),
+  `${JSON.stringify({series: publicSeries})}\n`, 'utf8');
+
+for (const series of publicSeries) {
+  const hub = path.join(outputDir, series.path.slice(1));
+  if (!fs.existsSync(hub)) throw new Error('KB series hub missing: ' + series.id);
+  let html = fs.readFileSync(hub, 'utf8');
+  const itemHtml = series.items.length ? series.items.map((item, index) =>
+    '<a class="kb-series-item" href="' + item.path + '"><span class="kb-series-num">' +
+    String(index + 1).padStart(2, '0') + '</span><span><strong>' +
+    escapeSeriesHtml(item.title) + '</strong><small>' +
+    escapeSeriesHtml(item.content_level || '연재') + ' · ' + item.date +
+    '</small></span><span aria-hidden="true">›</span></a>').join('') :
+    '<div class="kb-series-empty">첫 심층연재를 준비 중입니다. 아래 관련 현장정보부터 확인할 수 있습니다.</div>';
+  const relatedHtml = series.related.length ? series.related.map(item =>
+    '<a href="' + item.path + '">' + escapeSeriesHtml(item.title) + '</a>').join('') :
+    '<div class="kb-series-empty">관련 현장정보를 준비 중입니다.</div>';
+  html = html.replace('<!-- KB_SERIES_COUNT -->', series.items.length ? series.items.length + '편' : '준비 중')
+    .replace('<!-- KB_SERIES_ITEMS -->', itemHtml)
+    .replace('<!-- KB_SERIES_RELATED -->', relatedHtml);
+  fs.writeFileSync(hub, html, 'utf8');
+}
+function injectSeriesNav(buffer, item) {
+  if (!item.series_id) return buffer;
+  const series = publicSeries.find(value => value.id === item.series_id);
+  const index = series.items.findIndex(value => value.path === item.path);
+  if (!series || index < 0) throw new Error('KB series navigation binding failed.');
+  const previous = series.items[index - 1], next = series.items[index + 1];
+  const nav = '<section class="kb-series-nav" aria-label="' + escapeSeriesHtml(series.title) +
+    ' 연재 이동"><p class="series-kicker">' + escapeSeriesHtml(series.title) + ' · ' +
+    String(index + 1) + '편</p><h2 class="series-title">' + escapeSeriesHtml(series.subtitle) +
+    '</h2><div class="series-links">' +
+    (previous ? '<a href="' + previous.path + '">← ' + escapeSeriesHtml(previous.title) + '</a>' : '<span></span>') +
+    '<a class="all" href="' + series.path + '">전체 연재 보기</a>' +
+    (next ? '<a class="next" href="' + next.path + '">' + escapeSeriesHtml(next.title) + ' →</a>' : '<span></span>') +
+    '</div></section>';
+  const source = buffer.toString('utf8');
+  if (!source.includes('</article>')) throw new Error('KB article boundary missing for series nav.');
+  return Buffer.from(source.replace('</article>', nav + '</article>'), 'utf8');
+}
 for (const entry of fs.readdirSync(path.join(outputDir, 'kb'), { withFileTypes: true })) {
   if (!entry.isFile() || !entry.name.endsWith('.html') || entry.name === 'index.html') continue;
   const destination = path.join(outputDir, 'kb', entry.name);
-  fs.writeFileSync(destination, renderKbV4(fs.readFileSync(destination), entry.name));
+  const rendered = renderKbV4(fs.readFileSync(destination), entry.name);
+  const item = kbItems.find(value => value.path === `/kb/${entry.name}`);
+  fs.writeFileSync(destination, item ? injectSeriesNav(rendered, item) : rendered);
 }
 
 // Render the already-approved registry projection into the public home copy.

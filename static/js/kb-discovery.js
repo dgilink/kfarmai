@@ -97,7 +97,7 @@
       const q = search?.value.trim().toLocaleLowerCase('ko') || '';
       const matches = items.filter(item =>
         (!selectedCategory || topicKey(item.category) === selectedCategory) &&
-        (!q || `${item.title} ${item.category}`.toLocaleLowerCase('ko').includes(q)));
+        (!q || `${item.title} ${item.category} ${item.series_title || ''} ${item.content_level || ''}`.toLocaleLowerCase('ko').includes(q)));
       // The Pages artifact already contains the complete approved list. Keep its
       // first-paint nodes (and in-progress image loads) until a real filter action.
       const keepServerList = initialIndexDraw && indexGrid.dataset.kbStatic === '1' && !q && !selectedCategory;
@@ -117,7 +117,9 @@
         category: String(value.category || ''),
         date: String(value.date || ''),
         path: safePath(value.path),
-        image: safePhoto(value.image, safePath(value.path))
+        image: safePhoto(value.image, safePath(value.path)),
+        series_title: String(value.series_title || ''),
+        content_level: String(value.content_level || '')
       })).filter(item => item.title && item.path && /^\d{4}-\d{2}-\d{2}$/.test(item.date))
         .sort((a, b) => b.date.localeCompare(a.date));
       renderTopics();

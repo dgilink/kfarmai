@@ -58,7 +58,7 @@
     }
   </style>
   <script src="/static/js/v4-shell.js?v=20261029-header8" defer></script>
-</head>
+<link rel="stylesheet" href="/static/css/kb-series.css?v=20261104-1"></head>
 <body class="kb-index-page v4-page">
   <header class="header">
     <div class="top">
@@ -70,6 +70,8 @@
   </header>
   <main>
     <h1>농업정보</h1>
+    <p class="kb-index-lead">계절별 실용정보부터 식물병·에너지·스마트농업의 심층연재와 최신 연구까지 확인하세요.</p>
+    <label class="kb-search-box" for="kbSearch"><input id="kbSearch" type="search" autocomplete="off" placeholder="작물·병해·기술·정책을 검색해보세요" aria-label="농업정보 검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></label>
     <div id="kbTopics" class="kb-topics" aria-label="농업정보 주제 선택">
       <button class="kb-topic" type="button" data-category="" aria-pressed="true">전체</button>
       <button class="kb-topic" type="button" data-category="과수·수확후관리" aria-pressed="false">과수·수확후관리</button>
@@ -77,6 +79,16 @@
       <button class="kb-topic" type="button" data-category="식물병·재배노하우" aria-pressed="false">식물병·재배노하우</button>
       <button class="kb-topic" type="button" data-category="스마트팜" aria-pressed="false">스마트팜</button>
     </div>
+    <section class="kb-series-block" id="series" aria-labelledby="kbSeriesTitle">
+      <div class="kb-section-head"><h2 id="kbSeriesTitle">심층연재</h2><span>쉬운 글부터 심층기술·최신 연구까지</span></div>
+      <div class="kb-series-grid">
+        <a class="kb-series-card" href="/kb/series/plant-disease.html"><span><small>식물병</small><strong>식물병의 세계</strong><em>병원체·진단·방제·최신 연구</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
+        <a class="kb-series-card" href="/kb/series/vector-borne-disease.html"><span><small>곤충매개병</small><strong>곤충매개 식물병</strong><em>총채벌레·진딧물·가루이와 바이러스</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
+        <a class="kb-series-card" href="/kb/series/smartfarm-energy.html"><span><small>에너지×스마트팜</small><strong>에너지 × 스마트팜</strong><em>난방·히트펌프·ESS·EMS·AI 제어</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
+        <a class="kb-series-card" href="/kb/series/aquafarm-energy.html"><span><small>에너지×아쿠아팜</small><strong>에너지 × 아쿠아팜</strong><em>RAS·DO·펌프·비상전원·AI 제어</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
+      </div>
+    </section>
+    <div class="kb-section-head"><h2>최신 농업정보</h2><span>공식 출처와 확인일을 함께 표시합니다</span></div>
     <div id="kbGrid" class="kb-grid" aria-live="polite">
       <a class="kb-card" data-topic="과수·수확후관리" href="/kb/pear-harvest-sorting-cold-storage-five-checks.html"><img class="kb-list-thumb" src="/static/kb/pear-harvest-sorting-cold-storage-five-checks-photo-20261029.webp" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>과수·수확후관리 · 2026-10-28</small><strong>수확한 배 오래 보관하려면? 저장온도 0℃·습도 85~90%와 선별 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>
       <a class="kb-card" data-topic="재배노하우" href="/kb/autumn-rain-wheat-barley-sowing-checklist.html"><img class="kb-list-thumb" src="/static/kb/autumn-rain-wheat-barley-sowing-checklist-photo-20261029.webp" alt="" width="88" height="64" loading="eager" fetchpriority="high" decoding="sync"><span class="kb-list-copy"><small>식량작물·재배노하우 · 2026-10-27</small><strong>가을비에 늦어진 밀·보리 파종, 지금 확인할 5가지</strong></span><span class="kb-list-arrow" aria-hidden="true">›</span></a>

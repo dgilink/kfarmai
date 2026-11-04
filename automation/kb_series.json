@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "updated_at": "2026-11-04",
+  "series": [
+    {
+      "id": "plant-disease",
+      "title": "식물병의 세계",
+      "axis": "식물병",
+      "subtitle": "병원체·증상·진단·방제·최신 연구를 차근차근",
+      "description": "식물은 왜 병에 걸리는지부터 곰팡이·세균·바이러스, 현장 진단과 최신 연구까지 순서대로 이해하는 KFarmAI 심층연재입니다.",
+      "path": "/kb/series/plant-disease.html",
+      "related_slugs": [
+        "kimchi-cabbage-heading-problems",
+        "strawberry-gray-mold-powdery-mildew-winter",
+        "winter-tomato-condensation-morning-care",
+        "onion-winter-care-downy-mildew"
+      ]
+    },
+    {
+      "id": "vector-borne-disease",
+      "title": "곤충매개 식물병",
+      "axis": "곤충매개병",
+      "subtitle": "총채벌레·진딧물·가루이와 바이러스 전염",
+      "description": "곤충이 어떤 방식으로 식물 병원체를 옮기는지, 주요 매개충과 바이러스의 관계를 현장 사례와 최신 연구로 풀어보는 연재입니다.",
+      "path": "/kb/series/vector-borne-disease.html",
+      "related_slugs": []
+    },
+    {
+      "id": "smartfarm-energy",
+      "title": "에너지 × 스마트팜",
+      "axis": "에너지×스마트팜",
+      "subtitle": "난방·히트펌프·ESS·EMS·AI 에너지 제어",
+      "description": "시설하우스의 난방비부터 히트펌프, ESS, EMS, 재생에너지, AI 최적제어까지 에너지 관점에서 스마트팜을 이해하는 연재입니다.",
+      "path": "/kb/series/smartfarm-energy.html",
+      "related_slugs": [
+        "strawberry-small-smartfarm",
+        "greenhouse-irrigation-precheck"
+      ]
+    },
+    {
+      "id": "aquafarm-energy",
+      "title": "에너지 × 아쿠아팜",
+      "axis": "에너지×아쿠아팜",
+      "subtitle": "RAS·DO·펌프·히트펌프·비상전원·AI 제어",
+      "description": "육상양식의 수온·DO·순환펌프와 열원, 비상전원, ESS, EMS, AI 통합제어를 에너지 흐름과 함께 설명하는 연재입니다.",
+      "path": "/kb/series/aquafarm-energy.html",
+      "related_slugs": []
+    }
+  ]
+}
