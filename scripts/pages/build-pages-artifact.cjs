@@ -252,16 +252,14 @@ for (const series of publicSeries) {
   const hub = path.join(outputDir, series.path.slice(1));
   if (!fs.existsSync(hub)) throw new Error('KB series hub missing: ' + series.id);
   let html = fs.readFileSync(hub, 'utf8');
-  const itemHtml = series.items.length ? series.items.map((item, index) =>
+  const itemHtml = series.items.map((item, index) =>
     '<a class="kb-series-item" href="' + item.path + '"><span class="kb-series-num">' +
     String(index + 1).padStart(2, '0') + '</span><span><strong>' +
     escapeSeriesHtml(item.title) + '</strong><small>' +
     escapeSeriesHtml(item.content_level || '연재') + ' · ' + item.date +
-    '</small></span><span aria-hidden="true">›</span></a>').join('') :
-    '<div class="kb-series-empty">첫 심층연재를 준비 중입니다. 아래 관련 현장정보부터 확인할 수 있습니다.</div>';
-  const relatedHtml = series.related.length ? series.related.map(item =>
-    '<a href="' + item.path + '">' + escapeSeriesHtml(item.title) + '</a>').join('') :
-    '<div class="kb-series-empty">관련 현장정보를 준비 중입니다.</div>';
+    '</small></span><span aria-hidden="true">›</span></a>').join('');
+  const relatedHtml = series.related.map(item =>
+    '<a href="' + item.path + '">' + escapeSeriesHtml(item.title) + '</a>').join('');
   html = html.replace('<!-- KB_SERIES_COUNT -->', series.items.length ? series.items.length + '편' : '준비 중')
     .replace('<!-- KB_SERIES_ITEMS -->', itemHtml)
     .replace('<!-- KB_SERIES_RELATED -->', relatedHtml);
