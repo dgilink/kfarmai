@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || a.applicationEnd.localeCompare(b.applicationEnd));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-local-agri-field-rnd');
-  assert.equal(listedSlugs[1], '2027-namyangju-organic-fertilizer-extra');
+  assert.equal(listedSlugs[0], '2027-buyeo-organic-farming-materials');
+  assert.equal(listedSlugs[1], '2027-namyangju-organic-farming-materials');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -32,20 +32,19 @@ test('home policy preview uses approved, unexpired notices with safe detail link
     {...publication.items[0], slug:'past-notice', applicationEnd:'2026-01-01'}]};
   vm.runInNewContext(read('static/js/policy-home.js'), {document,
     fetch:async () => ({ok:true,json:async () => payload}),
-    Date:class extends Date { static now() { return Date.parse('2026-11-02T00:00:00Z'); } }});
+    Date:class extends Date { static now() { return Date.parse('2026-11-04T00:00:00Z'); } }});
   await new Promise(resolve => setImmediate(resolve));
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-local-agri-field-rnd.html');
-  assert.equal(cards[0].dataset.state, 'unknown');
-  assert.ok(cards.some(card => card.dataset.state === 'upcoming'));
-  assert.equal(cards.filter(card => card.children[0].children[3].textContent === '접수예정').length, 1);
+  assert.equal(cards[0].href, '/policy/2027-buyeo-organic-farming-materials.html');
+  assert.equal(cards[0].dataset.state, 'open');
+  assert.equal(cards[2].dataset.state, 'unknown');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 7);
+  assert.equal(publication.items.length, 10);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -111,12 +110,12 @@ test('open filter includes unknown starts while preserving distinct data state',
     querySelectorAll(selector) { return selector === '#noticeList .policy-result' ? cards : buttons; }
   };
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
-    static now() { return Date.parse('2026-11-02T00:00:00Z'); }
+    static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '7건');
+  assert.equal(fields.noticeCount.textContent, '10건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '6건');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 5);
+  assert.equal(fields.noticeCount.textContent, '9건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 6);
   assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 1);
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
@@ -125,5 +124,5 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '7건');
+  assert.equal(fields.noticeCount.textContent, '10건');
 });
