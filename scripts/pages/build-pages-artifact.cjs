@@ -227,9 +227,9 @@ const kbItems = registry.items.map((item) => {
   const seriesOrder = seriesId ? Number(item.series_order) : 0;
   if (seriesId && (!Number.isInteger(seriesOrder) || seriesOrder < 1)) throw new Error('Invalid KB series order.');
   return { title: String(item.title || ''), category: String(item.category || ''),
-    date, path: `/kb/${slug}.html`, series_id: seriesId,
-    series_title: seriesId ? String(seriesById.get(seriesId).title || '') : '',
-    series_order: seriesOrder, content_level: seriesId ? String(item.content_level || '') : '' };
+    date, path: `/kb/${slug}.html`,
+    ...(seriesId ? {series_id:seriesId, series_title:String(seriesById.get(seriesId).title || ''),
+      series_order:seriesOrder, content_level:String(item.content_level || '')} : {}) };
 }).sort((a, b) => b.date.localeCompare(a.date));
 
 const escapeSeriesHtml = value => String(value).replace(/[&<>"']/g, char =>

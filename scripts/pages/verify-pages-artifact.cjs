@@ -18,7 +18,13 @@ const mustExist = [
   'agri-info.html',
   'kb/index.html',
   'data/kb-index.json',
+  'data/kb-series.json',
   'data/policy-support-notices.json',
+  'kb/series/plant-disease.html',
+  'kb/series/vector-borne-disease.html',
+  'kb/series/smartfarm-energy.html',
+  'kb/series/aquafarm-energy.html',
+  'static/css/kb-series.css',
   'subsidy-calendar.html',
   'kb/ras-recirculating-aquaculture.html',
   'kb/land-aquaculture-water-quality.html',
@@ -128,12 +134,54 @@ for (const required of mustExist) {
 const files = walk(artifactDir);
 if (exists('data/kb-index.json')) {
   const kbIndex = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-index.json'), 'utf8'));
-  if (!Array.isArray(kbIndex.items) || kbIndex.items.some((item) =>
-    !['category,date,path,title', 'category,date,image,path,title'].includes(Object.keys(item).sort().join(','))
-    || ('image' in item && !(isApprovedExternalPhoto(item.path, item.image) || (isLocalPhoto(item.image) && isRasterFile(artifactDir, item.image))))
-    || !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path)
-    || !exists(item.path.slice(1)))) {
+  const baseKeys = ['category','date','path','title'];
+  const seriesKeys = ['category','content_level','date','path','series_id','series_order','series_title','title'];
+  const allowedShapes = new Set([
+    baseKeys.join(','), [...baseKeys,'image'].sort().join(','),
+    seriesKeys.join(','), [...seriesKeys,'image'].sort().join(','),
+  ]);
+  if (!Array.isArray(kbIndex.items) || kbIndex.items.some((item) => {
+    const keys = Object.keys(item).sort().join(',');
+    const seriesValid = !('series_id' in item) || (
+      /^[a-z0-9-]+$/.test(item.series_id) &&
+      typeof item.series_title === 'string' && item.series_title.length > 0 && item.series_title.length <= 80 &&
+      Number.isInteger(item.series_order) && item.series_order > 0 &&
+      typeof item.content_level === 'string' && item.content_level.length > 0 && item.content_level.length <= 32
+    );
+    return !allowedShapes.has(keys)
+      || !seriesValid
+      || ('image' in item && !(isApprovedExternalPhoto(item.path, item.image) || (isLocalPhoto(item.image) && isRasterFile(artifactDir, item.image))))
+      || !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path)
+      || !exists(item.path.slice(1));
+  })) {
     errors.push('KB index is not a safe published-content projection');
+  }
+}
+if (exists('data/kb-series.json')) {
+  try {
+    const publication = JSON.parse(fs.readFileSync(path.join(artifactDir, 'data/kb-series.json'), 'utf8'));
+    const seen = new Set();
+    if (!Array.isArray(publication.series) || publication.series.some(series => {
+      const expectedKeys = 'axis,description,id,items,path,related,subtitle,title';
+      const invalidIdentity = Object.keys(series).sort().join(',') !== expectedKeys ||
+        !/^[a-z0-9-]+$/.test(series.id || '') || seen.has(series.id) ||
+        series.path !== `/kb/series/${series.id}.html` || !exists(series.path.slice(1)) ||
+        typeof series.title !== 'string' || !series.title || series.title.length > 80 ||
+        typeof series.description !== 'string' || !series.description || series.description.length > 600 ||
+        !Array.isArray(series.items) || !Array.isArray(series.related);
+      seen.add(series.id);
+      if (invalidIdentity) return true;
+      const allItems = [...series.items, ...series.related];
+      return allItems.some(item =>
+        !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path || '') || !exists(item.path.slice(1)) ||
+        typeof item.title !== 'string' || !item.title ||
+        (series.items.includes(item) && (
+          item.series_id !== series.id || !Number.isInteger(item.series_order) || item.series_order < 1 ||
+          typeof item.content_level !== 'string' || !item.content_level
+        )));
+    })) errors.push('KB series data is not a safe published-content projection');
+  } catch {
+    errors.push('KB series data is not valid JSON');
   }
 }
 if (exists('data/policy-support-notices.json')) {
