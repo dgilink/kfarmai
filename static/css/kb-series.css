@@ -146,8 +146,8 @@
 }
 .kb-series-hub[data-series-theme="plant-disease"]{--series-accent:#da1e28;--series-ink:#ffffff}
 .kb-series-hub[data-series-theme="vector-borne"]{--series-accent:#f1c21b;--series-ink:#161616}
-.kb-series-hub[data-series-theme="smartfarm-energy"]{--series-accent:#0f62fe;--series-ink:#ffffff}
-.kb-series-hub[data-series-theme="aquafarm-energy"]{--series-accent:#24a148;--series-ink:#ffffff}
+.kb-series-hub[data-series-theme="smartfarm-energy"]{--series-accent:#24a148;--series-ink:#ffffff}
+.kb-series-hub[data-series-theme="aquafarm-energy"]{--series-accent:#0f62fe;--series-ink:#ffffff}
 .kb-series-hero{
   border-top:6px solid var(--series-accent);
   padding:14px 0 12px;
@@ -222,9 +222,7 @@
   align-items:center;
   justify-content:space-between;
   gap:10px;
-  margin:24px 0 8px;
-  padding-left:10px;
-  border-left:5px solid var(--series-accent);
+  margin:22px 0 8px;
 }
 .kb-related-head h2{
   margin:0;
@@ -258,3 +256,10 @@
   .kb-series-num{width:34px;height:34px}
   .kb-related-head{margin-top:20px}
 }
+
+/* Series hub v3 — editorial minimal */
+.kb-series-summary{display:none}
+.kb-series-meta{margin-top:8px}
+.kb-related-head span{display:none}
+.kb-related-head{padding-left:0;border-left:0}
+.kb-related-head h2{font-size:18px}
