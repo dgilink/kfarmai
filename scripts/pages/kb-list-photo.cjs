@@ -16,6 +16,7 @@ const reviewedPhotos = Object.freeze({
 // Approved external hero photographs for this four-article revision only.
 // Security: exact article and exact URL required; no arbitrary remote images.
 const approvedRemotePhotos = Object.freeze({
+  "/kb/greenhouse-heating-cost-saving-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/GREENH~1%20%282%29ra.jpg?width=1280",
   "/kb/2026-public-rice-reserve-purchase-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20(autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake)..JPG?width=1280",
   "/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Daegu%20EXCO%204.jpg?width=1280",
   "/kb/suncheon-2026-young-returning-farmer-land-rent-support.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Damyang-Rice%20paddy%20field-01.jpg?width=1280",

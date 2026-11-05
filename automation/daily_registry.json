@@ -216,8 +216,8 @@
         "https://www.rda.go.kr/board/board.do?dataNo=100000793479&mode=view&prgId=day_farmprmninfoEntry",
         "https://www.rda.go.kr/board/board.do?boardId=farmprmninfo&dataNo=100000800704&mode=updateCnt&prgId=day_farmprmninfoEntry"
       ],
-      "image_credit": "KFarmAI 기존 검수 자산",
-      "image_source": "/static/kb/greenhouse-heating-preflight-notes-hero.webp",
+      "image_credit": "Wikimedia Commons · Satin66Flower · CC BY-SA",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/GREENH~1%20%282%29ra.jpg?width=1280",
       "series_id": "smartfarm-energy",
       "series_title": "에너지 × 스마트팜",
       "series_order": 2,
