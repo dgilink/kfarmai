@@ -21,7 +21,7 @@ jobs:
       - name: Prepare baseline and candidate artifacts
         shell: pwsh
         env:
-          BASE_SHA: e1192a4beca3c5b833b140214eaa31f6ad5bfaba
+          BASE_SHA: b81432395e3707c57b8ccf1ea269b35dd79be1e0
         run: |
           git worktree add --detach "$env:RUNNER_TEMP\v4-perf-baseline" $env:BASE_SHA
           node "$env:RUNNER_TEMP\v4-perf-baseline\scripts\pages\build-pages-artifact.cjs" --output="$env:RUNNER_TEMP\v4-perf-baseline\_site"

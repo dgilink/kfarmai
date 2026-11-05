@@ -16,10 +16,9 @@ const reviewedPhotos = Object.freeze({
 // Approved external hero photographs for this four-article revision only.
 // Security: exact article and exact URL required; no arbitrary remote images.
 const approvedRemotePhotos = Object.freeze({
-  "/kb/2027-rural-basic-income-pilot-34-counties-selection.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20%28autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake%29..JPG?width=1280",
-  "/kb/2027-iksan-rural-convergence-industry-loan.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Adani%20Agri%20Logistics%20Bandel.jpg?width=1280",
-  "/kb/2027-uiseong-youth-farmer-startup-infrastructure.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Uiseong%20County-Changgilri-Garlic%20storage-01.jpg?width=1280",
-  "/kb/2026-winter-varroa-mite-control-checklist.html": "https://commons.wikimedia.org/wiki/Special:FilePath/CSIRO%20ScienceImage%206586%20A%20frame%20from%20a%20beehive%20at%20a%20cherry%20farm%20near%20Young%20New%20South%20Wales.jpg?width=1280",
+  "/kb/2027-rural-basic-income-pilot-34-counties-selection.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Boksakkot%20%28Peach%20Blossom%29%20Village%20%284464235718%29.jpg?width=1280",
+  "/kb/2027-iksan-rural-convergence-industry-loan.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Kimchi%20processing%20plant.jpg?width=1280",
+  "/kb/2027-uiseong-youth-farmer-startup-infrastructure.html": "https://commons.wikimedia.org/wiki/Special:FilePath/%EC%B2%AD%EB%85%84%EB%86%8D%EC%97%85%EC%9D%B8%20%EC%9D%B4%EC%9B%90%ED%98%B8.jpg?width=1280",  "/kb/2026-winter-varroa-mite-control-checklist.html": "https://commons.wikimedia.org/wiki/Special:FilePath/CSIRO%20ScienceImage%206586%20A%20frame%20from%20a%20beehive%20at%20a%20cherry%20farm%20near%20Young%20New%20South%20Wales.jpg?width=1280",
   "/kb/greenhouse-heating-cost-saving-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/GREENH~1%20%282%29ra.jpg?width=1280",
   "/kb/2026-public-rice-reserve-purchase-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20(autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake)..JPG?width=1280",
   "/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Daegu%20EXCO%204.jpg?width=1280",
