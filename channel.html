@@ -930,8 +930,8 @@ function renderPostsNow(posts,totalCount,profileMap={},firstPage=false,category=
   posts.forEach((post,index)=>{
     const slug=window.KFCommunity.categoryForPost(post,channels)?.slug||'';
     const imageUrls=normalizeImages(post.image_urls);
-    const thumbLoading=index<2?'eager':'lazy';
-    const thumbPriority=index<2?' fetchpriority="high"':'';
+    const thumbLoading=index===0?'eager':'lazy';
+    const thumbPriority='';
     const thumbHtml=imageUrls[0]?`<img class="post-thumb" src="${esc(imageUrls[0])}" alt="게시글 이미지" width="84" height="84" loading="${thumbLoading}"${thumbPriority}>`:'';
     const category=post.crop_tag||extractCategoryFromContent(post.content);
     const preview=stripPostPrefixes(post.content||'');

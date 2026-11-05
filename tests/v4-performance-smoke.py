@@ -5,6 +5,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 origin = os.environ.get("V4_PERF_ORIGIN", "http://127.0.0.1:8765").rstrip("/")
+route = os.environ.get("V4_PERF_PATH", "/index.html")
+if route not in ("/index.html", "/channel.html", "/kb/index.html"):
+    raise ValueError("V4_PERF_PATH must be a public navigation route")
 options = Options()
 options.add_argument("--headless=new")
 options.add_argument("--no-sandbox")
@@ -36,7 +39,7 @@ try:
     for sample in range(repeats + 1):
         cold = sample < repeats
         driver.execute_cdp_cmd("Network.setCacheDisabled", {"cacheDisabled": cold})
-        driver.get(origin + "/index.html")
+        driver.get(origin + route)
         time.sleep(3)
         metrics = driver.execute_script("""
           const n = performance.getEntriesByType('navigation')[0];
@@ -47,6 +50,17 @@ try:
             transfer: (n?.transferSize || 0) + resources.reduce((v,x) => v + (x.transferSize || 0), 0),
             slowResources: resources.filter(x => x.responseEnd > 1500).sort((a,b) => b.responseEnd - a.responseEnd).slice(0, 6).map(x => ({name: x.name.split('/').slice(-2).join('/'), end: Math.round(x.responseEnd), bytes: x.transferSize}))};
         """)
-        print(f"cold-{sample + 1}" if cold else "warm", metrics)
+        print(route, f"cold-{sample + 1}" if cold else "warm", metrics)
+    if route == "/index.html":
+        driver.execute_cdp_cmd("Network.setCacheDisabled", {"cacheDisabled": False})
+        for target in ("/channel.html", "/kb/index.html"):
+            driver.find_element("css selector", f'.v4-nav a[href="{target}"]').click()
+            time.sleep(3)
+            nav = driver.execute_script("""
+              const n = performance.getEntriesByType('navigation')[0];
+              return {ttfb: n?.responseStart || 0, dcl: n?.domContentLoadedEventEnd || 0,
+                lcp: window.__v4Vitals?.lcp || 0, cls: window.__v4Vitals?.cls || 0};
+            """)
+            print("transition", target, nav)
 finally:
     driver.quit()

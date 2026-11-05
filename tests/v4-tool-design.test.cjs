@@ -253,9 +253,9 @@ test('home and community share stable first-paint feed cache and prioritize visi
   assert.match(home,/homeFeedTouchActive/);
   assert.match(home,/pendingHomeFeedUpdates/);
   assert.match(home,/renderHomeFeedPosts\(feed,data,\{\}\)/);
-  assert.match(home,/index<2\?'eager':'lazy'/);
+  assert.match(home,/index===0\?'eager':'lazy'/);
   assert.match(home,/fetchpriority="high"/);
-  assert.match(channel,/thumbLoading=index<2\?'eager':'lazy'/);
+  assert.match(channel,/thumbLoading=index===0\?'eager':'lazy'/);
   assert.match(channel,/width="84" height="84"/);
   assert.match(builder,/width="320" height="180"/);
 });
