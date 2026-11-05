@@ -3,6 +3,10 @@
   const indexGrid = document.getElementById('kbGrid');
   const homeGrid = document.getElementById('homeKbCards');
   if (!indexGrid && !homeGrid) return;
+  const series = indexGrid && document.getElementById('series');
+  const openLinkedSeries = () => { if (series && location.hash === '#series') series.open = true; };
+  openLinkedSeries();
+  if (series) window.addEventListener('hashchange', openLinkedSeries);
   // Capture also covers pre-rendered images, before the static-home fast exit.
   const dropBrokenPhoto = image => {
     const link = image.closest('.kb-card');

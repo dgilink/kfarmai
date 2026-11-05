@@ -70,7 +70,6 @@
   </header>
   <main>
     <h1>농업정보</h1>
-    <p class="kb-index-lead">계절별 실용정보부터 식물병·에너지·스마트농업의 심층연재와 최신 연구까지 확인하세요.</p>
     <label class="kb-search-box" for="kbSearch"><input id="kbSearch" type="search" autocomplete="off" placeholder="작물·병해·기술·정책을 검색해보세요" aria-label="농업정보 검색"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></label>
     <div id="kbTopics" class="kb-topics" aria-label="농업정보 주제 선택">
       <button class="kb-topic" type="button" data-category="" aria-pressed="true">전체</button>
@@ -79,15 +78,15 @@
       <button class="kb-topic" type="button" data-category="식물병·재배노하우" aria-pressed="false">식물병·재배노하우</button>
       <button class="kb-topic" type="button" data-category="스마트팜" aria-pressed="false">스마트팜</button>
     </div>
-    <section class="kb-series-block" id="series" aria-labelledby="kbSeriesTitle">
-      <div class="kb-section-head"><h2 id="kbSeriesTitle">심층연재</h2><span>쉬운 글부터 심층기술·최신 연구까지</span></div>
+    <details class="kb-series-block" id="series">
+      <summary class="kb-section-head"><h2 id="kbSeriesTitle">심층연재</h2><span>쉬운 글부터 심층기술·최신 연구까지</span></summary>
       <div class="kb-series-grid">
         <a class="kb-series-card" href="/kb/series/plant-disease.html"><span><small>식물병</small><strong>식물병의 세계</strong><em>병원체·진단·방제·최신 연구</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
         <a class="kb-series-card" href="/kb/series/vector-borne-disease.html"><span><small>곤충매개병</small><strong>곤충매개 식물병</strong><em>총채벌레·진딧물·가루이와 바이러스</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
         <a class="kb-series-card" href="/kb/series/smartfarm-energy.html"><span><small>에너지×스마트팜</small><strong>에너지 × 스마트팜</strong><em>난방·히트펌프·ESS·EMS·AI 제어</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
         <a class="kb-series-card" href="/kb/series/aquafarm-energy.html"><span><small>에너지×아쿠아팜</small><strong>에너지 × 아쿠아팜</strong><em>RAS·DO·펌프·비상전원·AI 제어</em></span><span class="kb-series-arrow" aria-hidden="true">›</span></a>
       </div>
-    </section>
+    </details>
     <section class="kb-latest-block" aria-labelledby="kbLatestTitle">
       <div class="kb-section-head"><h2 id="kbLatestTitle">최신 농업정보</h2><span>공식 출처와 확인일을 함께 표시합니다</span></div>
       <div id="kbGrid" class="kb-grid" aria-live="polite">

@@ -1,5 +1,4 @@
 /* KFarmAI knowledge series — compact, mobile-first */
-.kb-index-lead{margin:0 0 14px;color:#68736b;font-size:13px;line-height:1.55}
 .kb-search-box{display:flex;align-items:center;gap:8px;margin:0 0 12px;border:1px solid #cfd6d1;background:#fff;min-height:46px;padding:0 12px}
 .kb-search-box input{min-width:0;flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:14px;color:#17202a}
 .kb-search-box input::placeholder{color:#8a938d}
@@ -66,6 +65,31 @@
 .kb-series-block>.kb-section-head{
   background:#0f62fe;
 }
+.kb-series-block>summary.kb-section-head{
+  position:relative;
+  display:flex;
+  cursor:pointer;
+  list-style:none;
+  padding-right:36px;
+}
+.kb-series-block>summary.kb-section-head::-webkit-details-marker{display:none}
+.kb-series-block>summary.kb-section-head:focus-visible{outline:3px solid #17202a;outline-offset:2px}
+.kb-series-block>summary.kb-section-head::after{
+  content:'';
+  position:absolute;
+  right:15px;
+  top:50%;
+  width:9px;
+  height:9px;
+  border-right:2px solid #fff;
+  border-bottom:2px solid #fff;
+  transform:translateY(-65%) rotate(45deg);
+}
+.kb-series-block[open]>summary.kb-section-head::after{
+  transform:translateY(-30%) rotate(225deg);
+}
+.kb-series-block:not([open]){padding-bottom:0}
+.kb-series-block:not([open])>summary.kb-section-head{margin-bottom:0}
 .kb-latest-block>.kb-section-head{
   background:#f1c21b;
 }
