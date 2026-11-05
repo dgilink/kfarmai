@@ -17,6 +17,8 @@ const reviewedPhotos = Object.freeze({
 // Approved external hero photographs for this four-article revision only.
 // Security: exact article and exact URL required; no arbitrary remote images.
 const approvedRemotePhotos = Object.freeze({
+  "/kb/2026-agri-eji-weather-disaster-morning-alert.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Farmer%20on%20the%20Phone%20%289629680543%29.jpg?width=1280",
+  "/kb/2027-livestock-facility-modernization-guideline.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Dairy%20farm%20%28P-062705-00-19%29.jpg?width=1280",
   "/kb/2027-rural-basic-income-pilot-34-counties-selection.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Boksakkot%20%28Peach%20Blossom%29%20Village%20%284464235718%29.jpg?width=1280",
 
   "/kb/2026-winter-varroa-mite-control-checklist.html": "https://commons.wikimedia.org/wiki/Special:FilePath/CSIRO%20ScienceImage%206586%20A%20frame%20from%20a%20beehive%20at%20a%20cherry%20farm%20near%20Young%20New%20South%20Wales.jpg?width=1280",

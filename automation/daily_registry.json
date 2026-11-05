@@ -419,6 +419,44 @@
       "related_badge_asset": "/static/kb/2027-rural-basic-income-pilot-34-counties-selection-related-badge.svg",
       "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Boksakkot%20%28Peach%20Blossom%29%20Village%20%284464235718%29.jpg?width=1280",
       "image_credit": "Wikimedia Commons · 경북 영덕 농촌마을"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-06",
+      "slug": "2026-agri-eji-weather-disaster-morning-alert",
+      "title": "농업e지 기상재해 알림 시작, 앱 설치·필지별 경보 확인 방법",
+      "url": "https://kfarmai.com/kb/2026-agri-eji-weather-disaster-morning-alert.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "전국 농업경영체 등록 농가 · 운영 중",
+      "source_urls": [
+        "https://www.mafra.go.kr/bbs/home/792/582153/artclView.do"
+      ],
+      "infographic_assets": [
+        "/static/kb/2026-agri-eji-weather-disaster-morning-alert-info-1.svg",
+        "/static/kb/2026-agri-eji-weather-disaster-morning-alert-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2026-agri-eji-weather-disaster-morning-alert-related-badge.svg",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Farmer%20on%20the%20Phone%20%289629680543%29.jpg?width=1280",
+      "image_credit": "United Soybean Board · CC BY 2.0"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-06",
+      "slug": "2027-livestock-facility-modernization-guideline",
+      "title": "2027 축사시설현대화사업 지침 확정, 융자 80%·연 2%와 신청 확인사항",
+      "url": "https://kfarmai.com/kb/2027-livestock-facility-modernization-guideline.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "지침 확정 · 지역별 접수일 확인 중",
+      "source_urls": [
+        "https://www.mafra.go.kr/bbs/home/795/579429/artclView.do"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-livestock-facility-modernization-guideline-info-1.svg",
+        "/static/kb/2027-livestock-facility-modernization-guideline-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2027-livestock-facility-modernization-guideline-related-badge.svg",
+      "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Dairy%20farm%20%28P-062705-00-19%29.jpg?width=1280",
+      "image_credit": "European Commission / Lukasz Kobus · CC BY 4.0"
     }
   ]
 }

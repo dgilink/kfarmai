@@ -28,6 +28,8 @@
   const status = document.getElementById('kbStatus');
   // Exactly four reviewed external photograph URLs, no user-controlled remote image src.
   const approvedExternalPhotos = Object.freeze({
+    "/kb/2026-agri-eji-weather-disaster-morning-alert.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Farmer%20on%20the%20Phone%20%289629680543%29.jpg?width=1280",
+    "/kb/2027-livestock-facility-modernization-guideline.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Dairy%20farm%20%28P-062705-00-19%29.jpg?width=1280",
     "/kb/2026-public-rice-reserve-purchase-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20(autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake)..JPG?width=1280",
     "/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Daegu%20EXCO%204.jpg?width=1280",
     "/kb/suncheon-2026-young-returning-farmer-land-rent-support.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Korea-Damyang-Rice%20paddy%20field-01.jpg?width=1280",
