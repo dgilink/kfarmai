@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 190" width="1200" height="190" role="img" aria-label="증평군청 방제안내 바로가기">
+<rect x="14" y="18" width="1180" height="164" fill="#18212B" opacity=".15"/>
+<rect x="6" y="6" width="1182" height="164" fill="#075E67" stroke="#FFE600" stroke-width="12"/>
+<g font-family="Noto Sans KR,Malgun Gothic,Apple SD Gothic Neo,sans-serif" font-size="66" font-weight="900" dominant-baseline="middle">
+<text x="110" y="91" fill="#FFFFFF">증평군청 방제안내</text>
+<text x="719" y="91" fill="#FFE600">바로가기</text></g>
+<g stroke="#FFFFFF" stroke-width="9" fill="none" stroke-linecap="square" stroke-linejoin="miter">
+<path d="M1072 99V144H1140V99"/><path d="M1094 108L1163 40"/><path d="M1123 40H1163V80"/>
+</g>
+</svg>
