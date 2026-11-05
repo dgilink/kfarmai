@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 190" width="1200" height="190" role="img" aria-label="기업마당 공고 바로가기">
+<rect x="18" y="20" width="1170" height="164" fill="#111827" opacity=".17"/>
+<rect x="8" y="8" width="1180" height="164" fill="#F46A12" stroke="#071F55" stroke-width="12"/>
+<g font-family="'Noto Sans KR','Malgun Gothic','Apple SD Gothic Neo',sans-serif" font-size="69" font-weight="900" dominant-baseline="middle" text-rendering="geometricPrecision">
+<text x="213" y="93" fill="#FFFFFF">기업마당 공고</text>
+<text x="644" y="93" fill="#FFF000">바로가기</text>
+</g>
+<g stroke="#FFFFFF" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter" fill="none">
+<path d="M1070 98V142H1146V98"/><path d="M1090 113L1160 44"/><path d="M1121 44H1160V83"/>
+</g>
+<g stroke="#FFF000" stroke-width="9" stroke-linecap="square"><path d="M1168 18V30"/><path d="M1180 38L1188 33"/></g>
+</svg>
