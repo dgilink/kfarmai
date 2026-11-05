@@ -156,8 +156,9 @@ test('announced date-check notices have orange static warnings and no invented d
     assert.match(card, /class="policy-live-status">날짜 확인 중<\/span>/);
     assert.doesNotMatch(card, /접수중|접수예정|>마감<|null|원문 확인까지/);
     const detail = read(`policy/${item.slug}.html`);
-    assert.match(detail, /class="policy-date-check"><strong>날짜 확인 중<\/strong>/);
-    assert.ok(detail.includes(item.dateCheckReason));
+    assert.match(detail, /<dl class="policy-facts"><dt>신청 기간<\/dt><dd>[^<]*<strong class="policy-date-unverified">날짜 확인 중<\/strong>/);
+    assert.doesNotMatch(detail, /policy-date-check/);
+    assert.equal(detail.split('날짜 확인 중</strong>').length - 1, 1);
     assert.doesNotMatch(detail, /null|원문 확인까지|신청기한 원문 확인/);
     if (item.verificationUrl) assert.ok(detail.includes(item.verificationUrl.replaceAll('&', '&amp;')));
   }
@@ -232,7 +233,7 @@ test('public artifact verifier allows only explicit date exceptions with visible
     }
     write(source);
     const detail=path.join(scratch,`policy/${source.slug}.html`);
-    fs.writeFileSync(detail,fs.readFileSync(detail,'utf8').replace('<div class="policy-date-check"><strong>날짜 확인 중</strong>','<div>'));
+    fs.writeFileSync(detail,fs.readFileSync(detail,'utf8').replace('<strong class="policy-date-unverified">날짜 확인 중</strong>',''));
     assert.notEqual(verify().status,0,'date warning must remain visible');
   } finally { fs.rmSync(scratch,{recursive:true,force:true}); }
 });

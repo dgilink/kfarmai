@@ -93,7 +93,7 @@ for (const item of items) {
   const body = `<div class="content policy-detail"><nav class="policy-breadcrumb" aria-label="현재 위치"><a href="/subsidy-calendar.html">정책·지원 목록</a><span aria-hidden="true">›</span><span>공고 상세</span></nav>
 <article><div class="policy-meta"><span>${esc(item.region.join(' · '))}</span><span>${esc(item.categories.join(' · '))}</span><span>${esc(item.agency)}</span></div>
 <h1>${esc(item.title)}</h1><p class="policy-detail-lead">${esc(item.summary)}</p>
-${checkingDates(item) ? `<div class="policy-date-check"><strong>날짜 확인 중</strong><p>${esc(item.dateCheckReason)}</p></div>` : ''}
+
 <dl class="policy-facts"><dt>신청 기간</dt><dd>${checkingDates(item) ? `${item.applicationStart ? `${date(item.applicationStart)}부터 · ` : ''}<strong class="policy-date-unverified">날짜 확인 중</strong>` : `${item.applicationStart ? `${date(item.applicationStart)} ~ `: '<strong class="policy-start-unverified">시작일 원문 확인</strong> · '}${date(item.applicationEnd)}까지`}</dd>
 <dt>지원 대상</dt><dd>${esc(item.eligibility)}</dd><dt>지원 내용</dt><dd>${esc(item.support)}</dd>
 <dt>신청·문의</dt><dd>${esc(item.application)}</dd>

@@ -207,7 +207,8 @@ if (exists('data/policy-support-notices.json')) {
           /^\d{4}-\d{2}-\d{2}$/.test(item.applicationEnd || ''));
       const detailPath = `policy/${item.slug}.html`;
       const dateWarningVisible = !checkingDates || (/^[a-z0-9-]+$/.test(item.slug || '') && exists(detailPath) &&
-        fs.readFileSync(path.join(artifactDir, detailPath), 'utf8').includes('<div class="policy-date-check"><strong>날짜 확인 중</strong>'));
+        /<dl class="policy-facts"><dt>신청 기간<\/dt><dd>[^<]*<strong class="policy-date-unverified">날짜 확인 중<\/strong>/.test(
+          fs.readFileSync(path.join(artifactDir, detailPath), 'utf8')));
       const invalid = item.reviewStatus !== 'approved' || !item.sourceId || !item.externalId || !item.title || !item.agency ||
         !/^\d{4}-\d{2}-\d{2}$/.test(item.verifiedAt || '') || item.sourceHash !== hash ||
         !datesValid || !dateWarningVisible || (item.verificationUrl && !isOfficial(item.verificationUrl)) ||

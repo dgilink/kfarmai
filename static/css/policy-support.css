@@ -53,9 +53,6 @@ body.kf-subsidy .policy-date-unverified { color:#9a3412; background:#fff7ed; fon
 body.kf-subsidy .policy-result[data-state="checking"] .policy-live-status { padding:2px 5px; }
 body.kf-subsidy .policy-status-filters button[data-status="checking"]:not([aria-pressed="true"]) { color:#9a3412; border-color:#c2410c; }
 body.kf-subsidy .policy-status-filters button[data-status="checking"][aria-pressed="true"] { color:#fff; background:#9a3412; border-color:#9a3412; }
-body.kf-subsidy .policy-date-check { padding:12px; border:1px solid #c2410c; color:#9a3412; background:#fff7ed; }
-body.kf-subsidy .policy-date-check strong { font-size:17px; }
-body.kf-subsidy .policy-date-check p { margin:6px 0 0; font-size:14px; line-height:1.5; }
 body.kf-subsidy .policy-verification-link { color:var(--kf-green); font-weight:750; }
 body.kf-subsidy .policy-detail-note { margin:16px 0; color:var(--kf-muted); line-height:1.5; }
 body.kf-subsidy .policy-detail-cta { display:block; padding:15px; background:var(--kf-green); color:#fff; text-align:center; font-weight:800; }
