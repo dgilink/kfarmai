@@ -11,13 +11,16 @@
     return node;
   };
   const status = item => {
+    if (item.applicationDateStatus === 'checking') return ['날짜 확인 중', 'checking'];
     if (today > item.applicationEnd) return ['마감', 'closed'];
     if (!item.applicationStart) return ['접수중', 'unknown'];
     if (today < item.applicationStart) return ['접수예정', 'upcoming'];
     return ['접수중', 'open'];
   };
   const safe = item => item && item.reviewStatus === 'approved' &&
-    /^[a-z0-9-]+$/.test(item.slug) && /^\d{4}-\d{2}-\d{2}$/.test(item.applicationEnd) &&
+    /^[a-z0-9-]+$/.test(item.slug) && (item.applicationDateStatus === 'checking' ?
+      item.applicationEnd === null && typeof item.dateCheckReason === 'string' && item.dateCheckReason.trim() :
+      /^\d{4}-\d{2}-\d{2}$/.test(item.applicationEnd)) &&
     typeof item.title === 'string' && item.title && /^\d{4}-\d{2}-\d{2}$/.test(item.publishedAt) && Array.isArray(item.region) &&
     Array.isArray(item.categories);
 
@@ -28,9 +31,9 @@
     })
     .then(publication => {
       if (publication.schemaVersion !== 1 || !Array.isArray(publication.items)) return;
-      const items = publication.items.filter(safe).filter(item => item.applicationEnd >= today)
+      const items = publication.items.filter(safe).filter(item => item.applicationDateStatus === 'checking' || item.applicationEnd >= today)
         .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) ||
-          a.applicationEnd.localeCompare(b.applicationEnd))
+          (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'))
         .slice(0, 3);
       if (!items.length) return;
       const fragment = document.createDocumentFragment();
@@ -45,7 +48,8 @@
           text('span', 'home-policy-date', item.publishedAt),
           text('span', 'home-policy-status', label));
         link.append(meta, text('strong', 'home-policy-title', item.title),
-          text('span', 'home-policy-foot', `${item.applicationEnd.replaceAll('-', '.')}까지 · ${item.agency || '공식 공고'}`),
+          text('span', 'home-policy-foot', item.applicationDateStatus === 'checking' ?
+            item.agency || '공식 공고' : `${item.applicationEnd.replaceAll('-', '.')}까지 · ${item.agency || '공식 공고'}`),
           text('span', 'home-policy-arrow', '›'));
         fragment.append(link);
       }

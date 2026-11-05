@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="static/css/agri-info-v3.css">
 <link rel="stylesheet" href="static/css/community-v3.css">
-<script src="static/js/policy-home.js?v=20261103-1" defer></script>
+<script src="static/js/policy-home.js?v=20261105-date-check" defer></script>
 
 <meta property="og:locale" content="ko_KR">
 <meta property="og:site_name" content="kFarmAI">
@@ -1603,7 +1603,7 @@
 </style>
 <link rel="stylesheet" href="static/css/agri-info.css?v=20260706-news2">
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header8">
-<link rel="stylesheet" href="/static/css/v4-1-main.css?v=20261102-policy2">
+<link rel="stylesheet" href="/static/css/v4-1-main.css?v=20261105-policy-dates">
 <script src="/static/js/v4-shell.js?v=20261029-header9" defer></script>
 <link rel="stylesheet" href="/static/css/kb-series.css?v=20261104-7" data-kb-series-home="1"></head>
 <body class="v3-home v4-page v4-home">
@@ -4197,7 +4197,7 @@ async function loadStaticSearchIndex(){
           id:`policy-${index}-${item.slug}`,
           type:'정책·지원',
           title:String(item.title||''),
-          description:[item.agency,item.summary,item.applicationEnd?('마감 '+item.applicationEnd):''].filter(Boolean).join(' · '),
+          description:[item.agency,item.summary,item.applicationDateStatus==='checking'?'날짜 확인 중':item.applicationEnd?('마감 '+item.applicationEnd):''].filter(Boolean).join(' · '),
           keywords:[item.agency,...(item.region||[]),...(item.targets||[]),...(item.categories||[]),item.support,item.eligibility,item.application].filter(Boolean),
           url:`policy/${item.slug}.html`,
           source:'policy'

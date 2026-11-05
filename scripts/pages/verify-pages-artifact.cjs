@@ -201,9 +201,16 @@ if (exists('data/policy-support-notices.json')) {
       const hash = crypto.createHash('sha256').update(JSON.stringify(Object.fromEntries(
         Object.entries(item).filter(([field]) => field !== 'sourceHash')
       ))).digest('hex');
+      const checkingDates = item.applicationDateStatus === 'checking';
+      const datesValid = (item.applicationStart === null || /^\d{4}-\d{2}-\d{2}$/.test(item.applicationStart || '')) &&
+        (checkingDates ? item.applicationEnd === null && typeof item.dateCheckReason === 'string' && item.dateCheckReason.trim() :
+          /^\d{4}-\d{2}-\d{2}$/.test(item.applicationEnd || ''));
+      const detailPath = `policy/${item.slug}.html`;
+      const dateWarningVisible = !checkingDates || (/^[a-z0-9-]+$/.test(item.slug || '') && exists(detailPath) &&
+        fs.readFileSync(path.join(artifactDir, detailPath), 'utf8').includes('<div class="policy-date-check"><strong>날짜 확인 중</strong>'));
       const invalid = item.reviewStatus !== 'approved' || !item.sourceId || !item.externalId || !item.title || !item.agency ||
         !/^\d{4}-\d{2}-\d{2}$/.test(item.verifiedAt || '') || item.sourceHash !== hash ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(item.applicationEnd || '') ||
+        !datesValid || !dateWarningVisible || (item.verificationUrl && !isOfficial(item.verificationUrl)) ||
         !/^[a-z0-9-]+$/.test(item.slug || '') || !isOfficial(item.officialUrl) || identifiers.has(key) ||
         !exists(`policy/${item.slug}.html`) ||
         !fs.readFileSync(path.join(artifactDir, 'subsidy-calendar.html'), 'utf8').includes(`/policy/${item.slug}.html`);

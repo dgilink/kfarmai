@@ -11,6 +11,7 @@
   let status = 'all';
   const todayKst = () => new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
   const state = (card, today) => {
+    if (card.dataset.dateStatus === 'checking' || !card.dataset.end) return 'checking';
     if (today > card.dataset.end) return 'closed';
     if (!card.dataset.start) return 'unknown';
     if (today < card.dataset.start) return 'upcoming';
@@ -23,7 +24,7 @@
     for (const card of cards) {
       const current = state(card, today);
       card.querySelector('.policy-live-status').textContent = ({
-        open:'접수중', upcoming:'접수예정', unknown:'접수중', closed:'마감'
+        open:'접수중', upcoming:'접수예정', unknown:'접수중', checking:'날짜 확인 중', closed:'마감'
       })[current];
       card.dataset.state = current;
       const match = (!text || card.dataset.search.includes(text)) &&

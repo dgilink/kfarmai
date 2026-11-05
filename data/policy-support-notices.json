@@ -459,6 +459,192 @@
       "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?Key=B_Subject&context=NTIS&countYn=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=73873&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&ofr_pageSize=10&subCheck=Y&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0",
       "reviewStatus": "approved",
       "sourceHash": "7dc87ef9616c798e9f10067e1a1c48e40d129f90655469cf365394e85b1412bd"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127564",
+      "slug": "2026-cheongdo-forage-production-incentive",
+      "title": "청도군 2026년 조사료 생산장려금 지원사업 신청 공고",
+      "summary": "호밀·옥수수 등 사료작물 재배 농가의 조사료 생산을 지원하는 장려금 공고입니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "축산·조사료"
+      ],
+      "agency": "청도군",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-10-29",
+      "verifiedAt": "2026-11-05",
+      "support": "호밀·옥수수 등 사료작물을 재배하는 농가에 생산장려금 지원. 볏짚은 제외되며 지원단가·면적 기준은 시행지침을 확인하세요.",
+      "eligibility": "조사료를 생산하는 농업인·농업법인·농축협 등. 재배 농지와 세부 자격은 청도군 시행지침을 확인하세요.",
+      "application": "청도군에 신청합니다. 접수 일정·제출서류 확인 및 문의: 청도군 농업기술센터 054-370-6535.",
+      "note": "기업마당의 공식 등록 안내에서 공고 제목·기관·대상·지원내용을 확인했습니다. 청도군 원문 접속이 어려워 접수 일정은 확정 표기하지 않았습니다.",
+      "officialUrl": "https://www.cheongdo.go.kr/portal/saeol/gosi/view.do?mid=0301020000&notAncmtMgtNo=24598",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127564",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공표 사실과 지원내용은 공식 등록 안내에서 확인했습니다. 기관 원문과 접수 일정을 대조 중이므로 신청 전 담당 기관에 날짜를 확인하세요.",
+      "reviewStatus": "approved",
+      "sourceHash": "93fa898c91846b22c88644e1e87a99f6535a4ce7c5aea818b80bac465aa039fb"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127562",
+      "slug": "2026-goseong-gap-certification-cost",
+      "title": "고성군 2026년 하반기 GAP 인증수수료 및 분석비 지원계획 공고",
+      "summary": "고성군 GAP 인증 농가와 단체의 인증수수료·심사 출장비·안전성 분석비를 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "경상남도 고성군",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-10-29",
+      "verifiedAt": "2026-11-05",
+      "support": "GAP 인증 신청수수료, 현지 심사 출장비, 토양·수질·농산물 안전성 분석비 등 지원. 항목별 지급 기준은 공고문을 확인하세요.",
+      "eligibility": "고성군에 주소지를 둔 GAP 인증 농업인·단체. 신청일에 인증을 유지하고 인증서 발급일이 2026.7.1.~11.30.에 해당해야 합니다.",
+      "application": "주소지 읍·면사무소에 방문 신청합니다. 접수 일정·제출서류 확인 및 문의: 고성군 055-670-2114.",
+      "note": "기업마당의 공식 등록 안내에서 공표 사실과 지원 대상·내용을 확인했습니다. 기관 원문 접속이 어려워 접수 일정은 확정 표기하지 않았습니다. 인증서 발급일 요건은 접수기간과 다릅니다.",
+      "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839807&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127562",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공표 사실과 지원내용은 공식 등록 안내에서 확인했습니다. 기관 원문과 접수 일정을 대조 중이므로 신청 전 담당 기관에 날짜를 확인하세요.",
+      "reviewStatus": "approved",
+      "sourceHash": "94f65950d86c21fa94682a97cb262bbed60125b29d252d3de8ea18e8ff77545c"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127558",
+      "slug": "2026-goseong-organic-certification-cost",
+      "title": "고성군 2026년 친환경인증 수수료 및 분석비 지원 신청 공고",
+      "summary": "친환경인증을 유지하는 고성군 농업인·단체의 인증과 분석 비용을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "경상남도 고성군",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-10-29",
+      "verifiedAt": "2026-11-05",
+      "support": "친환경농산물 인증 신청수수료, 출장심사비, 인증심사 관리비, 성분분석비 등 지원. 항목별 지급 한도와 증빙은 공고문을 확인하세요.",
+      "eligibility": "고성군에 주소지와 농지를 두고 신청일에 친환경인증을 유지하는 농업인·단체. 인증서 발급일 요건은 2025.12.1.~2026.11.30.입니다.",
+      "application": "농지 소재지 읍·면사무소에 방문 신청합니다. 접수 일정·제출서류 확인 및 문의: 고성군 055-670-2114.",
+      "note": "기업마당의 공식 등록 안내에서 공표 사실과 대상·지원내용을 확인했습니다. 기관 원문 접속이 어려워 접수 일정은 확정 표기하지 않았습니다. 인증서 발급일 요건은 접수기간과 다릅니다.",
+      "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839776&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127558",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공표 사실과 지원내용은 공식 등록 안내에서 확인했습니다. 기관 원문과 접수 일정을 대조 중이므로 신청 전 담당 기관에 날짜를 확인하세요.",
+      "reviewStatus": "approved",
+      "sourceHash": "25de7650bf4cce33fc53477da9b992789c10d1aaa374ea6d730211180c053d79"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gimpo-1035600",
+      "slug": "2027-gimpo-organic-fertilizer-extra",
+      "title": "김포시 2027년 유기질비료 지원사업 추가 및 변경 신청안내",
+      "summary": "농업경영체에 등록된 농지를 대상으로 유기질비료·부숙유기질비료 지원 신청을 받습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "김포시 농업기술센터",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-03",
+      "verifiedAt": "2026-11-05",
+      "support": "유기질비료 3종(혼합유박·혼합유기질비료·유기복합비료), 부숙유기질비료 2종(가축분퇴비·퇴비) 지원. 지원기준은 첨부 시행지침을 확인하세요.",
+      "eligibility": "신청자의 농업경영체 등록정보에 등록된 농지.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 신청합니다. 여러 시·군·구에 농지가 있으면 각각 신청합니다. 문의: 농업지원팀 031-5186-4279.",
+      "note": "공고문에서 11월 9일 시작은 확인했습니다. 마감일의 숫자 날짜와 요일이 일치하지 않아 확정 마감일은 비워 두었습니다.",
+      "officialUrl": "https://www.gimpo.go.kr/agri/selectBbsNttView.do?bbsNo=183&key=2599&nttNo=1035600",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공식 안내의 마감일 숫자와 요일이 일치하지 않아 날짜를 확인 중입니다. 신청 전 농업지원팀에 마감일을 확인하세요.",
+      "reviewStatus": "approved",
+      "sourceHash": "f673f33083db3574f72c8890714921eb7520ec35a35a3c4bd25ed7e88da8d0f4"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "paju-20261104140441678",
+      "slug": "2027-paju-organic-farming-materials",
+      "title": "파주시 2027년 유기농업자재 지원사업 신청 안내",
+      "summary": "등록 농업인·농업법인의 녹비종자와 유기농업자재 구입비, 토양검정·컨설팅 비용을 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "파주시 농업정책과 농식품지원팀",
+      "applicationStart": "2026-11-02",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-04",
+      "verifiedAt": "2026-11-05",
+      "support": "녹비종자·유기농업자재·자재원료 및 토양검정·시비처방 컨설팅 지원. 보조 50%, 자부담 50%이며 공시된 유기자재만 신청할 수 있습니다.",
+      "eligibility": "농업경영정보를 등록한 농업인·농업법인. 자재 지원은 2025~2026년 농업기술센터 발급 토양검정 결과가 필요하며, 친환경인증 농가는 의무자조금 납부 요건을 확인하세요.",
+      "application": "농지 소재지 읍·면 산업팀에 방문 신청하며 동 지역은 농업정책과에서 접수합니다. 문의: 농식품지원팀 031-940-4600. 서류는 공식 안내와 첨부 서식을 확인하세요.",
+      "note": "원문의 접수 시작일은 확인했습니다. 본문에서 같은 마감일의 요일이 다르게 표기되어 마감일은 확정하지 않았습니다.",
+      "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261104140441678",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공식 본문의 마감일 요일 표기가 서로 달라 날짜를 확인 중입니다. 신청 전 농식품지원팀에 마감일을 확인하세요.",
+      "reviewStatus": "approved",
+      "sourceHash": "1a6dbc91ffffcaaac63528cd9573c729fd4294769463eef3276dd237966d985b"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jindo-198223",
+      "slug": "2027-jindo-organic-farming-materials",
+      "title": "진도군 2027년도 유기농업자재 지원사업 시행지침 및 신청 안내",
+      "summary": "등록 농지의 녹비종자와 공시 유기농업자재 구입비 일부를 지원하는 사업입니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "진도군 농업기술센터 농업지원과",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-11-02",
+      "verifiedAt": "2026-11-05",
+      "support": "녹비종자와 공시 유기농업자재 구입비 일부 지원. 보조 50%, 자부담 50%이며 지원단가·품목은 시행지침을 확인하세요.",
+      "eligibility": "농업경영정보에 등록한 농지. 유기인증·무농약인증·일반농지 순으로 우선 지원하며 중복사업 신청 농지, 토양 유기물 상한 초과, 의무자조금 미납 등 제외 요건은 지침을 확인하세요.",
+      "application": "접수 일정·접수처·제출서류는 진도군 농업지원과(061-540-3512)에 확인한 뒤 신청하세요.",
+      "note": "진도군 공식 게시 내용에서 공표 사실과 지원내용을 확인했습니다. 기관 원문 재접속이 어려워 접수 일정은 확정 표기하지 않았습니다.",
+      "officialUrl": "https://jindo.go.kr/home/board/B0052.cs?act=read&articleId=198223&categoryId=0&m=23&pageIndex=1&searchCondition=&searchKeyword=",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공표 사실과 지원내용은 공식 게시 내용에서 확인했습니다. 기관 원문과 접수 일정을 재대조 중이므로 신청 전 농업지원과에 날짜를 확인하세요.",
+      "reviewStatus": "approved",
+      "sourceHash": "5a5a021acbea2c1a465c8eaea4371570ef9190e0ff1a2271d2672601a82499f7"
     }
   ]
 }
