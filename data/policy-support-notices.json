@@ -488,9 +488,9 @@
       "officialUrl": "https://www.cheongdo.go.kr/portal/saeol/gosi/view.do?mid=0301020000&notAncmtMgtNo=24598",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127564",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "공표 사실과 지원내용은 공식 등록 안내에서 확인했습니다. 기관 원문과 접수 일정을 대조 중이므로 신청 전 담당 기관에 날짜를 확인하세요.",
+      "dateCheckReason": "청도군 기관 원문이 웹 방화벽 차단 화면을 반환하여 접수 일정을 대조하지 못했습니다. 공표 사실·대상·지원내용은 기업마당 공식 등록 안내로 확인했습니다. 신청 전 농업기술센터에 접수 날짜를 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "93fa898c91846b22c88644e1e87a99f6535a4ce7c5aea818b80bac465aa039fb"
+      "sourceHash": "4db6e7e10f29cf6058faf8e3100e202b7e865f29e11393bef428cbec2b8028aa"
     },
     {
       "sourceId": "official-policy-directory",
@@ -519,9 +519,9 @@
       "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839807&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127562",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "공표 사실과 지원내용은 공식 등록 안내에서 확인했습니다. 기관 원문과 접수 일정을 대조 중이므로 신청 전 담당 기관에 날짜를 확인하세요.",
+      "dateCheckReason": "고성군 기관 원문 재접속이 시간 초과로 끝나 접수 일정을 대조하지 못했습니다. 공표 사실·대상·지원내용은 기업마당 공식 등록 안내로 확인했습니다. 신청 전 읍면사무소에 접수 날짜를 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "94f65950d86c21fa94682a97cb262bbed60125b29d252d3de8ea18e8ff77545c"
+      "sourceHash": "4dc64b063f7b4dd231ff74928a67f6c4298f3aecb8e427a366dad40b8eb7aaa2"
     },
     {
       "sourceId": "official-policy-directory",
@@ -550,9 +550,9 @@
       "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839776&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127558",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "공표 사실과 지원내용은 공식 등록 안내에서 확인했습니다. 기관 원문과 접수 일정을 대조 중이므로 신청 전 담당 기관에 날짜를 확인하세요.",
+      "dateCheckReason": "고성군 기관 원문에 재접속하지 못하여 접수 일정을 대조하지 못했습니다. 공표 사실·대상·지원내용은 기업마당 공식 등록 안내로 확인했습니다. 신청 전 농지소재지 읍면사무소에 접수 날짜를 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "25de7650bf4cce33fc53477da9b992789c10d1aaa374ea6d730211180c053d79"
+      "sourceHash": "32effba570f19f656c9b1cc758236c41b4d0c257306ec54d763bf010fa78869b"
     },
     {
       "sourceId": "local-government-notices",
@@ -632,19 +632,73 @@
         "친환경"
       ],
       "agency": "진도군 농업기술센터 농업지원과",
-      "applicationStart": null,
-      "applicationEnd": null,
+      "applicationStart": "2026-11-01",
+      "applicationEnd": "2026-12-31",
       "publishedAt": "2026-11-02",
       "verifiedAt": "2026-11-05",
       "support": "녹비종자와 공시 유기농업자재 구입비 일부 지원. 보조 50%, 자부담 50%이며 지원단가·품목은 시행지침을 확인하세요.",
       "eligibility": "농업경영정보에 등록한 농지. 유기인증·무농약인증·일반농지 순으로 우선 지원하며 중복사업 신청 농지, 토양 유기물 상한 초과, 의무자조금 미납 등 제외 요건은 지침을 확인하세요.",
-      "application": "접수 일정·접수처·제출서류는 진도군 농업지원과(061-540-3512)에 확인한 뒤 신청하세요.",
-      "note": "진도군 공식 게시 내용에서 공표 사실과 지원내용을 확인했습니다. 기관 원문 재접속이 어려워 접수 일정은 확정 표기하지 않았습니다.",
-      "officialUrl": "https://jindo.go.kr/home/board/B0052.cs?act=read&articleId=198223&categoryId=0&m=23&pageIndex=1&searchCondition=&searchKeyword=",
-      "applicationDateStatus": "checking",
-      "dateCheckReason": "공표 사실과 지원내용은 공식 게시 내용에서 확인했습니다. 기관 원문과 접수 일정을 재대조 중이므로 신청 전 농업지원과에 날짜를 확인하세요.",
+      "application": "2026년 11월 1일부터 12월 31일까지 신청. 접수처·제출서류 문의: 진도군 농업지원과 061-540-3512.",
+      "note": "진도군 공식 본문의 접수 기간을 재확인했습니다. 중복사업 신청 농지, 토양 유기물 함량 상한 초과 농지, 친환경농산물 의무자조금 미납 등 제외 요건은 시행지침을 확인하세요.",
+      "officialUrl": "https://www.jindo.go.kr/home/board/B0052.cs?act=read&articleId=198223&categoryId=0&m=23&pageIndex=1&searchCondition=&searchKeyword=",
       "reviewStatus": "approved",
-      "sourceHash": "5a5a021acbea2c1a465c8eaea4371570ef9190e0ff1a2271d2672601a82499f7"
+      "sourceHash": "ac83368e8963be0006b5314f02ee657d20b488390c0fd82cd6b8adcb8e8e7e85"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "verifiedAt": "2026-11-05",
+      "reviewStatus": "approved",
+      "externalId": "hanam-53063",
+      "slug": "2027-hanam-organic-fertilizer-extra",
+      "title": "하남시 2027년 유기질비료 지원사업 추가변경 신청 공고",
+      "summary": "본 신청을 놓쳤거나 등록사항 변경으로 수정이 필요한 농가의 비료 구입비 일부를 지원합니다.",
+      "agency": "하남시 식품위생농업과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-03",
+      "support": "유기질비료(혼합유박·혼합유기질)와 부숙유기질비료(가축분퇴비 특등급·1등급) 구입비 일부 지원.",
+      "eligibility": "농업경영정보를 등록한 농업인으로 등록정보에 포함된 하남시 관내 농지. 본 신청 미신청 농가 및 등록사항 변경 등으로 변경 신청이 필요한 농가.",
+      "application": "농지소재지 동 행정복지센터에 신청. 문의: 식품위생농업과 도시농업팀 031-790-5039.",
+      "note": "2027년 친환경 비료 지원사업·상토지원사업과 동일 농지 중복신청 불가. 공급량 상한과 작물별 기준량, 소득 증빙 요건은 공고문 확인.",
+      "officialUrl": "https://www.hanam.go.kr/www/selectGosiData.do?key=171&not_ancmt_mgt_no=53063&not_ancmt_se_code=01%2C04",
+      "sourceHash": "26c46ec81a09fd7451a074fdfafb495ec1db6b47c2563559d1195b8ae345c17a"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "verifiedAt": "2026-11-05",
+      "reviewStatus": "approved",
+      "externalId": "gyeongju-338616",
+      "slug": "2027-gyeongju-organic-fertilizer-extra",
+      "title": "경주시 2027년 유기질비료 지원사업 추가·변경신청 안내 공고",
+      "summary": "본 신청 미신청 농가와 농업경영체 등록사항 변경 농가의 추가·변경 신청을 받습니다.",
+      "agency": "경주시 농업정책과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-25",
+      "publishedAt": "2026-11-04",
+      "support": "유기질비료(혼합유박·혼합유기질·유기복합비료) 및 부숙유기질비료(가축분퇴비·퇴비) 지원. 세부 단가와 기준은 첨부 지침 확인.",
+      "eligibility": "농업경영체로 등록하였거나 등록 예정인 자 중 2027년 본 신청 기간에 신청하지 못했거나 등록사항 변경 등으로 기 신청사항 수정이 필요한 농가.",
+      "application": "농지소재지 읍면동 행정복지센터 산업팀 또는 생활지원팀에 신청.",
+      "note": "등록 예정자의 등록 완료 시점과 공급 조건·필요서류는 농지소재지 행정복지센터 및 첨부 지침에서 확인하세요.",
+      "officialUrl": "https://www.gyeongju.go.kr/open_content/ko/page.do?mnu_uid=2912&pageNo=1&pageOrder=0&pagePrvNxt=1&pageRef=0&parm_bod_uid=338616&parm_mnu_uid=0&srchBgpUid=-1&srchColumn=&srchEDate=9999-12-31&srchEnable=1&srchKeyword=&srchSDate=1960-01-01&srchVoteType=-1&step=258",
+      "sourceHash": "c7ae0113a05575babecec9b2f62dd1ad207548c954f5add38387defcc6de3e1e"
     }
   ]
 }
