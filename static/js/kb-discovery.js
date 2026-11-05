@@ -35,6 +35,8 @@
       !/infographic|diagram|checklist-(?:graphic|chart)/i.test(value);
     return local || approvedExternalPhotos[articlePath] === value ? value : '';
   };
+  const listPhotoSrc = (value, articlePath) => approvedExternalPhotos[articlePath] === value
+    ? value.replace(/\?width=1280$/, '?width=320') : value;
   const safePath = (value) => {
     try {
       const url = new URL(value, location.origin);
@@ -57,11 +59,11 @@
     if (item.image) {
       const image = document.createElement('img');
       image.className = 'kb-list-thumb';
-      image.src = item.image;
+      image.src = listPhotoSrc(item.image, item.path);
       image.alt = '';
       image.width = 320;
       image.height = 180;
-      image.loading = index < 4 ? 'eager' : 'lazy';
+      image.loading = homeGrid && !indexGrid ? (index === 0 ? 'eager' : 'lazy') : (index < 4 ? 'eager' : 'lazy');
       image.decoding = 'async';
       link.append(image);
     } else {

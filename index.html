@@ -3484,8 +3484,8 @@ function renderFeedCard(feed,post,profileMap={},index=0){
   const symptom=post.crop_tag||extractCategoryFromContent(post.content);
   const preview=stripPostPrefixes(post.content||'').replace(/\s+/g,' ').trim();
   const meta=[`<span class="feed-author">${escHtml(displayNameForPost(post,profileMap))}</span>`,commentCountLabel(post),post.region_tag||'',post.created_at?getTimeAgo(post.created_at):''].filter(Boolean);
-  const imageLoading=index<2?'eager':'lazy';
-  const imagePriority=index<2?' fetchpriority="high"':'';
+  const imageLoading=index===0?'eager':'lazy';
+  const imagePriority='';
   card.innerHTML=`<div class="q-card-main"><span class="ch-badge ${badgeClass}">${escHtml(displayCommunityCategory(post))}</span>${symptom?`<span class="ch-badge green">${escHtml(symptom)}</span>`:''}<div class="q-title">${escHtml(post.title||'제목 없음')}</div>${preview?`<div class="feed-preview">${escHtml(preview)}</div>`:''}${renderPostTags(post.content,undefined,post.tags)}<div class="q-meta">${meta.map((item,metaIndex)=>metaIndex===0?item:`<span>${escHtml(item)}</span>`).join('')}</div>${feedReactionHtml(post)}</div>${thumb?`<img class="q-card-thumb" src="${escAttr(thumb)}" alt="첨부 이미지" width="66" height="66" loading="${imageLoading}"${imagePriority}>`:''}`;
   feed.appendChild(card);
 }

@@ -1,0 +1,59 @@
+name: V4 mobile performance phase comparison
+
+on:
+  push:
+    branches: [perf/v4-mobile-loading-20261105]
+
+permissions:
+  contents: read
+
+jobs:
+  compare:
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare baseline and candidate artifacts
+        shell: pwsh
+        env:
+          BASE_SHA: e1192a4beca3c5b833b140214eaa31f6ad5bfaba
+        run: |
+          git worktree add --detach "$env:RUNNER_TEMP\v4-perf-baseline" $env:BASE_SHA
+          node "$env:RUNNER_TEMP\v4-perf-baseline\scripts\pages\build-pages-artifact.cjs" --output="$env:RUNNER_TEMP\v4-perf-baseline\_site"
+          node scripts/pages/build-pages-artifact.cjs --output=_site
+          node scripts/pages/verify-pages-artifact.cjs _site
+      - name: Same-run Chrome mobile cold and navigation measures
+        shell: pwsh
+        run: |
+          python -m pip install selenium==4.38.0 --quiet
+          $baseline = Start-Process python -ArgumentList @('-m','http.server','8765','--bind','127.0.0.1','--directory',"$env:RUNNER_TEMP\v4-perf-baseline\_site") -PassThru -WindowStyle Hidden
+          $candidate = Start-Process python -ArgumentList @('-m','http.server','8766','--bind','127.0.0.1','--directory',"$env:GITHUB_WORKSPACE\_site") -PassThru -WindowStyle Hidden
+          try {
+            Start-Sleep -Seconds 2
+            $env:V4_PERF_COLD_REPEATS = '1'
+            foreach ($phase in @(@('before','8765'),@('after','8766'))) {
+              $env:V4_PERF_ORIGIN = "http://127.0.0.1:$($phase[1])"
+              Add-Content -Encoding utf8 "$env:RUNNER_TEMP\v4-performance-comparison.txt" "[$($phase[0])]"
+              foreach ($route in @('/index.html','/channel.html','/kb/index.html')) {
+                $env:V4_PERF_PATH = $route
+                python tests/v4-performance-smoke.py | Out-File -Append -Encoding utf8 "$env:RUNNER_TEMP\v4-performance-comparison.txt"
+                if ($LASTEXITCODE -ne 0) { throw "Mobile Chrome measure failed: $($phase[0]) $route" }
+              }
+            }
+            Get-Content "$env:RUNNER_TEMP\v4-performance-comparison.txt"
+          } finally {
+            Stop-Process -Id $baseline.Id,$candidate.Id -ErrorAction SilentlyContinue
+          }
+      - name: Save comparison report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v4-performance-comparison
+          path: ${{ runner.temp }}/v4-performance-comparison.txt
+          if-no-files-found: warn
+          retention-days: 7

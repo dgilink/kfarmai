@@ -305,6 +305,10 @@ const endAt = homeSource.indexOf('</div>', startAt + homeStart.length);
 if (endAt < 0) throw new Error('Home KB card boundary is incomplete.');
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char =>
   ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[char]));
+// Render only verified Wikimedia photos at thumbnail resolution in listings.
+// The original approved article and registry keep their full-resolution URL.
+const listPhotoSrc = item => isApprovedExternalPhoto(item.path, item.image)
+  ? item.image.replace(/\?width=1280$/, '?width=320') : item.image;
 
 // Generate the KB listing from the *verified approved registry*, not from
 // hand-written fallback cards. All rows have the exact same 2/3-column DOM
@@ -334,7 +338,7 @@ const kbIndexCards = kbItems.map((item, index) => {
   if (image && !isApprovedExternalPhoto(item.path, image) && !fs.existsSync(path.join(outputDir, image.slice(1)))) {
     throw new Error('Approved KB list image missing: ' + image);
   }
-  const thumb = image ? '<img class="kb-list-thumb" src="' + image +
+  const thumb = image ? '<img class="kb-list-thumb" src="' + listPhotoSrc(item) +
     '" alt="" width="320" height="180" loading="' + (index < 4 ? 'eager' : 'lazy') + '" decoding="async">' : '';
   const copy = '<span class="kb-list-copy"><small>' + escapeHtml(item.category) + ' · ' + item.date +
     '</small><strong>' + escapeHtml(item.title) + '</strong></span>';
@@ -372,7 +376,7 @@ const cards = homeItems.slice(0, 4).map((item, index) => {
   const title = `<strong>${escapeHtml(item.title)}</strong>`;
   const image = item.image;
   return `<a class="kb-card${image ? '' : ' is-text-only'}" data-topic="${escapeHtml(kbTopicKey(item.category))}" href="${item.path}">${image
-    ? `<img class="kb-list-thumb" src="${image}" alt="" width="320" height="180" loading="eager"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">`
+    ? `<img class="kb-list-thumb" src="${listPhotoSrc(item)}" alt="" width="320" height="180" loading="${index === 0 ? 'eager' : 'lazy'}"${index === 0 ? ' fetchpriority="high"' : ''} decoding="async">`
     : ''}<span class="kb-list-copy">${meta}${title}</span><span class="kb-list-arrow" aria-hidden="true">›</span></a>`;
 }).join('');
 fs.writeFileSync(homePath,
