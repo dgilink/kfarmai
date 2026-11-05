@@ -368,8 +368,7 @@
       "publication_mode": "USER_DIRECT_APPROVAL",
       "publication_status": "접수 중 · 경북 의성",
       "source_urls": [
-        "https://www.usc.go.kr/uisungatec/main.do",
-        "https://www.usc.go.kr/ko/page.do?boardType=notice&mnu_uid=157"
+        "https://www.usc.go.kr/uisungatec/page.do?bod_uid=150959&cmd=2&mnu_uid=1877"
       ],
       "infographic_assets": [
         "/static/kb/2027-uiseong-youth-farmer-startup-infrastructure-info-1.svg",
@@ -404,7 +403,7 @@
       "publication_status": "선정 예정 · 최종 미확정",
       "source_urls": [
         "https://www.mafra.go.kr/bbs/home/792/582148/artclView.do",
-        "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjE0OCUyRmFydGNsVmlldy5kbyUzRg%3D%3D"
+        "https://www.mafra.go.kr/bbs/home/792/579390/artclView.do"
       ],
       "infographic_assets": [
         "/static/kb/2027-rural-basic-income-pilot-34-counties-selection-info-1.svg",
