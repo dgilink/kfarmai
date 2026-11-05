@@ -44,7 +44,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 14);
+  assert.equal(publication.items.length, 16);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -112,11 +112,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '14건');
+  assert.equal(fields.noticeCount.textContent, '16건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '13건');
+  assert.equal(fields.noticeCount.textContent, '14건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 10);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 1);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 2);
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
   assert.equal(fields.noticeCount.textContent, '2건');
@@ -124,5 +124,18 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '14건');
+  assert.equal(fields.noticeCount.textContent, '16건');
+});
+
+// Static output must cover the rollover even when client JavaScript is unavailable.
+test('expired Gochang notice is retained as closed and Dangjin separates application from publication', () => {
+  const closed = index.split('href="/policy/2027-gochang-field-crop-equipment.html"')[1].split('</article>')[0];
+  assert.match(closed, /class="policy-live-status">마감<\/span>/);
+  const item = publication.items.find(item => item.slug === '2026-dangjin-smart-horticulture-lease-6th');
+  assert.equal(item.applicationStart, '2026-11-09');
+  assert.equal(item.applicationEnd, '2026-11-12');
+  assert.equal(item.publishedAt, '2026-10-26');
+  assert.match(index, /<option>시설·임대<\/option>/);
+  const card = index.split(`href="/policy/${item.slug}.html"`)[1].split('</article>')[0];
+  assert.match(card, /class="policy-live-status">접수예정<\/span>/);
 });

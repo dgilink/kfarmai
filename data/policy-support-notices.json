@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-04",
+  "updatedAt": "2026-11-05",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -78,14 +78,14 @@
       "applicationStart": null,
       "applicationEnd": "2026-11-04",
       "publishedAt": "2026-10-29",
-      "verifiedAt": "2026-11-02",
+      "verifiedAt": "2026-11-05",
       "support": "기계장비·보관창고 등, 개소당 5억원 이내(도비 42%, 시군비 8%, 자담 50%).",
       "eligibility": "지역·품목농협, 영농조합법인, 농업회사법인 등. 2027년 법인별 단일품목 재배면적 10ha 이상 확보 등.",
       "application": "2026년 11월 4일까지 신청. 신청서·사업계획서·면적 확인서 등 제출서류는 원문 목록 확인. 문의 063-560-8487.",
-      "note": "신림면 공지의 기한입니다. 같은 사업이라도 시·군·읍면별 마감일이 다릅니다.",
+      "note": "2026년 11월 4일 접수가 마감되었습니다. 시작일은 원문에 명시되지 않았습니다. 추가·연장 모집 여부는 신림면 공식 공고를 확인하세요.",
       "officialUrl": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000062&dataSid=837096&paging=ok&startPage=2",
       "reviewStatus": "approved",
-      "sourceHash": "d380187dba1f15900835796da96720883ae02c07598e84305aa96f71930efa77"
+      "sourceHash": "24a8f96fa3917a42569cd03dcabc865ddf2c2f46291de311d47135a8d5f92188"
     },
     {
       "sourceId": "local-government-notices",
@@ -402,6 +402,63 @@
       "officialUrl": "https://www.jeongeup.go.kr/buseo/board/view.jeongeup?boardId=BBS_0000012&contentsSid=2153&dataSid=1422059&menuCd=DOM_000001024002000000&paging=ok&startPage=1",
       "reviewStatus": "approved",
       "sourceHash": "533bdd09e5b25df0e31531b038725442c3d815778daf94d056fb3037e86fccf0"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "dangjin-1136310",
+      "slug": "2026-dangjin-smart-horticulture-lease-6th",
+      "title": "당진시 스마트원예단지 입주대상자 모집(6차) 공고",
+      "summary": "스마트팜 창업을 준비하는 청년농 3명에게 영농 기반을 조성한 농지의 장기임대·매도를 지원합니다.",
+      "region": [
+        "충남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "당진시 농업기술센터 농업기술과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-12",
+      "publishedAt": "2026-10-26",
+      "verifiedAt": "2026-11-05",
+      "support": "당진시 고대면 슬항리 스마트원예단지의 잔여 3구획 임대 대상자 3명 선발. 구획별 면적은 0.47~1ha이며 영농 기반을 조성한 농지를 장기임대·매도하는 사업입니다.",
+      "eligibility": "만 18세 이상~45세 미만 청년. 공고문 출생일 기준은 1981.10.27.~2008.10.26.입니다. 신청 당시 거주지 제한은 없으며 계약 전 당진시 전입이 필요합니다. 병역필·면제자, 후계농업인 산업기능요원 복무자·선정자 등 원문 요건을 확인하세요.",
+      "application": "2026.11.9.~11.12. 평일 09:00~17:00, 당진시농업기술센터 통합관제관리동(석문면 보덕포로 574)에 방문 제출. 발표자료는 11.12. 17:00까지 공고문에 안내된 담당자 이메일로 제출합니다. 신청서·증빙서류는 첨부 계획을 확인하세요.",
+      "note": "공고기간(10.26.~11.12.)과 실제 접수기간(11.9.~11.12.)을 구분했습니다. 발표심사는 11.18. 예정이며, 임대·매도 조건과 영농시설 조성 부담은 첨부 계획을 확인하세요.",
+      "officialUrl": "https://www.dangjin.go.kr/cop/bbs/BBSMSTR_000000000066/selectBoardArticle.do?bbsId=BBSMSTR_000000000066&nttId=1136310",
+      "reviewStatus": "approved",
+      "sourceHash": "8212aae5b825aa59e021225b04273bd7ac304550787d8617e2d0c61467d3dc84"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gunsan-73873",
+      "slug": "2026-gunsan-organic-certification-area",
+      "title": "군산시 2026년 친환경 인증면적 확대 지원사업 신청공고",
+      "summary": "신규 농지에서 무농약·유기 인증을 받은 농업경영체의 초기 소득 감소와 생산비 차액을 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "군산시 농업기술센터 먹거리정책과",
+      "applicationStart": "2026-10-20",
+      "applicationEnd": "2026-11-06",
+      "publishedAt": "2026-10-20",
+      "verifiedAt": "2026-11-05",
+      "support": "친환경 인증면적 확대를 위한 지원면적은 0.1~3ha입니다. 인증 유형·작목별 지원단가와 지급 요건은 공식 첨부 공고문·시행지침을 확인하세요.",
+      "eligibility": "2026년 1월 1일 이후 신규 농지에 친환경 농산물 인증(무농약·유기)을 받은 농업경영체.",
+      "application": "2026.10.20.~11.6. 농지 소재지 읍·면·동 행정복지센터에서 신청합니다. 제출서류는 시행지침을 확인하세요. 문의: 군산시 농업기술센터 먹거리정책과 063-454-3024 또는 읍·면·동 산업담당.",
+      "note": "군산시 먹거리정책과 공고 제2026-53호입니다. 인증 농지와 면적별 지원 요건을 원문에서 확인하세요.",
+      "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?Key=B_Subject&context=NTIS&countYn=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=73873&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&ofr_pageSize=10&subCheck=Y&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0",
+      "reviewStatus": "approved",
+      "sourceHash": "7dc87ef9616c798e9f10067e1a1c48e40d129f90655469cf365394e85b1412bd"
     }
   ]
 }
