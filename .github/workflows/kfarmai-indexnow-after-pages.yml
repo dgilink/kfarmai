@@ -1,0 +1,47 @@
+name: KFarmAI IndexNow After Pages
+
+on:
+  workflow_run:
+    workflows: ['Deploy static site to GitHub Pages']
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kfarmai-indexnow-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  notify-indexnow:
+    if: >-
+      github.repository == 'dgilink/kfarmai' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Verify deployed exact revision
+        env:
+          DEPLOYED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$DEPLOYED_SHA" || { echo 'Newer main exists; notification aborted'; exit 1; }
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build and verify approved Pages artifact
+        run: |
+          set -euo pipefail
+          node scripts/pages/build-pages-artifact.cjs --output=_site >/tmp/kfarmai-build.log 2>&1 || { tail -n 8 /tmp/kfarmai-build.log; exit 1; }
+          node scripts/pages/verify-pages-artifact.cjs _site >/tmp/kfarmai-verify.log 2>&1 || { tail -n 8 /tmp/kfarmai-verify.log; exit 1; }
+      - name: Notify changed approved URLs only
+        run: node scripts/seo/indexnow-notify.cjs --execute

@@ -17,6 +17,9 @@ const mustExist = [
   'channel.html',
   'agri-info.html',
   'kb/index.html',
+  'policy/index.html',
+  'rss.xml',
+  'indexnow-key.txt',
   'data/kb-index.json',
   'data/kb-series.json',
   'data/policy-support-notices.json',
@@ -256,6 +259,22 @@ for (const publicPath of sitemapUrls) {
   if (!referenceExists(relativePath)) errors.push(`sitemap target is missing: ${publicPath}`);
 }
 
+const rss = fs.readFileSync(path.join(artifactDir, 'rss.xml'), 'utf8');
+const rssGuids = [...rss.matchAll(/<guid isPermaLink="true">(https:\/\/kfarmai\.com\/kb\/[^<]+)<\/guid>/g)].map(m => m[1]);
+if (!rss.includes('application/rss+xml') || !rss.includes('<rss version="2.0"') || !rssGuids.length ||
+    new Set(rssGuids).size !== rssGuids.length || rssGuids.some(url => !sitemapUrls.includes(new URL(url).pathname))) {
+  errors.push('RSS invalid, duplicated or references an unapproved sitemap URL');
+}
+const indexnowKey = fs.readFileSync(path.join(artifactDir,'indexnow-key.txt'),'utf8').trim();
+if (!/^[a-f0-9]{32}$/.test(indexnowKey)) errors.push('IndexNow ownership proof invalid');
+for (const publicPath of sitemapUrls.filter(p=>p.startsWith('/kb/')||p.startsWith('/policy/'))) {
+  const file = path.join(artifactDir,publicPath.slice(1));
+  if (!fs.existsSync(file)) continue;
+  const head = fs.readFileSync(file,'utf8').split(/<\/head>/i)[0];
+  if (/<meta\s+name=["']robots["'][^>]*content=["'][^"']*\bnoindex\b/i.test(head)) {
+    errors.push('noindex public sitemap entry: '+publicPath);
+  }
+}
 for (const relativePath of files.filter((file) => file.endsWith('.html'))) {
   const content = fs.readFileSync(path.join(artifactDir, relativePath), 'utf8');
   const references = [...content.matchAll(/\b(?:href|src)\s*=\s*["']([^"']+)["']/gi)].map((match) => match[1]);

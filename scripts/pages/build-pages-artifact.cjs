@@ -111,6 +111,7 @@ const publicRootFiles = new Set([
   'CNAME',
   'robots.txt',
   'sitemap.xml',
+  'indexnow-key.txt',
   'style.css',
 ]);
 
@@ -382,6 +383,9 @@ const cards = homeItems.slice(0, 4).map((item, index) => {
 fs.writeFileSync(homePath,
   `${homeSource.slice(0, startAt)}<div class="home-kb-cards" id="homeKbCards" aria-live="polite" data-kb-static="1">${cards}${homeSource.slice(endAt)}`,
   'utf8');
+
+// Create approved-only RSS and policy SEO presentation in the Pages artifact.
+require('./seo-presentation.cjs').applySeoPresentation(outputDir, kbItems);
 
 // Every public screen receives the same fixed text header and search route.
 // Existing pages may already reference the shell; normalize their cache key

@@ -25,6 +25,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Full JavaScript and Python regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/*.test.cjs > "$RUNNER_TEMP/kfarmai-node-tests.log" 2>&1 || { grep -E 'not ok|# fail|Error:' "$RUNNER_TEMP/kfarmai-node-tests.log" | tail -n 12; exit 1; }
+          python -m unittest discover -s tests -p 'test_*.py' > "$RUNNER_TEMP/kfarmai-python-tests.log" 2>&1 || { tail -n 14 "$RUNNER_TEMP/kfarmai-python-tests.log"; exit 1; }
+          echo '[Phase SEO regression] JS=PASS / Python=PASS'
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
