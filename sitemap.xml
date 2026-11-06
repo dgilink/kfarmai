@@ -898,7 +898,7 @@
     <priority>0.8</priority>
   </url>
   <!-- policy-support start -->
-  <url><loc>https://kfarmai.com/subsidy-calendar.html</loc><lastmod>2026-11-05</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kfarmai.com/subsidy-calendar.html</loc><lastmod>2026-11-06</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-organic-farming-materials.html</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-gochang-rural-convergence-loan.html</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-gochang-field-crop-equipment.html</loc><lastmod>2026-11-05</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -923,6 +923,9 @@
   <url><loc>https://kfarmai.com/policy/2027-jindo-organic-farming-materials.html</loc><lastmod>2026-11-05</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-hanam-organic-fertilizer-extra.html</loc><lastmod>2026-11-05</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-gyeongju-organic-fertilizer-extra.html</loc><lastmod>2026-11-05</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-bucheon-organic-fertilizer-extra.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-jinju-organic-farming-materials.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-hwaseong-organic-fertilizer-extra.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <!-- policy-support end -->
   <url><loc>https://kfarmai.com/kb/2026-public-rice-reserve-purchase-guide.html</loc><lastmod>2026-11-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html</loc><lastmod>2026-11-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
