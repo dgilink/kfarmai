@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-gyeongju-organic-fertilizer-extra');
-  assert.equal(listedSlugs[1], '2027-jeongeup-organic-farming-materials');
+  assert.equal(listedSlugs[0], '2027-hwasun-organic-fertilizer-extra');
+  assert.equal(listedSlugs[1], '2027-pohang-organic-farming-materials');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,15 +37,15 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-gyeongju-organic-fertilizer-extra.html');
+  assert.equal(cards[0].href, '/policy/2027-hwasun-organic-fertilizer-extra.html');
   assert.equal(cards[0].dataset.state, 'upcoming');
   assert.equal(cards[1].dataset.state, 'unknown');
-  assert.equal(cards[2].dataset.state, 'checking');
+  assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 27);
+  assert.equal(publication.items.length, 30);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -113,13 +113,13 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '27건');
+  assert.equal(fields.noticeCount.textContent, '30건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '15건');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 10);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 4);
+  assert.equal(fields.noticeCount.textContent, '17건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 11);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 7);
   buttons[2].events.click();
-  assert.equal(fields.noticeCount.textContent, '8건');
+  assert.equal(fields.noticeCount.textContent, '6건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
   buttons[1].events.click();
   fields.policySearch.value = '고창';
@@ -129,7 +129,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '27건');
+  assert.equal(fields.noticeCount.textContent, '30건');
 });
 
 // Static output must cover the rollover even when client JavaScript is unavailable.
@@ -148,7 +148,7 @@ test('expired Gochang notice is retained as closed and Dangjin separates applica
 
 test('announced date-check notices have orange static warnings and no invented deadlines', () => {
   const pending = publication.items.filter(item => item.applicationDateStatus === 'checking');
-  assert.equal(pending.length, 8);
+  assert.equal(pending.length, 6);
   for (const item of pending) {
     assert.equal(item.applicationEnd, null);
     assert.ok(item.dateCheckReason);
