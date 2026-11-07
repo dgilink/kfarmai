@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-06",
+  "updatedAt": "2026-11-07",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -452,14 +452,14 @@
       "applicationStart": "2026-10-20",
       "applicationEnd": "2026-11-06",
       "publishedAt": "2026-10-20",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-07",
       "support": "친환경 인증면적 확대를 위한 지원면적은 0.1~3ha입니다. 인증 유형·작목별 지원단가와 지급 요건은 공식 첨부 공고문·시행지침을 확인하세요.",
       "eligibility": "2026년 1월 1일 이후 신규 농지에 친환경 농산물 인증(무농약·유기)을 받은 농업경영체.",
       "application": "2026.10.20.~11.6. 농지 소재지 읍·면·동 행정복지센터에서 신청합니다. 제출서류는 시행지침을 확인하세요. 문의: 군산시 농업기술센터 먹거리정책과 063-454-3024 또는 읍·면·동 산업담당.",
-      "note": "군산시 먹거리정책과 공고 제2026-53호입니다. 인증 농지와 면적별 지원 요건을 원문에서 확인하세요.",
+      "note": "공식 접수기한인 2026년 11월 6일이 지나 마감되었습니다. 군산시 먹거리정책과 공고 제2026-53호이며 추가·연장 모집 여부는 공식 공고를 확인하세요.",
       "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?Key=B_Subject&context=NTIS&countYn=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=73873&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&ofr_pageSize=10&subCheck=Y&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0",
       "reviewStatus": "approved",
-      "sourceHash": "7dc87ef9616c798e9f10067e1a1c48e40d129f90655469cf365394e85b1412bd"
+      "sourceHash": "00063afdcea0f0f373d29b74448afb2816779c93c4266302be2674caa54e78d5"
     },
     {
       "sourceId": "official-policy-directory",
@@ -878,6 +878,152 @@
       "verifiedAt": "2026-11-06",
       "reviewStatus": "approved",
       "sourceHash": "e73cda3053752ddd4c9bb81787f30e88e96dfb60e1617f131769430f67ce01ac"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gumi-20261106",
+      "slug": "2027-gumi-organic-fertilizer-extra",
+      "title": "구미시 2027년 유기질비료 지원사업 추가 신청 안내",
+      "summary": "농업경영체에 등록한 농업인·농업법인의 비료 지원 추가 신청을 받습니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "구미시 진미동",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-27",
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-07",
+      "support": "유기질비료 3종과 부숙유기질비료 2종 지원. 부숙유기질비료는 10a당 2,000kg을 초과할 수 없습니다.",
+      "eligibility": "현재 농업경영체를 등록한 농업인 및 법인.",
+      "application": "농지 소재지 읍·면·동 행정복지센터 방문 신청. 문의: 진미동 054-480-7784.",
+      "note": "세부 품목은 혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비입니다. 지원단가·제출서류는 담당기관에 확인하세요.",
+      "officialUrl": "https://www.gumi.go.kr/jinmi/board/post/view.do?bcIdx=1&idx=844332&mid=0201000000",
+      "reviewStatus": "approved",
+      "sourceHash": "f9f394b72439c9fc0485c223204c3529c6e04dede3bb3a03fc05ac95cea317fb"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "goesan-20261106",
+      "slug": "2027-goesan-organic-fertilizer-extra",
+      "title": "괴산군 2027년 유기질비료 지원사업 추가·변경신청 안내",
+      "summary": "등록 또는 등록 예정 농업경영체의 비료 지원 추가·변경 신청을 받습니다.",
+      "region": [
+        "충북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "괴산군 청안면",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-30",
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-07",
+      "support": "유기질비료 3종 1,600원, 부숙유기질비료 2종은 등급별 1,300~1,600원 지원. 부숙유기질비료는 1,000㎡당 100포 이내입니다.",
+      "eligibility": "농업경영체 등록 또는 등록 예정인 자. 지방세·세외수입 체납자는 제외되며 비료 공급 전까지 경영체 등록이 필요합니다.",
+      "application": "농지 소재지 읍·면사무소에 방문·등기우편·전자우편·팩스 등으로 신청서를 제출합니다. 접수 확인 방법은 읍·면사무소에 문의하세요.",
+      "note": "접수 시작일은 명시되지 않았습니다. 전년도 비료정보로 신청받으므로 2027년 비료가격은 달라질 수 있습니다. 포장 단위 등 세부 기준은 첨부 시행지침 확인.",
+      "officialUrl": "https://www.goesan.go.kr/www/selectBbsNttView.do?bbsNo=251&integrDeptCode=&key=1240&nttNo=140128&pageIndex=1&searchCnd=all&searchCtgry=&searchKrwd=",
+      "reviewStatus": "approved",
+      "sourceHash": "092ff205309610991d5fd721e12be1f21bea9087488db50f4e3bba22984fd1dc"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jeungpyeong-20261106",
+      "slug": "2027-jeungpyeong-organic-fertilizer-extra",
+      "title": "증평군 2027년 유기질비료 지원사업 추가·변경신청 알림",
+      "summary": "농업경영체 등록 농지에서 사용하는 부산물비료 구입비 일부를 지원합니다.",
+      "region": [
+        "충북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "증평군 증평읍",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-07",
+      "support": "유기질비료 3종(혼합유박·혼합유기질·유기복합비료), 부숙유기질비료 2종(가축분퇴비·퇴비) 구입비 일부 지원. 가축분퇴비·퇴비는 10a당 2,000kg 이내입니다.",
+      "eligibility": "농업경영정보를 등록한 농업경영체의 등록 농지.",
+      "application": "농지 소재지 관할 읍·면사무소 방문 신청. 농지가 여러 시·군·구에 있으면 각각 신청합니다. 문의: 증평읍 043-835-3292.",
+      "note": "전년도 비료정보로 신청받으므로 사업연도 비료가격이 달라질 수 있습니다. 세부 지원단가·신청서는 공식 첨부 안내 확인.",
+      "officialUrl": "https://new.jp.go.kr/jp/cop/bbs/BBSMSTR_000000000182/selectBoardArticle.do?nttId=B00000062875tg1cC9pd",
+      "reviewStatus": "approved",
+      "sourceHash": "86e74e38c709c6c959aba5c4bde3d2311e5c709d2d2b6850a8bde818e2d95199"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "wanju-20261106",
+      "slug": "2027-wanju-organic-fertilizer-extra",
+      "title": "완주군 2027년 유기질비료 지원사업 추가·변경신청 안내",
+      "summary": "등록 농지에서 농산물 생산에 사용하는 유기질비료 지원 추가·변경 신청을 받습니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "완주군 읍면",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-07",
+      "support": "유기질비료 3종(혼합유박·혼합유기질·유기복합비료)과 부숙유기질비료 2종(가축분퇴비·퇴비) 지원. 단가·물량 상한은 해당 읍·면에 확인하세요.",
+      "eligibility": "농업경영정보를 등록한 농업경영체로서 농산물 생산에 비료를 사용하는 자. 신청자의 경영체 등록정보에 등록된 농지가 대상입니다.",
+      "application": "농지 소재지 읍·면·동사무소에 기한 내 신청. 문의: 공식 안내 담당 연락처 063-290-3481.",
+      "note": "공식 안내의 물량 상한은 다른 지역과 다르게 기재되어 있으므로 담당기관에 해당 농지의 적용 수량과 지원단가를 확인하세요.",
+      "officialUrl": "https://www.wanju.go.kr/health/planweb/board/view.9is?boardUid=ff8080818a49961a018ab011af3543bc&categoryUid2=&contentUid=ff808081898ba9ba018a216a9766065b&dataUid=4028a602a1770b0f01a1af825baa2076&page=1",
+      "reviewStatus": "approved",
+      "sourceHash": "3522cbfdb4d4681069a200d3acef60dfe126ba1a3c1cac22c1adf3ec5b805718"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "sejong-20261106",
+      "slug": "2027-sejong-organic-farming-materials",
+      "title": "세종특별자치시 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "녹비종자와 공시된 유기농업자재·자재원료 등의 지원 신청을 받습니다.",
+      "region": [
+        "세종"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "세종특별자치시 농업정책과",
+      "applicationStart": "2026-11-04",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-07",
+      "support": "녹비종자 8종, 공시 유기농업자재·자재원료·천적 등 지원. 상토는 제외되며 지원단가·한도는 시행지침 확인.",
+      "eligibility": "농업경영정보를 등록한 농업경영체의 대상 농지. 녹비작물은 친환경·관행농가, 유기농업자재·원료는 유기·무농약 인증 농업인·법인 등 품목별 자격을 확인하세요.",
+      "application": "농지 소재지 관할 읍·면·동사무소 방문 신청. 같은 시·군·구 내에서는 경지면적이 가장 넓은 읍·면·동에 신청하고 다른 시·군·구는 각각 신청합니다. 문의: 기업마당 안내 044-300-4332, 세종시 원문 044-300-4322 또는 콜센터 044-120.",
+      "note": "세종시 공식 본문의 접수기간과 기업마당 공식 등록 안내의 대상·지원내용을 교차 확인했습니다. 두 안내의 담당 전화가 달라 각각 표시했으며 관할 읍·면·동에서도 확인할 수 있습니다.",
+      "officialUrl": "https://www.sejong.go.kr/prog/publicNotice/kor/sub02_030301/C1_1/view.do?not_ancmt_mgt_no=72331&pageIndex=3",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127746",
+      "sourceHash": "7810cb0659be199640d3c15bad78b6f1cee912aa88e44ed181b198e8fcc8e402"
     }
   ]
 }
