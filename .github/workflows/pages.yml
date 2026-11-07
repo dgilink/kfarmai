@@ -60,6 +60,12 @@ jobs:
             echo '[Phase JS full regression] FAIL: existing and changed-contract failures require review'
             exit 1
           fi
+      - name: Install pinned Python test dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check PyYAML==6.0.3 > "$RUNNER_TEMP/kfarmai-python-deps.log" 2>&1 || { tail -n 12 "$RUNNER_TEMP/kfarmai-python-deps.log"; exit 1; }
+          echo '[Phase Python test dependency] PASS'
       - name: Full Python regression baseline audit
         continue-on-error: true
         shell: bash
