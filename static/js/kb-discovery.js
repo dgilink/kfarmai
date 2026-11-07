@@ -28,6 +28,7 @@
   const status = document.getElementById('kbStatus');
   // Exactly four reviewed external photograph URLs, no user-controlled remote image src.
   const approvedExternalPhotos = Object.freeze({
+    "/kb/2027-chungbuk-young-farmer-smartfarm-startup.html": "https://commons.wikimedia.org/wiki/Special:FilePath/2020-05-09%2013.17.37%20tomato%20greenhouse.jpg?width=1280",
     "/kb/2026-agri-eji-weather-disaster-morning-alert.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Farmer%20on%20the%20Phone%20%289629680543%29.jpg?width=1280",
     "/kb/2027-livestock-facility-modernization-guideline.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Dairy%20farm%20%28P-062705-00-19%29.jpg?width=1280",
     "/kb/2026-public-rice-reserve-purchase-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wanju%20county%20(autumn%20rice%20field%20ready%20for%20harvesting%20near%20Gui%20Lake)..JPG?width=1280",
