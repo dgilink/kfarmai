@@ -70,7 +70,7 @@ class GitHubReviewTransport:
                 and self.run_id == manifest["source_run_id"]
                 and self.env.get("KFARMAI_DAILY_REVIEW_GENERATION_ENABLED") == "true"
                 and self.env.get("KFARMAI_AUTOPUBLISH_ENABLED") == "false"
-                and self.env.get("KFARMAI_REVIEW_PUBLISH_ENABLED") == "false"
+                and self.env.get("KFARMAI_REVIEW_PUBLISH_ENABLED") in {"true", "false"}
                 and self.env.get("GITHUB_WORKFLOW_REF") ==
                     "dgilink/kfarmai/.github/workflows/kfarmai-daily-autopublish.yml@refs/heads/main"
                 and isinstance(self.token, str) and bool(self.token))

@@ -9,7 +9,7 @@
 | 회원, 로그인, 질문, 댓글, 좋아요, 프로필, 사용자 이미지 | Supabase |
 | 운영자가 제공하는 농업정보 글, 대표 이미지, 인포그래픽 | GitHub 정적 Artifact와 Pages |
 | 일일 생성 선점, 중복 실행 방지, 비용 영수증, 검수 상태 | GitHub Issue |
-| 최종 공개 | 소유자의 콘텐츠 승인과 별도 공개 승인 후 기존 Gate C/D |
+| 최종 공개 | 소유자의 단일 승인 버튼 후 기존 Gate C/D 자동 실행 |
 
 Supabase의 커뮤니티 테이블, Auth, Storage, RLS는 이 파이프라인에서 변경하지 않는다.
 
@@ -23,8 +23,9 @@ GitHub Actions 06:00 KST
 → 사용량을 같은 Issue에 기록
 → immutable Artifact 업로드
 → 같은 Issue를 표준 REVIEW Issue로 전환
-→ 사용자 콘텐츠 승인
-→ 별도 공개 승인
+→ 사용자가 전체 자료 검토 후 승인 버튼 1회
+→ 콘텐츠·공개 승인 원자적 기록
+→ 서버가 기존 소유자 명령을 안전하게 전달
 → 정적 파일 반영·Pages·Production 감사
 ```
 
@@ -36,7 +37,9 @@ GitHub Actions 06:00 KST
 - 요청별 최대 예약액은 22,528 micro-USD, 일일 상한은 150,000 micro-USD다.
 - 호출 응답 또는 사용량 확인이 불가능하면 자동 재시도하지 않고 Issue를 HOLD로 전환한다.
 - REVIEW 생성 작업에는 게시, Pages 배포, `git push` 권한을 부여하지 않는다.
-- 공개는 기존 소유자 댓글 기반 콘텐츠 승인과 별도 공개 승인 이후에만 가능하다.
+- 링크 열람은 읽기 전용이며, CSRF 보호 승인 POST만 콘텐츠·공개 승인을 함께 기록한다.
+- 서버가 만드는 기존 소유자 댓글 명령은 Artifact·manifest 해시와 결합되고 재시도해도 중복되지 않는다.
+- 실제 공개는 기존 Gate C/D의 stale-main·Artifact·해시·Production 검증을 모두 통과해야 한다.
 - 커뮤니티 Supabase의 key, table, migration, RLS, Auth, Storage는 변경하지 않는다.
 
 ## 검증 주제 공급
@@ -57,7 +60,7 @@ GitHub Actions 06:00 KST
 2. `KFARMAI_DAILY_APPROVED_HEAD_SHA`를 병합된 main HEAD로 갱신한다.
 3. 공개 기능은 계속 끈 상태에서 `review_only`를 1회 실행한다.
 4. Issue, Artifact, 본문, 이미지, 비용 기록을 확인한다.
-5. 사용자가 콘텐츠를 승인한 뒤 별도 공개 승인으로 시험 게시한다.
+5. 사용자가 전체 자료를 확인하고 `승인 후 자동 게시` 버튼으로 시험 게시한다.
 6. Production URL과 모바일 화면 감사가 PASS인 경우에만 일일 REVIEW 일정을 유지한다.
 
 ## 롤백
