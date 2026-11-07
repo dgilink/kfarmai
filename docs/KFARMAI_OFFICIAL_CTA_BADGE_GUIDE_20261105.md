@@ -46,3 +46,9 @@
 - 영동군: official-cta-yeongdong-smartfarm-2027-v1.svg
 - 괴산군: official-cta-goesan-smartfarm-2027-v1.svg
 - 기업마당: official-cta-bizinfo-smartfarm-2027-v1.svg
+
+## 2026-11-08 장흥 고병원성 AI 기사
+
+- 농식품부 확진 보도자료: official-cta-mafra-jangheung-hpai-v1.svg
+- 농식품부 신고 안내: official-cta-mafra-ai-report-v1.svg
+- 동일한 농식품부 팔레트(#071F55, #FFE700)를 적용하고, 원문별 각각 하나의 배지로 연결한다.

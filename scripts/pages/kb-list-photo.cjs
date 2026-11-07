@@ -17,6 +17,7 @@ const reviewedPhotos = Object.freeze({
 // Approved external hero photographs for this four-article revision only.
 // Security: exact article and exact URL required; no arbitrary remote images.
 const approvedRemotePhotos = Object.freeze({
+  "/kb/2026-jangheung-h5n9-hpai-poultry-biosecurity-guide.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Wild%20duck%20x%20Pekin%20duck%20mix%20in%20Gyeongju.jpg?width=1280",
   "/kb/2027-chungbuk-young-farmer-smartfarm-startup.html": "https://commons.wikimedia.org/wiki/Special:FilePath/2020-05-09%2013.17.37%20tomato%20greenhouse.jpg?width=1280",
   "/kb/2026-agri-eji-weather-disaster-morning-alert.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Farmer%20on%20the%20Phone%20%289629680543%29.jpg?width=1280",
   "/kb/2027-livestock-facility-modernization-guideline.html": "https://commons.wikimedia.org/wiki/Special:FilePath/Dairy%20farm%20%28P-062705-00-19%29.jpg?width=1280",
