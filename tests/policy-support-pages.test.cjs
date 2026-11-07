@@ -45,7 +45,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 35);
+  assert.equal(publication.items.length, 37);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -113,11 +113,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '35건');
+  assert.equal(fields.noticeCount.textContent, '37건');
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '19건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 12);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 10);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 12);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '6건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -129,7 +129,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '35건');
+  assert.equal(fields.noticeCount.textContent, '37건');
 });
 
 // Static output must cover the rollover even when client JavaScript is unavailable.

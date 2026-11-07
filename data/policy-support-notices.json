@@ -1024,6 +1024,64 @@
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127746",
       "sourceHash": "7810cb0659be199640d3c15bad78b6f1cee912aa88e44ed181b198e8fcc8e402"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "chungbuk-443384",
+      "slug": "2027-chungbuk-young-farmer-smartfarm-startup",
+      "title": "2027년 충북 청년농업인 스마트팜 창업 지원사업 공모",
+      "summary": "충북 6개 시·군에서 청년농업인의 시설채소·화훼·과수 스마트팜 신축을 지원합니다.",
+      "region": [
+        "충북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "충청북도 스마트농산과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-04",
+      "support": "총 8개소. 0.3ha 기준 총사업비는 6개소 5억 원, 평가 7~8순위 2개소 4억 5천만 원입니다. 보조 70%, 융자 20% 이내, 자부담 10% 기준이며 융자분은 자부담으로 대체할 수 있습니다.",
+      "eligibility": "제천·보은·옥천·영동·괴산·단양에 정착하려는 청년농업인과 도내 청년농업인. 신청연도 기준 19~49세로, 0.3ha 이상 시설 규모와 부지 확보, 교육 수료 또는 시설원예 경력 등 요건을 확인하세요. 관외 거주자는 선정 후 교부결정 전 사업예정지로 주소를 이전해야 합니다.",
+      "application": "사업예정지 관할 시·군에 방문 신청합니다. 영동군 읍·면 접수는 12월 18일, 괴산군 안내는 12월 17일까지입니다. 접수처와 서류 제출 시한은 해당 시·군에 확인하세요. 충청북도 대표번호 043-220-2114.",
+      "note": "표의 12월 31일은 충청북도 공모계획의 접수기한입니다. 시·군이 더 일찍 마감할 수 있으므로 관할 공고를 확인하세요. 지원 규모와 비율은 도 공식 첨부 공모계획 기준입니다.",
+      "officialUrl": "https://www.chungbuk.go.kr/www/selectBbsNttView.do?bbsNo=60&key=421&nttNo=443384&pageIndex=1&searchCnd=all&searchCtgry=&searchKrwd=",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127669",
+      "verifiedAt": "2026-11-07",
+      "reviewStatus": "approved",
+      "sourceHash": "f0c26d743b1efc002224345b1758284217dbe05d6d1af2e19ed504954734235b"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "goyang-20261030111720562",
+      "slug": "2027-goyang-organic-fertilizer-extra",
+      "title": "고양시 2027년 유기질비료 지원사업 안내(신규, 추가, 변경 신청)",
+      "summary": "등록 농지에서 농산물 생산에 사용하는 유기질비료의 2차 신청을 안내합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "고양시 농업정책과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-10-30",
+      "support": "혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비의 구입비 일부를 정액 지원합니다.",
+      "eligibility": "농업경영체에 등록한 농지에서 유기질비료를 사용해 농산물을 생산하는 자.",
+      "application": "농지 소재지 동 행정복지센터에 신청합니다. 문의: 고양시 농업정책과 031-8075-4241.",
+      "note": "표에는 2차 접수기간을 표시했습니다. 1차는 2026년 6월 11일~7월 31일에 진행됐습니다. 공급 신청서와 세부 지원 기준은 공식 첨부자료를 확인하세요.",
+      "officialUrl": "https://www.goyang.go.kr/dygu/user/bbs/BD_selectBbs.do?q_bbsCode=1030&q_bbscttSn=20261030111720562",
+      "verifiedAt": "2026-11-07",
+      "reviewStatus": "approved",
+      "sourceHash": "a49c3ba4fe2769f9c94482bef96de51339c03bb630b536599fae03b286bf0720"
     }
   ]
 }
