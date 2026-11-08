@@ -42,3 +42,13 @@ test('IndexNow safely rejects noindex and bad ownership proof',()=>{
   assert.throws(()=>assertKey('unsafe'));
   assert.doesNotThrow(()=>assertKey('0123456789abcdef0123456789abcdef'));
 });
+
+test('IndexNow whitelist includes public tool canonical URLs, never query variants', () => {
+  const tools = ["crop-calendar.html","crop-guide.html","agri-weather.html","diagnosis.html"];
+  const sitemap = tools.map(file => '<loc>https://kfarmai.com/'+file+'</loc>').join('');
+  const expected = tools.map(file => 'https://kfarmai.com/'+file).sort();
+  const approvedKb = new Set(), approvedPolicy = new Set();
+  assert.deepEqual(selectUrls(tools, sitemap, approvedKb, approvedPolicy), expected);
+  assert.deepEqual(selectUrls(['scripts/seo/indexnow-notify.cjs'], sitemap, approvedKb, approvedPolicy), expected);
+  assert.deepEqual(selectUrls(['crop-calendar.html?crop=monstera'], sitemap, approvedKb, approvedPolicy), []);
+});

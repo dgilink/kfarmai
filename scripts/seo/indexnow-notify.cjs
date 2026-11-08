@@ -7,12 +7,14 @@ const ROOT = path.resolve(__dirname, '../..');
 const SITE = 'https://kfarmai.com';
 const KEY = fs.readFileSync(path.join(ROOT,'indexnow-key.txt'),'utf8').trim();
 const KEY_URL = `${SITE}/indexnow-key.txt`;
+const INDEXABLE_TOOL_FILES = Object.freeze(["crop-calendar.html","crop-guide.html","agri-weather.html","diagnosis.html"]);
 function git(args) {return cp.execFileSync('git',args,{cwd:ROOT,encoding:'utf8',timeout:12000}).trim();}
 function assertKey(key) {if (!/^[a-f0-9]{32}$/.test(key)) throw Error('Invalid public IndexNow ownership key');}
 function selectUrls(changed, sitemap, approvedKb, approvedPolicy) {
   const valid = new Set([...sitemap.matchAll(/<loc>(https:\/\/kfarmai\.com\/[^<]*)<\/loc>/g)].map(m=>m[1]));
   const candidates = new Set();
   for (const file of changed) {
+    if (INDEXABLE_TOOL_FILES.includes(file)) candidates.add(SITE+'/'+file);
     if (/^kb\/[a-z0-9-]+\.html$/.test(file) && approvedKb.has(file)) candidates.add(SITE+'/'+file);
     if (/^policy\/[a-z0-9-]+\.html$/.test(file) && approvedPolicy.has(file)) candidates.add(SITE+'/'+file);
     if (file === 'index.html') candidates.add(SITE+'/');
@@ -23,6 +25,10 @@ function selectUrls(changed, sitemap, approvedKb, approvedPolicy) {
   if (changed.includes('scripts/pages/seo-presentation.cjs')) {
     for (const file of approvedPolicy) candidates.add(SITE+'/'+file);
     for (const url of [SITE+'/',SITE+'/kb/index.html',SITE+'/policy/index.html',SITE+'/subsidy-calendar.html']) candidates.add(url);
+  }
+  // When this notifier contract changes, resubmit only these approved tool canonical URLs once.
+  if (changed.includes('scripts/seo/indexnow-notify.cjs')) {
+    for (const file of INDEXABLE_TOOL_FILES) candidates.add(SITE+'/'+file);
   }
   return [...candidates].filter(url => valid.has(url)).sort();
 }
