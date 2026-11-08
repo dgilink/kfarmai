@@ -66,7 +66,7 @@ const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 �
 <input id="policySearch" type="search" placeholder="예: 유기농업자재, 전북, 농업법인" autocomplete="off">
 <div class="filters"><select id="regionFilter" class="select" aria-label="지역 선택"><option value="">전체 지역</option><option>전국</option><option>전북</option><option>경기</option><option>충남</option><option>충북</option><option>세종</option><option>경북</option><option>경남</option><option>전남</option></select>
 <select id="targetFilter" class="select" aria-label="대상 선택"><option value="">전체 대상</option><option>농업인</option><option>농업법인</option><option>지방정부</option></select>
-<select id="categoryFilter" class="select" aria-label="분야 선택"><option value="">전체 분야</option><option>친환경</option><option>농기계</option><option>유통·가공</option><option>연구개발</option><option>시설·임대</option><option>축산·조사료</option></select></div>
+<select id="categoryFilter" class="select" aria-label="분야 선택"><option value="">전체 분야</option><option>친환경</option><option>농기계</option><option>유통·가공</option><option>연구개발</option><option>시설·임대</option><option>축산·조사료</option><option>복지</option></select></div>
 <button id="resetButton" class="reset" type="button">초기화</button></section>
 <section id="announcements" class="policy-section" aria-labelledby="announcementsTitle">
 <div class="policy-section-head"><h2 id="announcementsTitle">지원사업 공고</h2><span id="noticeCount" aria-live="polite">${items.length}건</span></div>
