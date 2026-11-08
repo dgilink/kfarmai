@@ -322,9 +322,10 @@ test('all-menu links are covered by an active full-menu destination', () => {
   const shell = read('static/js/v4-shell.js');
   const menuTargets = [
     '/subsidy-calendar.html', '/diagnosis.html', '/agri-weather.html', '/market-prices.html', '/facility-vegetables.html',
-    '/agri_map.html', '/crop-calendar.html', '/oauth/privacy/',
+    '/agri_map.html', '/crop-calendar.html', '/links.html', '/oauth/privacy/',
   ];
   for (const target of menuTargets) assert.ok(shell.includes("'" + target + "'"), target);
+  assert.match(shell, /\['농업정보', \[\[[\s\S]*?\['농업관련 사이트', '\/links\.html'\]\]\]/);
 });
 
 test('policy support source registry is review-only and contains no guessed operation endpoint', () => {
