@@ -573,18 +573,17 @@
       ],
       "agency": "김포시 농업기술센터",
       "applicationStart": "2026-11-09",
-      "applicationEnd": null,
+      "applicationEnd": "2026-12-04",
       "publishedAt": "2026-11-03",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-08",
       "support": "유기질비료 3종(혼합유박·혼합유기질비료·유기복합비료), 부숙유기질비료 2종(가축분퇴비·퇴비) 지원. 지원기준은 첨부 시행지침을 확인하세요.",
       "eligibility": "신청자의 농업경영체 등록정보에 등록된 농지.",
       "application": "농지 소재지 읍·면·동 행정복지센터에 신청합니다. 여러 시·군·구에 농지가 있으면 각각 신청합니다. 문의: 농업지원팀 031-5186-4279.",
-      "note": "공고문에서 11월 9일 시작은 확인했습니다. 마감일의 숫자 날짜와 요일이 일치하지 않아 확정 마감일은 비워 두었습니다.",
+      "note": "마감일은 11월 6일자 김포시 추가 안내의 본문에서 확인했습니다. 시작일은 농업기술센터 공고와 추가 안내 본문의 11월 9일 기준입니다. 추가 안내 제목에는 11월 10일로 표시되어 있으니 관할 접수처에 방문 일정을 확인하세요.",
       "officialUrl": "https://www.gimpo.go.kr/agri/selectBbsNttView.do?bbsNo=183&key=2599&nttNo=1035600",
-      "applicationDateStatus": "checking",
-      "dateCheckReason": "공식 안내의 마감일 숫자와 요일이 일치하지 않아 날짜를 확인 중입니다. 신청 전 농업지원팀에 마감일을 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "f673f33083db3574f72c8890714921eb7520ec35a35a3c4bd25ed7e88da8d0f4"
+      "verificationUrl": "https://m.gimpo.go.kr/portal/selectBbsNttView.do?bbsNo=56&key=3309&nttNo=1035829",
+      "sourceHash": "6813d0cbe555a6af7ad16ce3b3e4d88c0efe7defea0cddf03a37c71c567da457"
     },
     {
       "sourceId": "local-government-notices",
@@ -1367,6 +1366,34 @@
       "verifiedAt": "2026-11-08",
       "reviewStatus": "approved",
       "sourceHash": "4973d2ecf81abc3154df4f5797b05de053b1daa4e815ac8344222421db06e221"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gunsan-9836114",
+      "slug": "2026-gunsan-retired-farm-machinery-collection",
+      "title": "군산시 2026년 폐농기계 처리 지원사업 안내",
+      "summary": "고장이나 노후화로 사용할 수 없는 폐농기계를 수거해 처리합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "군산시 나운2동·농업기술센터 농촌지원과",
+      "applicationStart": "2026-11-05",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-05",
+      "support": "지정된 농업기계 해체·재활용 업체가 폐농기계를 수거해 처리합니다. 처리 중 발생한 고철대금은 업체가 농기계 소유자에게 지급합니다.",
+      "eligibility": "군산시 관내에서 농업경영체 등록을 하고, 고장·파손·노후 등으로 정상 사용이 불가능한 농기계를 소유한 농업인이 대상입니다.",
+      "application": "읍·면·동 산업계 또는 군산시 농업기술센터 농기계지원계에 신청합니다. 신청서, 소유 확인서, 개인정보 동의서, 신분증 사본과 소유 증빙을 준비합니다. 문의 063-454-5902.",
+      "note": "군산시 나운2동의 공식 안내 기준입니다. 지정업체와 수거 일정은 접수처에 확인하세요.",
+      "officialUrl": "https://www.gunsan.go.kr/main/m149/view/9836114",
+      "verifiedAt": "2026-11-08",
+      "reviewStatus": "approved",
+      "sourceHash": "6a07b377e9ba686f2ed99b5c5f2a004ed1198c1bd5342e878d9170e4a88181a3"
     }
   ]
 }

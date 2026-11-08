@@ -45,7 +45,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 47);
+  assert.equal(publication.items.length, 48);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -113,13 +113,13 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '47건');
+  assert.equal(fields.noticeCount.textContent, '48건');
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '26건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 15);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 16);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 18);
   buttons[2].events.click();
-  assert.equal(fields.noticeCount.textContent, '5건');
+  assert.equal(fields.noticeCount.textContent, '4건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
   buttons[1].events.click();
   fields.policySearch.value = '고창';
@@ -129,7 +129,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '47건');
+  assert.equal(fields.noticeCount.textContent, '48건');
 });
 
 // Static output must cover the rollover even when client JavaScript is unavailable.
@@ -148,7 +148,7 @@ test('expired Gochang notice is retained as closed and Dangjin separates applica
 
 test('announced date-check notices have orange static warnings and no invented deadlines', () => {
   const pending = publication.items.filter(item => item.applicationDateStatus === 'checking');
-  assert.equal(pending.length, 5);
+  assert.equal(pending.length, 4);
   for (const item of pending) {
     assert.equal(item.applicationEnd, null);
     assert.ok(item.dateCheckReason);
