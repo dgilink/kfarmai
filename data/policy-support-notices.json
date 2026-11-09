@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-08",
+  "updatedAt": "2026-11-09",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -1394,6 +1394,298 @@
       "verifiedAt": "2026-11-08",
       "reviewStatus": "approved",
       "sourceHash": "6a07b377e9ba686f2ed99b5c5f2a004ed1198c1bd5342e878d9170e4a88181a3"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yangju-68363",
+      "slug": "2027-yangju-organic-farming-materials",
+      "title": "양주시 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "양주시 농업경영체 등록 농지의 녹비종자, 유기농업자재, 토양검정 비용 등을 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "양주시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-04",
+      "support": "녹비종자, 공시 유기농업자재와 허용 원료, 공시 천적, 토양검정 및 시비처방 컨설팅 비용을 지원합니다. 공고 기준 보조 50%, 자부담 50%입니다. 상토와 화분매개곤충은 제외합니다.",
+      "eligibility": "농업경영정보에 등록된 경영체의 녹비작물 재배 예정 농지나 유기·무농약 인증 및 일반 농산물 재배 농지입니다. 친환경인증 농가와 청년농에 우선순위를 부여하며, 품목별 요건이 다릅니다.",
+      "application": "농업기술센터 농업정책과 친환경농업팀에 방문 신청합니다. 토양검정 결과 등 품목별 서류는 공고문을 확인하세요. 문의 031-8082-6122.",
+      "note": "양주시 농업기술센터 공고 제2026-93호 첨부 공고문 기준입니다.",
+      "officialUrl": "https://www.yangju.go.kr/www/selectEminwonView.do?pageUnit=10&pageIndex=1&searchCnd=all&key=4075&not_ancmt_mgt_no=68363&ofr_pageSize=10",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "cb1dfd267f7dfb526bb8b90ada0a2a0ed0854c7a9cd85b122ab2b921a996547a"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "siheung-86485",
+      "slug": "2027-siheung-soil-amendment-extra",
+      "title": "시흥시 2027년 토양개량제 지원사업 추가신청 공고",
+      "summary": "신현·신천·정왕·능곡동 농지에 공급하는 토양개량제 추가·변경 신청을 받습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "시흥시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-02",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-10-29",
+      "support": "유효규산이 낮거나 산성인 농지에 규산질·석회질 토양개량제를 공급합니다. 물량은 신청 면적과 토양검정 결과를 반영해 정합니다.",
+      "eligibility": "농업경영정보를 등록한 농업경영체로서 시흥시 신현·신천·정왕·능곡동 공급 대상 농지의 토양개량제를 신청하는 경우입니다.",
+      "application": "농지 소재지 동 행정복지센터, 관내 지역농협 또는 농업정책과에 신청서를 제출합니다. 팩스·이메일 접수는 수신 여부를 확인하세요. 문의 031-310-6198.",
+      "note": "시흥시 농업기술센터 농업정책과 공고 제2026-71호 기준입니다.",
+      "officialUrl": "https://www.siheung.go.kr/main/saeol/gosi/view.do?notAncmtMgtNo=86485&mid=0401040100",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "f9e9b5cf0c47b2eb9ef9bab0a40c33148105a17c6dea9e292e4027cf5c97f064"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "siheung-86502",
+      "slug": "2026-siheung-organic-certification-cost-extension",
+      "title": "시흥시 2026년도 친환경농산물 인증확대사업 신청 연장 공고",
+      "summary": "시흥시 유기·무농약 인증 농가와 생산자단체의 인증 및 검사비 지원 접수가 연장됐습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "시흥시 농업기술센터 농업정책과",
+      "applicationStart": "2026-09-11",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-10-29",
+      "support": "친환경농산물 신규·갱신 인증 수수료와 토양·수질·잔류농약 등 검사비를 지원합니다. 공고 기준 보조 50%, 자부담 50%입니다.",
+      "eligibility": "시흥시 관내 경작지에서 유기농산물 또는 무농약농산물 인증을 받은 농업인·생산자단체입니다. 같은 사업이나 유사 사업의 지원을 받는 경우 제외됩니다.",
+      "application": "시흥시 농업정책과 로컬푸드팀에 신청서, 인증서, 비용 증빙 등 서류를 제출합니다. 문의 031-310-6879.",
+      "note": "시흥시 농업정책과 공고 제2026-72호와 기업마당 등록 안내를 대조했습니다.",
+      "officialUrl": "https://www.siheung.go.kr/main/saeol/gosi/view.do?notAncmtMgtNo=86502&mid=0401040100",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127687",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "948c22743b6085dafce7cf7a956be9500ddc42447a2e239f325f9b977a2912d5"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "icheon-71723",
+      "slug": "2026-icheon-farmer-opportunity-income-extra",
+      "title": "이천시 2026년 농어민기회소득 지원사업 추가 신청·접수 변경 공고",
+      "summary": "이천시 농어민기회소득 추가 접수 기한을 11월 10일로 변경했습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "이천시",
+      "applicationStart": "2026-09-28",
+      "applicationEnd": "2026-11-10",
+      "publishedAt": "2026-11-04",
+      "support": "공고상 하반기 청년·환경·귀농어민과 일반 농어민은 월 5만 원, 반기 최대 30만 원을 지역화폐로 지급받습니다. 상반기 지급 기준은 유형별로 다릅니다.",
+      "eligibility": "공고 기준일에 이천시에 주소를 두고 실제 농업 생산에 종사하며 거주·영농 기간, 연령, 농업 외 소득 기준을 충족하는 농민입니다. 농업 외 종합소득은 3,700만 원 미만입니다.",
+      "application": "주소지 읍·면·동 행정복지센터에 방문하거나 경기도 농어민기회소득 통합지원 시스템에서 신청합니다.",
+      "note": "이천시 공고 제2026-3028호의 변경 일정입니다. 자격 판단 기준일은 접수 시작일과 다르므로 공고문을 확인하세요.",
+      "officialUrl": "https://eminwon.icheon.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=71723&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "8c7060e27b0757e90559942bb2ba43b7e56913b3993fa4a507691bb51d0d3473"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "uljin-36363",
+      "slug": "2026-uljin-field-crop-demo-round-9",
+      "title": "울진군 2026년 농업기술보급 식량작물분야 시범사업 계획 9차",
+      "summary": "논 이모작 생산단지와 들녘 단위 공동영농 기반 조성에 필요한 기계와 시설을 지원합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "농기계",
+        "시설·임대"
+      ],
+      "agency": "울진군 농업기술센터 기술보급과",
+      "applicationStart": "2026-11-03",
+      "applicationEnd": "2026-11-09",
+      "publishedAt": "2026-11-03",
+      "support": "논 이모작 생산 시범에 농기계·자재와 건조·저장 시설을, 들녘 공동영농 기반 조성에 논콩·양파 재배 장비를 지원합니다. 분야별 총사업비는 5억 원과 4억 원이며 보조 비율은 70%입니다.",
+      "eligibility": "논 이모작 시범은 농업법인·작목반·연구회·들녘경영체 등이 대상이며 농·축협은 제외됩니다. 공동영농 사업은 논콩 이모작 재배 농업인·작목반·단체 등이 대상입니다.",
+      "application": "사업별 신청서를 울진군 농업기술센터 기술보급과 식량작물팀에 제출합니다. 문의 054-789-5243.",
+      "note": "두 시범사업의 신청 조건과 예산은 첨부 계획서에서 확인하세요.",
+      "officialUrl": "https://www.uljin.go.kr/index.uljin?menuCd=DOM_000000103002007001&type=view&ancmtMgtNo=36363",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "94d3b11b8d0e59cdaf2e03a523664b6d816fabdf375eea1efc857909f4c02dc6"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "cheorwon-312945",
+      "slug": "2027-cheorwon-rural-convergence-loan",
+      "title": "철원군 2027년 농촌융복합산업 자금(융자) 지원사업 공고",
+      "region": [
+        "강원"
+      ],
+      "agency": "철원군 농업기술센터 농업유통과",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-27",
+      "publishedAt": "2026-10-22",
+      "eligibility": "농촌융복합산업 인증사업자나 농촌자원을 활용한 사업을 계획·추진 중인 사람, 초기 창업자가 대상입니다.",
+      "support": "제조·가공, 판매, 체험시설 설치와 설비 구입, 기존 시설 개보수, 원료비·인건비 등 운영자금을 이차보전 방식으로 융자 지원합니다.",
+      "application": "11월 27일 오후 6시까지 철원군 농업기술센터 농업유통과 농촌활력팀에 방문 신청합니다. 문의 033-450-5552.",
+      "officialUrl": "https://www.cwg.go.kr/www/selectBbsNttView.do?key=1226&bbsNo=25&nttNo=312945",
+      "summary": "농촌융복합산업 인증사업자와 창업자 등의 사업 자금 융자 신청을 받습니다.",
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "note": "세부 자격과 지원 요건은 관할 지자체 공고와 첨부 시행지침을 확인하세요.",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "6def1b057857d59e7efab867f86dae0453895bdf495ab367baeb44ee836fe0cf"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jejusi-109229",
+      "slug": "2027-jejusi-rural-convergence-loan",
+      "title": "제주시 2027년 농촌융복합산업 자금(융자) 지원사업 대상자 모집 공고",
+      "region": [
+        "제주"
+      ],
+      "agency": "제주시 감귤유통과",
+      "applicationStart": "2026-10-12",
+      "applicationEnd": "2026-11-30",
+      "publishedAt": "2026-10-12",
+      "eligibility": "제주시에 사업장을 둔 농촌융복합산업 인증사업자나 농촌융복합산업 창업자 및 예비창업자가 대상입니다.",
+      "support": "시설자금, 리모델링 자금, 운영자금을 이차보전 방식으로 융자 지원합니다.",
+      "application": "제주시 감귤유통과에 방문 신청합니다. 문의 식품산업팀 064-728-3342.",
+      "officialUrl": "https://eminwon.jejusi.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?context=NTIS&homepage_pbs_yn=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=109229&subCheck=Y",
+      "summary": "농촌융복합산업 인증사업자와 창업자 등의 사업 자금 융자 신청을 받습니다.",
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "note": "세부 자격과 지원 요건은 관할 지자체 공고와 첨부 시행지침을 확인하세요.",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "80f6fcdb00c90d32091e569c76035b44c256e040b75e55afed3eab40be13ebd6"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "wonju-494468",
+      "slug": "2027-wonju-rural-convergence-loan",
+      "title": "원주시 2027년도 농촌융복합산업 자금(융자) 지원 사업지침 알림",
+      "region": [
+        "강원"
+      ],
+      "agency": "원주시 농업기술센터 농정과",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-13",
+      "publishedAt": "2026-10-26",
+      "eligibility": "농촌융복합산업 인증사업자 또는 농촌자원을 활용한 창업을 계획하거나 추진 중인 사람, 초기 창업자가 대상입니다.",
+      "support": "시설·리모델링·운영자금을 이차보전 방식으로 융자 지원합니다. 시설·리모델링 자금은 5년 거치 후 5년 균분 상환, 운영자금은 2년 거치 후 3년 상환 조건입니다.",
+      "application": "사업계획서와 신청서 등을 준비해 원주시 농업기술센터 농정과 농업행정팀에 방문 신청합니다. 문의 033-737-4112.",
+      "officialUrl": "https://www.wonju.go.kr/www/selectBbsNttView.do?bbsNo=1&key=211&nttNo=494468",
+      "summary": "농촌융복합산업 인증사업자와 창업자 등의 사업 자금 융자 신청을 받습니다.",
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "note": "세부 자격과 지원 요건은 관할 지자체 공고와 첨부 시행지침을 확인하세요.",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "93487273fc67abb08a9b87a76c97dc4fdf272b3bb999a94f16c8c41022e92835"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jincheon-1090685590",
+      "slug": "2027-jincheon-rural-convergence-loan",
+      "title": "진천군 2027년 농촌융복합산업 자금(융자) 지원사업 신청 알림",
+      "region": [
+        "충북"
+      ],
+      "agency": "진천군 농업기술센터 농업정책과",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-03",
+      "eligibility": "농촌융복합산업 인증사업자와 예비 창업자가 대상입니다.",
+      "support": "농촌융복합산업에 필요한 자금을 이차보전 방식으로 융자 지원합니다. 자금 용도별 지원조건은 첨부 사업지침을 확인하세요.",
+      "application": "11월 20일까지 신청합니다. 접수처와 제출서류는 진천군 농업기술센터 농업정책팀에 확인하세요. 문의 043-539-3506.",
+      "officialUrl": "https://www.jincheon.go.kr/jcact/sub.do?menukey=657&mode=view&no=1090685590",
+      "summary": "농촌융복합산업 인증사업자와 창업자 등의 사업 자금 융자 신청을 받습니다.",
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "note": "세부 자격과 지원 요건은 관할 지자체 공고와 첨부 시행지침을 확인하세요.",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "22f7b130a6b81550cf7bc8e8ec6f350113cccfbcf86db555c8b1909230b70530"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gwangju-80216",
+      "slug": "2027-gwangju-gyeonggi-rural-convergence-loan",
+      "title": "경기 광주시 2027년 농촌융복합산업 자금(융자) 지원사업 신청 안내",
+      "summary": "경기 광주시 농촌융복합산업 인증사업자와 창업자 등의 사업 자금 융자 신청을 받습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "광주시 농업정책과",
+      "applicationStart": "2026-10-21",
+      "applicationEnd": "2026-11-13",
+      "publishedAt": "2026-10-21",
+      "support": "시설과 리모델링 자금, 운영자금을 이차보전 방식으로 융자 지원합니다. 한도와 대출 조건은 공고문과 지침을 확인하세요.",
+      "eligibility": "농촌융복합산업 인증사업자나 농촌자원을 활용한 창업을 계획하거나 추진 중인 사람, 초기 창업자가 대상입니다.",
+      "application": "신청서와 사업계획서 등 증빙을 갖춰 관할 농업 담당 부서에 신청합니다. 신청 전 농협 대출 상담이 필요합니다. 광주시 농업정책과 031-760-2872.",
+      "note": "광주시 공고 제2026-2771호와 경기도 공식 등록 안내에서 접수 일정을 확인했습니다.",
+      "officialUrl": "https://www.gjcity.go.kr/portal/saeol/gosi/view.do?notAncmtMgtNo=80216&mId=0202010000",
+      "verificationUrl": "https://job.gg.go.kr/entSprt/detail.do?seq=5056",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "6c7b0fcca951fca711c97b534e168481d06cb6c2f966d64af12bf6a5446a40c0"
     }
   ]
 }
