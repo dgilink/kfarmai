@@ -1043,13 +1043,13 @@
       "publishedAt": "2026-11-04",
       "support": "총 8개소. 0.3ha 기준 총사업비는 6개소 5억 원, 평가 7~8순위 2개소 4억 5천만 원입니다. 보조 70%, 융자 20% 이내, 자부담 10% 기준이며 융자분은 자부담으로 대체할 수 있습니다.",
       "eligibility": "제천·보은·옥천·영동·괴산·단양에 정착하려는 청년농업인과 도내 청년농업인. 신청연도 기준 19~49세로, 0.3ha 이상 시설 규모와 부지 확보, 교육 수료 또는 시설원예 경력 등 요건을 확인하세요. 관외 거주자는 선정 후 교부결정 전 사업예정지로 주소를 이전해야 합니다.",
-      "application": "사업예정지 관할 시·군에 방문 신청합니다. 영동군 읍·면 접수는 12월 18일, 괴산군 안내는 12월 17일까지입니다. 접수처와 서류 제출 시한은 해당 시·군에 확인하세요. 충청북도 대표번호 043-220-2114.",
+      "application": "사업예정지 관할 시·군에 방문 신청합니다. 제천시 접수는 11월 16일 오후 6시, 영동군 읍·면 접수는 12월 18일, 괴산군 안내는 12월 17일까지입니다. 접수처와 서류 제출 시한은 해당 시·군에 확인하세요. 충청북도 대표번호 043-220-2114.",
       "note": "표의 12월 31일은 충청북도 공모계획의 접수기한입니다. 시·군이 더 일찍 마감할 수 있으므로 관할 공고를 확인하세요. 지원 규모와 비율은 도 공식 첨부 공모계획 기준입니다.",
       "officialUrl": "https://www.chungbuk.go.kr/www/selectBbsNttView.do?bbsNo=60&key=421&nttNo=443384&pageIndex=1&searchCnd=all&searchCtgry=&searchKrwd=",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127669",
-      "verifiedAt": "2026-11-07",
+      "verifiedAt": "2026-11-09",
       "reviewStatus": "approved",
-      "sourceHash": "f0c26d743b1efc002224345b1758284217dbe05d6d1af2e19ed504954734235b"
+      "sourceHash": "0c379f98435496c0a30f1f66259b36353062e6f355bffd595eb8f8ccd0b369ed"
     },
     {
       "sourceId": "local-government-notices",
@@ -1686,6 +1686,149 @@
       "verifiedAt": "2026-11-09",
       "reviewStatus": "approved",
       "sourceHash": "6c7b0fcca951fca711c97b534e168481d06cb6c2f966d64af12bf6a5446a40c0"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yecheon-32008",
+      "slug": "2027-yecheon-apple-orchard-modernization",
+      "title": "예천군 2027년 과수고품질시설현대화사업 신청 공고",
+      "summary": "예천군 사과 재배 경영체에 생산시설 개선과 재해예방시설 설치를 지원합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "예천군 농정과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-09",
+      "support": "품종갱신, 관수·관비, 관정 개발 등 생산시설과 방상팬, 미세살수, 야생동물 방지 시설을 지원합니다. 보조 50%, 융자 30%, 자부담 20%입니다.",
+      "eligibility": "예천군 사과 재배 경영체 중 원예산업발전계획의 생산유통통합조직에 참여하는 경영체가 대상입니다. 농업 외 종합소득, 의무자조금, 과원 조성 시점에 따른 제외 조건은 공고를 확인하세요.",
+      "application": "공휴일을 제외하고 대경사과원예농협 예천경제사업장(054-654-4157) 또는 예천군농산물산지유통센터(054-654-0980)에 신청합니다.",
+      "note": "예천군 공고 제2026-1401호 기준입니다. 출하약정서 등 구비서류는 공고를 확인하세요.",
+      "officialUrl": "https://www.ycg.kr/open.content/ko/administrative/news/announcement/?id=32008&d=agricultural",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "cc56be12e67142a3e64f3175b5f83f3593067a20678e59f862c8e9cbd0eeacc4"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yecheon-32004",
+      "slug": "2027-yecheon-organic-farming-materials",
+      "title": "예천군 2027년 유기농업자재 지원사업 공고",
+      "summary": "녹비작물 종자와 유기농업자재 구입비, 토양검정 및 컨설팅 비용을 지원합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "예천군 농정과 친환경팀",
+      "applicationStart": "2026-11-01",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-04",
+      "support": "녹비작물 종자, 공시 유기농업자재와 원료 구입비, 토양검정 및 시비처방 컨설팅을 지원합니다. 항목별 지원 한도는 첨부 시행지침을 확인하세요.",
+      "eligibility": "농업경영정보를 등록한 농업인·농업법인 등으로, 녹비작물 재배 예정 농지나 농산물 재배 농지 등 품목별 요건을 충족해야 합니다.",
+      "application": "농지 소재지 읍·면 행정복지센터 산업팀에 신청합니다. 문의 054-650-6995.",
+      "note": "게시문과 첨부 공고문의 마감 요일 표기가 다릅니다. 접수 기간은 같은 공고번호의 첨부 공고문에 명시된 11월 1일~12월 31일을 적용했습니다.",
+      "officialUrl": "https://www.ycg.kr/open.content/ko/administrative/news/announcement/?id=32004&d=agricultural",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "942f252e5070407da9395cbea67bd7fb167da45545205f93022a4470d03f6c81"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "brcn-57564",
+      "slug": "2027-boryeong-organic-farming-materials",
+      "title": "보령시 2027년 유기농업자재 지원사업 공고",
+      "summary": "보령시 농업경영체에 녹비종자, 유기농업자재와 토양검정 비용 등을 지원합니다.",
+      "region": [
+        "충남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "보령시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-01",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-03",
+      "support": "녹비종자, 유기농업자재·원료 구입비와 토양검정·컨설팅 비용을 지원합니다. 유기농업자재 총 구입비 기준은 유기인증 200만 원/ha, 무농약인증 150만 원/ha, 관행농업 100만 원/ha입니다.",
+      "eligibility": "농업경영체를 등록한 농업인·농업법인이 대상입니다. 인증 농지를 우선하며, 같은 인증 유형 안에서는 청년농 농지를 우선합니다.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 신청합니다. 농지가 여러 읍·면·동에 걸치면 경지 면적이 가장 넓은 곳에 신청합니다.",
+      "note": "접수 일정은 보령시 농업기술센터 공고 제2026-442호 게시문과 첨부 안내에서 대조했습니다.",
+      "officialUrl": "https://eminwon.brcn.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=57564&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "452153ba7099262363ae78de3e32521b05de6d011ad349f86fe95e5cd0911860"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yecheon-31932",
+      "slug": "2026-yecheon-smartfarm-lease",
+      "title": "예천군 2026년 지역특화 임대형 스마트팜 입주자 모집",
+      "summary": "예천군 지보면 임대 온실에 입주할 청년농업인 8팀을 모집합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "예천군 농정과 스마트농업팀",
+      "applicationStart": "2026-11-12",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-10-26",
+      "support": "3인 팀 8개를 선발해 팀당 약 5,006㎡ 온실을 기본 3년간 임대합니다. 오이·파프리카·멜론 등 범용 작목 또는 토마토를 재배합니다.",
+      "eligibility": "대한민국 국적의 만 18세 이상 40세 미만 청년을 대상으로 같은 작목의 3인 팀을 모집합니다. 스마트팜 보육사업 수료·예정생과 독립경영 예정자 등에 대한 순위와 제외 조건은 공고문을 확인하세요.",
+      "application": "11월 20일 오후 6시까지 예천군 농정과 스마트농업팀에 방문 제출하거나 등기우편으로 접수합니다. 문의 054-650-6974.",
+      "note": "예천군 공고 제2026-1343호 게시문과 첨부 공고문을 확인했습니다.",
+      "officialUrl": "https://www.ycg.kr/open.content/ko/administrative/news/announcement/?id=31932&d=gamcheon",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "d59906cd874a2b9faa3e0c744a2364ac56cf77922c66532f1a20707010dd5576"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jecheon-405863",
+      "slug": "2027-jecheon-young-farmer-smartfarm-startup",
+      "title": "제천시 2027년 청년농업인 스마트팜 창업 지원사업 대상자 모집 공고",
+      "summary": "충청북도 공모에 참여하는 제천시 신청자의 접수 기간과 제출처를 안내합니다.",
+      "region": [
+        "충북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "제천시 농업정책과 스마트농업팀",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-16",
+      "publishedAt": "2026-11-03",
+      "support": "시설채소·화훼·과수 스마트팜 신축을 지원합니다. 0.3ha 기준 충북 전체 8개소에 총사업비 5억 원 또는 4억 5천만 원을 적용하며, 보조 70%, 융자 20% 이내, 자부담 10% 기준입니다.",
+      "eligibility": "제천에 정착을 희망하는 청년농업인과 도내 청년농업인입니다. 연령, 시설 규모, 경영 능력, 관외 거주자 이전 조건 등은 도 시행지침을 확인하세요.",
+      "application": "11월 16일 오후 6시까지 제천시 바이오첨단농업복합단지 지원센터 1층 농업정책과 스마트농업팀에 방문 신청합니다. 문의 043-641-6793.",
+      "note": "충북 전체 사업량과 제천시 자체 접수기한을 구분했습니다.",
+      "officialUrl": "https://www.jecheon.go.kr/www/selectBbsNttView.do?bbsNo=18&key=5233&nttNo=405863",
+      "verifiedAt": "2026-11-09",
+      "reviewStatus": "approved",
+      "sourceHash": "9f06cd1cd2d922aca2f6001b75c620f3549ce53ea2df984666b8796d3a44b7ae"
     }
   ]
 }

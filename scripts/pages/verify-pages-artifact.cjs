@@ -195,8 +195,11 @@ if (exists('data/policy-support-notices.json')) {
     const isOfficial = raw => {
       try {
         const url = new URL(raw);
+        const isYecheonNotice = url.host === 'www.ycg.kr' &&
+          url.pathname === '/open.content/ko/administrative/news/announcement/' &&
+          /^[0-9]+$/.test(url.searchParams.get('id') || '');
         return url.protocol === 'https:' && !url.username && !url.password &&
-          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname));
+          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice);
       } catch { return false; }
     };
     if (publication.schemaVersion !== 1 || !Array.isArray(items) || items.some(item => {

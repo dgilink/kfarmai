@@ -16,8 +16,11 @@ const digest = item => crypto.createHash('sha256').update(JSON.stringify(Object.
 ))).digest('hex');
 const validOfficial = value => {
   const url = new URL(value);
+  const isYecheonNotice = url.host === 'www.ycg.kr' &&
+    url.pathname === '/open.content/ko/administrative/news/announcement/' &&
+    /^[0-9]+$/.test(url.searchParams.get('id') || '');
   return url.protocol === 'https:' && !url.username && !url.password &&
-    (/\.(?:go|gov)\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname));
+    (/\.(?:go|gov)\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice);
 };
 if (publication.schemaVersion !== 1 || !Array.isArray(items) || !items.length) throw Error('No reviewed policy notices');
 const slugs = new Set();
