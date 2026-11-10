@@ -2008,6 +2008,152 @@
       "verifiedAt": "2026-11-10",
       "reviewStatus": "approved",
       "sourceHash": "c2dd121ea826b94cebdb84709bd3ce4a1fb6f4d866e4403fd1197eec50119917"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127817",
+      "slug": "2026-gunsan-women-farmers-voucher-final",
+      "title": "군산시 2026년 여성농업인 생생카드 지원사업 신청 최종 공고",
+      "summary": "군산시 여성농어업인에게 문화·복지활동에 사용할 생생카드를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "군산시 농업정책과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-25",
+      "publishedAt": "2026-11-10",
+      "support": "1인당 연간 13만 원을 지원합니다.",
+      "eligibility": "군산시 농어촌 지역에 거주하고 실제 영농에 종사하는 여성 농어업인으로, 1952년 1월 1일부터 2006년 12월 31일 사이 출생한 사람입니다.",
+      "application": "주소지 읍·면·동 행정복지센터에 신청합니다. 문의 063-454-2836.",
+      "note": "완주군 경제센터가 제공한 군산시 최종 공고 안내와 기업마당 등록 일정이 일치합니다.",
+      "officialUrl": "https://www.wanju.go.kr/economy/board/post/view.do?boardUid=ff8080819a7af892019a8f5be3c50121&menuUid=ff8080819a7af892019a7b02f8200027&postUid=4028a602a177089101a1c423d5b814cd",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127817",
+      "verifiedAt": "2026-11-10",
+      "reviewStatus": "approved",
+      "sourceHash": "71ca1a63e297a7553b179279b2ef0a33a136f07703c9c21f2f3ad7517e4aa4d0"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127783",
+      "slug": "2027-hapcheon-organic-farming-materials",
+      "title": "합천군 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "합천군 농업인·농업법인에 유기농업자재와 녹비작물 종자, 토양관리 컨설팅을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "합천군 농업기술센터 농업지도과",
+      "applicationStart": "2026-11-02",
+      "applicationEnd": "2026-12-28",
+      "publishedAt": "2026-11-09",
+      "support": "녹비작물 종자 8종과 유기농업자재·자재원료, 토양검정·시비처방 컨설팅을 지원합니다. 천적은 시설재배에 한해 지원합니다.",
+      "eligibility": "합천군 농지에서 사업에 참여할 농업경영체 등록 농업인·농업법인으로, 품목별 신청 요건을 충족해야 합니다.",
+      "application": "농지 소재지 관할 읍·면사무소에서 방문 신청합니다. 문의 055-930-3979.",
+      "note": "기업마당 공고에 합천군 공고문과 세부 지침이 첨부되어 있습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?cat=&condition=&condition1=&cpage=&hashCode=10&keyword=&orderGb=&pblancId=PBLN_000000000127783&preKeywords=&rows=15&rowsSel=&schAreaDetailCodes=&schEndAt=N&schJrsdCodeTy=&schPblancDiv=&schWntyAt=&sort=",
+      "verificationUrl": "https://bigdata.customs.go.kr/web/anaySrvc/selectSpptBusi.do?spptBusiId=PBLN_000000000127783",
+      "verifiedAt": "2026-11-10",
+      "reviewStatus": "approved",
+      "sourceHash": "65767f8ba03abd85b5308a9917105ff3108778462d19e79b89fcbf54fdde2d09"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127596",
+      "slug": "2027-iksan-rural-convergence-loan",
+      "title": "익산시 2027년 농촌융복합산업 자금(융자) 지원사업 공고",
+      "summary": "익산시 농촌융복합산업 인증경영체와 창업·사업 추진자에게 시설·운영자금 융자를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "익산시 농촌활력과",
+      "applicationStart": "2026-10-29",
+      "applicationEnd": "2026-11-25",
+      "publishedAt": "2026-10-30",
+      "support": "시설 설치, 리모델링, 운영에 필요한 자금을 융자하고 이자의 일부를 지원합니다.",
+      "eligibility": "농촌융복합산업 인증경영체 또는 농촌의 유·무형 자원을 활용한 농촌융복합산업을 창업할 계획이 있거나 추진 중인 자.",
+      "application": "익산시 함열읍 함열중앙로 83의 3층 농촌활력과에 신청서, 사업계획서와 증빙을 제출합니다. 문의 063-859-7214.",
+      "note": "익산시 공고 제2026-2937호입니다. 게시일은 공식 등록일이며, 접수기간과 제출처를 완주군 경제센터 게시본과 대조했습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127596",
+      "verificationUrl": "https://www.wanju.go.kr/economy/board/post/view.do?boardUid=ff8080819a7af892019a8f5be3c50121&menuUid=ff8080819a7af892019a7b02d50d0023&page=1&postUid=4028a602a177089101a18ba98dde5007",
+      "verifiedAt": "2026-11-10",
+      "reviewStatus": "approved",
+      "sourceHash": "c167a04ea62c3d3f8be4d27121c0d9b43e630eb0d87d908c546672d13a344e99"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "paju-20261110-fertilizer-extra",
+      "slug": "2027-paju-organic-fertilizer-extra",
+      "title": "파주시 2027년 유기질비료 지원사업 추가신청 안내",
+      "summary": "등록 농업경영체의 농산물 생산용 유기질비료와 부숙유기질비료 구입비를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "파주시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-10",
+      "support": "유기질비료와 부숙유기질비료에 20kg 한 포당 1,300~1,600원을 지원합니다. 부숙유기질비료는 1,000㎡당 2,000kg까지 신청할 수 있습니다.",
+      "eligibility": "농업경영정보를 등록하고 유기질비료를 농산물 생산에 사용하는 농업경영체.",
+      "application": "농지 소재지 읍·면 산업팀에 방문 신청합니다. 동 지역은 파주시 농업기술센터 농업정책과에서 접수합니다.",
+      "note": "파주시 새소식에서 공고 제목으로 첨부 신청서와 예산 범위 내 추가 지원 조건을 확인할 수 있습니다.",
+      "officialUrl": "https://www.paju.go.kr/m/board/BD_board.list.do?bbsCd=2001",
+      "verifiedAt": "2026-11-10",
+      "reviewStatus": "approved",
+      "sourceHash": "3307f4993a9b3441b2e9e7abe6001c92b6614161b15510afed7f0f6687a96387"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "paju-20261110-rice-seedling-senior",
+      "slug": "2027-paju-senior-farmer-rice-seedlings",
+      "title": "파주시 2027년 고령농업인 모판(육묘) 지원사업 신청 안내",
+      "summary": "파주시 고령 벼 재배 농가에 모판 구입비를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "파주시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-10",
+      "support": "모판 한 상자당 800원을 시비로 지원합니다. 지원 수량은 등록된 관내 벼 재배면적과 예산을 기준으로 정합니다.",
+      "eligibility": "파주시에 농지를 소유하고 농업경영체에 등록했으며 벼 재배면적이 5,000평(16,530㎡) 이하인 농업인으로, 공고상 1957년 12월 31일 이전 출생 요건을 충족해야 합니다.",
+      "application": "농지 소재지 읍·면 행정복지센터에 신청합니다. 동 지역은 농업기술센터 농업정책과에서 접수합니다. 공급농가와 배송방법·일정을 협의해 신청서에 적어야 합니다.",
+      "note": "파주시 새소식에서 해당 공고의 면적별 지원 기준과 접수처를 확인할 수 있습니다.",
+      "officialUrl": "https://tour.paju.go.kr/user/board/BD_board.list.do?bbsCd=2001",
+      "verifiedAt": "2026-11-10",
+      "reviewStatus": "approved",
+      "sourceHash": "aba0b5fe26ab8996eeaea89df94e1962a16d5c4db5a17d4b277d4c3140c40124"
     }
   ]
 }

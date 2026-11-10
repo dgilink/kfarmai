@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-jejusi-organic-fertilizer-extra');
-  assert.equal(listedSlugs[1], '2027-yecheon-apple-orchard-modernization');
+  assert.equal(listedSlugs[0], '2026-gunsan-women-farmers-voucher-final');
+  assert.equal(listedSlugs[1], '2027-jejusi-organic-fertilizer-extra');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,7 +37,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-jejusi-organic-fertilizer-extra.html');
+  assert.equal(cards[0].href, '/policy/2026-gunsan-women-farmers-voucher-final.html');
   assert.equal(cards[0].dataset.state, 'upcoming');
   assert.equal(cards[1].dataset.state, 'upcoming');
   assert.equal(cards[2].dataset.state, 'upcoming');
@@ -45,7 +45,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 69);
+  assert.equal(publication.items.length, 74);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -113,11 +113,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '69건');
+  assert.equal(fields.noticeCount.textContent, '74건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '38건');
+  assert.equal(fields.noticeCount.textContent, '40건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 18);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 27);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 30);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '4건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -129,7 +129,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '69건');
+  assert.equal(fields.noticeCount.textContent, '74건');
 });
 
 // Static output must cover the rollover even when client JavaScript is unavailable.
