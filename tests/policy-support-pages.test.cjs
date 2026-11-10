@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-yecheon-apple-orchard-modernization');
-  assert.equal(listedSlugs[1], '2026-gochang-women-farmers-voucher-round-6');
+  assert.equal(listedSlugs[0], '2027-jejusi-organic-fertilizer-extra');
+  assert.equal(listedSlugs[1], '2027-yecheon-apple-orchard-modernization');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,15 +37,15 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-yecheon-apple-orchard-modernization.html');
+  assert.equal(cards[0].href, '/policy/2027-jejusi-organic-fertilizer-extra.html');
   assert.equal(cards[0].dataset.state, 'upcoming');
-  assert.equal(cards[1].dataset.state, 'unknown');
+  assert.equal(cards[1].dataset.state, 'upcoming');
   assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 63);
+  assert.equal(publication.items.length, 69);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -55,7 +55,7 @@ test('only reviewed official notices have one discoverable static detail each', 
     ))).digest('hex');
     assert.equal(item.reviewStatus, 'approved');
     assert.equal(item.sourceHash, digest);
-    assert.match(item.officialUrl, /^https:\/\/(?:[^/]+\.(?:go|gov)\.kr\/|www\.ycg\.kr\/open\.content\/ko\/administrative\/news\/announcement\/\?id=\d+(?:&|$))/);
+    assert.match(item.officialUrl, /^https:\/\/(?:[^/]+\.(?:go|gov)\.kr\/|www\.ycg\.kr\/open\.content\/ko\/administrative\/news\/announcement\/\?id=\d+(?:&|$)|www\.jvada\.or\.kr\/bbs\/board\.php\?bo_id=notice&wr_id=1213$)/);
     assert.ok(index.includes(`/policy/${item.slug}.html`));
     assert.ok(html.includes(`<link rel="canonical" href="${url}">`));
     assert.ok(html.includes(item.title));
@@ -113,11 +113,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return Date.parse('2026-11-04T00:00:00Z'); }
   }});
-  assert.equal(fields.noticeCount.textContent, '63건');
+  assert.equal(fields.noticeCount.textContent, '69건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '37건');
+  assert.equal(fields.noticeCount.textContent, '38건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 18);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 22);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 27);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '4건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -129,13 +129,15 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '63건');
+  assert.equal(fields.noticeCount.textContent, '69건');
 });
 
 // Static output must cover the rollover even when client JavaScript is unavailable.
 test('expired Gochang notice is retained as closed and Dangjin separates application from publication', () => {
-  const closed = index.split('href="/policy/2027-gochang-field-crop-equipment.html"')[1].split('</article>')[0];
-  assert.match(closed, /class="policy-live-status">마감<\/span>/);
+  for (const slug of ['2027-gochang-field-crop-equipment', '2026-uljin-field-crop-demo-round-9']) {
+    const closed = index.split(`href="/policy/${slug}.html"`)[1].split('</article>')[0];
+    assert.match(closed, /class="policy-live-status">마감<\/span>/);
+  }
   const item = publication.items.find(item => item.slug === '2026-dangjin-smart-horticulture-lease-6th');
   assert.equal(item.applicationStart, '2026-11-09');
   assert.equal(item.applicationEnd, '2026-11-12');
@@ -201,6 +203,7 @@ test('date exception preserves approval, official URL and hash checks and requir
     {reviewStatus:'pending'}, {officialUrl:'https://example.com/notice'},
     {officialUrl:'https://www.ycg.kr/other/?id=32008'},
     {officialUrl:'https://sub.ycg.kr/open.content/ko/administrative/news/announcement/?id=32008'},
+    {officialUrl:'https://www.jvada.or.kr/bbs/board.php?bo_id=notice&wr_id=1214'},
     {dateCheckReason:''}, {applicationDateStatus:undefined}
   ]) {
     const item=rehash({...candidate,...overrides});

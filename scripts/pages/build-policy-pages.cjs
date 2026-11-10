@@ -19,8 +19,10 @@ const validOfficial = value => {
   const isYecheonNotice = url.host === 'www.ycg.kr' &&
     url.pathname === '/open.content/ko/administrative/news/announcement/' &&
     /^[0-9]+$/.test(url.searchParams.get('id') || '');
+  const isJeonbukAgriNotice = url.host === 'www.jvada.or.kr' &&
+    url.pathname === '/bbs/board.php' && url.search === '?bo_id=notice&wr_id=1213';
   return url.protocol === 'https:' && !url.username && !url.password &&
-    (/\.(?:go|gov)\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice);
+    (/\.(?:go|gov)\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice || isJeonbukAgriNotice);
 };
 if (publication.schemaVersion !== 1 || !Array.isArray(items) || !items.length) throw Error('No reviewed policy notices');
 const slugs = new Set();

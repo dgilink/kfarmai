@@ -198,8 +198,10 @@ if (exists('data/policy-support-notices.json')) {
         const isYecheonNotice = url.host === 'www.ycg.kr' &&
           url.pathname === '/open.content/ko/administrative/news/announcement/' &&
           /^[0-9]+$/.test(url.searchParams.get('id') || '');
+        const isJeonbukAgriNotice = url.host === 'www.jvada.or.kr' &&
+          url.pathname === '/bbs/board.php' && url.search === '?bo_id=notice&wr_id=1213';
         return url.protocol === 'https:' && !url.username && !url.password &&
-          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice);
+          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice || isJeonbukAgriNotice);
       } catch { return false; }
     };
     if (publication.schemaVersion !== 1 || !Array.isArray(items) || items.some(item => {
