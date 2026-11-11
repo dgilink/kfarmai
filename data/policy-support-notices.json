@@ -2301,6 +2301,34 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127781",
       "reviewStatus": "approved",
       "sourceHash": "31fec8822e1c9b32ee261a2f9afe9d6bfcddb4af8d9fe9cef74f12a37105b709"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "namyangju-89660",
+      "slug": "2026-namyangju-agricultural-residue-shredding-extra",
+      "title": "남양주시 2026년 하반기 영농부산물 안전처리 지원사업 추가 신청 공고",
+      "summary": "콩대·고춧대·과수 가지 등 영농부산물 파쇄를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "남양주시 농업기술센터 농업기술과",
+      "applicationStart": "2026-10-27",
+      "applicationEnd": "2026-11-11",
+      "publishedAt": "2026-10-27",
+      "verifiedAt": "2026-11-11",
+      "support": "콩대, 고춧대, 과수 가지 등 영농부산물의 파쇄 처리를 지원합니다. 사업량은 76농가이며 선착순으로 접수합니다.",
+      "eligibility": "남양주시 관내 농업인으로, 신청일부터 파쇄지원 진행 시점까지 농업경영체 자격을 유지해야 합니다. 산림인접지 100m 이내 농지를 임차해 경작하는 경우 사실관계 확인을 거쳐 지원할 수 있습니다.",
+      "application": "농지 소재지 행정복지센터 또는 읍·면·동사무소 산업팀에 방문 신청합니다. 문의 농업기술과 친환경농업팀 031-590-8485.",
+      "note": "남양주시 농업기술센터 농업기술과 공고 제2026-22호입니다. 선착순 사업으로 신청 전 잔여 물량을 확인하세요.",
+      "officialUrl": "https://www.nyj.go.kr/www/selectEminwonWebView.do?key=2492&pk=89660",
+      "reviewStatus": "approved",
+      "sourceHash": "a9ded25b5cd30f6279455b4ec1b81d67ef6da3538e09fc8dbdc43b92871ba0eb"
     }
   ]
 }
