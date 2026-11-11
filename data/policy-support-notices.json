@@ -2329,6 +2329,96 @@
       "officialUrl": "https://www.nyj.go.kr/www/selectEminwonWebView.do?key=2492&pk=89660",
       "reviewStatus": "approved",
       "sourceHash": "a9ded25b5cd30f6279455b4ec1b81d67ef6da3538e09fc8dbdc43b92871ba0eb"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jindo-26396",
+      "slug": "2027-jindo-farm-machinery-support",
+      "title": "진도군 2027년 농업지원과 농기계 분야 지원사업 시행지침 및 신청 안내",
+      "summary": "소형농기계, 작업대, 영농안전장비, 노후 농기계 조기폐차 등 8개 사업을 신청받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "진도군 농업기술센터 농업지원과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-09",
+      "verifiedAt": "2026-11-11",
+      "support": "농산물 생산비 절감, 다목적 소형농기계, 이동식 다용도 작업대, 영농안전장비, 여성친화형 소형 전기운반차, 개량물꼬, 농업용 유류저장탱크와 노후 농기계 조기폐차를 지원합니다.",
+      "eligibility": "신청일 기준 진도군에 1년 이상 거주하고 농업경영정보를 등록한 농업인입니다. 세부 사업별 추가 자격은 시행지침을 확인하세요.",
+      "application": "주소지 읍·면사무소에 신청 서류를 제출합니다.",
+      "note": "진도군 공고 제2026-974호입니다. 세부 사업별 신청 서류와 지원 기준은 첨부 시행지침에 있습니다.",
+      "officialUrl": "https://www.jindo.go.kr/home/gosi/general.cs?act=view&notAncmtMgtNo=26396",
+      "verificationUrl": "https://jindo.go.kr/atc/board/B0146.cs?act=read&articleId=198566",
+      "reviewStatus": "approved",
+      "sourceHash": "4c69b167056fd9415a3b5fc83f12c6b0c842fa93c9d36c93602e074babe1aee5"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jindo-26397",
+      "slug": "2027-jindo-horticulture-specialty-crop-support",
+      "title": "진도군 2027년도 원예특작분야 농업 보조사업 시행지침 및 신청 안내",
+      "summary": "고추 비가림 재배시설, 소형 저온저장고 등 원예·특작 보조사업을 신청받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "진도군 농업기술센터 농업지원과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-09",
+      "verifiedAt": "2026-11-11",
+      "support": "고추 비가림 재배시설, 중소농 원예특용작물 생산기반, 농산물 소형 저온저장고 등 시행지침에 안내된 원예·특작 분야 사업을 지원합니다. 지원 범위와 자부담은 세부 사업마다 다릅니다.",
+      "eligibility": "공고일 이전부터 진도군에 거주하고 농업경영정보를 등록한 농업인이 기본 대상입니다. 사업 부지 소유·임차 요건과 세부 사업별 자격은 첨부 지침을 확인하세요.",
+      "application": "사업 예정지 관할 읍·면사무소에 사업 신청서와 농업경영체 확인서 등 해당 사업 서류를 제출합니다.",
+      "note": "진도군 공고 제2026-975호입니다. 신청 마감은 12월 4일이며, 공고에 함께 적힌 12월 11일과 18일은 읍·면의 결과 제출 일정입니다.",
+      "officialUrl": "https://www.jindo.go.kr/home/gosi/general.cs?act=view&notAncmtMgtNo=26397",
+      "verificationUrl": "https://jindo.go.kr/atc/board/B0146.cs?act=read&articleId=198567",
+      "reviewStatus": "approved",
+      "sourceHash": "f338f86eb12f528305d77394f1fc391d6f2d51f53eb7e942013db69e9f30cb08"
+    },
+    {
+      "sourceId": "mafra-official-notices",
+      "externalId": "mafra-582218",
+      "slug": "2027-mafra-farm-business-partnership-project",
+      "title": "농림축산식품부 2027년 모두의 상생 프로젝트 공모 안내",
+      "summary": "농업과 기업의 국산 농산물 활용 공동사업을 지원합니다. 참여팀은 12월 8일 오후 6시까지 대표 시·도에 신청합니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인",
+        "농식품기업",
+        "지방정부"
+      ],
+      "categories": [
+        "유통·가공",
+        "경영·판로"
+      ],
+      "agency": "농림축산식품부 푸드테크정책과",
+      "applicationStart": "2026-11-13",
+      "applicationEnd": "2026-12-08",
+      "publishedAt": "2026-11-10",
+      "verifiedAt": "2026-11-11",
+      "support": "시험재배, 원료 검증, 제품·메뉴 개발, 시험생산과 판로 개척 등을 지원합니다. 프로젝트당 연간 총사업비는 최대 5억 원이며 국비 40%, 지방비 40%, 자부담 20%입니다. 최대 3년 계획을 신청할 수 있고 연차 평가를 거쳐 계속 지원 여부를 결정합니다.",
+      "eligibility": "대표 시·도 1곳과 주관사업자 1곳이 필수인 컨소시엄을 구성합니다. 사업 수행에 필요한 기업, 생산자단체, 유통·물류조직, 연구기관 등이 참여할 수 있습니다.",
+      "application": "대표 시·도와 사전 협의한 뒤 12월 8일 오후 6시까지 해당 시·도에 신청서와 사업계획서를 제출합니다. 시·도 추천을 거친 사업의 aT 최종 접수는 12월 15일 오후 6시까지입니다.",
+      "note": "11월 10일 농식품부 공식 사전 안내 기준입니다. 신청 서식과 세부 조건은 농식품부 공고문에서 확인하세요.",
+      "officialUrl": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjIxOCUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+      "reviewStatus": "approved",
+      "sourceHash": "b8d13f9b20052d38009723af8d3c98a7ef8642e7e1afe7e36977318dec75a952"
     }
   ]
 }
