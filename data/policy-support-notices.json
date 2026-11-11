@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-10",
+  "updatedAt": "2026-11-11",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -2121,11 +2121,11 @@
       "support": "유기질비료와 부숙유기질비료에 20kg 한 포당 1,300~1,600원을 지원합니다. 부숙유기질비료는 1,000㎡당 2,000kg까지 신청할 수 있습니다.",
       "eligibility": "농업경영정보를 등록하고 유기질비료를 농산물 생산에 사용하는 농업경영체.",
       "application": "농지 소재지 읍·면 산업팀에 방문 신청합니다. 동 지역은 파주시 농업기술센터 농업정책과에서 접수합니다.",
-      "note": "파주시 새소식에서 공고 제목으로 첨부 신청서와 예산 범위 내 추가 지원 조건을 확인할 수 있습니다.",
-      "officialUrl": "https://www.paju.go.kr/m/board/BD_board.list.do?bbsCd=2001",
-      "verifiedAt": "2026-11-10",
+      "note": "파주시 개별 공고 원문에서 공고 제목으로 첨부 신청서와 예산 범위 내 추가 지원 조건을 확인할 수 있습니다.",
+      "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261110101927592",
+      "verifiedAt": "2026-11-11",
       "reviewStatus": "approved",
-      "sourceHash": "3307f4993a9b3441b2e9e7abe6001c92b6614161b15510afed7f0f6687a96387"
+      "sourceHash": "9d5b5a20db9538b1a447e02e4c0bc8e316e327e956bbc8a969af2ff7feecbb87"
     },
     {
       "sourceId": "local-government-notices",
@@ -2146,14 +2146,161 @@
       "applicationStart": "2026-11-10",
       "applicationEnd": "2026-12-04",
       "publishedAt": "2026-11-10",
-      "support": "모판 한 상자당 800원을 시비로 지원합니다. 지원 수량은 등록된 관내 벼 재배면적과 예산을 기준으로 정합니다.",
+      "support": "모판 한 상자당 800원을 시비로 지원합니다. 등록된 관내 벼 재배면적 10평(33㎡)당 한 상자가 기준이며 예산 범위에서 배정합니다.",
       "eligibility": "파주시에 농지를 소유하고 농업경영체에 등록했으며 벼 재배면적이 5,000평(16,530㎡) 이하인 농업인으로, 공고상 1957년 12월 31일 이전 출생 요건을 충족해야 합니다.",
-      "application": "농지 소재지 읍·면 행정복지센터에 신청합니다. 동 지역은 농업기술센터 농업정책과에서 접수합니다. 공급농가와 배송방법·일정을 협의해 신청서에 적어야 합니다.",
-      "note": "파주시 새소식에서 해당 공고의 면적별 지원 기준과 접수처를 확인할 수 있습니다.",
-      "officialUrl": "https://tour.paju.go.kr/user/board/BD_board.list.do?bbsCd=2001",
-      "verifiedAt": "2026-11-10",
+      "application": "농지 소재지 읍·면 행정복지센터에 신청합니다. 동 지역은 농업기술센터 농업정책과에서 접수합니다. 공급농가와 배송방법·일정을 협의해 신청서에 적어야 합니다. 문의 031-940-4603.",
+      "note": "파주시 개별 공고 원문에서 해당 공고의 면적별 지원 기준과 접수처를 확인할 수 있습니다.",
+      "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261110102611856",
+      "verifiedAt": "2026-11-11",
       "reviewStatus": "approved",
-      "sourceHash": "aba0b5fe26ab8996eeaea89df94e1962a16d5c4db5a17d4b277d4c3140c40124"
+      "sourceHash": "c0f097482cc00921c63577c76208c8e45ee3f09bdae942d7bae0846a5b67c031"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "paju-20261110103500435",
+      "slug": "2027-paju-calcium-sulfur-fertilizer",
+      "title": "파주시 2027년 칼슘유황비료 지원사업 신청 안내",
+      "summary": "파주시 밭작물·과수 재배 농가의 칼슘유황비료 구입비를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "파주시 농업정책과 농식품지원팀",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-10",
+      "support": "칼슘·유황을 함유한 토양개량제 구입비의 50%를 지원합니다. 등록된 관내 밭작물·과수 재배면적 100㎡당 20kg 한 포가 기준입니다.",
+      "eligibility": "파주시 농지를 농업경영체에 등록하고, 등록된 관내 밭작물·과수 재배면적이 1,000㎡ 이상인 농가.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 신청합니다. 동 지역은 농업기술센터 농업정책과에서 접수합니다.",
+      "note": "2027년 공급가격과 잔여예산에 따라 배정 수량이 달라질 수 있습니다.",
+      "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261110103500435",
+      "verifiedAt": "2026-11-11",
+      "reviewStatus": "approved",
+      "sourceHash": "46196eada2ff707b968f6945a9060fd59acd48b511ef2d98742485e0a096ff0c"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "paju-20261110103307622",
+      "slug": "2027-paju-eco-rice-snail-farming",
+      "title": "파주시 2027년 친환경 왕우렁이농법 지원사업 신청 안내",
+      "summary": "파주시 벼 재배 농가에 친환경 농법용 왕우렁이 종패 구입비를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "파주시 농업정책과 농식품지원팀",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-10",
+      "support": "왕우렁이 종패 구입비의 50%를 지원합니다. 기준단가는 kg당 6,000원이며 친환경인증면적 ha당 50kg이 지원 기준입니다.",
+      "eligibility": "농업경영체에 등록된 파주시 벼 재배 농가와 등록된 벼 재배 필지. 친환경농산물 인증 농가에 우선 배정한 뒤 남은 예산에서 비인증농가를 지원합니다.",
+      "application": "농지 소재지 읍·면 행정복지센터에 신청합니다. 동 지역은 농업기술센터 1층 농업정책과에서 접수합니다. 문의 031-940-4603.",
+      "note": "신분증, 농업경영체등록증 및 친환경인증서류를 준비하며 예산 범위 내에서 지원합니다.",
+      "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261110103307622",
+      "verifiedAt": "2026-11-11",
+      "reviewStatus": "approved",
+      "sourceHash": "97cc4483de032bd9b84ff04588e2649d4fcff20c96b89fcfc3e8004fa5c32eae"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "namyangju-89912",
+      "slug": "2027-namyangju-rural-convergence-loan",
+      "title": "남양주시 2027년도 농촌융복합산업 자금 융자지원 사업 신청알림",
+      "summary": "농촌융복합산업 인증사업자의 시설 설치·리모델링·운영에 필요한 자금 융자를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "남양주시 농업기술센터 농생명정책과",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-16",
+      "publishedAt": "2026-11-06",
+      "support": "시설·리모델링·운영자금을 융자하며 대출이자의 일부를 지원합니다. 시설자금은 토지와 농기계를 제외한 시설 설치·제조가공 설비 구입 등에 사용할 수 있습니다.",
+      "eligibility": "농촌융복합산업 육성 및 지원에 관한 법률 제8조에 따른 농촌융복합산업 인증사업자.",
+      "application": "11월 16일 오후 6시까지 담당자 이메일 ihy333@korea.kr로 신청서와 사업계획서를 제출합니다.",
+      "note": "공고기간과 접수 시작일을 구분했습니다. 실제 대출 실행은 담보가치·신용상태 등에 따라 취급기관이 결정합니다.",
+      "officialUrl": "https://www.nyj.go.kr/www/selectEminwonWebView.do?key=2493&pk=89912",
+      "verifiedAt": "2026-11-11",
+      "reviewStatus": "approved",
+      "sourceHash": "ec38329cc7cf5bf762bcb7ff74e2f45a543885c5caf97e78d03ceb31ee927dbd"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gunsan-73947",
+      "slug": "2027-gunsan-field-crop-equipment",
+      "title": "군산시 2027년 밭식량작물(논타작물) 시설장비 지원사업 신청 공고",
+      "summary": "논에 벼 이외 식량작물이나 조사료를 재배하는 법인·농협의 생산·유통 장비를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업법인"
+      ],
+      "categories": [
+        "농기계",
+        "시설·임대"
+      ],
+      "agency": "군산시 농업기술센터 농업정책과",
+      "applicationStart": "2026-10-28",
+      "applicationEnd": "2026-11-11",
+      "publishedAt": "2026-10-28",
+      "support": "신청 단일품목의 생산·유통에 필요한 시설장비를 개소당 5억 원 이내에서 지원합니다. 도비 42%, 시비 8%, 자부담 50% 기준입니다.",
+      "eligibility": "농협·영농조합법인·농업회사법인으로, 2027년 법인별 단일품목 재배면적 10ha 이상 등 지침 요건을 충족하는 곳. 논에 재배하는 하계 두류·서류·기타곡류·조사료가 대상입니다.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 방문 신청합니다. 문의 063-454-2842 또는 읍·면·동 산업담당.",
+      "note": "군산시 농업기술센터 농업정책과 공고 제2026-77호입니다.",
+      "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=73947&homepage_pbs_yn=Y&subCheck=Y",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127593",
+      "verifiedAt": "2026-11-11",
+      "reviewStatus": "approved",
+      "sourceHash": "af671abaad8b01a8ecc3ee391f8e774baf00a98167cec18e121ab1c151a517da"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127781",
+      "slug": "2026-geochang-rural-convergence-food-processing-extra",
+      "title": "거창군 2026년 농촌융복합산업 지원사업 추가 신청 공고",
+      "summary": "거창 농산물을 활용한 잼·즙·청 제품의 저당화, 장비와 포장 디자인 개선을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "거창군 농업기술센터 미래농업과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-23",
+      "publishedAt": "2026-11-09",
+      "verifiedAt": "2026-11-11",
+      "support": "제품개발·시험연구, 장비·포장기계, 포장 디자인·홍보 및 지식재산권 확보를 지원합니다. 잼·즙·청 분야 사업비는 5천만 원(보조 4천만 원, 자부담 1천만 원)이며 장비·기계는 총사업비의 70% 이하입니다.",
+      "eligibility": "거창 농산물을 50% 이상 이용해 잼·즙·청(조청 포함)을 생산하는 농업경영체 또는 거창군 농산물가공지원센터 시제품을 바탕으로 창업하려는 농업인·농업법인. 법인은 출자금 1억 원 이상과 1년 이상 운영 실적이 필요합니다.",
+      "application": "읍·면 경제산업담당 또는 농업기술센터에 방문 신청합니다. 문의 055-940-8153.",
+      "note": "기업마당에 첨부된 거창군 사업안내서의 마감일과 대상을 확인했습니다. 안내서상 사업 시행은 2027년이며, 최근 3년간 동일사업 지원 이력과 사업 간 중복 신청 제한을 확인해야 합니다.",
+      "officialUrl": "https://www.geochang.go.kr/00445/00451.web?amode=view&not_ancmt_mgt_no=48061&",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127781",
+      "reviewStatus": "approved",
+      "sourceHash": "31fec8822e1c9b32ee261a2f9afe9d6bfcddb4af8d9fe9cef74f12a37105b709"
     }
   ]
 }
