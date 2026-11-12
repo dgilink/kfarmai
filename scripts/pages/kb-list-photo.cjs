@@ -51,6 +51,25 @@ function isRasterFile(root, source) {
   return bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP';
 }
 
+
+// Allow an explicitly labelled same-slug local editorial illustration, not a
+// random infographic, remote image, executable SVG, or untrusted filepath.
+function isSafeLocalEditorialCover(root, articlePath, source) {
+  const match = typeof articlePath === 'string'
+    ? /^\/kb\/([a-z0-9-]+)\.html$/.exec(articlePath) : null;
+  if (!match || source !== '/static/kb/' + match[1] + '-hero.svg') return false;
+  const file = path.join(root, source.slice(1));
+  if (!fs.existsSync(file) || !fs.lstatSync(file).isFile()) return false;
+  const stat = fs.statSync(file);
+  if (stat.size < 100 || stat.size > 250000) return false;
+  const svg = fs.readFileSync(file, 'utf8');
+  return /^<svg\b[^>]*\bxmlns=["']http:\/\/www\.w3\.org\/2000\/svg["']/i.test(svg)
+    && /<\/svg>\s*$/i.test(svg)
+    && !/<\s*(?:script|foreignObject|iframe|image|a)\b/i.test(svg)
+    && !/\bon[a-z]+\s*=/i.test(svg)
+    && !/\b(?:href|xlink:href)\s*=\s*["'](?:https?:|data:|javascript:)/i.test(svg);
+}
+
 function selectListPhoto(root, articlePath, html) {
   // Only photo-labelled local media already linked by approved article bytes.
   // Never fetch remote URLs or use an arbitrary first image / infographic.
@@ -62,10 +81,21 @@ function selectListPhoto(root, articlePath, html) {
       Object.values(reviewedPhotos).includes(source) || /-photo(?:-|\.)/.test(source || '');
     return source && photoRole ? [source] : [];
   });
+  const editorialTags = [...markup.matchAll(/<img\b[^>]*>/gi)]
+    .map(([tag]) => ({
+      source: tag.match(/\ssrc\s*=\s*["']([^"']+)["']/i)?.[1],
+      role: tag.match(/\sdata-media-role\s*=\s*["']([^"']+)["']/i)?.[1],
+    })).filter(value => value.role === 'hero_editorial');
+  if (editorialTags.length > 1 || editorialTags.some(value =>
+    !isSafeLocalEditorialCover(root, articlePath, value.source))) {
+    throw Error('Reviewed KB editorial cover missing or invalid: ' + articlePath);
+  }
+  const editorial = editorialTags[0]?.source || '';
   const reviewed = reviewedPhotos[articlePath];
   if (reviewed && !isRasterFile(root, reviewed)) throw Error('Reviewed KB photo missing or invalid: ' + articlePath);
   const source = reviewed || candidates.find(value => isRasterFile(root, value));
   if (!source) {
+    if (editorial) return editorial;
     const remote = approvedRemotePhotos[articlePath];
     return isApprovedExternalPhoto(articlePath, remote) &&
       markup.includes('data-media-role="hero_photo" src="' + remote + '"') ? remote : '';
@@ -75,4 +105,4 @@ function selectListPhoto(root, articlePath, html) {
   return isRasterFile(root, thumb) ? thumb : source;
 }
 
-module.exports = { isLocalPhoto, isRasterFile, isApprovedExternalPhoto, selectListPhoto, reviewedPhotos };
+module.exports = { isLocalPhoto, isRasterFile, isApprovedExternalPhoto, isSafeLocalEditorialCover, selectListPhoto, reviewedPhotos };

@@ -1,4 +1,4 @@
-const { isLocalPhoto, isRasterFile, isApprovedExternalPhoto } = require('./kb-list-photo.cjs');
+const { isLocalPhoto, isRasterFile, isApprovedExternalPhoto, isSafeLocalEditorialCover } = require('./kb-list-photo.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
@@ -153,7 +153,7 @@ if (exists('data/kb-index.json')) {
     );
     return !allowedShapes.has(keys)
       || !seriesValid
-      || ('image' in item && !(isApprovedExternalPhoto(item.path, item.image) || (isLocalPhoto(item.image) && isRasterFile(artifactDir, item.image))))
+      || ('image' in item && !(isApprovedExternalPhoto(item.path, item.image) || (isLocalPhoto(item.image) && isRasterFile(artifactDir, item.image)) || isSafeLocalEditorialCover(artifactDir, item.path, item.image)))
       || !/^\/kb\/[a-z0-9-]+\.html$/.test(item.path)
       || !exists(item.path.slice(1));
   })) {

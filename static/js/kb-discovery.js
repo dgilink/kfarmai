@@ -41,7 +41,10 @@
     if (typeof value !== 'string') return '';
     const local = /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(value) &&
       !/infographic|diagram|checklist-(?:graphic|chart)/i.test(value);
-    return local || approvedExternalPhotos[articlePath] === value ? value : '';
+    const slug = typeof articlePath === 'string'
+      ? /^\/kb\/([a-z0-9-]+)\.html$/.exec(articlePath) : null;
+    const editorial = slug && value === '/static/kb/' + slug[1] + '-hero.svg';
+    return local || editorial || approvedExternalPhotos[articlePath] === value ? value : '';
   };
   const listPhotoSrc = (value, articlePath) => approvedExternalPhotos[articlePath] === value
     ? value.replace(/\?width=1280$/, '?width=320') : value;

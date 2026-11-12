@@ -97,3 +97,22 @@ test('the additional onion field diagram stays in the article and never becomes 
   assert.match(html, /src="\/static\/kb\/late-garlic-planting-winter-care-reader-infographic-20261101\.webp"/);
   assert.doesNotMatch(selectListPhoto(repo, articlePath, html), /infographic|field-check/);
 });
+
+
+test('same-slug editorial SVG hero appears as list image when explicitly approved', () => fixture(root => {
+  const image = '/static/kb/new-article-hero.svg';
+  fs.writeFileSync(path.join(root, image.slice(1)),
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675"><rect width="1200" height="675" fill="#563948"/></svg>');
+  assert.equal(select(root, '<img data-media-role="hero_editorial" src="' + image + '">'), image);
+  assert.equal(select(root, '<img src="' + image + '">'), '');
+  assert.equal(select(root, '<img data-media-role="infographic" src="' + image + '">'), '');
+  assert.throws(() => select(root, '<img data-media-role="hero_editorial" src="/static/kb/other-hero.svg">'),
+    /editorial cover missing or invalid/);
+}));
+test('active SVG is not eligible for listing even when marked hero_editorial', () => fixture(root => {
+  const image = '/static/kb/new-article-hero.svg';
+  fs.writeFileSync(path.join(root, image.slice(1)),
+    '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>');
+  assert.throws(() => select(root, '<img data-media-role="hero_editorial" src="' + image + '">'),
+    /editorial cover missing or invalid/);
+}));
