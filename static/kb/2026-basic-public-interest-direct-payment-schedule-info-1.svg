@@ -3,11 +3,11 @@
 <text x="50" y="166" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="35" fill="#73535E" font-weight="700">정부 교부와 농가 실제 지급은 다릅니다</text>
 <rect x="44" y="232" width="500" height="286" fill="#593047"/>
 <rect x="661" y="232" width="496" height="286" fill="#EDBE69"/>
-<text x="69" y="293" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="36" fill="#FFE4A8" font-weight="900">1단계  정부 → 지자체</text>
+<text x="69" y="293" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="36" fill="#FFE4A8" font-weight="900">1단계 · 지자체 교부</text>
 <text x="69" y="389" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="63" fill="#FFFFFF" font-weight="900">11월 13일까지</text>
 <text x="69" y="465" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="35" fill="#FFFFFF" font-weight="900">자금 교부 계획</text>
 <path d="M560 365h80m-30-26 30 26-30 26" fill="none" stroke="#AB784D" stroke-width="14"/>
-<text x="684" y="293" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="36" fill="#603249" font-weight="900">2단계  지자체 → 농가</text>
+<text x="684" y="293" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="36" fill="#603249" font-weight="900">2단계 · 농가 입금</text>
 <text x="684" y="377" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="59" fill="#603249" font-weight="900">11월 중순~</text>
 <text x="684" y="455" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="64" fill="#603249" font-weight="900">12월 말</text>
 <text x="51" y="589" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-size="39" fill="#51273F" font-weight="900">개별 확인: 관할 읍·면·동 직불금 담당자</text>
