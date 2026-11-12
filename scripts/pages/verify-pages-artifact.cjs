@@ -36,6 +36,7 @@ const mustExist = [
   'static/kfarmai-logo-horizontal.png',
   'sitemap.xml',
   'robots.txt',
+  'ads.txt',
   'CNAME',
 ];
 

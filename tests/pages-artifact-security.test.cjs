@@ -40,6 +40,20 @@ try {
     assert.ok(!fs.existsSync(path.join(artifactDir, 'data/subsidy_programs.json')));
   });
 
+  test('AdSense publisher code is limited to public editorial pages', () => {
+    const publisher = 'ca-pub-3764096948700792';
+    const ads = fs.readFileSync(path.join(artifactDir, 'ads.txt'), 'utf8');
+    assert.equal(ads.trim(), 'google.com, pub-3764096948700792, DIRECT, f08c47fec0942fa0');
+    for (const relative of ['index.html', 'kb/index.html',
+      'kb/ras-recirculating-aquaculture.html', 'policy/index.html', 'subsidy-calendar.html']) {
+      const html = fs.readFileSync(path.join(artifactDir, relative), 'utf8');
+      assert.equal(html.split(publisher).length - 1, 1, relative);
+    }
+    for (const relative of ['channel.html', 'diagnosis.html', 'oauth/index.html']) {
+      assert.ok(!fs.readFileSync(path.join(artifactDir, relative), 'utf8').includes(publisher), relative);
+    }
+  });
+
   test('home KB cards are rendered from the approved registry projection', () => {
     const home = fs.readFileSync(path.join(artifactDir, 'index.html'), 'utf8');
     const discovery = fs.readFileSync(path.join(artifactDir, 'static/js/kb-discovery.js'), 'utf8');

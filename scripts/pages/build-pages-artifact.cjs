@@ -112,6 +112,7 @@ const publicRootFiles = new Set([
   'robots.txt',
   'sitemap.xml',
   'indexnow-key.txt',
+  'ads.txt',
   'style.css',
 ]);
 
@@ -418,6 +419,7 @@ function applyGlobalShellToHtml(filePath) {
   // Search-engine ownership verification files use an .html suffix but are not
   // documents or screens and must remain byte-minimal.
   if (!/<\/head>/i.test(html)) return;
+  const relativePath = path.relative(outputDir, filePath).split(path.sep).join('/');
   html = html
     .replace(/<meta\s+name=["']theme-color["'][^>]*>/gi, '')
     .replace(/<meta\s+name=["']color-scheme["'][^>]*>/gi, '')
@@ -433,9 +435,15 @@ function applyGlobalShellToHtml(filePath) {
   if (!/static\/js\/v4-shell\.js/i.test(html)) {
     assets.push(`<script src="${shellJsSrc}" defer data-kfarmai-global-shell="1"></script>`);
   }
-  html = html.replace(/<\/head>/i, firstPaintHead + assets.join('') + '</head>');
+  // Only public editorial pages run AdSense. Account, diagnosis, community,
+  // and other interaction screens retain their existing ad-free behavior.
+  const hasAds = relativePath === 'index.html' || relativePath === 'subsidy-calendar.html'
+    || /^kb\/.+\.html$/.test(relativePath) || /^policy\/.+\.html$/.test(relativePath);
+  const adScript = hasAds
+    ? '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3764096948700792" crossorigin="anonymous"></script>'
+    : '';
+  html = html.replace(/<\/head>/i, firstPaintHead + assets.join('') + adScript + '</head>');
   if (!/data-v4-global-header/i.test(html)) {
-    const relativePath = path.relative(outputDir, filePath).split(path.sep).join('/');
     const isHome = relativePath === 'index.html';
     html = addBodyClasses(html, ['v4-global-header-ready', ...(isHome ? ['v4-global-home'] : [])]);
     html = html.replace(/(<body\b[^>]*>)/i, `$1${globalHeaderHtml(isHome)}`);
