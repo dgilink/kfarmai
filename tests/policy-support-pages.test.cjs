@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-sunchang-organic-farming-materials');
-  assert.equal(listedSlugs[1], '2026-gunsan-women-farmers-voucher-final');
+  assert.equal(listedSlugs[0], '2027-gochang-gosu-organic-fertilizer-extra');
+  assert.equal(listedSlugs[1], '2026-gochang-specialty-crop-greenhouse-extra');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,15 +37,15 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-sunchang-organic-farming-materials.html');
-  assert.equal(cards[0].dataset.state, 'open');
-  assert.equal(cards[1].dataset.state, 'upcoming');
-  assert.equal(cards[2].dataset.state, 'upcoming');
+  assert.equal(cards[0].href, '/policy/2027-gochang-gosu-organic-fertilizer-extra.html');
+  assert.equal(cards[0].dataset.state, 'unknown');
+  assert.equal(cards[1].dataset.state, 'unknown');
+  assert.equal(cards[2].dataset.state, 'open');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 91);
+  assert.equal(publication.items.length, 97);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -94,7 +94,7 @@ test('open filter includes unknown starts while preserving distinct data state',
     const card = element();
     card.dataset = {
       region:item.region.join(' '), target:item.targets.join(' '), category:item.categories.join(' '),
-      start:item.applicationStart || '', end:item.applicationEnd || '', dateStatus:item.applicationDateStatus || '',
+      start:item.applicationStart || '', end:item.applicationEnd || '', endTime:item.applicationEndTime || '', dateStatus:item.applicationDateStatus || '',
       search:[item.title,item.summary,item.agency,item.support,item.eligibility,...item.region,...item.targets,...item.categories].join(' ').toLocaleLowerCase('ko')
     };
     card.statusLabel = element();
@@ -110,26 +110,34 @@ test('open filter includes unknown starts while preserving distinct data state',
     getElementById(id) { return fields[id]; },
     querySelectorAll(selector) { return selector === '#noticeList .policy-result' ? cards : buttons; }
   };
+  let now = Date.parse('2026-11-04T00:00:00Z');
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
-    static now() { return Date.parse('2026-11-04T00:00:00Z'); }
+    static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '91건');
+  assert.equal(fields.noticeCount.textContent, '97건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '46건');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 19);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 41);
+  assert.equal(fields.noticeCount.textContent, '50건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 21);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 42);
   buttons[2].events.click();
-  assert.equal(fields.noticeCount.textContent, '4건');
+  assert.equal(fields.noticeCount.textContent, '5건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
   buttons[1].events.click();
   fields.policySearch.value = '고창';
   fields.policySearch.events.input();
-  assert.equal(fields.noticeCount.textContent, '4건');
+  assert.equal(fields.noticeCount.textContent, '6건');
   fields.regionFilter.value = '전국';
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '91건');
+  assert.equal(fields.noticeCount.textContent, '97건');
+  const timed = cards.find(card => card.dataset.endTime === '17:00');
+  now = Date.parse('2026-11-12T07:59:00Z');
+  fields.policySearch.events.input();
+  assert.equal(timed.dataset.state, 'open');
+  now = Date.parse('2026-11-12T08:00:00Z');
+  fields.policySearch.events.input();
+  assert.equal(timed.dataset.state, 'closed');
 });
 
 // Static output must cover the rollover even when client JavaScript is unavailable.
@@ -141,16 +149,17 @@ test('expired Gochang notice is retained as closed and Dangjin separates applica
   const item = publication.items.find(item => item.slug === '2026-dangjin-smart-horticulture-lease-6th');
   assert.equal(item.applicationStart, '2026-11-09');
   assert.equal(item.applicationEnd, '2026-11-12');
+  assert.equal(item.applicationEndTime, '17:00');
   assert.equal(item.publishedAt, '2026-10-26');
   assert.match(index, /<option>시설·임대<\/option>/);
   const card = index.split(`href="/policy/${item.slug}.html"`)[1].split('</article>')[0];
-  assert.match(card, /class="policy-live-status">접수중<\/span>/);
+  assert.match(card, /class="policy-live-status">마감<\/span>/);
 });
 
 
 test('announced date-check notices have orange static warnings and no invented deadlines', () => {
   const pending = publication.items.filter(item => item.applicationDateStatus === 'checking');
-  assert.equal(pending.length, 4);
+  assert.equal(pending.length, 5);
   for (const item of pending) {
     assert.equal(item.applicationEnd, null);
     assert.ok(item.dateCheckReason);

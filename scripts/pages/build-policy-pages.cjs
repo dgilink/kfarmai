@@ -10,7 +10,8 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;',
 const date = value => value ? value.replaceAll('-', '.') : '원문 확인';
 const checkingDates = item => item.applicationDateStatus === 'checking';
 const deadline = item => item.applicationEnd || '9999-12-31';
-const dateLabel = item => checkingDates(item) ? '날짜 확인 중' : `${date(item.applicationEnd)}까지`;
+const dateLabel = item => checkingDates(item) ? '날짜 확인 중' :
+  `${date(item.applicationEnd)}${item.applicationEndTime ? ' ' + item.applicationEndTime : ''}까지`;
 const digest = item => crypto.createHash('sha256').update(JSON.stringify(Object.fromEntries(
   Object.entries(item).filter(([key]) => key !== 'sourceHash')
 ))).digest('hex');
@@ -33,6 +34,7 @@ for (const item of items) {
   if (item.reviewStatus !== 'approved' || !/^[a-z0-9-]+$/.test(item.slug) || slugs.has(item.slug) ||
     !validOfficial(item.officialUrl) || (item.verificationUrl && !validOfficial(item.verificationUrl)) ||
     !item.title || !item.agency || !datesValid ||
+    (item.applicationEndTime !== undefined && (checkingDates(item) || !/^(?:[01]\d|2[0-3]):[0-5]\d$/.test(item.applicationEndTime))) ||
     !/^\d{4}-\d{2}-\d{2}$/.test(item.verifiedAt) || item.sourceHash !== digest(item)) {
     throw Error('Unreviewed or invalid policy notice: ' + item.slug);
   }
@@ -57,10 +59,13 @@ ${body}</main></body></html>
 
 const sorted = [...items].sort((a,b) => b.publishedAt.localeCompare(a.publishedAt) ||
   deadline(a).localeCompare(deadline(b)));
-const todayKst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
-const listingStatus = item => checkingDates(item) ? '날짜 확인 중' : item.applicationEnd < todayKst ? '마감' :
+const nowKst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString();
+const todayKst = nowKst.slice(0, 10);
+const expired = item => item.applicationEnd < todayKst ||
+  (item.applicationEnd === todayKst && item.applicationEndTime && nowKst.slice(11, 16) >= item.applicationEndTime);
+const listingStatus = item => checkingDates(item) ? '날짜 확인 중' : expired(item) ? '마감' :
   item.applicationStart && item.applicationStart > todayKst ? '접수예정' : '접수중';
-const cards = sorted.map(item => `<article class="policy-result"${checkingDates(item) ? ' data-date-status="checking" data-state="checking"' : ''} data-region="${esc(item.region.join(' '))}" data-target="${esc(item.targets.join(' '))}" data-category="${esc(item.categories.join(' '))}" data-start="${esc(item.applicationStart || '')}" data-end="${esc(item.applicationEnd)}" data-search="${esc([item.title,item.summary,item.agency,item.support,item.eligibility,...item.region,...item.targets,...item.categories].join(' ').toLocaleLowerCase('ko'))}">
+const cards = sorted.map(item => `<article class="policy-result"${checkingDates(item) ? ' data-date-status="checking" data-state="checking"' : ''} data-region="${esc(item.region.join(' '))}" data-target="${esc(item.targets.join(' '))}" data-category="${esc(item.categories.join(' '))}" data-start="${esc(item.applicationStart || '')}" data-end="${esc(item.applicationEnd)}"${item.applicationEndTime ? ` data-end-time="${esc(item.applicationEndTime)}"` : ''} data-search="${esc([item.title,item.summary,item.agency,item.support,item.eligibility,...item.region,...item.targets,...item.categories].join(' ').toLocaleLowerCase('ko'))}">
 <a class="policy-card-link" href="/policy/${item.slug}.html"><div class="policy-meta"><span class="policy-meta-group"><span class="policy-region">${esc(item.region.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-category">${esc(item.categories.join(' · '))}</span><span class="policy-meta-separator" aria-hidden="true">·</span><span class="policy-published">${esc(item.publishedAt)}</span></span><span class="policy-live-status">${listingStatus(item)}</span></div>
 <h3>${esc(item.title)}</h3>
 <div class="policy-card-foot"><span>${checkingDates(item) ? '' : `${dateLabel(item)} · `}${esc(item.agency)}</span><span aria-hidden="true">›</span></div></a></article>`).join('\n');
@@ -83,7 +88,7 @@ const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 �
 <a href="https://uni.agrix.go.kr/webportal/main/portalBizGuideList.do" target="_blank" rel="noopener noreferrer">AgriX <span>농식품사업 지침 ↗</span></a>
 <a href="https://www.mafra.go.kr/" target="_blank" rel="noopener noreferrer">농림축산식품부 <span>공고 ↗</span></a></div></section>
 <p class="policy-endnote">신청 대상·지역·자부담과 마감 시간은 공고마다 다릅니다. 신청 전 공식 원문을 확인하세요.</p></div>
-<script src="/static/js/policy-support.js?v=20261105-date-check" defer></script>`);
+<script src="/static/js/policy-support.js?v=20261112-deadline-time" defer></script>`);
 fs.writeFileSync(path.join(root,'subsidy-calendar.html'), index);
 
 const detailDir = path.join(root, 'policy');
@@ -99,7 +104,7 @@ for (const item of items) {
 <article><div class="policy-meta"><span>${esc(item.region.join(' · '))}</span><span>${esc(item.categories.join(' · '))}</span><span>${esc(item.agency)}</span></div>
 <h1>${esc(item.title)}</h1><p class="policy-detail-lead">${esc(item.summary)}</p>
 
-<dl class="policy-facts"><dt>신청 기간</dt><dd>${checkingDates(item) ? `${item.applicationStart ? `${date(item.applicationStart)}부터 · ` : ''}<strong class="policy-date-unverified">날짜 확인 중</strong>` : `${item.applicationStart ? `${date(item.applicationStart)} ~ `: '<strong class="policy-start-unverified">시작일 원문 확인</strong> · '}${date(item.applicationEnd)}까지`}</dd>
+<dl class="policy-facts"><dt>신청 기간</dt><dd>${checkingDates(item) ? `${item.applicationStart ? `${date(item.applicationStart)}부터 · ` : ''}<strong class="policy-date-unverified">날짜 확인 중</strong>` : `${item.applicationStart ? `${date(item.applicationStart)} ~ `: '<strong class="policy-start-unverified">시작일 원문 확인</strong> · '}${dateLabel(item)}`}</dd>
 <dt>지원 대상</dt><dd>${esc(item.eligibility)}</dd><dt>지원 내용</dt><dd>${esc(item.support)}</dd>
 <dt>신청·문의</dt><dd>${esc(item.application)}</dd>
 <dt>${item.verificationUrl ? '공식 등록' : '원문 게시'}</dt><dd>${date(item.publishedAt)}</dd><dt>자료 확인</dt><dd>${date(item.verifiedAt)}</dd></dl>

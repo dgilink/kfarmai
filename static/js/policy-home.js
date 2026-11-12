@@ -3,7 +3,10 @@
   const root = document.getElementById('homePolicyFeed');
   if (!root) return;
 
-  const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString();
+  const today = now.slice(0, 10);
+  const expired = item => item.applicationEnd < today ||
+    (item.applicationEnd === today && item.applicationEndTime && now.slice(11, 16) >= item.applicationEndTime);
   const text = (tag, className, value) => {
     const node = document.createElement(tag);
     node.className = className;
@@ -12,7 +15,7 @@
   };
   const status = item => {
     if (item.applicationDateStatus === 'checking') return ['날짜 확인 중', 'checking'];
-    if (today > item.applicationEnd) return ['마감', 'closed'];
+    if (expired(item)) return ['마감', 'closed'];
     if (!item.applicationStart) return ['접수중', 'unknown'];
     if (today < item.applicationStart) return ['접수예정', 'upcoming'];
     return ['접수중', 'open'];
@@ -31,7 +34,7 @@
     })
     .then(publication => {
       if (publication.schemaVersion !== 1 || !Array.isArray(publication.items)) return;
-      const items = publication.items.filter(safe).filter(item => item.applicationDateStatus === 'checking' || item.applicationEnd >= today)
+      const items = publication.items.filter(safe).filter(item => item.applicationDateStatus === 'checking' || !expired(item))
         .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt) ||
           (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'))
         .slice(0, 3);
@@ -49,7 +52,7 @@
           text('span', 'home-policy-status', label));
         link.append(meta, text('strong', 'home-policy-title', item.title),
           text('span', 'home-policy-foot', item.applicationDateStatus === 'checking' ?
-            item.agency || '공식 공고' : `${item.applicationEnd.replaceAll('-', '.')}까지 · ${item.agency || '공식 공고'}`),
+            item.agency || '공식 공고' : `${item.applicationEnd.replaceAll('-', '.')}${item.applicationEndTime ? ' ' + item.applicationEndTime : ''}까지 · ${item.agency || '공식 공고'}`),
           text('span', 'home-policy-arrow', '›'));
         fragment.append(link);
       }

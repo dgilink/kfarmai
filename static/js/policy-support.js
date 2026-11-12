@@ -9,10 +9,11 @@
   const empty = document.getElementById('policyEmpty');
   const count = document.getElementById('noticeCount');
   let status = 'all';
-  const todayKst = () => new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  const state = (card, today) => {
+  const nowKst = () => new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString();
+  const state = (card, today, time) => {
     if (card.dataset.dateStatus === 'checking' || !card.dataset.end) return 'checking';
-    if (today > card.dataset.end) return 'closed';
+    if (today > card.dataset.end ||
+      (today === card.dataset.end && card.dataset.endTime && time >= card.dataset.endTime)) return 'closed';
     if (!card.dataset.start) return 'unknown';
     if (today < card.dataset.start) return 'upcoming';
     return 'open';
@@ -20,9 +21,11 @@
   function render() {
     let visible = 0;
     const text = query.value.trim().toLocaleLowerCase('ko');
-    const today = todayKst();
+    const now = nowKst();
+    const today = now.slice(0, 10);
+    const time = now.slice(11, 16);
     for (const card of cards) {
-      const current = state(card, today);
+      const current = state(card, today, time);
       card.querySelector('.policy-live-status').textContent = ({
         open:'접수중', upcoming:'접수예정', unknown:'접수중', checking:'날짜 확인 중', closed:'마감'
       })[current];

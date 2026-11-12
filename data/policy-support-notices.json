@@ -423,14 +423,15 @@
       "applicationStart": "2026-11-09",
       "applicationEnd": "2026-11-12",
       "publishedAt": "2026-10-26",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-12",
       "support": "당진시 고대면 슬항리 스마트원예단지의 잔여 3구획 임대 대상자 3명 선발. 구획별 면적은 0.47~1ha이며 영농 기반을 조성한 농지를 장기임대·매도하는 사업입니다.",
       "eligibility": "만 18세 이상~45세 미만 청년. 공고문 출생일 기준은 1981.10.27.~2008.10.26.입니다. 신청 당시 거주지 제한은 없으며 계약 전 당진시 전입이 필요합니다. 병역필·면제자, 후계농업인 산업기능요원 복무자·선정자 등 원문 요건을 확인하세요.",
       "application": "2026.11.9.~11.12. 평일 09:00~17:00, 당진시농업기술센터 통합관제관리동(석문면 보덕포로 574)에 방문 제출. 발표자료는 11.12. 17:00까지 공고문에 안내된 담당자 이메일로 제출합니다. 신청서·증빙서류는 첨부 계획을 확인하세요.",
       "note": "공고기간(10.26.~11.12.)과 실제 접수기간(11.9.~11.12.)을 구분했습니다. 발표심사는 11.18. 예정이며, 임대·매도 조건과 영농시설 조성 부담은 첨부 계획을 확인하세요.",
       "officialUrl": "https://www.dangjin.go.kr/cop/bbs/BBSMSTR_000000000066/selectBoardArticle.do?bbsId=BBSMSTR_000000000066&nttId=1136310",
       "reviewStatus": "approved",
-      "sourceHash": "8212aae5b825aa59e021225b04273bd7ac304550787d8617e2d0c61467d3dc84"
+      "sourceHash": "2066e4737fa3b8bd55679e9167b19a4ae4faabd65221ff92691648cc50b1b5a4",
+      "applicationEndTime": "17:00"
     },
     {
       "sourceId": "local-government-notices",
@@ -2652,6 +2653,183 @@
       "verificationUrl": "https://job.gg.go.kr/entSprt/detail.do?seq=5271",
       "reviewStatus": "approved",
       "sourceHash": "45a8b477ba253a28a102302df817010af72d93dad97f248b3b713b0718cdedf1"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gochang-838152",
+      "slug": "2027-gochang-gosu-organic-fertilizer-extra",
+      "title": "고창군 고수면 2027년 유기질비료 지원사업 추가 및 변경 신청 안내",
+      "summary": "고수면 안내에 따라 등록 농지에 쓰는 유기질비료와 부숙유기질비료 구입비 일부를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "고창군 고수면",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-26",
+      "publishedAt": "2026-11-12",
+      "verifiedAt": "2026-11-12",
+      "support": "혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비 구입비 일부를 지원합니다.",
+      "eligibility": "농업경영정보를 등록한 농업경영체가 신청할 수 있습니다. 신청인 경영정보에 등록된 농지에 한해 지원합니다.",
+      "application": "농지 소재지 관할 읍·면 주민행복센터에 신청합니다.",
+      "note": "11월 26일은 고수면 공지 기준입니다. 접수 시작일은 해당 공지에 명시되지 않았습니다.",
+      "officialUrl": "https://www.gochang.go.kr/board/view.gochang?menuCd=DOM_000000107005000000&boardId=BBS_0000062&dataSid=838152",
+      "reviewStatus": "approved",
+      "sourceHash": "3e3853cfbe37354c24e2321426f9de19713820e32377a7b5d44e27d532a52868"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gochang-838088-838086",
+      "slug": "2026-gochang-specialty-crop-greenhouse-extra",
+      "title": "고창군 아산면·상하면 2026년 지역특화품목 비닐하우스 지원사업 추가신청 안내",
+      "summary": "채소·과수·화훼 시설하우스 지원입니다. 아산면은 11월 17일, 상하면은 11월 18일까지 신청합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "고창군 아산면·상하면",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-18",
+      "publishedAt": "2026-11-11",
+      "verifiedAt": "2026-11-12",
+      "support": "시설하우스 660~3,300㎡를 지원하며 보조와 자부담 비율은 각각 50%입니다. 아산면 공지는 단동·연동 단가를, 상하면 공지는 관수시설·자동개폐기를 포함한 단동 신축을 안내합니다.",
+      "eligibility": "관내에서 채소·과수·화훼류를 재배하거나 재배하려는 농업인 또는 농업법인입니다.",
+      "application": "아산면 11월 17일, 상하면 11월 18일까지입니다. 지원 가능한 시설 유형과 신청 서류는 각 면 공식 안내를 확인하세요.",
+      "note": "신청 기간 표의 11월 18일은 상하면 기준입니다. 아산면은 하루 먼저 마감하며, 두 공지 모두 신청 시작일은 명시하지 않았습니다.",
+      "officialUrl": "https://www.gochang.go.kr/board/view.gochang?menuCd=DOM_000000107005000000&boardId=BBS_0000062&dataSid=838088",
+      "verificationUrl": "https://www.gochang.go.kr/board/view.gochang?menuCd=DOM_000000107005000000&boardId=BBS_0000062&dataSid=838086",
+      "reviewStatus": "approved",
+      "sourceHash": "2bead41664b75dda2a78dbd52babdbfdd5f6df31841c06cbebe6e2f81624915d"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "siheung-86549",
+      "slug": "2027-siheung-organic-farming-materials",
+      "title": "시흥시 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "농업경영정보를 등록한 농업인과 농업법인에 유기농업자재 구입비 일부를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "시흥시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-02",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-02",
+      "verifiedAt": "2026-11-12",
+      "support": "공고 요건에 해당하는 유기농업자재 구입비 일부를 지원합니다. 품목별 요건과 지원 기준은 첨부 공고문에서 확인할 수 있습니다.",
+      "eligibility": "농어업경영체 육성 및 지원에 관한 법률에 따라 농업경영정보를 등록한 농업인 또는 농업법인입니다.",
+      "application": "농업정책과 로컬푸드팀에 방문 신청합니다. 신청서, 서약서, 토양검정 자료 등 해당 서류를 공고에 따라 준비합니다. 문의 031-310-2313.",
+      "note": "시흥시 농업기술센터 농업정책과 공고 제2026-73호입니다.",
+      "officialUrl": "https://www.siheung.go.kr/main/saeol/gosi/view.do?notAncmtMgtNo=86549&mId=0401040100",
+      "reviewStatus": "approved",
+      "sourceHash": "dfb18787096261aa81b153f8137ec90609625936fbdf208ca01dbd60b88141dc"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "hadong-45436",
+      "slug": "2026-hadong-tea-culture-shop-extra",
+      "title": "하동군 2026년 별천지하동차문화관 하동티포켓 입점업체 추가 모집공고",
+      "summary": "부산 별천지하동차문화관에서 하동차를 판매할 업체를 추가 모집합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농식품기업"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "하동군 농업기술센터 농산물유통과",
+      "applicationStart": "2026-11-03",
+      "applicationEnd": "2026-11-17",
+      "publishedAt": "2026-11-03",
+      "verifiedAt": "2026-11-12",
+      "support": "부산 수영구 별천지하동차문화관의 하동차 판매 입점 기회를 제공합니다. 예정 입점기간은 2026년 12월부터 2027년 11월까지입니다.",
+      "eligibility": "농장 또는 사업장이 하동군에 있고 부산 매장에 납품할 수 있는 사업자입니다. 품목에 필요한 사업자등록·영업신고를 마치고 최근 3년 품질·판매 등 실적 증빙을 제출할 수 있어야 합니다.",
+      "application": "하동군농업기술센터 농산물유통과에 방문해 신청합니다. 문의 055-880-2834.",
+      "note": "지방세·세외수입 체납자는 신청이 제한됩니다. 입점기간은 시설 운영 여건에 따라 달라질 수 있습니다.",
+      "officialUrl": "https://eminwon.hadong.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=45436&homepage_pbs_yn=Y&subCheck=Y",
+      "reviewStatus": "approved",
+      "sourceHash": "57e1181b59cebb703e5f9a68b651fca7b10856933551c4aa0635eecabba2b22a"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "buan-371667",
+      "slug": "2026-buan-greenhouse-film-replacement-round-2",
+      "title": "부안군 2026년 비닐하우스 비닐교체 지원사업 신청 2차 공고",
+      "summary": "시설원예용 비닐하우스의 비닐 구입비를 군비 50%로 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "부안군 농업정책과",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-11-06",
+      "verifiedAt": "2026-11-12",
+      "support": "시설원예용 규격 비닐하우스의 1중 비닐 구입비를 지원하며 단동 시설을 우선합니다. 부속자재와 인건비는 제외합니다.",
+      "eligibility": "부안군에 주소를 두고 부안군 또는 인접 시·군 농지에서 비닐하우스로 시설원예작물을 재배하는 농업경영체 등록 농가입니다. 기존 시설과 교체 주기 조건은 첨부 공고를 확인하세요.",
+      "application": "농지 소재지 읍·면사무소 산업팀에 신청서와 견적서 등을 제출합니다. 부안군 농업정책과 문의 063-580-4782.",
+      "note": "첨부 공고의 접수 시작일 숫자와 요일 표기가 다릅니다. 신청 전 읍·면사무소 또는 농업정책과에 접수 일정을 확인하세요.",
+      "officialUrl": "https://www.buan.go.kr/board/view.buan?boardId=BBS_0000054&dataSid=371667&menuCd=DOM_000000103001003000&startPage=1",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "첨부 공고 제2026-1817호의 접수 시작일이 2026년 11월 6일(월)로 표기됐으나 그 날짜는 금요일입니다. 기관의 접수 일정 확인이 필요합니다.",
+      "reviewStatus": "approved",
+      "sourceHash": "07336353583d86b69a1a0dea51b8b985608d0048fb3cb5b9403f002a3ca474d5"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "cheongju-277626",
+      "slug": "2027-cheongju-yongam1-organic-fertilizer-extra",
+      "title": "청주시 용암1동 2027년 유기질비료 지원사업 추가·변경 신청 알림",
+      "summary": "농업경영체 등록 농업인과 농업법인의 유기질비료 추가·변경 신청을 받습니다.",
+      "region": [
+        "충북"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "청주시 상당구 용암1동 행정복지센터",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-10",
+      "verifiedAt": "2026-11-12",
+      "support": "혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비를 지원합니다.",
+      "eligibility": "농업경영체를 등록한 농업인 또는 농업법인입니다. 앞선 접수에서 신청했고 변경할 사항이 없는 경우 다시 신청할 필요가 없습니다.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 신청합니다. 여러 시·군·구에 농지가 있으면 소재지별로 각각 신청합니다.",
+      "note": "용암1동 공식 홈페이지 공지사항에서 신청 자격과 기간을 확인했습니다. 비료 공급 시 가격은 바뀔 수 있습니다.",
+      "officialUrl": "https://www1.cheongju.go.kr/yongam1/selectBbsNttView.do?key=4458&bbsNo=511&nttNo=277626&integrDeptCode=000100207",
+      "verificationUrl": "https://www1.cheongju.go.kr/yongam1/index.do",
+      "reviewStatus": "approved",
+      "sourceHash": "311a6affafc6caf9760e1b5082d5b557aacbbf0fd2877c9b56c0c563a51e73cd"
     }
   ]
 }
