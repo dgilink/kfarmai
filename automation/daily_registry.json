@@ -500,6 +500,25 @@
       "related_badge_asset": "/static/kb/2026-jangheung-h5n9-hpai-poultry-biosecurity-guide-related-badge.svg",
       "image_source": "https://commons.wikimedia.org/wiki/Special:FilePath/Wild%20duck%20x%20Pekin%20duck%20mix%20in%20Gyeongju.jpg?width=1280",
       "image_credit": "Drcbrothephotographer / Wikimedia Commons · CC BY 4.0 · 경주 버드파크 국내 사육오리 참고 사진"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-13",
+      "slug": "2026-basic-public-interest-direct-payment-schedule",
+      "title": "2026 공익직불금 지급일 언제? 2조 3,788억 원·농외소득 4,700만 원 기준",
+      "url": "https://kfarmai.com/kb/2026-basic-public-interest-direct-payment-schedule.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "지급대상·총액 확정 · 지역별 순차 지급 예정",
+      "source_urls": [
+        "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjI0MCUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+        "https://mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU3ODg0OSUyRmFydGNsVmlldy5kbyUzRg%3D%3D"
+      ],
+      "infographic_assets": [
+        "/static/kb/2026-basic-public-interest-direct-payment-schedule-info-1.svg",
+        "/static/kb/2026-basic-public-interest-direct-payment-schedule-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2026-basic-public-interest-direct-payment-schedule-related-badge.svg",
+      "image_source": "KFarmAI 자체 편집 일러스트"
     }
   ]
 }
