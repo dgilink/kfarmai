@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="2027 모두의 상생 프로젝트 지원대상 모집 대표 편집 그래픽">
+<defs><linearGradient id="deep" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#231323"/><stop offset="1" stop-color="#581633"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2=".4"><stop stop-color="#FFE86A"/><stop offset="1" stop-color="#FFBC42"/></linearGradient></defs>
+<rect width="1200" height="675" fill="url(#deep)"/>
+<path d="M0 0H1200V72H0Z" fill="#ED5138"/>
+<path d="M880 0C944 120 966 172 1004 226S1120 320 1200 350V675H812C843 570 905 481 862 377S766 208 880 0Z" fill="#952346" opacity=".72"/>
+<path d="M954 675Q889 588 950 521Q1001 467 1069 412Q1128 349 1200 307" fill="none" stroke="#F8C94B" stroke-width="24" stroke-linecap="round"/>
+<g fill="#FFE9A1" opacity=".95"><path d="M1000 477Q969 425 1003 380Q1023 424 1000 477Z"/><path d="M1030 451Q1024 399 1068 365Q1070 414 1030 451Z"/><path d="M1063 428Q1060 381 1116 349Q1107 406 1063 428Z"/><path d="M940 546Q912 496 939 459Q965 499 940 546Z"/></g>
+<g transform="translate(913 180)"><rect x="0" y="65" width="206" height="116" rx="7" fill="#FFE8B5"/><path d="M-18 66L101 3L220 66Z" fill="#FFCF58"/><rect x="79" y="98" width="56" height="83" fill="#C54A39"/><rect x="27" y="93" width="35" height="38" fill="#783348"/><rect x="155" y="93" width="30" height="38" fill="#783348"/><path d="M107 60V-29M107-9Q88-35 79-64M107-12Q124-41 140-52" stroke="#BFCB55" stroke-width="10" stroke-linecap="round" fill="none"/><path d="M78-63Q46-61 68-23Q99-24 78-63M140-52Q160-69 166-32Q133-19 140-52" fill="#BFCB55"/></g>
+<text x="61" y="149" font-size="38" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-weight="800" fill="#FFD35F">2027년 지원대상 모집</text>
+<text x="59" y="252" font-size="77" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-weight="900" fill="#FFFFFF">농업 × 기업</text>
+<text x="59" y="351" font-size="72" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-weight="900" fill="#FFFFFF">모두의 상생</text>
+<text x="60" y="443" font-size="72" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-weight="900" fill="#FFFFFF">프로젝트</text>
+<rect x="55" y="501" width="740" height="102" rx="4" fill="url(#gold)"/>
+<text x="89" y="570" font-size="47" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-weight="900" fill="#391F2C">12월 8일(화) 18시 마감</text>
+<text x="58" y="647" font-size="27" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" font-weight="700" fill="#F6D7C8">KFarmAI · 공식 공고 기반 신청 길잡이</text>
+</svg>

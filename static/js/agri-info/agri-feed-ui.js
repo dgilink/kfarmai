@@ -250,6 +250,15 @@
     return text.includes('아쿠아') || text.includes('수산') || text.includes('양식');
   }
 
+  function safeKbMedia(item) {
+    const candidate = typeof item?.image === 'string' ? item.image : '';
+    const raster = /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(candidate)
+      && !/infographic|diagram/i.test(candidate);
+    const match = /^\/kb\/([a-z0-9-]+)\.html$/.exec(String(item?.path || ''));
+    const editorial = match && candidate === '/static/kb/' + match[1] + '-hero.svg';
+    return raster || editorial ? candidate : '';
+  }
+
   async function renderApprovedKbList(root) {
     if (!root) return;
     try {
@@ -259,8 +268,7 @@
       const items = (Array.isArray(source?.items) ? source.items : []).map(item => ({
         title: String(item?.title || '').trim(), category: String(item?.category || '').trim(),
         date: String(item?.date || '').trim(), path: safeUrl(item?.path),
-        image: typeof item?.image === 'string' && /^\/static\/kb\/(?:thumbnails\/)?[a-z0-9][a-z0-9-]*\.(?:png|jpe?g|webp)$/.test(item.image)
-          && !/infographic|diagram/i.test(item.image) ? item.image : ''
+        image: safeKbMedia(item)
       })).filter(item => item.title && item.category && /^\d{4}-\d{2}-\d{2}$/.test(item.date)
         && item.path && new URL(item.path).pathname.startsWith('/kb/'))
         .sort((a, b) => b.date.localeCompare(a.date));

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="최대 총사업비 5억 원은 국비 2억 지방비 2억 자부담 1억으로 구성">
+<rect width="1200" height="675" fill="#FFFFFF"/>
+<rect width="1200" height="165" fill="#6D1C42"/>
+<text x="55" y="112" font-size="70" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#FFFFFF">5억 원, 전액 보조금 아닙니다</text>
+<text x="58" y="224" font-size="36" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#252A31">선정 프로젝트의 연간 최대 총사업비 기준</text>
+<rect x="58" y="266" width="434" height="182" fill="#344B73"/>
+<rect x="492" y="266" width="434" height="182" fill="#D94D3C"/>
+<rect x="926" y="266" width="216" height="182" fill="#F7C84F"/>
+<text x="93" y="339" font-size="38" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#FFFFFF">국비</text>
+<text x="93" y="413" font-size="74" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#FFFFFF">2억 원</text>
+<text x="530" y="339" font-size="38" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#FFFFFF">지방비</text>
+<text x="530" y="413" font-size="74" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#FFFFFF">2억 원</text>
+<text x="946" y="333" font-size="33" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#28232B">자부담</text>
+<text x="944" y="409" font-size="55" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#28232B">1억 원</text>
+<text x="59" y="528" font-size="39" font-weight="850" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#252A31">공공재원 4억 원 + 컨소시엄 자부담 1억 원</text>
+<path d="M59 556H1140" stroke="#BEC5CE" stroke-width="3"/>
+<text x="61" y="618" font-size="35" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#6D1C42">최대 3년 계획 가능 · 매년 평가 후 지원 결정</text>
+</svg>

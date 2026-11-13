@@ -519,6 +519,25 @@
       ],
       "related_badge_asset": "/static/kb/2026-basic-public-interest-direct-payment-schedule-related-badge.svg",
       "image_source": "KFarmAI 자체 편집 일러스트"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-14",
+      "slug": "2027-modu-sangsaeng-project-application",
+      "title": "2027 모두의 상생 프로젝트 신청 시작｜12월 8일 마감·연 5억 원 사업비와 자부담",
+      "url": "https://kfarmai.com/kb/2027-modu-sangsaeng-project-application.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "확정·접수중 · 2026.12.08 18시 신청자 마감",
+      "source_urls": [
+        "https://www.mafra.go.kr/home/5108/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MSUyRjU4MjI3MiUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+        "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjIxOCUyRmFydGNsVmlldy5kbyUzRg%3D%3D"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-modu-sangsaeng-project-application-info-1.svg",
+        "/static/kb/2027-modu-sangsaeng-project-application-info-2.svg"
+      ],
+      "related_badge_asset": "/static/kb/2027-modu-sangsaeng-project-application-related-badge.svg",
+      "image_source": "KFarmAI 자체 편집 그래픽 · 실제 사진 아님"
     }
   ]
 }

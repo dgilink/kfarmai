@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="2026년 12월 8일 신청자 제출 마감과 12월 15일 시도 최종 접수를 구분">
+<rect width="1200" height="675" fill="#FFFFFF"/>
+<rect width="1200" height="158" fill="#12365C"/>
+<text x="55" y="104" font-size="58" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#FFFFFF">신청 마감과 최종 접수는 다릅니다</text>
+<text x="65" y="240" font-size="40" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#1B3450">신청자 제출</text>
+<text x="639" y="240" font-size="40" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#1B3450">시·도 추천</text>
+<text x="59" y="331" font-size="66" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#C43D2C">12월 8일</text>
+<text x="639" y="331" font-size="66" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#12365C">12월 15일</text>
+<text x="66" y="388" font-size="35" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#384653">화요일 오후 6시까지</text>
+<text x="646" y="388" font-size="35" font-weight="800" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#384653">화요일 오후 6시까지</text>
+<rect x="60" y="413" width="497" height="8" fill="#C43D2C"/>
+<rect x="638" y="413" width="501" height="8" fill="#12365C"/>
+<text x="62" y="487" font-size="33" font-weight="850" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#212D38">대표 시·도와 사전 협의</text>
+<text x="62" y="540" font-size="33" font-weight="850" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#212D38">신청서·사업계획서 제출</text>
+<text x="640" y="487" font-size="33" font-weight="850" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#212D38">시·도 검토·추천 후</text>
+<text x="640" y="540" font-size="33" font-weight="850" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#212D38">aT에 최종 접수</text>
+<rect y="591" width="1200" height="84" fill="#F4BC41"/>
+<text x="56" y="650" font-size="36" font-weight="900" font-family="'Malgun Gothic','Noto Sans KR','Apple SD Gothic Neo',sans-serif" fill="#1D2D3B">신청자는 12월 8일을 기준으로 준비하세요</text>
+</svg>
