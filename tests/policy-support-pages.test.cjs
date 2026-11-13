@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2027-gochang-gosu-organic-fertilizer-extra');
-  assert.equal(listedSlugs[1], '2027-guri-organic-fertilizer-extra');
+  assert.equal(listedSlugs[0], '2027-taean-organic-fertilizer-extra');
+  assert.equal(listedSlugs[1], '2027-mafra-rural-startup-competition');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,16 +37,16 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2027-gochang-gosu-organic-fertilizer-extra.html');
-  assert.equal(cards[0].dataset.state, 'unknown');
-  assert.equal(cards[1].href, '/policy/2027-guri-organic-fertilizer-extra.html');
+  assert.equal(cards[0].href, '/policy/2027-taean-organic-fertilizer-extra.html');
+  assert.equal(cards[0].dataset.state, 'upcoming');
+  assert.equal(cards[1].href, '/policy/2027-mafra-rural-startup-competition.html');
   assert.equal(cards[1].dataset.state, 'upcoming');
-  assert.equal(cards[2].dataset.state, 'unknown');
+  assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 102);
+  assert.equal(publication.items.length, 110);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -115,11 +115,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '102건');
+  assert.equal(fields.noticeCount.textContent, '110건');
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '51건');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 21);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 45);
+  assert.equal(fields.noticeCount.textContent, '54건');
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 24);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 50);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '6건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -131,7 +131,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '102건');
+  assert.equal(fields.noticeCount.textContent, '110건');
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
   fields.policySearch.events.input();
