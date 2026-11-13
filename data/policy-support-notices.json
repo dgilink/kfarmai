@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-12",
+  "updatedAt": "2026-11-13",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -2412,14 +2412,15 @@
       "applicationStart": "2026-11-13",
       "applicationEnd": "2026-12-08",
       "publishedAt": "2026-11-10",
-      "verifiedAt": "2026-11-11",
+      "verifiedAt": "2026-11-13",
       "support": "시험재배, 원료 검증, 제품·메뉴 개발, 시험생산과 판로 개척 등을 지원합니다. 프로젝트당 연간 총사업비는 최대 5억 원이며 국비 40%, 지방비 40%, 자부담 20%입니다. 최대 3년 계획을 신청할 수 있고 연차 평가를 거쳐 계속 지원 여부를 결정합니다.",
       "eligibility": "대표 시·도 1곳과 주관사업자 1곳이 필수인 컨소시엄을 구성합니다. 사업 수행에 필요한 기업, 생산자단체, 유통·물류조직, 연구기관 등이 참여할 수 있습니다.",
       "application": "대표 시·도와 사전 협의한 뒤 12월 8일 오후 6시까지 해당 시·도에 신청서와 사업계획서를 제출합니다. 시·도 추천을 거친 사업의 aT 최종 접수는 12월 15일 오후 6시까지입니다.",
       "note": "11월 10일 농식품부 공식 사전 안내 기준입니다. 신청 서식과 세부 조건은 농식품부 공고문에서 확인하세요.",
       "officialUrl": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjIxOCUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
       "reviewStatus": "approved",
-      "sourceHash": "b8d13f9b20052d38009723af8d3c98a7ef8642e7e1afe7e36977318dec75a952"
+      "applicationEndTime": "18:00",
+      "sourceHash": "0431ea960efbfc4721424801df99a48f473770563ad7f1a48f1ad7f9a9a7a0ab"
     },
     {
       "sourceId": "official-policy-directory",
@@ -2830,6 +2831,160 @@
       "verificationUrl": "https://www1.cheongju.go.kr/yongam1/index.do",
       "reviewStatus": "approved",
       "sourceHash": "311a6affafc6caf9760e1b5082d5b557aacbbf0fd2877c9b56c0c563a51e73cd"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "guri-49217",
+      "slug": "2027-guri-organic-fertilizer-extra",
+      "title": "구리시 2027년 유기질비료 지원사업 추가 신청접수 공고",
+      "summary": "구리시에 농지가 있고 본접수에 신청하지 않은 농업경영체를 대상으로 유기질비료 추가 신청을 받습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "구리시 산업지원과",
+      "applicationStart": "2026-11-12",
+      "applicationEnd": "2026-11-30",
+      "applicationEndTime": "18:00",
+      "publishedAt": "2026-11-12",
+      "support": "혼합유박·혼합유기질·유기복합비료 및 가축분퇴비·퇴비 지원. 1,000㎡당 유기질비료 최대 50포, 부숙유기질비료 최대 100포이며 단가는 추후 공지합니다.",
+      "eligibility": "신청일 현재 구리시에 등록 농지가 있는 농업경영체 등록 농업인·농업법인 중 2026년 6월 1일~7월 10일 본접수 미신청자입니다.",
+      "application": "농업경영체등록확인서와 신분증을 지참해 구리시청 별관 1층 산업지원과에 방문합니다. 평일 09:00~18:00에 접수하며 점심시간은 제외합니다.",
+      "note": "물량이 공급 기준을 초과하면 면적에 따라 줄어들 수 있습니다. 대리 신청은 본인 방문이 불가능한 경우에 한해 가능합니다.",
+      "officialUrl": "https://www.guri.go.kr/www/selectGosiNttView.do?gosiNttNo=49217&key=387&searchGosiSe=01%2C02%2C04%2C06",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127897",
+      "verifiedAt": "2026-11-13",
+      "reviewStatus": "approved",
+      "sourceHash": "88523dcea725622da8a74b1984809a4b172b3e4219c097517e60497681677abb"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "pocheon-68650",
+      "slug": "2026-pocheon-livestock-odor-facility-extra",
+      "title": "포천시 2026년 축산악취 컨설팅 기반 농가별 맞춤형 지원사업 대상자 추가 모집 공고",
+      "summary": "악취 저감 컨설팅 결과를 바탕으로 포천시의 축산농가 등에 맞춤형 시설 개선비를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "축산·조사료",
+        "시설·임대"
+      ],
+      "agency": "포천시 농업기술센터 축산과",
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-09",
+      "support": "선정 규모 1개소. 개소당 사업비 한도 2억 5천만 원이며 보조와 자부담이 각각 50%입니다. 컨설팅에서 개선이 필요한 것으로 확인된 축사·퇴비사 밀폐, 악취 저감 설비, 분뇨 처리시설 등을 지원합니다.",
+      "eligibility": "1순위는 2022~2025년 축산농가 악취저감 컨설팅 지원사업 참여 농가입니다. 2순위는 축산환경 컨설턴트 3급 이상 자격 소지자에게 컨설팅을 받은 농가와 축분비료공장입니다.",
+      "application": "포천시 농업기술센터 축산과 축산지원팀에 방문 접수합니다. 신청서류와 컨설팅 결과보고서 요건은 공고 첨부를 확인하세요. 문의 031-538-3899.",
+      "note": "게시일은 포천시 공고 게시판의 게재일 기준입니다. 필수 설치 장비와 지원 제외 항목은 첨부 공고문을 확인하세요.",
+      "officialUrl": "https://www.pocheon.go.kr/www/selectEminwonView.do?key=3712&notAncmtMgtNo=68650&notAncmtSeCode=01",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127900",
+      "verifiedAt": "2026-11-13",
+      "reviewStatus": "approved",
+      "sourceHash": "45960e4f9bed343d3dbf965824f55397a0169c5f7452929cf9108092df717d90"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "gongju-losims-20260450609",
+      "slug": "2026-gongju-compost-transport-support",
+      "title": "공주시 2026년 가축분뇨 처리(퇴비 운송비) 지원사업 공고",
+      "summary": "공주시 관내 공동자원화시설과 퇴비유통전문조직이 농협·농가에 가축분 퇴비를 운송하는 비용을 지원합니다.",
+      "region": [
+        "충남"
+      ],
+      "targets": [
+        "농업법인",
+        "생산자단체"
+      ],
+      "categories": [
+        "축산·조사료"
+      ],
+      "agency": "공주시 축산과 축산진흥팀",
+      "applicationStart": "2026-11-05",
+      "applicationEnd": "2026-11-13",
+      "applicationEndTime": "09:00",
+      "publishedAt": "2026-11-05",
+      "support": "농협·농가로 공급하는 가축분 퇴비의 운송비를 지원합니다. 보탬e 등록 사업 예산은 2,867만 원이며, 정산 시 자부담 50%와 배송·결제 증빙을 확인합니다.",
+      "eligibility": "공주시 관내 가축분뇨 공동자원화시설 또는 퇴비유통전문조직 중 가축분퇴비·퇴비 비료생산업 등록을 마치고 부숙도 기준에 맞는 퇴비를 생산·공급하는 조직입니다.",
+      "application": "신청서와 사업계획서를 보탬e로 제출하거나 공주시 축산과에 방문·우편 접수합니다. 문의 041-840-3486.",
+      "note": "보탬e 공모 상세의 신청 마감 시각은 11월 13일 오전 9시입니다. 다른 보조사업에서 운송비를 지원받은 물량은 제외됩니다.",
+      "officialUrl": "https://www.losims.go.kr/sp/pbcnBizCntt?fyr=2026&id=20260450609",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127779",
+      "verifiedAt": "2026-11-13",
+      "reviewStatus": "approved",
+      "sourceHash": "2c9a3e637fb3ba5badeb646cbee34a691612c84dcb4963624f71eaea8f11a230"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "goseong-pbln-127556",
+      "slug": "2026-goseong-domestic-wheat-support",
+      "title": "고성군 2026년 우리밀 육성 지원사업 신청 공고",
+      "summary": "경남 고성군의 우리밀 재배 농가에 종자·비료 등 농자재 구입비를 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "고성군 농업기술센터 농업기술과",
+      "applicationStart": "2026-10-28",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-10-29",
+      "support": "우리밀 종자, 비료 등 영농자재 구입비를 ha당 40만 원(자부담 포함)을 기준으로 지원합니다. 도비 10%, 군비 60%, 자부담 30%이며 신청량에 따라 단가가 바뀔 수 있습니다.",
+      "eligibility": "농업경영체에 등록한 농업인 중 밀 판매처를 확보하고 1,000㎡ 이상 재배한 농가입니다.",
+      "application": "읍·면사무소에 신청서, 당해 연도 계약재배 증빙과 자재 구입 영수증 등을 제출합니다.",
+      "note": "게시일과 시작일은 기업마당 공식 등록 기준입니다. 마감일·지원 조건은 첨부된 고성군 추진계획에서 대조했습니다.",
+      "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839806&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127556",
+      "verifiedAt": "2026-11-13",
+      "reviewStatus": "approved",
+      "sourceHash": "5f30807b7335eb7753f7e792721832be54e53cb02341635dcc3762f6648b02c9"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "goseong-pbln-127559",
+      "slug": "2026-goseong-organic-produce-incentive",
+      "title": "고성군 2026년 친환경농산물 생산장려금 지원 계획 공고",
+      "summary": "경남 고성군에서 친환경 인증 농지를 경작하는 농업인·법인에 생산장려금을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "고성군 농업기술센터 농업기술과",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-10-29",
+      "support": "유기·무농약 인증 구분, 실제 재배 면적 및 품목에 따라 차등 지급합니다. 지원 면적은 3ha 이내입니다.",
+      "eligibility": "고성군에 주소를 두고 농업경영체에 등록한 농업인·법인으로, 고성군에서 신청일 현재 유기·무농약 인증이 유효한 농지를 경작하는 경우입니다.",
+      "application": "농지 소재지 읍·면사무소에 신청서, 인증서 사본, 판매 실적 증명, 통장 사본을 제출합니다.",
+      "note": "게시일은 기업마당 공식 등록일입니다. 신청 일정은 관할 읍·면사무소에서 확인하세요.",
+      "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839776&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127559",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "기업마당 등록란의 접수 기간과 고성군 첨부 계획서의 접수 월 표기가 일치하지 않고, 계획서의 접수 항목에 전년도 사업연도가 표기되어 있습니다. 관할 읍·면사무소에서 정확한 기간을 확인하세요.",
+      "verifiedAt": "2026-11-13",
+      "reviewStatus": "approved",
+      "sourceHash": "62e8968a775902db3132d8fd543093d4ae3ae3a916ed8ac1cd376c84ba89b190"
     }
   ]
 }
