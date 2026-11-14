@@ -901,7 +901,7 @@
     <priority>0.8</priority>
   </url>
   <!-- policy-support start -->
-  <url><loc>https://kfarmai.com/subsidy-calendar.html</loc><lastmod>2026-11-13</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
+  <url><loc>https://kfarmai.com/subsidy-calendar.html</loc><lastmod>2026-11-14</lastmod><changefreq>daily</changefreq><priority>0.8</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-organic-farming-materials.html</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-gochang-rural-convergence-loan.html</loc><lastmod>2026-11-02</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-gochang-field-crop-equipment.html</loc><lastmod>2026-11-05</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -931,7 +931,7 @@
   <url><loc>https://kfarmai.com/policy/2027-hwaseong-organic-fertilizer-extra.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-hwasun-organic-fertilizer-extra.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-sangju-organic-farming-materials.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://kfarmai.com/policy/2027-pohang-organic-farming-materials.html</loc><lastmod>2026-11-06</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-pohang-organic-farming-materials.html</loc><lastmod>2026-11-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-gumi-organic-fertilizer-extra.html</loc><lastmod>2026-11-07</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-goesan-organic-fertilizer-extra.html</loc><lastmod>2026-11-07</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-jeungpyeong-organic-fertilizer-extra.html</loc><lastmod>2026-11-07</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -949,7 +949,7 @@
   <url><loc>https://kfarmai.com/policy/2027-yanggu-soil-amendment-change.html</loc><lastmod>2026-11-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2026-ganghwa-small-agri-processing-startup-round-3.html</loc><lastmod>2026-11-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2026-ganghwa-smartfarm-ict-round-2.html</loc><lastmod>2026-11-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://kfarmai.com/policy/2026-gunsan-retired-farm-machinery-collection.html</loc><lastmod>2026-11-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2026-gunsan-retired-farm-machinery-collection.html</loc><lastmod>2026-11-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-yangju-organic-farming-materials.html</loc><lastmod>2026-11-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-siheung-soil-amendment-extra.html</loc><lastmod>2026-11-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2026-siheung-organic-certification-cost-extension.html</loc><lastmod>2026-11-09</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -984,7 +984,7 @@
   <url><loc>https://kfarmai.com/policy/2026-namyangju-agricultural-residue-shredding-extra.html</loc><lastmod>2026-11-11</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-jindo-farm-machinery-support.html</loc><lastmod>2026-11-11</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-jindo-horticulture-specialty-crop-support.html</loc><lastmod>2026-11-11</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://kfarmai.com/policy/2027-mafra-farm-business-partnership-project.html</loc><lastmod>2026-11-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-mafra-farm-business-partnership-project.html</loc><lastmod>2026-11-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-sunchang-organic-farming-materials.html</loc><lastmod>2026-11-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-busan-seogu-organic-fertilizer-extra.html</loc><lastmod>2026-11-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-uiwang-organic-fertilizer-extra.html</loc><lastmod>2026-11-12</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
@@ -1013,6 +1013,9 @@
   <url><loc>https://kfarmai.com/policy/2027-yanggu-organic-fertilizer-change.html</loc><lastmod>2026-11-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2026-at-kfood-cold-pooling.html</loc><lastmod>2026-11-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/policy/2027-anseong-organic-fertilizer-extra.html</loc><lastmod>2026-11-13</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-paju-rural-convergence-loan.html</loc><lastmod>2026-11-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-daejeon-livestock-field-trials.html</loc><lastmod>2026-11-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://kfarmai.com/policy/2027-yeosu-seafood-processing-equipment.html</loc><lastmod>2026-11-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <!-- policy-support end -->
   <url><loc>https://kfarmai.com/kb/2026-public-rice-reserve-purchase-guide.html</loc><lastmod>2026-11-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://kfarmai.com/kb/2026-daegu-agricultural-machinery-expo-visit-guide.html</loc><lastmod>2026-11-03</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-13",
+  "updatedAt": "2026-11-14",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -858,13 +858,13 @@
         "경북"
       ],
       "agency": "포항시 농업기술센터 농업정책과",
-      "applicationStart": null,
+      "applicationStart": "2026-11-05",
       "applicationEnd": "2026-12-31",
       "publishedAt": "2026-11-05",
       "support": "유기농업자재, 녹비작물 종자, 자재원료 등 지원. 국비 20%, 지방비 30%, 자부담 50%이며 품목별 한도·제외 요건은 시행지침을 확인하세요.",
       "eligibility": "농업경영체에 등록한 농업인 및 농업법인. 품목별 세부 자격과 제출서류는 공고문 및 시행지침 확인.",
-      "application": "2026년 12월 31일까지 사업장 소재지 읍·면·동 행정복지센터에 신청합니다. 문의: 포항시 농업정책과 054-270-2683.",
-      "note": "포항시 농업기술센터 농업정책과 공고 제2026-9호의 공식 상세 본문에서 대상·지원비율·지원내용·마감일을 확인했습니다. 본문에는 접수 시작일이 명시되지 않아 추정하지 않았습니다.",
+      "application": "농지 소재지 읍·면·동 행정복지센터 산업팀에 방문 신청합니다. 문의 054-270-2682, 2683.",
+      "note": "포항시 농업기술센터 농업정책과 공고 제2026-9호와 기업마당 공식 등록 안내를 대조했습니다. 접수 시작일은 기업마당에 명시된 11월 5일입니다.",
       "officialUrl": "https://www.pohang.go.kr/portal/saeol/gosi/view.do?mid=0202010000&notAncmtMgtNo=76299",
       "targets": [
         "농업인",
@@ -873,9 +873,10 @@
       "categories": [
         "친환경"
       ],
-      "verifiedAt": "2026-11-06",
+      "verifiedAt": "2026-11-14",
       "reviewStatus": "approved",
-      "sourceHash": "e73cda3053752ddd4c9bb81787f30e88e96dfb60e1617f131769430f67ce01ac"
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127778",
+      "sourceHash": "81357b59eef8dc3a7000dd52944e73c05753571878154bd089be187ad0b33211"
     },
     {
       "sourceId": "local-government-notices",
@@ -1372,7 +1373,7 @@
       "sourceId": "local-government-notices",
       "externalId": "gunsan-9836114",
       "slug": "2026-gunsan-retired-farm-machinery-collection",
-      "title": "군산시 2026년 폐농기계 처리 지원사업 안내",
+      "title": "군산시 2026년 폐농기계 처리 지원사업 신청 재공고",
       "summary": "고장이나 노후화로 사용할 수 없는 폐농기계를 수거해 처리합니다.",
       "region": [
         "전북"
@@ -1383,18 +1384,19 @@
       "categories": [
         "농기계"
       ],
-      "agency": "군산시 나운2동·농업기술센터 농촌지원과",
+      "agency": "군산시 농업기술센터 농촌지원과",
       "applicationStart": "2026-11-05",
       "applicationEnd": "2026-11-20",
       "publishedAt": "2026-11-05",
       "support": "지정된 농업기계 해체·재활용 업체가 폐농기계를 수거해 처리합니다. 처리 중 발생한 고철대금은 업체가 농기계 소유자에게 지급합니다.",
       "eligibility": "군산시 관내에서 농업경영체 등록을 하고, 고장·파손·노후 등으로 정상 사용이 불가능한 농기계를 소유한 농업인이 대상입니다.",
       "application": "읍·면·동 산업계 또는 군산시 농업기술센터 농기계지원계에 신청합니다. 신청서, 소유 확인서, 개인정보 동의서, 신분증 사본과 소유 증빙을 준비합니다. 문의 063-454-5902.",
-      "note": "군산시 나운2동의 공식 안내 기준입니다. 지정업체와 수거 일정은 접수처에 확인하세요.",
-      "officialUrl": "https://www.gunsan.go.kr/main/m149/view/9836114",
-      "verifiedAt": "2026-11-08",
+      "note": "군산시 공고 제2026-2483호와 기업마당 공식 등록 안내에서 신청 기간과 지원 대상을 확인했습니다. 수거 일정은 접수처에 문의하세요.",
+      "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?Key=B_Subject&cha_dep_code_nm=&context=NTIS&countYn=Y&dept_nm=&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&list_gubun=&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_cn=&not_ancmt_mgt_no=74085&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&not_ancmt_sj=&ofr_pageSize=10&pageIndex=5&subCheck=Y&temp=&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&yyyy=",
+      "verifiedAt": "2026-11-14",
       "reviewStatus": "approved",
-      "sourceHash": "6a07b377e9ba686f2ed99b5c5f2a004ed1198c1bd5342e878d9170e4a88181a3"
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127793",
+      "sourceHash": "22910dec876fce1ee4ba9b65a9ee509c10c82881659f12ae7e6f8fe1108908aa"
     },
     {
       "sourceId": "local-government-notices",
@@ -2393,7 +2395,7 @@
       "sourceId": "mafra-official-notices",
       "externalId": "mafra-582218",
       "slug": "2027-mafra-farm-business-partnership-project",
-      "title": "농림축산식품부 2027년 모두의 상생 프로젝트 공모 안내",
+      "title": "농림축산식품부 2027년 모두의 상생 프로젝트 지원대상자 모집 공고",
       "summary": "농업과 기업의 국산 농산물 활용 공동사업을 지원합니다. 참여팀은 12월 8일 오후 6시까지 대표 시·도에 신청합니다.",
       "region": [
         "전국"
@@ -2411,16 +2413,16 @@
       "agency": "농림축산식품부 푸드테크정책과",
       "applicationStart": "2026-11-13",
       "applicationEnd": "2026-12-08",
-      "publishedAt": "2026-11-10",
-      "verifiedAt": "2026-11-13",
+      "publishedAt": "2026-11-13",
+      "verifiedAt": "2026-11-14",
       "support": "시험재배, 원료 검증, 제품·메뉴 개발, 시험생산과 판로 개척 등을 지원합니다. 프로젝트당 연간 총사업비는 최대 5억 원이며 국비 40%, 지방비 40%, 자부담 20%입니다. 최대 3년 계획을 신청할 수 있고 연차 평가를 거쳐 계속 지원 여부를 결정합니다.",
       "eligibility": "대표 시·도 1곳과 주관사업자 1곳이 필수인 컨소시엄을 구성합니다. 사업 수행에 필요한 기업, 생산자단체, 유통·물류조직, 연구기관 등이 참여할 수 있습니다.",
       "application": "대표 시·도와 사전 협의한 뒤 12월 8일 오후 6시까지 해당 시·도에 신청서와 사업계획서를 제출합니다. 시·도 추천을 거친 사업의 aT 최종 접수는 12월 15일 오후 6시까지입니다.",
-      "note": "11월 10일 농식품부 공식 사전 안내 기준입니다. 신청 서식과 세부 조건은 농식품부 공고문에서 확인하세요.",
-      "officialUrl": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjIxOCUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+      "note": "농림축산식품부 공고 제2026-583호입니다. 신청 서식과 세부 조건은 공고의 첨부파일을 확인하세요.",
+      "officialUrl": "https://mafra.go.kr/home/5108/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MSUyRjU4MjI3MiUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
       "reviewStatus": "approved",
       "applicationEndTime": "18:00",
-      "sourceHash": "0431ea960efbfc4721424801df99a48f473770563ad7f1a48f1ad7f9a9a7a0ab"
+      "sourceHash": "abca469bd1f32e82c39713a7b62545ab27b8def35452d3115be9ee4b8a696673"
     },
     {
       "sourceId": "official-policy-directory",
@@ -3249,6 +3251,95 @@
       "officialUrl": "https://www.anseong.go.kr/portal/saeol/newsView.do?mId=0502010100&newsEpctNo=21837",
       "reviewStatus": "approved",
       "sourceHash": "c32c3ed0cef6ad3b04c428cb1bf342c10fd850e3ac127d21477823bf7fab69db"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "paju-20261112102835027",
+      "slug": "2027-paju-rural-convergence-loan",
+      "title": "파주시 2027년 농촌융복합산업 자금(융자) 지원 사업 신청 알림",
+      "summary": "파주시 농촌융복합산업 인증사업자와 창업자 등이 시설·개보수·운영 자금 융자를 신청할 수 있습니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "파주시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-13",
+      "applicationEnd": "2026-11-23",
+      "publishedAt": "2026-11-12",
+      "support": "제조·가공·유통·체험 시설 설치와 개보수, 원료 구입 및 인건비 등 사업 운영에 필요한 자금을 융자합니다. 용도별 대출 조건은 첨부 지침에서 확인하세요.",
+      "eligibility": "농촌융복합산업 인증사업자나 농촌자원을 활용한 창업을 준비·추진 중인 사람, 초기 창업자가 신청할 수 있습니다. 창업 대상은 3년 이내 인증 조건이 있으며, 농업인·농업법인은 농업경영정보 미등록 시 제외됩니다.",
+      "application": "신청서, 사업계획서, 농업경영체 등록확인서와 농축협 발급 신용조사서를 파주시 농업기술센터 농촌산업팀에 제출합니다. 문의 031-940-2936.",
+      "note": "토지 구입과 농기계 구입은 시설자금 지원 대상에서 제외됩니다.",
+      "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261112102835027",
+      "verifiedAt": "2026-11-14",
+      "reviewStatus": "approved",
+      "sourceHash": "032e53255edcb02350ae9c12fa30047bc642a0f42e6c2d06345df74ef9b00a2a"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "daejeon-1526581350",
+      "slug": "2027-daejeon-livestock-field-trials",
+      "title": "대전광역시 2027년 축산 현장실증연구 농가선정 계획 알림",
+      "summary": "축산 신기술을 현장에서 실증할 농가를 모집합니다.",
+      "region": [
+        "대전"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "축산·조사료"
+      ],
+      "agency": "대전광역시 농업기술센터 기술보급과",
+      "applicationStart": "2026-11-11",
+      "applicationEnd": "2026-11-24",
+      "publishedAt": "2026-11-12",
+      "support": "축산 신기술의 현장 적용을 위한 실증연구 7개 과제에 참여할 농가를 선정합니다. 과제당 2~3곳, 총 14~21곳 내외이며 과제별 내용은 붙임을 확인하세요.",
+      "eligibility": "농업인, 농업법인 및 관련 종사자 중 지원하려는 과제의 참여 요건을 충족하는 사람입니다.",
+      "application": "공고 첨부의 붙임 3 양식을 작성해 11월 24일까지 공고에 안내된 이메일로 제출합니다. 문의 042-270-6942.",
+      "note": "사업 전체 일정은 11월 25일까지이며, 대전광역시 농업기술센터의 신청서 제출 기한은 내부 검토 일정에 따라 11월 24일입니다.",
+      "officialUrl": "https://daejeon.go.kr/far/community/NoticeView.do?menuSeq=216&ntatcSeq=1526581350",
+      "verifiedAt": "2026-11-14",
+      "reviewStatus": "approved",
+      "sourceHash": "ef7cb79839abf9abeead517c439ef81cfc3bd78c351e9a5772b20471a2b3cd99"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127914",
+      "slug": "2027-yeosu-seafood-processing-equipment",
+      "title": "여수시 2027년 수산식품 가공설비 지원 분야 사업자 모집 공고",
+      "summary": "여수시 수산식품 업체 등의 가공설비 도입과 기존 시설 개선을 지원합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농식품기업",
+        "생산자단체"
+      ],
+      "categories": [
+        "유통·가공",
+        "시설·임대"
+      ],
+      "agency": "여수시 수산경영과 수산유통팀",
+      "applicationStart": "2026-11-12",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-13",
+      "verifiedAt": "2026-11-14",
+      "support": "수산식품 가공설비 지원과 수산가공업체 시설개선 지원으로 나뉩니다. 세부 지원 범위는 공고문을 확인하세요.",
+      "eligibility": "여수시 관할의 수산물 가공·수출업체, 수산가공품을 생산하는 수산물가공업자와 어촌계 등이 해당합니다. 지원 분야마다 대상 요건이 다릅니다.",
+      "application": "여수시 수산경영과 수산유통팀(국동임시별관 3층) 또는 관할 읍·면·동 사무소에 방문 신청합니다. 문의 061-659-3912.",
+      "note": "표시된 공식 등록일과 접수 기간은 기업마당 등록 안내 기준입니다. 사업별 신청서와 공고문도 기업마당에 첨부돼 있습니다.",
+      "officialUrl": "https://www.yeosu.go.kr/www/govt/news/notify/new_notifys/new_notify?idx=81085&mode=view",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127914",
+      "reviewStatus": "approved",
+      "sourceHash": "3b467745e8942ce1d21b0b8b1055f37090cbe77c694bf8fcdd4c17b22a59660f"
     }
   ]
 }
