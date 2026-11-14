@@ -513,17 +513,17 @@
       "applicationStart": null,
       "applicationEnd": null,
       "publishedAt": "2026-10-29",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-14",
       "support": "GAP 인증 신청수수료, 현지 심사 출장비, 토양·수질·농산물 안전성 분석비 등 지원. 항목별 지급 기준은 공고문을 확인하세요.",
       "eligibility": "고성군에 주소지를 둔 GAP 인증 농업인·단체. 신청일에 인증을 유지하고 인증서 발급일이 2026.7.1.~11.30.에 해당해야 합니다.",
       "application": "주소지 읍·면사무소에 방문 신청합니다. 접수 일정·제출서류 확인 및 문의: 고성군 055-670-2114.",
-      "note": "기업마당의 공식 등록 안내에서 공표 사실과 지원 대상·내용을 확인했습니다. 기관 원문 접속이 어려워 접수 일정은 확정 표기하지 않았습니다. 인증서 발급일 요건은 접수기간과 다릅니다.",
+      "note": "기업마당에는 10월 28일~11월 27일로 표시되지만, 고성군 첨부 계획서는 10월에 사업을 안내하고 11월에 신청서를 접수한다고 적고 있습니다. 정확한 시작일과 마감일은 주소지 읍·면사무소에 확인하세요. 인증서 발급일 요건은 접수기간과 별개입니다.",
       "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839807&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127562",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "고성군 기관 원문 재접속이 시간 초과로 끝나 접수 일정을 대조하지 못했습니다. 공표 사실·대상·지원내용은 기업마당 공식 등록 안내로 확인했습니다. 신청 전 읍면사무소에 접수 날짜를 확인하세요.",
+      "dateCheckReason": "기업마당에는 10월 28일~11월 27일로 표시되지만, 고성군 첨부 계획서는 10월에 사업을 안내하고 11월에 신청서를 접수한다고 적고 있습니다. 정확한 시작일과 마감일은 주소지 읍·면사무소에 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "4dc64b063f7b4dd231ff74928a67f6c4298f3aecb8e427a366dad40b8eb7aaa2"
+      "sourceHash": "3dee1d964aaaf08798f11d6155133f4a96b5f1b68f6f657f2cd2c2e2375554ea"
     },
     {
       "sourceId": "official-policy-directory",
@@ -544,17 +544,17 @@
       "applicationStart": null,
       "applicationEnd": null,
       "publishedAt": "2026-10-29",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-14",
       "support": "친환경농산물 인증 신청수수료, 출장심사비, 인증심사 관리비, 성분분석비 등 지원. 항목별 지급 한도와 증빙은 공고문을 확인하세요.",
       "eligibility": "고성군에 주소지와 농지를 두고 신청일에 친환경인증을 유지하는 농업인·단체. 인증서 발급일 요건은 2025.12.1.~2026.11.30.입니다.",
       "application": "농지 소재지 읍·면사무소에 방문 신청합니다. 접수 일정·제출서류 확인 및 문의: 고성군 055-670-2114.",
-      "note": "기업마당의 공식 등록 안내에서 공표 사실과 대상·지원내용을 확인했습니다. 기관 원문 접속이 어려워 접수 일정은 확정 표기하지 않았습니다. 인증서 발급일 요건은 접수기간과 다릅니다.",
+      "note": "기업마당에는 10월 28일~11월 30일로 표시되지만, 고성군 첨부 계획서의 신청서 접수는 11~12월로 안내돼 있습니다. 정확한 시작일과 마감일은 농지 소재지 읍·면사무소에 확인하세요. 인증서 발급일 요건은 접수기간과 별개입니다.",
       "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000118&dataSid=5839776&menuCd=DOM_000000102002001000&orderBy=REGISTER_DATE+DESC&paging=ok&startPage=1",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127558",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "고성군 기관 원문에 재접속하지 못하여 접수 일정을 대조하지 못했습니다. 공표 사실·대상·지원내용은 기업마당 공식 등록 안내로 확인했습니다. 신청 전 농지소재지 읍면사무소에 접수 날짜를 확인하세요.",
+      "dateCheckReason": "기업마당에는 10월 28일~11월 30일로 표시되지만, 고성군 첨부 계획서의 신청서 접수는 11~12월로 안내돼 있습니다. 정확한 시작일과 마감일은 농지 소재지 읍·면사무소에 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "32effba570f19f656c9b1cc758236c41b4d0c257306ec54d763bf010fa78869b"
+      "sourceHash": "84ae6af88e8f7a42080d0c197b87d4ba038dc781119eb0822f3a225774d6e2fd"
     },
     {
       "sourceId": "local-government-notices",
@@ -3340,6 +3340,64 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127914",
       "reviewStatus": "approved",
       "sourceHash": "3b467745e8942ce1d21b0b8b1055f37090cbe77c694bf8fcdd4c17b22a59660f"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gochang-838235",
+      "slug": "2026-gochang-seafood-processing-equipment-round-5",
+      "title": "고창군 2026년 수산식품 가공설비 지원사업 5차 모집 공고",
+      "summary": "고창군 수산가공품 생산자의 선별·검출·포장 설비 도입을 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농식품기업"
+      ],
+      "categories": [
+        "유통·가공",
+        "시설·임대"
+      ],
+      "agency": "고창군 해양수산과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-13",
+      "support": "2곳에 이물 선별기, 금속 검출기와 포장설비 등을 지원합니다. 총사업비는 3,900만 원으로 보조 60%, 자부담 40%입니다. 원료·완제품 보관용 냉동·냉장설비 등 부대시설은 제외됩니다.",
+      "eligibility": "수산가공품을 생산하는 개인 또는 법인입니다. 공고문에 따라 설비를 설치할 시설을 소유하고 자부담금을 확보해야 합니다. 산업·시설 요건과 제외 대상은 공고문을 확인하세요.",
+      "application": "사업신청서와 사업계획서, 시설 소유 증빙 등 해당 서류를 고창군 해양수산과 수산진흥팀에 제출합니다. 문의 063-560-2642.",
+      "note": "고창군 공고 제2026-2006호입니다. 신림면에 게시된 안내는 같은 사업입니다.",
+      "officialUrl": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000180&dataSid=838235&orderBy=TMP_FIELD4+DESC%2CTMP_FIELD1+DESC&paging=ok&startPage=1",
+      "verifiedAt": "2026-11-14",
+      "reviewStatus": "approved",
+      "sourceHash": "580108741fb98dc294ff830f5311a30dc551c0ed9754cf9bbc3903320489b184"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "boseong-1160939",
+      "slug": "2027-boseong-livestock-field-trials",
+      "title": "보성군 2027년 축산 현장실증연구 농가선정 신청 접수",
+      "summary": "보성군 농업기술센터가 축산 신기술 현장실증 신청을 받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "축산·조사료"
+      ],
+      "agency": "보성군 농업기술센터 기술보급과",
+      "applicationStart": "2026-11-11",
+      "applicationEnd": "2026-11-24",
+      "publishedAt": "2026-11-12",
+      "support": "현장실증 7개 과제에 총 14~21곳 내외를 선정합니다. 한우 자가 혼합사료 공동제조 실증 등 과제에 따라 사료비·실증 재료 등의 지원 범위가 다릅니다.",
+      "eligibility": "농업인, 농업법인 및 관련 종사자 중 신청 과제의 사육 규모, 시설 등 요건을 충족하는 사람입니다. 과제별 대상 지역과 자격은 첨부 계획을 확인하세요.",
+      "application": "공고 첨부 신청서를 작성해 보성군 농업기술센터 기술보급과 소득작물팀에 방문하거나 공고의 이메일로 제출합니다. 이메일 제출 후 전화로 접수 여부를 확인하세요. 문의 061-850-5742.",
+      "note": "보성군의 접수 일정입니다. 과제별 사육 조건과 지원 내용을 첨부 계획에서 확인하세요.",
+      "officialUrl": "https://www.boseong.go.kr/atec/participation/notice?idx=1160939&mode=view",
+      "verifiedAt": "2026-11-14",
+      "reviewStatus": "approved",
+      "sourceHash": "1a80a5415d99edf2c2efc303b746f72cb2b17e5a43d784c40b6c794a9c9ca428"
     }
   ]
 }
