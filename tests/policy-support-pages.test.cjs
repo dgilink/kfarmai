@@ -47,7 +47,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 116);
+  assert.equal(publication.items.length, 122);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -57,7 +57,7 @@ test('only reviewed official notices have one discoverable static detail each', 
     ))).digest('hex');
     assert.equal(item.reviewStatus, 'approved');
     assert.equal(item.sourceHash, digest);
-    assert.match(item.officialUrl, /^https:\/\/(?:[^/]+\.(?:go|gov)\.kr\/|www\.ycg\.kr\/open\.content\/ko\/administrative\/news\/announcement\/\?id=\d+(?:&|$)|www\.jvada\.or\.kr\/bbs\/board\.php\?bo_id=notice&wr_id=1213$)/);
+    assert.match(item.officialUrl, /^https:\/\/(?:[^/]+\.(?:go|gov)\.kr\/|www\.ycg\.kr\/open\.content\/ko\/administrative\/news\/announcement\/\?id=\d+(?:&|$)|www\.jvada\.or\.kr\/bbs\/board\.php\?bo_id=notice&wr_id=1213$|www\.foodpolis\.kr\/web\/Board\/4453\/detailView\.do$)/);
     assert.ok(index.includes(`/policy/${item.slug}.html`));
     assert.ok(html.includes(`<link rel="canonical" href="${url}">`));
     assert.ok(html.includes(item.title));
@@ -116,11 +116,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '116건');
+  assert.equal(fields.noticeCount.textContent, '122건');
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '53건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 57);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 63);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '6건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -132,7 +132,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '116건');
+  assert.equal(fields.noticeCount.textContent, '122건');
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
   fields.policySearch.events.input();
@@ -215,6 +215,7 @@ test('date exception preserves approval, official URL and hash checks and requir
     {officialUrl:'https://www.ycg.kr/other/?id=32008'},
     {officialUrl:'https://sub.ycg.kr/open.content/ko/administrative/news/announcement/?id=32008'},
     {officialUrl:'https://www.jvada.or.kr/bbs/board.php?bo_id=notice&wr_id=1214'},
+    {officialUrl:'https://www.foodpolis.kr/web/Board/4454/detailView.do'},
     {dateCheckReason:''}, {applicationDateStatus:undefined}
   ]) {
     const item=rehash({...candidate,...overrides});

@@ -22,8 +22,10 @@ const validOfficial = value => {
     /^[0-9]+$/.test(url.searchParams.get('id') || '');
   const isJeonbukAgriNotice = url.host === 'www.jvada.or.kr' &&
     url.pathname === '/bbs/board.php' && url.search === '?bo_id=notice&wr_id=1213';
+  const isFoodpolisNotice = url.origin === 'https://www.foodpolis.kr' &&
+    url.pathname === '/web/Board/4453/detailView.do' && !url.search && !url.hash;
   return url.protocol === 'https:' && !url.username && !url.password &&
-    (/\.(?:go|gov)\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice || isJeonbukAgriNotice);
+    (/\.(?:go|gov)\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice || isJeonbukAgriNotice || isFoodpolisNotice);
 };
 if (publication.schemaVersion !== 1 || !Array.isArray(items) || !items.length) throw Error('No reviewed policy notices');
 const slugs = new Set();

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-14",
+  "updatedAt": "2026-11-15",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -3398,6 +3398,185 @@
       "verifiedAt": "2026-11-14",
       "reviewStatus": "approved",
       "sourceHash": "1a80a5415d99edf2c2efc303b746f72cb2b17e5a43d784c40b6c794a9c9ca428"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127889",
+      "slug": "2027-yeosu-seafood-packaging",
+      "title": "여수시 2027년 수산식품 분야 포장재 지원 사업자 모집 공고",
+      "summary": "여수시 수산식품 취급업체의 수출용·지역특산품 포장재 제작 등을 지원합니다.",
+      "agency": "여수시 수산경영과 수산유통팀",
+      "targets": [
+        "농식품기업"
+      ],
+      "categories": [
+        "유통·가공",
+        "경영·판로"
+      ],
+      "applicationStart": "2026-11-11",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-12",
+      "support": "수출 수산가공식품과 여수시 해누리 상표 사용 제품의 포장재, 지리적 표시 표지, 지역특산품 규격 포장재 제작을 지원합니다.",
+      "eligibility": "여수시 관내 수산물·수산가공식품 취급업체입니다. 사업 유형에 따라 수출 실적이나 해누리 상표 사용 자격 등 요건이 다릅니다.",
+      "application": "해당 사업의 신청 서류를 여수시 수산경영과 수산유통팀(국동임시별관 3층) 또는 관할 읍·면·동 사무소에 제출합니다. 문의 061-659-3912.",
+      "note": "여수시 공고 제2026-3452호입니다. 접수 시작일과 등록일은 기업마당 등록 안내 기준이며, 마감일은 첨부 공고문과 일치합니다.",
+      "officialUrl": "https://www.yeosu.go.kr/www/govt/news/notify/new_notifys/new_notify?idx=81079&mode=view",
+      "region": [
+        "전남"
+      ],
+      "verifiedAt": "2026-11-15",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127889",
+      "reviewStatus": "approved",
+      "sourceHash": "6f8eb32211c637e0f1f267390c4cfb09537e95e80ab2a5690490dbcb3f7e751c"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127922",
+      "slug": "2027-yeosu-fisheries-resource-conservation-payment",
+      "title": "여수시 2027년 수산공익직불제(수산자원보호직불제) 사업 공고",
+      "summary": "여수시가 수산자원 보호 의무를 이행할 어업인 단체의 직불금 신청을 받습니다.",
+      "agency": "여수시 수산경영과 수산물안전팀",
+      "targets": [
+        "생산자단체"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-13",
+      "support": "기본의무와 선택의무 2개 이상을 이행한 어업인 등에게 지급합니다. 총톤수 2톤 이하 어선은 척당 150만 원, 2톤 초과는 톤수 구간별 단가로 산정합니다.",
+      "eligibility": "허가 어선으로 근해어선 5척 이상 또는 연안어선 10척 이상인 신청 단체를 구성한 어업인 등입니다. 근해·연안 어선의 혼합 구성은 허용되지 않으며 준수의무 이행계획을 제출해야 합니다.",
+      "application": "신청 단체가 이행계획서 등 공고문 서류를 여수시 국동임시별관 3층(신월로 648)에 방문 제출합니다. 문의 061-659-2182.",
+      "note": "여수시 공고 제2026-3470호의 첨부 공고문과 기업마당 등록 안내를 대조했습니다.",
+      "officialUrl": "https://www.yeosu.go.kr/www/govt/news/notify/new_notifys/new_notify?idx=81103&mode=view",
+      "region": [
+        "전남"
+      ],
+      "verifiedAt": "2026-11-15",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127922",
+      "reviewStatus": "approved",
+      "sourceHash": "79a4163820f72602d2b28e67dcc64882d6b9e8225bdc09a456a3fd905196ca3c"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127729",
+      "slug": "2027-wando-young-fisheries-settlement",
+      "title": "완도군 2027년 청년어촌정착지원 사업자 모집 공고",
+      "summary": "완도군에서 수산업을 시작하는 청년의 어촌 정착을 지원합니다.",
+      "agency": "완도군 인구일자리과 귀촌지원팀",
+      "targets": [
+        "어업인",
+        "예비창업자"
+      ],
+      "categories": [
+        "청년·창업"
+      ],
+      "applicationStart": "2026-11-09",
+      "applicationEnd": "2026-12-02",
+      "publishedAt": "2026-11-04",
+      "support": "수산업 독립경영 연차에 따라 월 110만 원(1년차), 100만 원(2년차), 90만 원(3년차)을 지원합니다.",
+      "eligibility": "2027년 기준 만 18세 이상 40세 미만으로 수산업 경영 기반이 있는 완도군에 주민등록을 두고 거주하며 독립경영 3년 이하인 청년입니다. 독립경영 예정자도 포함하며 병역과 제외 요건은 공고문을 확인하세요.",
+      "application": "거주지 읍·면사무소 수산팀에 방문 신청합니다. 문의 061-550-5091.",
+      "note": "완도군 공고 제2026-1076호에 첨부된 모집 공고문에서 접수기간과 연차별 지원액을 확인했습니다.",
+      "officialUrl": "https://www.wando.go.kr/wando/sub.cs?m=1031&nttId=31665",
+      "region": [
+        "전남"
+      ],
+      "verifiedAt": "2026-11-15",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127729",
+      "reviewStatus": "approved",
+      "sourceHash": "f5fbcd6648874f694bf90ece34c9b60bc50a64565f891b87c12c7798fb376a95"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127928",
+      "slug": "2027-boseong-young-fisheries-settlement",
+      "title": "보성군 2027년 청년어촌정착 지원사업 신청 공고",
+      "summary": "보성군이 초기 청년어업인의 경영과 어촌 정착에 필요한 자금을 지원합니다.",
+      "agency": "보성군 해양수산과",
+      "targets": [
+        "어업인",
+        "예비창업자"
+      ],
+      "categories": [
+        "청년·창업"
+      ],
+      "applicationStart": "2026-11-12",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-13",
+      "support": "청년어촌정착 지원금을 어업 경영비와 어가 가계자금에 사용할 수 있습니다. 세부 지급 조건과 사용 기준은 시행지침을 확인하세요.",
+      "eligibility": "보성군에 주민등록을 두고 실제 거주하는 만 40세 미만 청년어업인으로 수산업 경력이 3년 이하여야 합니다. 예정자도 포함하며, 기업마당 안내는 1987~2009년 출생자와 병역필·면제 조건을 명시합니다.",
+      "application": "보성군 해양수산과 또는 읍·면사무소에 방문 신청합니다. 문의 061-850-5434.",
+      "note": "신청기간과 지원 대상은 보성군 공고 제2026-1393호와 기업마당 공식 등록 안내를 대조했습니다.",
+      "officialUrl": "https://www.boseong.go.kr/www/open_administration/city_news/notification?idx=38270&mode=view",
+      "region": [
+        "전남"
+      ],
+      "verifiedAt": "2026-11-15",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127928",
+      "reviewStatus": "approved",
+      "sourceHash": "a5e1e2e71bcdfa212bbf8ca3af8346cfec3c260700a6c67932a397ccbc1bbc35"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127919",
+      "slug": "2027-siheung-fisheries-resource-conservation-payment",
+      "title": "시흥시 2027년 수산자원보호 직접직불제 사업대상자 모집 공고",
+      "summary": "시흥시가 수산자원 보호 의무를 이행할 어업인 단체의 직불금 신청을 받습니다.",
+      "agency": "시흥시 해양수산과",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "생산자단체"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-13",
+      "support": "선정된 어선 중 총톤수 2톤 이하는 척당 150만 원을 지급하고, 2톤 초과는 톤수 구간별 단가로 지급액을 산정합니다.",
+      "eligibility": "사업 요건을 충족하는 어업인 등과 면허·허가를 받은 회사입니다. 신청 단체가 기본의무와 선택의무 2개 이상의 이행 세부계획을 제출해야 합니다.",
+      "application": "신청서를 시흥시 해양지원센터(월곶중앙로 54)에 방문 제출합니다. 문의 031-310-2379.",
+      "note": "시흥시 공고 제2026-2947호입니다. 단체 구성과 제출서류는 공고문과 시행 지침을 확인하세요.",
+      "officialUrl": "https://www.siheung.go.kr/main/saeol/gosi/view.do?mId=0401040100&notAncmtMgtNo=86673&seCode=01",
+      "verifiedAt": "2026-11-15",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127919",
+      "reviewStatus": "approved",
+      "sourceHash": "294c00ad2b0d0a1330fe97cc37f79daf01c7305c4b0c8d9af2ddcf77b71a3d0c"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127924",
+      "slug": "2026-jeonbuk-functional-food-commercialization-round-3",
+      "title": "전북 기능성식품 규제자유특구 2026년 사업화지원 사업 3차 모집",
+      "summary": "전북 기능성식품 규제자유특구 사업자의 제품 검증, 사업화와 판로 확대를 지원합니다.",
+      "agency": "한국식품산업클러스터진흥원",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농식품기업"
+      ],
+      "categories": [
+        "경영·판로",
+        "연구개발"
+      ],
+      "applicationStart": "2026-11-13",
+      "applicationEnd": "2026-11-23",
+      "applicationEndTime": "17:00",
+      "publishedAt": "2026-11-12",
+      "support": "시험·분석, 현장 기술지도와 디자인, 홍보물 제작, 사업화 전략 및 전시회 참가를 지원합니다. 기업당 한도는 최대 5,000만 원입니다.",
+      "eligibility": "전북 기능성식품 규제자유특구 사업자입니다. 프로그램별 지원 범위와 한도는 모집 공고를 확인하세요.",
+      "application": "신청 서류를 한 파일로 압축해 공고 담당자 이메일에 제출합니다. 직인·서명 서류는 PDF를 사용합니다. 문의 063-720-0641.",
+      "note": "한국식품산업클러스터진흥원 공고 제2026-75호의 마감 시간은 11월 23일 오후 5시입니다.",
+      "officialUrl": "https://www.foodpolis.kr/web/Board/4453/detailView.do",
+      "verifiedAt": "2026-11-15",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127924",
+      "reviewStatus": "approved",
+      "sourceHash": "d4795d02bc745e74056a95512295bcb505ff9915add7691e8af301052f55cb5f"
     }
   ]
 }
