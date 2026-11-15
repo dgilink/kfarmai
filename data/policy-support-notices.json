@@ -3577,6 +3577,62 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127924",
       "reviewStatus": "approved",
       "sourceHash": "d4795d02bc745e74056a95512295bcb505ff9915add7691e8af301052f55cb5f"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yeongam-40795",
+      "slug": "2027-yeongam-farm-residue-shredding-for-farmers",
+      "title": "영암군 2027년 영농부산물 안전처리 지원사업 농업인 신청 공고",
+      "summary": "영암군 농업인을 대상으로 고춧대와 과수 잔가지 등 영농부산물을 현장에서 무료로 파쇄합니다.",
+      "targets": [
+        "농업인"
+      ],
+      "applicationStart": "2026-11-13",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-13",
+      "support": "파쇄지원단이 농가를 순회해 과수 잔가지, 고춧대, 콩대·참깨대 등을 무료 파쇄합니다. 볏짚, 조경수 전정 가지, 굵은 과수 가지 등은 제외됩니다.",
+      "eligibility": "영암군 농업인입니다. 산림과 맞닿은 지점에서 100m 이내의 농지를 경작하는 65세 이상 농업경영체 농업인이 1순위이며, 다른 고령농과 여성농 등이 뒤를 잇습니다.",
+      "application": "농지 소재지 읍·면 행정복지센터에 신청합니다. 농업경영체 등록증 등 제출서류와 사전 준비사항은 첨부 공고문을 확인하세요. 문의 061-470-6610.",
+      "note": "영암군 농업기술센터 공고 제2026-57호입니다. 파쇄지원단 모집과 별도로 농업인의 무료 파쇄 신청을 받는 공고입니다.",
+      "region": [
+        "전남"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "영암군 농업기술센터 농촌지원과",
+      "officialUrl": "https://eminwon.yeongam.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?Key=B_Subject&context=NTIS&countYn=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=40795&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&ofr_pageSize=10&subCheck=Y&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0",
+      "verifiedAt": "2026-11-15",
+      "reviewStatus": "approved",
+      "sourceHash": "f73a92acabfbf70d2fe361501177d49ed0813f272f123aebad51814648f36224"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yeongam-40748",
+      "slug": "2027-yeongam-farm-residue-shredding-team",
+      "title": "영암군 2027년도 영농부산물 안전처리 지원사업 파쇄지원단 신청 공고",
+      "summary": "영암군 전역에서 영농부산물을 파쇄할 지원단 1곳을 모집합니다.",
+      "targets": [
+        "단체"
+      ],
+      "applicationStart": "2026-11-06",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-06",
+      "support": "현장 파쇄지원단의 운영비, 차량 운행비, 인건비, 유류비, 교육비, 안전용품 등을 지원합니다. 총사업비는 1억 3,200만 원입니다.",
+      "eligibility": "영암군에 주소를 두고 공익활동을 주목적으로 하며 최근 1년 이상 공익활동 실적이 있는 비영리단체 또는 법인입니다. 제외 대상과 세부 자격은 공고문을 확인하세요.",
+      "application": "영암군 농업기술센터 농촌지원과 농기계임대팀에 방문하거나 우편으로 제출합니다. 우편은 11월 20일 소인까지 인정합니다. 문의 061-470-6610.",
+      "note": "영암군 농업기술센터 공고 제2026-55호입니다. 담당 부서 검토와 농업산학협동심의회를 거쳐 지원단을 선정합니다.",
+      "region": [
+        "전남"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "영암군 농업기술센터 농촌지원과",
+      "officialUrl": "https://eminwon.yeongam.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?Key=B_Subject&context=NTIS&countYn=Y&homepage_pbs_yn=Y&initValue=Y&jndinm=OfrNotAncmtEJB&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=40748&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&ofr_pageSize=10&subCheck=Y&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0",
+      "verifiedAt": "2026-11-15",
+      "reviewStatus": "approved",
+      "sourceHash": "ddccffebb845fc46e66311d2dc7916d10b33186f50b5f27f51a264560f7b736d"
     }
   ]
 }
