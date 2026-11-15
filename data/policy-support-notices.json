@@ -479,20 +479,18 @@
         "축산·조사료"
       ],
       "agency": "청도군",
-      "applicationStart": null,
-      "applicationEnd": null,
+      "applicationStart": "2026-10-28",
+      "applicationEnd": "2026-11-13",
       "publishedAt": "2026-10-29",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-15",
       "support": "호밀·옥수수 등 사료작물을 재배하는 농가에 생산장려금 지원. 볏짚은 제외되며 지원단가·면적 기준은 시행지침을 확인하세요.",
       "eligibility": "조사료를 생산하는 농업인·농업법인·농축협 등. 재배 농지와 세부 자격은 청도군 시행지침을 확인하세요.",
-      "application": "청도군에 신청합니다. 접수 일정·제출서류 확인 및 문의: 청도군 농업기술센터 054-370-6535.",
-      "note": "기업마당의 공식 등록 안내에서 공고 제목·기관·대상·지원내용을 확인했습니다. 청도군 원문 접속이 어려워 접수 일정은 확정 표기하지 않았습니다.",
+      "application": "청도군 농업기술센터에 11월 13일까지 신청하는 사업이었습니다. 사업 문의 054-370-6535.",
+      "note": "기업마당 공식 등록 안내에서 10월 28일 접수 시작과 11월 13일 마감을 확인했습니다. 청도군 시행지침은 기업마당 등록 안내에 첨부돼 있습니다.",
       "officialUrl": "https://www.cheongdo.go.kr/portal/saeol/gosi/view.do?mid=0301020000&notAncmtMgtNo=24598",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127564",
-      "applicationDateStatus": "checking",
-      "dateCheckReason": "청도군 기관 원문이 웹 방화벽 차단 화면을 반환하여 접수 일정을 대조하지 못했습니다. 공표 사실·대상·지원내용은 기업마당 공식 등록 안내로 확인했습니다. 신청 전 농업기술센터에 접수 날짜를 확인하세요.",
       "reviewStatus": "approved",
-      "sourceHash": "4db6e7e10f29cf6058faf8e3100e202b7e865f29e11393bef428cbec2b8028aa"
+      "sourceHash": "de68b95fe58573ea0b09b31d6dd35125781eb80cf10b8317a43bf38918474190"
     },
     {
       "sourceId": "official-policy-directory",
@@ -3633,6 +3631,65 @@
       "verifiedAt": "2026-11-15",
       "reviewStatus": "approved",
       "sourceHash": "ddccffebb845fc46e66311d2dc7916d10b33186f50b5f27f51a264560f7b736d"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gumi-074411",
+      "slug": "2027-gumi-farm-residue-shredding",
+      "title": "구미시 2027년 영농부산물 파쇄처리 지원 신청 모집 공고",
+      "summary": "산림 인접 농지를 경작하는 구미시 고령농·여성농 등에게 영농부산물 무료 파쇄를 지원합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "구미시 농업기술센터 기술개발과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-02",
+      "support": "과수 전정 가지, 고춧대, 깻대 등 영농부산물을 무료로 파쇄합니다. 진미동 공식 안내의 파쇄 예정 기간은 2027년 1~4월입니다.",
+      "eligibility": "구미시에 주소를 둔 등록 농업경영주로 산림 인접 100m 이내 농지를 경작하며, 공고의 69세 이상 고령농·1인 여성 농업경영체·장애나 질병 등으로 영농이 어려운 농가 요건 중 하나를 충족해야 합니다.",
+      "application": "농지 소재지가 읍·면이면 농업인상담소, 동이면 행정복지센터에 방문 신청합니다. 신청서와 해당 증빙을 준비하세요. 문의 054-480-4254.",
+      "note": "구미시 농업기술센터 공고 제2026-52호와 진미동 안내를 대조했습니다.",
+      "officialUrl": "https://www.gumi.go.kr/portal/saeol/gosi/view.do?mid=0401040000&notAncmtMgtNo=074411&seCode=04",
+      "verificationUrl": "https://www.gumi.go.kr/jinmi/board/post/view.do?bcIdx=1&idx=844112&mid=0201000000",
+      "verifiedAt": "2026-11-15",
+      "reviewStatus": "approved",
+      "sourceHash": "959a0b14a413790c8c9d0356eb5c3516d2b3c6a9424f0ea1bfafb5f8d082f97e"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "jindo-26376",
+      "slug": "2027-jindo-young-fisheries-settlement",
+      "title": "진도군 2027년 청년어촌정착지원사업 모집 공고",
+      "summary": "진도군에서 수산업을 시작한 청년에게 어촌정착 지원금을 지급합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인",
+        "예비창업자"
+      ],
+      "categories": [
+        "청년·창업"
+      ],
+      "agency": "진도군 수산지원과",
+      "applicationStart": "2026-11-05",
+      "applicationEnd": "2026-11-30",
+      "publishedAt": "2026-11-05",
+      "support": "수산업 독립경영 연차에 따라 월 110만 원(1년차), 100만 원(2년차), 90만 원(3년차)을 지원합니다. 수산업 경영비와 어가 가계자금에 사용할 수 있습니다.",
+      "eligibility": "수산업 경영 기반이 있는 진도군에 주민등록을 두고 실제 거주하는 만 40세 미만 청년어업인 중 독립경영 3년 이하인 사람입니다. 독립경영 예정자도 포함하며 세부 자격은 첨부 공고를 확인하세요.",
+      "application": "신청서와 사업계획서 등 공고문 서류를 진도군 수산지원과나 읍·면사무소에 방문 제출합니다. 문의 061-544-2181, 2182.",
+      "note": "진도군 공고 제2026-958호와 기업마당 공식 등록 안내에서 접수기간을 확인했습니다.",
+      "officialUrl": "https://www.jindo.go.kr/home/gosi/general.cs?act=view&notAncmtMgtNo=26376",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127732",
+      "verifiedAt": "2026-11-15",
+      "reviewStatus": "approved",
+      "sourceHash": "b7e156a6ef455321d2d4504b2c6aee54dbe071c64757b35c52e4fc0d9a8ad0d3"
     }
   ]
 }
