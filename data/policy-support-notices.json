@@ -3774,12 +3774,129 @@
       "publishedAt": "2026-11-02",
       "support": "2027년 1년간 농자재 공급, 위탁금 집행과 정산을 맡을 업체를 선정합니다.",
       "eligibility": "공고일 기준 평창군 소재 농협이나 농자재 취급업체 등입니다. 거래 정산체계, 전자세금계산서 발행 및 제출 역량이 있어야 하며 비료 또는 농약 중 한 품목 이상 취급해야 합니다.",
-      "application": "신청서, 확약서, 사업자등록증, 국세·지방세 완납증명서를 갖춰 직접 방문하거나 우편으로 접수합니다. 문의 033-330-1342.",
-      "note": "이 공고는 농자재 공급을 맡을 업체를 모집합니다. 농가 신청 일정은 별도 안내를 확인하세요.",
+      "application": "신청서, 확약서, 사업자등록증, 국세·지방세 완납증명서를 평창군농업기술센터 농산물유통과 농산지원팀에 방문 또는 우편으로 제출합니다. 우편도 11월 16일 오후 6시까지 도착해야 합니다. 문의 033-330-1342.",
+      "note": "첨부 공고문으로 공급업체 모집 마감 시각을 확인했습니다.",
       "officialUrl": "https://pc.go.kr/portal/government/government-notification?noticeMgrNo=42677",
       "verifiedAt": "2026-11-16",
       "reviewStatus": "approved",
-      "sourceHash": "8fa74dcc9c67a03a29f769817cf992958f3090a10709ec6cab1da5cec5c8413e"
+      "applicationEndTime": "18:00",
+      "sourceHash": "5509c4d860dcb34b9141a378eb46c32c7ec903bc1d2f67cb8ea5e44eaed24a44"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "wonju-495894",
+      "slug": "2027-wonju-half-price-farm-inputs-operator",
+      "title": "원주시 2027년 반값 농자재 지원사업 민간위탁대행 업체선정 시행공고",
+      "summary": "원주시가 반값 농자재 지원사업의 농자재 공급과 정산을 맡을 업체를 모집합니다.",
+      "region": [
+        "강원"
+      ],
+      "targets": [
+        "농자재업체"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "원주시 농업기술센터 농정과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-25",
+      "publishedAt": "2026-11-16",
+      "support": "선정 업체는 원주시와 위탁협약을 맺고 2027년 농자재를 공급합니다. 농가는 지정 업체에서 농자재를 구입하고, 업체가 증빙을 갖춰 원주시에 보조금을 청구합니다.",
+      "eligibility": "공고일 기준 원주시에 주소를 두고 농자재를 판매하며, 매월 정산양식에 맞춰 증빙을 제출할 수 있는 업체입니다.",
+      "application": "신청서, 사업자등록증, 지방세·국세 완납증명서를 원주시농업기술센터 농정과 농산지원팀에 방문 제출하거나 팩스 033-737-4829로 보냅니다. 문의 033-737-4122.",
+      "note": "원주시 공고 제2026-3105호의 공급업체 모집 일정입니다.",
+      "officialUrl": "https://www.wonju.go.kr/www/selectBbsNttView.do?bbsNo=140&key=216&nttNo=495894",
+      "verifiedAt": "2026-11-16",
+      "reviewStatus": "approved",
+      "sourceHash": "02fb7f92eedf5f6c56d73e0bc098ee7944617f8c24e4234fb1ae3e49658281ab"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "sangju-29573",
+      "slug": "2027-sangju-farm-residue-shredding-first-half",
+      "title": "상주시 2027년 상반기 영농부산물 안전처리 지원사업 신청 공고",
+      "summary": "상주시가 고령농·장애농·여성농 등에게 영농부산물 파쇄를 지원합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "상주시 농업기술센터 기술보급과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-16",
+      "publishedAt": "2026-11-16",
+      "support": "2027년 1~3월에 과수와 밭작물의 영농부산물 파쇄를 지원합니다. 사과·배·고추 부산물은 제외됩니다.",
+      "eligibility": "상주시에서 농작물을 경작하는 고령농·장애농·여성농 등입니다. 세부 자격은 신청 전 작물보호팀에 확인하세요.",
+      "application": "읍·면·동 행정복지센터에 방문해 신청합니다. 문의 054-537-5402.",
+      "note": "상주시 생활정보에 게시된 농업기술센터 공식 안내 이미지에서 접수 기간과 파쇄 지원 내용을 확인했습니다.",
+      "officialUrl": "https://eminwon.sangju.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=29573&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "verificationUrl": "https://www.sangju.go.kr/page/10451/10200.tc",
+      "verifiedAt": "2026-11-16",
+      "reviewStatus": "approved",
+      "sourceHash": "21935f58101d4c109e41d7b5b1566353f72f98dfcebf833ed9a5ed9e5088685b"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "pyeongchang-42744",
+      "slug": "2027-pyeongchang-half-price-forestry-inputs-operator",
+      "title": "평창군 2027년 반값 임업용자재 지원사업 민간위탁(관내)업체 모집공고",
+      "summary": "평창군이 반값 임업용자재 지원사업의 공급과 정산을 맡을 관내 업체를 모집합니다.",
+      "region": [
+        "강원"
+      ],
+      "targets": [
+        "농협",
+        "산림조합",
+        "농자재업체"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "평창군 산림과",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-11-24",
+      "applicationEndTime": "18:00",
+      "publishedAt": "2026-11-10",
+      "support": "선정 업체는 2027년 임업용 소모성 자재를 공급하고 위탁비 집행·정산을 담당합니다. 사업계획은 총 4억 원으로 보조금 2억 원과 임가 자부담 2억 원입니다.",
+      "eligibility": "공고일 기준 평창군 소재 농협, 산림조합, 임업용자재 취급업체 등입니다. 전자세금계산서 발행과 전산 업무가 가능하고 비료 또는 농약 중 한 품목 이상을 비롯한 임업용 소모성 자재를 공급할 수 있어야 합니다. 종자·종묘업 등록 등 세부 자격은 공고문을 확인하세요.",
+      "application": "신청서와 확약서, 사업자등록증 사본, 국세·지방세 완납증명서를 평창군청 산림과 산양삼특구팀에 방문 또는 우편으로 제출합니다. 마감 시각까지 도착해야 합니다. 문의 033-330-2429.",
+      "note": "평창군 공고 제2026-1687호에 따른 임업용자재 공급업체 모집입니다.",
+      "officialUrl": "https://www.pc.go.kr/portal/government/government-notification?noticeMgrNo=42744",
+      "verifiedAt": "2026-11-16",
+      "reviewStatus": "approved",
+      "sourceHash": "d6c45adeab68b1f70b0e44da9701c17ecc35bb9c9bb6032b0fd6c94a9ff04ce3"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "pyeongchang-333129-farm-inputs",
+      "slug": "2027-pyeongchang-half-price-farm-inputs-farmers",
+      "title": "평창군 2027년 반값 농자재 지원사업 농가 신청 안내",
+      "summary": "평창군 농가가 비료 등 소모성 농자재 구입비 지원을 신청할 수 있습니다.",
+      "region": [
+        "강원"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "농자재"
+      ],
+      "agency": "평창군 농산물유통과",
+      "applicationStart": "2026-12-01",
+      "applicationEnd": "2026-12-18",
+      "publishedAt": "2026-11-11",
+      "support": "비료·농약 등 소모성 농자재 구입비의 50%를 지원합니다. 농가별 지원액은 실제 경작 규모에 따라 달라지며, 군은 2027년 2월부터 자재를 공급할 계획입니다.",
+      "eligibility": "2026년 12월 1일 기준 평창군에 주민등록을 두고 실제 거주하며 농업경영체 등록 기간이 2년 이상인 농업인입니다. 군 안내는 농업 외 종합소득 기준을 4,700만 원으로 올렸습니다. 세부 거주·면적·소득 요건은 관할 읍·면에서 확인하세요.",
+      "application": "주소지 읍·면에서 신청합니다. 제출서류와 방문 시간을 사전에 확인하세요. 문의 033-330-1342.",
+      "note": "평창군 11월 11일 보도자료 첨부파일에 안내된 농가 접수 일정입니다.",
+      "officialUrl": "https://www.pc.go.kr/portal/government/government-press/government-press-press?articleSeq=333129",
+      "verifiedAt": "2026-11-16",
+      "reviewStatus": "approved",
+      "sourceHash": "83ea7d61eb9e2d92738b880cc76f2ea3ed561474d23b4cb15e5d5a87d1155653"
     }
   ]
 }
