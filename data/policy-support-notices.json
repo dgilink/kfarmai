@@ -3983,6 +3983,400 @@
       "verifiedAt": "2026-11-17",
       "reviewStatus": "approved",
       "sourceHash": "89dc7375be799de8221d1b88923a247cfe11bde1ad6102e1d148f71951654363"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127977",
+      "slug": "2027-jeonju-livestock-store-upgrade-round-2",
+      "title": "전주시 2027년 깨끗하고 소득있는 축산물 판매장 만들기 사업대상자 신청 공고(2차)",
+      "summary": "전주시 축산물 가공·판매 사업장의 위생시설 개선과 장비 교체를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농식품기업"
+      ],
+      "categories": [
+        "유통·가공",
+        "시설·임대"
+      ],
+      "agency": "전주시 농업기술센터 동물정책과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-19",
+      "publishedAt": "2026-11-16",
+      "support": "HACCP 운영시설과 가공·포장장비 개선비를 50% 지원합니다. 총사업비 기준 식육포장처리업 등은 개소당 1억 원, 축산물판매업은 3천만 원 이내입니다.",
+      "eligibility": "전주시 소재 식육포장처리업·축산물가공업·식용란선별포장업·축산물판매업 대상입니다. 신규 창업자의 허가 및 HACCP 요건과 기존 지원 이력 등은 업종별 지침을 확인하세요.",
+      "application": "업종별 신청서류를 전주시 완산구 기린대로 213 대우빌딩 6층 농업기술센터 동물정책과에 방문 제출합니다. 문의 063-281-6699.",
+      "note": "전주시 농업기술센터 동물정책과 공고 제2026-8호 첨부에서 오후 6시 마감 시각을 확인했습니다.",
+      "officialUrl": "https://www.jeonju.go.kr/planweb/board/view.9is?dataUid=e3beb5eecbcc4a52b510806ecb63aa83&&contentUid=ff8080818990c349018b041a879f395a&tmpField14=&boardUid=9be517a7914528ce01930aa3ddc26cf0&page=1&subPath=",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "applicationEndTime": "18:00",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127977",
+      "sourceHash": "b6038214009cda76f90881be48f54cf3a2588b312c237167bf53c402d4cea167"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127976",
+      "slug": "2027-goseong-fisheries-resource-conservation-payment",
+      "title": "고성군 2027년 수산자원보호 직불제 신청안내 공고",
+      "summary": "경남 고성군이 휴어 등 수산자원보호 의무를 이행할 어업인 등의 직불금 신청을 받습니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "어업인",
+        "어업법인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "고성군 해양수산과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-17",
+      "support": "수산자원보호 기본의무와 선택의무를 이행하는 대상에게 직불금을 지급합니다. 지급 요건과 단가는 신청 안내서를 확인하세요.",
+      "eligibility": "어업인 또는 수산업 면허·허가 요건을 갖춘 법인 등으로 기본의무와 두 가지 이상 선택의무의 이행계획서를 제출해야 합니다.",
+      "application": "고성군 해양수산과 수산행정에 방문 접수합니다. 문의 055-670-2455.",
+      "note": "고성군 공고 제2026-1997호와 기업마당 등록 자료로 확인했습니다. 게시일은 기업마당 등록일입니다.",
+      "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000015&menuCd=DOM_000000103001014000&paging=ok&startPage=4&dataSid=5840378",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127976",
+      "sourceHash": "13a0eb5a5ef9f172e97b51f7f43d11dc261b39476f13d3abce73856a4832d731"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127978",
+      "slug": "2027-goseong-small-smartfarm-construction",
+      "title": "고성군 2027년 소규모 스마트팜 조성 사업 신청 공고",
+      "summary": "고성군이 채소·화훼·아열대작물의 스마트팜 온실 조성을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인",
+        "생산자단체"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "고성군 농업기술센터 농업기술과",
+      "applicationStart": "2026-11-12",
+      "applicationEnd": "2026-11-24",
+      "publishedAt": "2026-11-17",
+      "support": "철골·자동화비닐온실 신축·개축과 ICT 관련 설비 등에 대해 개소당 총사업비 6억 원 내외를 기준으로 지원합니다. 온실 안에 설치하는 수직농장도 대상에 포함됩니다.",
+      "eligibility": "육묘장을 제외한 철골온실이나 자동화비닐온실을 신축·개축해 채소·화훼류·아열대작물을 재배·수출하려는 농업인, 농업법인, 생산자단체입니다.",
+      "application": "고성군 농업기술센터 농업기술과 채소특작담당에 신청서와 관련 서류를 방문 제출합니다. 군 대표번호 055-670-2114.",
+      "note": "군 첨부 공고와 기업마당 접수 일정을 대조했습니다. 게시일은 기업마당 등록일입니다.",
+      "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000015&menuCd=DOM_000000103001014000&paging=ok&startPage=4&dataSid=5840294",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127978",
+      "sourceHash": "0a338d9578e1ee0f2cd093d98ac4d0f5fccf2445556d1b901f248b1713e3336d"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127974",
+      "slug": "2027-geochang-organic-farming-materials",
+      "title": "거창군 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "거창군 농업경영체에 녹비종자와 유기농업자재 구입비를 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "거창군 농업기술센터 친환경농업담당",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-18",
+      "publishedAt": "2026-11-16",
+      "support": "헤어리베치, 청보리, 호밀 등 녹비종자 8종과 공시 또는 품질인증 유기농업자재의 구입비를 지원합니다.",
+      "eligibility": "농업경영정보를 등록한 농업인 및 농업법인입니다. 농지와 품목별 적용 조건은 시행지침을 확인하세요.",
+      "application": "농지 소재지 읍·면사무소 경제산업담당에 방문 신청합니다. 문의 055-940-8203.",
+      "note": "거창군 공고 제2026-1602호의 신청 기간을 기업마당 등록 내용과 대조했습니다.",
+      "officialUrl": "https://www.geochang.go.kr/00445/00451.web?amode=view&not_ancmt_mgt_no=48149",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127974",
+      "sourceHash": "22fe17e5e9254b5747d4ae14e243e594f0bbe25b22a83caa95852911c0355141"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127973",
+      "slug": "2027-sancheong-strawberry-nursery-facility",
+      "title": "산청군 2027년 딸기 육묘장 시설지원사업 신청 안내 공고",
+      "summary": "산청군 딸기 농가의 육묘장 신축과 부대시설 설치 비용을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "산청군 농업기술센터 미래농업과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-16",
+      "support": "육묘장 신축과 미스트·포그 설비 및 내·외부 차광막 설치에 개소당 총사업비 최대 5천만 원을 적용합니다. 보조와 자부담이 각각 50%입니다.",
+      "eligibility": "산청군에 주소와 농지가 있고 농업경영체 등록 기간이 1년 이상인 농가입니다. 사업예정지 등록과 자부담 확보 조건을 확인하세요.",
+      "application": "농지 또는 사업장 소재지 읍·면사무소 산업경제담당에 신청서와 증빙을 방문 제출합니다. 문의 055-970-7913.",
+      "note": "산청군농업기술센터 공고 제2026-64호 첨부파일을 기업마당에서 확인했습니다.",
+      "officialUrl": "https://www.sancheong.go.kr/www/selectBbsNttView.do?key=158&bbsNo=118&nttNo=166923&searchCtgry=&searchCnd=all&searchKrwd=&pageIndex=1&integrDeptCode=",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127973",
+      "sourceHash": "92814c41a77684a8cf0c916b1f7e9e63dde637ac424086c7212a91304c8a4fd1"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127971",
+      "slug": "2026-haman-winter-watermelon-emergency-loan",
+      "title": "함안군 2026년 농업발전기금 긴급융자 시행계획 공고",
+      "summary": "함안군 겨울수박 바이러스 피해 농가에 영농 운영·시설 자금을 융자합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "함안군 농업기술센터 농정담당",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-25",
+      "publishedAt": "2026-11-16",
+      "support": "개인은 운영·시설자금 각각 최대 5천만 원, 법인은 운영자금 1억 원과 시설자금 2억 원까지 융자합니다. 운영자금은 1년, 시설자금은 2년 거치 후 각각 3년간 균등분할상환하며 대출금리를 최대 5% 지원합니다.",
+      "eligibility": "함안군에 주소를 둔 농어업인이나 농업법인 등으로 겨울수박 바이러스 피해를 입은 농업인입니다.",
+      "application": "주소지 읍·면사무소에 융자신청서와 사업계획서 등을 방문 제출합니다. 문의 055-580-4402.",
+      "note": "기업마당에 첨부된 함안군농업기술센터 공고 제2026-66호의 자금별 조건을 확인했습니다.",
+      "officialUrl": "https://www.haman.go.kr/00960/00962.web?amode=view&not_ancmt_mgt_no=43466",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127971",
+      "sourceHash": "a639430585ae09126285588e1cf7d553d20b211d30180a62683496ae93279ff5"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127970",
+      "slug": "2027-namhae-fisheries-resource-conservation-payment",
+      "title": "남해군 2027년도 수산자원보호 직접지불금 신청 공고",
+      "summary": "남해군이 총허용어획량 준수나 휴어 등 수산자원보호 의무 이행에 직불금을 지급합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "어업인",
+        "어업법인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "남해군 수산자원과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-12-11",
+      "publishedAt": "2026-11-13",
+      "support": "총톤수 2톤 이하 어선은 1척당 150만 원을 지급하며, 2톤 초과 어선은 구간별 단가로 산정합니다.",
+      "eligibility": "기본의무와 2개 이상의 선택의무 이행계획서를 제출하는 어업인과 면허·허가 요건을 갖춘 법인 등입니다.",
+      "application": "남해군청 수산자원과 수산진흥팀에 방문 제출합니다. 문의 055-860-8984.",
+      "note": "남해군 공고 제2026-1592호와 기업마당 등록 내용을 대조했습니다.",
+      "officialUrl": "https://www.namhae.go.kr/modules/saeol/gosi.do?amode=_view&not_ancmt_mgt_no=37219&pageCd=SM010110000&siteGubun=socialm&scd=01",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127970",
+      "sourceHash": "481c5510d13e6863d8ca75979de5a28b78a4f01a076d37fa0059232b70d91889"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127968",
+      "slug": "2027-miryang-organic-fertilizer-extra",
+      "title": "밀양시 2027년 유기질비료 지원사업 추가 변경 신청 공고",
+      "summary": "밀양시 등록 농지에서 사용할 유기질비료와 부숙유기질비료의 추가·변경 신청을 받습니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "밀양시 농업기술센터 농업기술과",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-01",
+      "publishedAt": "2026-11-10",
+      "support": "혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비의 구입비 일부를 지원합니다.",
+      "eligibility": "농업경영정보를 등록하고 등록된 밀양시 농지에서 해당 비료로 농산물을 생산하는 농업경영체입니다.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 방문 신청합니다. 문의 055-359-7213.",
+      "note": "밀양시 농업기술센터 농업기술과 공고 제2026-6호입니다.",
+      "officialUrl": "https://www.miryang.go.kr/web/eMiryangMinwonView.do?mnNo=20903000000&owd=&nmmKind1=01&nmmKind2=02&nmmKind3=03&nmmKind4=04&nmmKind5=05&nmmKind6=06&nmmKind7=07&searchCondition=&searchKeyword=&nmmIdx=61492",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127968",
+      "sourceHash": "2ab2145293e4408128a9c7e48ed7e1163e8752ea02cff41f050808415cd2a21c"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127967",
+      "slug": "2027-miryang-organic-farming-materials",
+      "title": "밀양시 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "밀양시가 녹비종자와 유기농업자재 구입비, 토양검정 등 컨설팅을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "밀양시 농업기술센터 농업기술과",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-28",
+      "publishedAt": "2026-11-10",
+      "support": "녹비작물 종자 8종, 유기농업자재 및 자재원료, 천적과 토양검정·시비처방 컨설팅 등을 지원합니다.",
+      "eligibility": "농업경영정보를 등록한 농업경영체입니다. 녹비작물 재배 예정 농지 또는 유기·무농약·일반 재배 농지의 품목별 해당 여부는 첨부 공고문을 확인하세요.",
+      "application": "농지 소재지 읍·면·동 행정복지센터에 방문 신청합니다. 문의 055-359-7213.",
+      "note": "시 웹 본문의 시작 연도에 오타가 있어 첨부 공고 제2026-7호와 기업마당의 일치하는 접수 기간으로 확인했습니다.",
+      "officialUrl": "https://www.miryang.go.kr/web/eMiryangMinwonView.do?mnNo=20903000000&owd=&nmmKind1=01&nmmKind2=02&nmmKind3=03&nmmKind4=04&nmmKind5=05&nmmKind6=06&nmmKind7=07&searchCondition=&searchKeyword=&nmmIdx=61493",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127967",
+      "sourceHash": "2e63fd0cf2ea0f16af694504c5126d93a9b290c1bf7673759de5fa01d9e842d5"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127966",
+      "slug": "2027-yeosu-seafood-direct-shipping-support",
+      "title": "여수시 2027년 수산물 직거래 택배비 지원사업 신청자 모집 공고",
+      "summary": "여수시가 수산물·수산가공품 직거래에 발생하는 택배비를 지원합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인",
+        "어업법인",
+        "생산자단체",
+        "수산식품기업"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "여수시 수산경영과",
+      "applicationStart": "2026-11-17",
+      "applicationEnd": "2026-12-07",
+      "publishedAt": "2026-11-16",
+      "support": "택배비 50%를 개인은 최대 200만 원, 법인·단체는 최대 300만 원까지 지원합니다. 신청 규모에 따라 지원 한도가 달라질 수 있습니다.",
+      "eligibility": "여수시에 등록하고 직접 생산한 수산물·수산가공품을 직거래하는 어업인·어업법인·생산자단체 및 공고 요건을 충족하는 유통사업자 등입니다. 수협은 제외됩니다.",
+      "application": "동 지역은 여수시청 국동임시별관 수산경영과 수산유통팀, 읍·면은 사업장 소재지 읍·면사무소 수산업무 담당 부서에 방문 신청합니다. 문의 061-659-3925.",
+      "note": "여수시 공고 제2026-3492호와 기업마당의 등록 내용을 대조했습니다.",
+      "officialUrl": "https://www.yeosu.go.kr/www/govt/news/notify/new_notifys/new_notify?idx=81144&mode=view",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127966",
+      "sourceHash": "064c64bafcd3d52634c418ddac2721282c24617113eafc9cd5a52432c6069a6e"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000127960",
+      "slug": "2027-tongyeong-aquaculture-facility-modernization-loan",
+      "title": "통영시 2027년도 양식시설 현대화 사업(융자) 신청 공고",
+      "summary": "통영시 양식장과 배양장의 시설·장비 현대화 자금을 융자합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "어업인",
+        "어업법인",
+        "생산자단체"
+      ],
+      "categories": [
+        "시설·임대",
+        "경영·판로"
+      ],
+      "agency": "통영시 어업진흥과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-16",
+      "support": "양식장·배양장 시설, 장비, 어장관리선과 해상작업대 등을 대상으로 사업비의 80%를 연 1%로 융자합니다. 3년 거치 후 7년 분할 상환입니다.",
+      "eligibility": "양식 면허, 육상해수양식어업 또는 수산종자생산업 허가를 받았거나 관상어양식업을 신고한 어업인·단체 등입니다.",
+      "application": "신청서와 사업계획서 등 구비서류를 통영시청 어업진흥과 양식팀에 방문 제출합니다. 문의 055-650-5134.",
+      "note": "통영시 제2026-178호의 첨부 공고와 기업마당 등록 내용을 대조했습니다.",
+      "officialUrl": "https://www.tongyeong.go.kr/00852/00853/00858.web?amode=view&not_ancmt_mgt_no=51921&",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127960",
+      "sourceHash": "f4d1778e63bfda2a5871be803ffcb1991310139319498c5b7ef723ff8719170b"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "miryang-61542",
+      "slug": "2027-miryang-specialty-crop-production-cluster-demand",
+      "title": "밀양시 2027년 지역 특화품목 육성단지 조성사업 수요조사 공고",
+      "summary": "밀양시가 지역 특화품목 육성단지 조성에 참여할 농가와 단체의 수요를 조사합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인",
+        "생산자단체"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "밀양시 농업기술센터 농업기술과",
+      "applicationStart": "2026-11-13",
+      "applicationEnd": "2026-11-26",
+      "publishedAt": "2026-11-13",
+      "support": "노지과수·채소·특용작물·시설하우스 등 품목별 집단화와 일부 수직농장·아열대작물 거점 농가의 조성 지원 수요를 접수합니다.",
+      "eligibility": "품목별 요건을 충족하는 농업인·농업법인·생산자단체입니다. 노지과수는 2ha 이상과 참여 농가 5곳 이상, 채소·특용작물 및 시설하우스는 1ha 이상과 참여 농가 5곳 이상이 기준입니다.",
+      "application": "신청서·계획서·증빙자료를 주소지 읍·면·동 행정복지센터에 제출합니다. 주소와 사업장이 다르면 사업장 관할 센터에 제출합니다. 문의 055-359-7156.",
+      "note": "밀양시 농업기술센터 공고 제2026-44호의 수요조사입니다. 실제 사업 선정 및 교부 일정은 추후 안내를 확인하세요.",
+      "officialUrl": "https://www.miryang.go.kr/web/eMiryangMinwonView.do?mnNo=20903000000&nmmIdx=61542",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "sourceHash": "b4d9da5b9f46221f18f70aa620c9112d42c59a335588da8546950755d6893750"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "mafra-582295",
+      "slug": "2027-mafra-women-farmers-health-screening-agency-reannouncement",
+      "title": "농림축산식품부 2027년 여성농업인 특수건강검진 관리기관 선정 재공고",
+      "summary": "농림축산식품부가 2027~2028년 여성농업인 특수건강검진 사업의 관리기관을 모집합니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "법인",
+        "기관·단체"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "농림축산식품부 농촌여성정책과",
+      "applicationStart": "2026-11-17",
+      "applicationEnd": "2026-11-27",
+      "publishedAt": "2026-11-17",
+      "support": "검진기관 지정·관리, 의료진 질 관리, 검진 결과 관리와 평가 등을 수행하는 기관에 사업 운영비를 지원합니다. 공고의 검진관리비는 10억 원이며 연도별 예산 확정에 따라 달라질 수 있습니다.",
+      "eligibility": "건강검진 사업 운영에 필요한 인력과 의료 분야 전문성을 갖추고 검진기관 및 대상자 관리, 실적 평가 등을 수행할 수 있는 법인·기관·단체입니다.",
+      "application": "농림축산식품부 농촌여성정책과에 공고에 첨부된 지원신청서와 업무수행계획서 등을 우편 또는 이메일로 제출합니다. 이메일 제출 후에는 전화로 확인합니다. 문의 044-201-1796 또는 1797.",
+      "note": "농림축산식품부 공고 제2026-592호의 관리기관 선정 재공고입니다.",
+      "officialUrl": "https://www.mafra.go.kr/bbs/home/791/582295/artclView.do",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "sourceHash": "e28a396af0ffda60ff59112d8a5518ce8cb112171eb8022d2f60049ea0ed3580"
     }
   ]
 }
