@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-16",
+  "updatedAt": "2026-11-17",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -3897,6 +3897,92 @@
       "verifiedAt": "2026-11-16",
       "reviewStatus": "approved",
       "sourceHash": "83ea7d61eb9e2d92738b880cc76f2ea3ed561474d23b4cb15e5d5a87d1155653"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "gochang-838361",
+      "slug": "2026-gochang-fisheries-interest-support-round-4",
+      "title": "고창군 2026년 어업인 경영안정 지원사업(4차) 모집공고",
+      "summary": "고창군 양식어업인이 납부한 일반영어자금 대출이자의 일부를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "고창군 해양수산과",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-20",
+      "publishedAt": "2026-11-16",
+      "support": "2026년 일반영어자금 대출이자 납부액을 1인 1회 최대 100만 원까지 지원합니다. 정책자금 대출은 지원 대상에서 제외됩니다.",
+      "eligibility": "양식업 면허·허가 또는 행사계약을 보유한 자, 또는 수산종자 관련 허가를 받고 어업경영체에 등록한 양식어업인입니다. 허가 유형과 제외 요건은 공고문을 확인하세요.",
+      "application": "사업신청서와 양식업 인허가, 대출 실행 및 이자 납부 증빙 등 필요한 서류를 고창군청 해양수산과 수산진흥팀에 제출합니다. 문의 063-560-2643.",
+      "note": "고창군 공고 제2026-2015호의 4차 모집입니다. 세부 우선순위와 제외 요건은 첨부 공고문을 확인하세요.",
+      "officialUrl": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000180&dataSid=838361&orderBy=TMP_FIELD4+DESC%2CTMP_FIELD1+DESC&paging=ok&startPage=1",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "sourceHash": "c5b867d397c8c44b3368dc514e0d9192b007d243c8c1054914a5719fc6ac3e6a"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "pocheon-68709",
+      "slug": "2026-pocheon-hanwoo-heifer-cost-support-extra",
+      "title": "포천시 2026년 비육용 암소시장 육성 지원사업 추가 신청 안내",
+      "summary": "포천시 한우 농가와 농업법인이 부담한 미경산 암소 시술비의 일부를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "축산·조사료"
+      ],
+      "agency": "포천시 농업기술센터 축산과",
+      "applicationStart": "2026-11-11",
+      "applicationEnd": "2026-11-17",
+      "publishedAt": "2026-11-11",
+      "support": "한우 미경산 암소의 난소 결찰·적출 시술 비용을 마리당 최대 9만 원 지원합니다. 사업비 비율은 국비 30%, 시비 30%, 자부담 40%입니다.",
+      "eligibility": "축산업 허가·등록을 하고 한우를 사육하는 농업인 또는 농업법인 등입니다. 2025년 12월 1일 이후 시술을 받은 개체가 시술 당시 만 14개월령 이하이고 수의사 확인서와 축산물 이력 등록이 있어야 합니다.",
+      "application": "포천시농업기술센터 축산과에 신청서와 수의사 시술 확인서, 전자세금계산서 등 증빙을 제출합니다. 문의 031-538-3864.",
+      "note": "포천시 농업기술센터 공고 제2026-333호와 첨부 추진계획을 대조했습니다. 개체별 지원 조건은 추진계획을 확인하세요.",
+      "officialUrl": "https://www.pocheon.go.kr/www/selectEminwonView.do?key=3712&notAncmtMgtNo=68709&notAncmtSeCode=01",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "sourceHash": "5f45a53aca9e4009d0991da1356a0b361f2946ff3e24fa1ef186e6e7b015b6be"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "hampyeong-32891",
+      "slug": "2026-hampyeong-fisheries-fuel-subsidy-round-5",
+      "title": "함평군 2026년 해양수산사업 신청자 모집 공고(5차)",
+      "summary": "함평군이 어업용 면세휘발유 인상분 보조금 신청을 받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "함평군 농어촌공동체과",
+      "applicationStart": "2026-11-04",
+      "applicationEnd": "2026-11-17",
+      "publishedAt": "2026-11-03",
+      "support": "2026년 4월 1일~9월 30일에 어업용 면세휘발유를 사용한 어가에 유가 인상분을 정액 지원합니다.",
+      "eligibility": "함평군 관내 어업용 면세유류카드를 발급받은 어선·관리선입니다. 어선 등록, 어업 허가 또는 관리선 지정 요건은 공고문을 확인하세요.",
+      "application": "사업신청서, 사업계획서와 구비서류를 함평군 농어촌공동체과 해양수산팀에 방문 제출합니다. 문의 061-320-2125.",
+      "note": "함평군 공고 제2026-1267호와 기업마당 등록 정보를 대조했습니다.",
+      "officialUrl": "https://www.hampyeong.go.kr/pg/GosiDetail.do?SEQ=32891&listGubun=&notAncmtSeCode=01%2C02%2C03%2C04&pageId=www273&pageIndex=1&search_Text=&search_Type=",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127727",
+      "verifiedAt": "2026-11-17",
+      "reviewStatus": "approved",
+      "sourceHash": "89dc7375be799de8221d1b88923a247cfe11bde1ad6102e1d148f71951654363"
     }
   ]
 }
