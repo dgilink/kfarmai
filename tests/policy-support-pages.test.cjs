@@ -40,14 +40,14 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   assert.equal(cards[0].href, '/policy/2027-goseong-small-smartfarm-construction.html');
   assert.equal(cards[0].dataset.state, 'upcoming');
   assert.equal(cards[1].href, '/policy/2027-mafra-women-farmers-health-screening-agency-reannouncement.html');
-  assert.equal(cards[2].href, '/policy/2027-goseong-fisheries-resource-conservation-payment.html');
+  assert.equal(cards[2].href, '/policy/2027-geochang-organic-fertilizer-extra.html');
   assert.equal(cards[1].dataset.state, 'upcoming');
   assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 149);
+  assert.equal(publication.items.length, 152);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -116,11 +116,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '149건');
+  assert.equal(fields.noticeCount.textContent, '152건');
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '56건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 88);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 91);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '5건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -132,7 +132,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '149건');
+  assert.equal(fields.noticeCount.textContent, '152건');
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
   fields.policySearch.events.input();
@@ -144,7 +144,7 @@ test('open filter includes unknown starts while preserving distinct data state',
 
 // Static output must cover the rollover even when client JavaScript is unavailable.
 test('expired Gochang notice is retained as closed and Dangjin separates application from publication', () => {
-  for (const slug of ['2027-gochang-field-crop-equipment', '2026-uljin-field-crop-demo-round-9', '2027-wanju-field-crop-equipment', '2026-ganghwa-small-agri-processing-startup-round-3', '2026-icheon-farmer-opportunity-income-extra', '2027-jeongeup-field-crop-equipment', '2026-gochang-women-farmers-voucher-round-6', '2027-gunsan-field-crop-equipment', '2026-namyangju-agricultural-residue-shredding-extra']) {
+  for (const slug of ['2026-hadong-tea-culture-shop-extra', '2026-pocheon-hanwoo-heifer-cost-support-extra', '2026-hampyeong-fisheries-fuel-subsidy-round-5', '2027-gochang-field-crop-equipment', '2026-uljin-field-crop-demo-round-9', '2027-wanju-field-crop-equipment', '2026-ganghwa-small-agri-processing-startup-round-3', '2026-icheon-farmer-opportunity-income-extra', '2027-jeongeup-field-crop-equipment', '2026-gochang-women-farmers-voucher-round-6', '2027-gunsan-field-crop-equipment', '2026-namyangju-agricultural-residue-shredding-extra']) {
     const closed = index.split(`href="/policy/${slug}.html"`)[1].split('</article>')[0];
     assert.match(closed, /class="policy-live-status">마감<\/span>/);
   }

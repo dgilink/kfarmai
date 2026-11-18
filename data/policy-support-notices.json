@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-17",
+  "updatedAt": "2026-11-18",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -634,14 +634,15 @@
       "applicationStart": "2026-11-01",
       "applicationEnd": "2026-12-31",
       "publishedAt": "2026-11-02",
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-18",
       "support": "녹비종자와 공시 유기농업자재 구입비 일부 지원. 보조 50%, 자부담 50%이며 지원단가·품목은 시행지침을 확인하세요.",
       "eligibility": "농업경영정보에 등록한 농지. 유기인증·무농약인증·일반농지 순으로 우선 지원하며 중복사업 신청 농지, 토양 유기물 상한 초과, 의무자조금 미납 등 제외 요건은 지침을 확인하세요.",
-      "application": "2026년 11월 1일부터 12월 31일까지 신청. 접수처·제출서류 문의: 진도군 농업지원과 061-540-3512.",
+      "application": "농지 소재지 관할 읍·면사무소에 사업신청서를 제출하거나 농업e지에서 온라인 신청합니다. 온라인 절차는 진도군 공식 안내에 첨부된 매뉴얼을 확인하세요. 문의 061-540-3512.",
       "note": "진도군 공식 본문의 접수 기간을 재확인했습니다. 중복사업 신청 농지, 토양 유기물 함량 상한 초과 농지, 친환경농산물 의무자조금 미납 등 제외 요건은 시행지침을 확인하세요.",
       "officialUrl": "https://www.jindo.go.kr/home/board/B0052.cs?act=read&articleId=198223&categoryId=0&m=23&pageIndex=1&searchCondition=&searchKeyword=",
       "reviewStatus": "approved",
-      "sourceHash": "ac83368e8963be0006b5314f02ee657d20b488390c0fd82cd6b8adcb8e8e7e85"
+      "verificationUrl": "https://jindo.go.kr/home/board/B0052.cs?act=read&articleId=198865",
+      "sourceHash": "b15aca1bdea22078479c7b5b2fe71dab31bcaf6c2ebc64ed57f49362e592d9f8"
     },
     {
       "sourceId": "local-government-notices",
@@ -2765,14 +2766,14 @@
       "applicationStart": "2026-11-03",
       "applicationEnd": "2026-11-17",
       "publishedAt": "2026-11-03",
-      "verifiedAt": "2026-11-12",
+      "verifiedAt": "2026-11-18",
       "support": "부산 수영구 별천지하동차문화관의 하동차 판매 입점 기회를 제공합니다. 예정 입점기간은 2026년 12월부터 2027년 11월까지입니다.",
       "eligibility": "농장 또는 사업장이 하동군에 있고 부산 매장에 납품할 수 있는 사업자입니다. 품목에 필요한 사업자등록·영업신고를 마치고 최근 3년 품질·판매 등 실적 증빙을 제출할 수 있어야 합니다.",
       "application": "하동군농업기술센터 농산물유통과에 방문해 신청합니다. 문의 055-880-2834.",
       "note": "지방세·세외수입 체납자는 신청이 제한됩니다. 입점기간은 시설 운영 여건에 따라 달라질 수 있습니다.",
       "officialUrl": "https://eminwon.hadong.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=45436&homepage_pbs_yn=Y&subCheck=Y",
       "reviewStatus": "approved",
-      "sourceHash": "57e1181b59cebb703e5f9a68b651fca7b10856933551c4aa0635eecabba2b22a"
+      "sourceHash": "32159e04313e809f7806a735150c82ec46c316802de818bf97e9c3e2c72f2ffa"
     },
     {
       "sourceId": "local-government-notices",
@@ -3951,9 +3952,9 @@
       "application": "포천시농업기술센터 축산과에 신청서와 수의사 시술 확인서, 전자세금계산서 등 증빙을 제출합니다. 문의 031-538-3864.",
       "note": "포천시 농업기술센터 공고 제2026-333호와 첨부 추진계획을 대조했습니다. 개체별 지원 조건은 추진계획을 확인하세요.",
       "officialUrl": "https://www.pocheon.go.kr/www/selectEminwonView.do?key=3712&notAncmtMgtNo=68709&notAncmtSeCode=01",
-      "verifiedAt": "2026-11-17",
+      "verifiedAt": "2026-11-18",
       "reviewStatus": "approved",
-      "sourceHash": "5f45a53aca9e4009d0991da1356a0b361f2946ff3e24fa1ef186e6e7b015b6be"
+      "sourceHash": "3bff1c836ac5be8329bd15acda1f2495b7ce4f9e898e1c8fd18975f026ec00fa"
     },
     {
       "sourceId": "local-government-notices",
@@ -3980,9 +3981,9 @@
       "note": "함평군 공고 제2026-1267호와 기업마당 등록 정보를 대조했습니다.",
       "officialUrl": "https://www.hampyeong.go.kr/pg/GosiDetail.do?SEQ=32891&listGubun=&notAncmtSeCode=01%2C02%2C03%2C04&pageId=www273&pageIndex=1&search_Text=&search_Type=",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127727",
-      "verifiedAt": "2026-11-17",
+      "verifiedAt": "2026-11-18",
       "reviewStatus": "approved",
-      "sourceHash": "89dc7375be799de8221d1b88923a247cfe11bde1ad6102e1d148f71951654363"
+      "sourceHash": "d2b836f65ef90b2d861d26385dfb3214e959423685736235c935d218bf9b3756"
     },
     {
       "sourceId": "official-policy-directory",
@@ -4377,6 +4378,94 @@
       "verifiedAt": "2026-11-17",
       "reviewStatus": "approved",
       "sourceHash": "e28a396af0ffda60ff59112d8a5518ce8cb112171eb8022d2f60049ea0ed3580"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "changwon-213335",
+      "slug": "2026-changwon-young-successor-farmer-loan-interest",
+      "title": "창원시 2026년 청년후계농 정책자금 이자 지원사업 신청자 모집 공고",
+      "summary": "창원시 청년후계농이 납부한 후계농업경영인 육성자금 대출이자의 일부를 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "청년·창업",
+        "경영·판로"
+      ],
+      "agency": "창원시 농업기술센터 농업정책과",
+      "applicationStart": "2026-11-18",
+      "applicationEnd": "2026-12-02",
+      "publishedAt": "2026-11-16",
+      "support": "2026년 후계농업경영인 육성자금 대출이자 납부액의 일부를 예산 범위에서 지원합니다. 1인당 최대 3년간 지원하며 매년 신청해야 합니다.",
+      "eligibility": "청년후계농으로 선발돼 창원시에 주민등록을 두고 실제 거주·영농하며, 2021년 1월 1일~2025년 12월 31일 창원시 관내 농지·시설 관련 후계농업경영인 육성자금 대출을 실행한 농업인입니다. 귀농 창업·주택구입자금과 우수 후계농 육성자금은 제외됩니다.",
+      "application": "신청서, 농업경영체 등록확인서, 주민등록등본, 대출원리금 납입증명서와 통장사본 등을 창원시 성산구 대원로66번길 13, 3층 농업정책과 청년귀농팀에 방문 또는 우편 제출합니다. 우편은 마감일까지 도착해야 합니다. 문의 055-225-5433.",
+      "note": "창원시 농업기술센터 공고 제2026-213호를 확인했습니다.",
+      "officialUrl": "https://www.changwon.go.kr/cwportal/10310/10438/10439.web?amode=view&not_ancmt_mgt_no=213335&cpage=2&section=gosi",
+      "verifiedAt": "2026-11-18",
+      "reviewStatus": "approved",
+      "sourceHash": "4a3983ca65e9ff3f3b479a7d767edd650cbda54ed9a2010f0ff8f44b4b16b0da"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "geochang-48088",
+      "slug": "2027-geochang-organic-fertilizer-extra",
+      "title": "거창군 2027년 유기질비료 지원사업 추가 및 변경 신청 공고",
+      "summary": "거창군 등록 농지에 사용할 유기질비료와 부숙유기질비료의 추가·변경 신청을 받습니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "친환경"
+      ],
+      "agency": "거창군 농업기술센터 친환경농업담당",
+      "applicationStart": "2026-11-10",
+      "applicationEnd": "2026-12-01",
+      "publishedAt": "2026-11-17",
+      "support": "혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비 구입비를 20kg 한 포당 1,300~1,600원 지원합니다. 관내 업체가 생산한 부숙유기질비료는 포당 300원을 추가 지원합니다.",
+      "eligibility": "농업경영정보를 등록하고 해당 정보에 등록된 농지에서 부산물비료를 사용해 농산물을 생산하는 농업경영체입니다.",
+      "application": "농지 소재지 읍·면 행정복지센터 경제산업담당에 비료 종류·등급별 필요 수량을 신청합니다. 가축분퇴비·퇴비는 10a당 2,000kg을 초과할 수 없습니다. 문의 055-940-8202.",
+      "note": "거창군 공고 제2026-1561호를 기업마당 첨부 원문에서 확인했습니다. 게시일은 기업마당 등록일입니다.",
+      "officialUrl": "https://www.geochang.go.kr/00445/00451.web?amode=view&not_ancmt_mgt_no=48088&cpage=6",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127975",
+      "verifiedAt": "2026-11-18",
+      "reviewStatus": "approved",
+      "sourceHash": "700b0b4ed00cb84a4903dfb7badaf503e895c6925de433a8c3725d9572154432"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "wanju-4028a602a1770b0f01a1e7e5e02a467d",
+      "slug": "2027-wanju-onion-garlic-price-stabilization",
+      "title": "완주군 2027년 전북 주요농산물 가격안정 지원사업 양파·마늘 신청 안내",
+      "summary": "양파·마늘의 시장가격이 기준가격보다 낮아질 때 차액의 일부를 지원하는 사업의 신청을 받습니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "완주군",
+      "applicationStart": "2026-11-17",
+      "applicationEnd": "2026-12-18",
+      "publishedAt": "2026-11-17",
+      "support": "양파·마늘의 시장가격이 기준가격보다 하락하면 차액의 90%를 지원합니다. 품목별 신청 면적은 1,000~10,000㎡이며 시장가격 확정 후 지원합니다.",
+      "eligibility": "전북에 주소를 두고 해당 농산물을 직접 생산하며 통합마케팅 전문조직·지역농협 등에 계통출하하거나 출하약정을 맺은 농업인입니다. 직거래·전부위탁 경작과 중복 수혜 제한 등은 공식 안내를 확인하세요.",
+      "application": "농업경영체 등록확인증과 출하계약서 등 증빙을 주소지 읍·면 행정복지센터에 제출합니다. 문의는 주소지 읍·면 담당 부서에 확인하세요.",
+      "note": "완주군이 11월 17일 게시한 양파·마늘 안내 두 건의 동일 사업·접수 기간을 대조해 통합했습니다.",
+      "officialUrl": "https://www.wanju.go.kr/atc/planweb/board/view.9is?boardUid=ff8080818a49961a018ab011af3543bc&categoryUid2=&contentUid=ff808081898ba9ba0189f1c964a2014d&dataUid=4028a602a1770b0f01a1e7e5e02a467d&page=1",
+      "verificationUrl": "https://www.wanju.go.kr/planweb/board/view.9is?boardUid=ff8080818a49961a018ab011af3543bc&categoryUid1=ff8080818bc7fa7c018bd69c596z9024&contentUid=ff8080818b024d8e018b274f40092ae4&dataUid=4028a602a1770b0f01a1e7e3bace461e",
+      "verifiedAt": "2026-11-18",
+      "reviewStatus": "approved",
+      "sourceHash": "723a0ecb830a5936c843aa96e71ce99d4b7a3008b8655e196d0bdc3bc04cebdf"
     }
   ]
 }
