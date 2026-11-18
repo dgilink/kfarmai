@@ -2532,14 +2532,15 @@
       "applicationStart": "2026-11-04",
       "applicationEnd": "2026-11-18",
       "publishedAt": "2026-11-03",
-      "verifiedAt": "2026-11-12",
+      "verifiedAt": "2026-11-18",
       "support": "부적면 엽채류 재배용 온실을 3명에게 임대합니다. 기본 계약은 2027년 2월부터 2028년 1월까지이며 공고 조건에 따라 최대 1년 연장할 수 있습니다.",
       "eligibility": "논산시 거주 또는 계약 전 전입이 가능한 만 18세 이상 45세 미만 청년농으로, 독립경영 예정이거나 독립경영 3년 이하여야 합니다. 시설농업 경력·영농기반·병역 요건과 예외는 첨부 공고문을 확인하세요.",
       "application": "임대신청서와 영농계획서를 논산시 농업기술센터 단체협력팀에 방문 또는 이메일로 제출합니다. 방문 접수는 평일 09:00~18:00이며, 이메일은 수신 여부를 전화로 확인합니다. 문의 041-746-8321~3.",
       "note": "서류와 발표 면접으로 선발합니다. 임대료 산정과 시설 공동사용 조건은 첨부 모집계획에 있습니다.",
       "officialUrl": "https://buchang.nonsan.go.kr/nongup/html/sub04/0401.html?mode=V&no=f2b7344316b3eaacc790582a4e0a0721",
       "reviewStatus": "approved",
-      "sourceHash": "6f7cc526ef5bc7e9a454551b22f94657adbcff79ecd5cfab165a52e248e8924f"
+      "applicationEndTime": "18:00",
+      "sourceHash": "31b49b2f57e6f10faeaab81e600255b0b856d975c92854f53b6b4a6518f533c2"
     },
     {
       "sourceId": "local-government-notices",
@@ -4466,6 +4467,97 @@
       "verifiedAt": "2026-11-18",
       "reviewStatus": "approved",
       "sourceHash": "723a0ecb830a5936c843aa96e71ce99d4b7a3008b8655e196d0bdc3bc04cebdf"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "verifiedAt": "2026-11-18",
+      "reviewStatus": "approved",
+      "externalId": "guri-49267",
+      "slug": "2026-guri-agricultural-logistics-cost",
+      "title": "구리시 2026년 농산물 유통사업 물류비 지원 신청 공고",
+      "summary": "배 규격포장재와 채소 출하 운반비를 지원합니다. 12월 1일부터 8일까지 신청합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "구리시 산업지원과",
+      "applicationStart": "2026-12-01",
+      "applicationEnd": "2026-12-08",
+      "publishedAt": "2026-11-16",
+      "support": "배 규격포장재 제작비와 채소 출하 운반비의 최대 50%를 지원합니다. 공고일 현재 구리시 거주 GAP 인증농가는 최대 70%이며, 신청 규모와 예산에 따라 비율이 조정될 수 있습니다. 지원 대상 실적은 2026년 1월 1일~11월 30일입니다.",
+      "eligibility": "농업경영정보 등록 경영체 중 구리시 작목반 가입 농업인(관외 농업인 포함), 또는 농협 공동출하 채소·구리시 생산 과수의 규격포장재 공급 실적을 증빙하는 개인농가입니다. 부적합 농산물 생산 이력에 따른 감액·제외 조건은 공고문을 확인하세요.",
+      "application": "구리시청 별관 1층 산업지원과에 방문 신청합니다. 신청서, 출하내역·영수증, 통장 사본과 해당 시 GAP 인증서 등을 제출합니다. 문의 031-550-8823.",
+      "note": "공식 게시물·기업마당·첨부 본문의 2026년 사업 및 접수기간을 대조했습니다. 첨부 첫 제목에는 2025년으로 표기돼 있으므로 신청 서식은 담당부서에 확인하세요. 자가 운반과 상·하차 수수료는 지원에서 제외됩니다.",
+      "officialUrl": "https://www.guri.go.kr/www/selectGosiNttView.do?gosiNttNo=49267&key=387",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128009",
+      "sourceHash": "b593c87f5d90d98ea1de128ffef06e03ad45e7ce8fc7f23d0104259eb7279cc8"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "verifiedAt": "2026-11-18",
+      "reviewStatus": "approved",
+      "externalId": "yesan-47601",
+      "slug": "2027-yesan-rice-grain-dryer",
+      "title": "예산군 2027년 벼 곡물건조기 지원사업 신청 공고",
+      "summary": "벼 곡물건조기와 집진기 구입비의 50%를 지원합니다. 12월 4일까지 신청합니다.",
+      "region": [
+        "충남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "예산군 농정유통과",
+      "applicationStart": "2026-11-17",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-17",
+      "support": "벼 곡물건조기 및 집진기 구입비의 50% 지원. 대당 보조 한도는 건조기 700만원, 집진기 100만원으로 합계 800만원이며 부가가치세는 제외됩니다.",
+      "eligibility": "예산군에 주소를 두고 실제 거주하며 농업경영정보를 등록한 경영주인 농업인·농업법인. 예산군 내 벼 재배농가 대상이며, 벼 재배면적 2ha 미만, 최근 5년 내 건조 관련 장비 지원, 체납, 농외소득 4,700만원 이상 등 제외 조건을 확인하세요.",
+      "application": "주민등록 소재 읍·면 행정복지센터 산업팀에 방문 신청합니다. 문의: 예산군 농정유통과 041-339-7563.",
+      "note": "기관 게시물의 등록일·신청기간과 기업마당 등록 안내를 대조했습니다. 첨부 공고의 서명 연도에는 2027년이 적혀 있으나 신청기간은 2026년 11월 17일~12월 4일로 명시돼 있습니다. 시설·기종 요건과 선정 기준은 첨부 계획을 확인하세요.",
+      "officialUrl": "https://www.yesan.go.kr/prog/saeolGosi/GOSI/kor/sub04_03_01/view.do?notAncmtMgtNo=47601",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128002",
+      "sourceHash": "9cbd528d699a2eeaeb269f8e5b0700cb6c8a9afcf5fa45151044bd65c644e5fe"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "verifiedAt": "2026-11-18",
+      "reviewStatus": "approved",
+      "externalId": "yesan-47547",
+      "slug": "2027-yesan-small-agricultural-machinery",
+      "title": "예산군 2027년 소형농기계 지원사업 신청 공고",
+      "summary": "예산군 거주 등록 농업인·농업법인에 소형농기계 구입비의 50%를 지원합니다.",
+      "region": [
+        "충남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "예산군 농정유통과",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-11-10",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "기관 게시물과 기업마당은 접수기간을 2026년 11월 10일~12월 4일로 안내하지만 첨부 공고문은 2025년 11월 10일~12월 4일로 기재했습니다. 접수 연도가 달라 시작일·마감일을 확정하지 않았습니다. 예산군 농정유통과 또는 읍·면 산업팀에 확인하세요.",
+      "support": "동력살포기, 육묘상자 운반·적재기, 파종기, 볍씨발아기, 온탕소독기, 측조시비기, 약제살포기, 예초기, 양수기, 동력호스릴 등 소형농기계 구입비의 50%를 지원합니다. 기종별 보조 한도는 첨부 공고를 확인하세요.",
+      "eligibility": "예산군에 주민등록 주소를 두고 실제 거주하며 농업경영정보를 등록한 경영주인 농업인·농업법인. 체납자, 최근 5년 내 동일기종 지원 농가, 동종·유사사업 중복 신청, 농외소득 3,700만원 이상, 경작농지 1,000㎡ 미만 등 제외 조건을 확인하세요.",
+      "application": "주민등록 소재 읍·면 행정복지센터 산업팀에 방문 신청합니다. 접수 일정 확인 문의: 예산군 농정유통과 041-339-7563.",
+      "note": "공식 기관 게시물과 정부 등록 안내, 첨부 계획에서 사업과 지원내용을 확인했습니다. 접수 연도 표기가 달라 날짜 확인 중으로 공개합니다. 기관 등록일은 접수 시작일로 추정하지 않았습니다.",
+      "officialUrl": "https://www.yesan.go.kr/prog/saeolGosi/GOSI/kor/sub04_03_01/view.do?notAncmtMgtNo=47547",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128000",
+      "sourceHash": "ac4840f037ab748dc4b049d4b946803ab7a5fb1f9b65fa8acede4003d437d2ae"
     }
   ]
 }
