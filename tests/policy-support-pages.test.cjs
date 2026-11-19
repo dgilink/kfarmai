@@ -47,7 +47,7 @@ test('home policy preview uses approved, unexpired notices with safe detail link
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 155);
+  assert.equal(publication.items.length, 157);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -81,10 +81,13 @@ test('unknown start dates are shown in red on details, without inventing dates',
   assert.match(read('static/js/policy-support.js'), /if \(!card\.dataset\.start\) return 'unknown'/);
 });
 
-test('upcoming Ganghwa application has a static status before JavaScript runs', () => {
+test('Ganghwa application has a date-appropriate static status before JavaScript runs', () => {
   const card = index.split('href="/policy/2026-ganghwa-smartfarm-ict-round-2.html"')[1]?.split('</article>')[0];
   assert.ok(card);
-  assert.match(card, /class="policy-live-status">접수예정<\/span>/);
+  const item = publication.items.find(item => item.slug === '2026-ganghwa-smartfarm-ict-round-2');
+  const today = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const expected = today < item.applicationStart ? '접수예정' : today > item.applicationEnd ? '마감' : '접수중';
+  assert.ok(card.includes(`class="policy-live-status">${expected}</span>`));
   assert.match(index, /<option>경기<\/option>/);
 });
 
@@ -116,11 +119,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '155건');
+  assert.equal(fields.noticeCount.textContent, '157건');
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '56건');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 93);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 95);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '6건');
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
@@ -132,7 +135,7 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '155건');
+  assert.equal(fields.noticeCount.textContent, '157건');
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
   fields.policySearch.events.input();
