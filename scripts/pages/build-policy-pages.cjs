@@ -52,7 +52,7 @@ const shell = (title, description, canonical, body, structured = '') => `<!DOCTY
 <meta property="og:url" content="https://kfarmai.com${canonical}"><meta property="og:type" content="article">
 <link rel="stylesheet" href="/static/css/v4-shell.css?v=20261029-header8">
 <link rel="stylesheet" href="/static/css/v4-tool-pages.css?v=20261029-compact1">
-<link rel="stylesheet" href="/static/css/policy-support.css?v=20261105-date-check">
+<link rel="stylesheet" href="/static/css/policy-support.css?v=${canonical === '/subsidy-calendar.html' ? '20261121-pagination' : '20261105-date-check'}">
 <script src="/static/js/v4-shell.js?v=20261029-header8" defer></script>${structured}
 </head><body class="v4-page kf-tool-page kf-subsidy"><main class="app">
 <header class="header"><div class="top"><a class="brand" href="/index.html" aria-label="KFarmAI 홈">KFarmAI</a></div></header>
@@ -81,16 +81,17 @@ const index = shell('농업 지원사업 공고 찾기', '농업 지원사업 �
 <select id="categoryFilter" class="select" aria-label="분야 선택"><option value="">전체 분야</option><option>친환경</option><option>농기계</option><option>유통·가공</option><option>연구개발</option><option>시설·임대</option><option>축산·조사료</option><option>복지</option></select></div>
 <button id="resetButton" class="reset" type="button">초기화</button></section>
 <section id="announcements" class="policy-section" aria-labelledby="announcementsTitle">
-<div class="policy-section-head"><h2 id="announcementsTitle">지원사업 공고</h2><span id="noticeCount" aria-live="polite">${items.length}건</span></div>
+<div class="policy-section-head"><h2 id="announcementsTitle" tabindex="-1">지원사업 공고</h2><span id="noticeCount" aria-live="polite">${items.length}건</span></div>
 <div class="policy-status-filters" role="group" aria-label="접수 상태">
 <button type="button" data-status="all" aria-pressed="true">전체</button><button type="button" data-status="open" aria-pressed="false">접수중</button><button type="button" data-status="checking" aria-pressed="false">날짜 확인 중</button><button type="button" data-status="closed" aria-pressed="false">마감</button></div>
-<div id="noticeList">${cards}</div><p id="policyEmpty" class="policy-empty" hidden>조건에 맞는 공고가 없습니다. 검색어나 필터를 바꿔보세요.</p></section>
+<div id="noticeList">${cards}</div><p id="policyEmpty" class="policy-empty" hidden>조건에 맞는 공고가 없습니다. 검색어나 필터를 바꿔보세요.</p>
+<nav id="policyPagination" class="policy-pagination" aria-label="지원사업 공고 페이지" hidden></nav></section>
 <section id="official-sources" class="policy-section policy-sources" aria-labelledby="sourceTitle"><h2 id="sourceTitle">공식 공고 검색처</h2>
 <div class="policy-source-links"><a href="https://www.bojo.go.kr/da/getDA001200View.do" target="_blank" rel="noopener noreferrer">보조금통합포털 <span>공모사업 ↗</span></a>
 <a href="https://uni.agrix.go.kr/webportal/main/portalBizGuideList.do" target="_blank" rel="noopener noreferrer">AgriX <span>농식품사업 지침 ↗</span></a>
 <a href="https://www.mafra.go.kr/" target="_blank" rel="noopener noreferrer">농림축산식품부 <span>공고 ↗</span></a></div></section>
 <p class="policy-endnote">신청 대상·지역·자부담과 마감 시간은 공고마다 다릅니다. 신청 전 공식 원문을 확인하세요.</p></div>
-<script src="/static/js/policy-support.js?v=20261112-deadline-time" defer></script>`);
+<script src="/static/js/policy-support.js?v=20261121-pagination" defer></script>`);
 fs.writeFileSync(path.join(root,'subsidy-calendar.html'), index);
 
 const detailDir = path.join(root, 'policy');

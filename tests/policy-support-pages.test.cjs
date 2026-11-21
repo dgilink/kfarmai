@@ -91,9 +91,10 @@ test('Ganghwa application has a date-appropriate static status before JavaScript
   assert.match(index, /<option>경기<\/option>/);
 });
 
-test('open filter includes unknown starts while preserving distinct data state', () => {
-  const element = (value = '') => ({value, hidden:false, dataset:{}, events:{},
+test('policy pages preserve filter and deadline behavior across the full list', () => {
+  const element = (value = '') => ({value, hidden:false, dataset:{}, events:{}, children:[],
     addEventListener(name, callback) { this.events[name] = callback; },
+    replaceChildren(...children) { this.children = children; },
     setAttribute(name, value) { this[name] = value; }});
   const cards = publication.items.map(item => {
     const card = element();
@@ -107,11 +108,13 @@ test('open filter includes unknown starts while preserving distinct data state',
     return card;
   });
   const fields = {policySearch:element(),regionFilter:element(),targetFilter:element(),
-    categoryFilter:element(),resetButton:element(),policyEmpty:element(),noticeCount:element()};
+    categoryFilter:element(),resetButton:element(),policyEmpty:element(),noticeCount:element(),
+    policyPagination:element(),announcements:{scrollIntoView() {}},announcementsTitle:{focus() {}}};
   const buttons = ['all','open','checking','closed'].map(status => {
     const button = element(); button.dataset.status = status; return button;
   });
   const document = {
+    createElement:() => element(),
     getElementById(id) { return fields[id]; },
     querySelectorAll(selector) { return selector === '#noticeList .policy-result' ? cards : buttons; }
   };
@@ -120,12 +123,30 @@ test('open filter includes unknown starts while preserving distinct data state',
     static now() { return now; }
   }});
   assert.equal(fields.noticeCount.textContent, '177건');
+  const shown = () => cards.filter(card => !card.hidden);
+  const pageButtons = () => fields.policyPagination.children;
+  assert.deepEqual(shown(), cards.slice(0, 20));
+  assert.equal(pageButtons()[0].disabled, true);
+  pageButtons().at(-1).events.click();
+  assert.deepEqual(shown(), cards.slice(20, 40));
+  assert.equal(fields.noticeCount.textContent, '177건');
+  for (let number = 2; number < 9; number++) pageButtons().at(-1).events.click();
+  assert.deepEqual(shown(), cards.slice(160));
+  assert.equal(pageButtons().at(-1).disabled, true);
+  assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '9');
+  pageButtons().find(button => button.textContent === '5').events.click();
+  assert.deepEqual(shown(), cards.slice(80, 100));
+  pageButtons()[0].events.click();
+  assert.deepEqual(shown(), cards.slice(60, 80));
   buttons[1].events.click();
   assert.equal(fields.noticeCount.textContent, '56건');
+  assert.equal(shown().length, 20);
+  assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '1');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
   assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 113);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '8건');
+  assert.equal(fields.policyPagination.hidden, true);
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
   buttons[1].events.click();
   fields.policySearch.value = '고창';
@@ -134,8 +155,11 @@ test('open filter includes unknown starts while preserving distinct data state',
   fields.regionFilter.value = '전국';
   fields.regionFilter.events.change();
   assert.equal(fields.noticeCount.textContent, '0건');
+  assert.equal(fields.policyPagination.hidden, true);
+  assert.equal(fields.policyEmpty.hidden, false);
   fields.resetButton.events.click();
   assert.equal(fields.noticeCount.textContent, '177건');
+  assert.deepEqual(shown(), cards.slice(0, 20));
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
   fields.policySearch.events.input();
