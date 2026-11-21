@@ -2626,12 +2626,14 @@ let currentProfileNickname = '';
 let myPostEditingId = null;
 let myPostCache = [];
 let blockedUserIdsSet = new Set();
+let communityCategories = window.KFCommunity?.fallbackCategories?.() || [];
 let homeFeedSort = 'latest';
 let homeFeedRequestId = 0;
 let homeFeedTouchActive = false;
 let pendingHomeFeedUpdates = [];
 const COMMUNITY_FEED_CACHE_KEY = 'kfarmai_public_feed_v2';
 const COMMUNITY_FEED_CACHE_TTL = 5 * 60 * 1000;
+const HOME_FEED_DISPLAY_LIMIT = 3;
 prepareQuestionListShell();
 // Restore shared cards before the auth request so text and cached thumbnails
 // already occupy their final slots when the home tab becomes visible.
@@ -3392,15 +3394,16 @@ document.addEventListener('touchend',finishHomeFeedTouch,{capture:true,passive:t
 document.addEventListener('touchcancel',finishHomeFeedTouch,{capture:true,passive:true});
 window.addEventListener('pagehide',finishHomeFeedTouch);
 function renderHomeFeedPosts(feed,posts,profileMap={}){
-  const nextIds=(posts||[]).map(post=>String(post.id||''));
+  const visiblePosts=(posts||[]).slice(0,HOME_FEED_DISPLAY_LIMIT);
+  const nextIds=visiblePosts.map(post=>String(post.id||''));
   const currentIds=[...feed.querySelectorAll('.q-card[data-post-id]')].map(card=>card.dataset.postId);
   if(nextIds.length&&nextIds.length===currentIds.length&&nextIds.every((id,index)=>id===currentIds[index])){
-    updateHomeFeed(()=>updateHomeFeedMeta(posts,profileMap));
+    updateHomeFeed(()=>updateHomeFeedMeta(visiblePosts,profileMap));
     return;
   }
   updateHomeFeed(()=>{
     feed.innerHTML='';
-    posts.forEach((post,index)=>renderFeedCard(feed,post,profileMap,index));
+    visiblePosts.forEach((post,index)=>renderFeedCard(feed,post,profileMap,index));
   });
 }
 async function loadFeed(sort=homeFeedSort){
@@ -3448,7 +3451,7 @@ function restoreHomeFeedCache(feed){
       return false;
     }
     feed.innerHTML='';
-    cached.posts.slice(0,6).forEach((post,index)=>renderFeedCard(feed,post,cached.profileMap||{},index));
+    cached.posts.slice(0,HOME_FEED_DISPLAY_LIMIT).forEach((post,index)=>renderFeedCard(feed,post,cached.profileMap||{},index));
     return true;
   }catch(_){return false;}
 }
@@ -4472,7 +4475,6 @@ async function setupComposeDraft(user){
   await composeDraft.restore();
   }catch(_){composeDraft=null;composeDraftOwner='';showToast('이 기기에 초안을 저장할 수 없습니다. 저장 공간을 확인해주세요.');}
 }
-let communityCategories = window.KFCommunity?.fallbackCategories?.() || [];
 const TAG_LIMIT = 8;
 const CHANNEL_TOPIC_CONFIG = {
   default:{label:'글 주제',helper:'글의 성격에 맞는 주제를 선택해주세요.',options:['질문','정보공유','일상','후기','기타']},
