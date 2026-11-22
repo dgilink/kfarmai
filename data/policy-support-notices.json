@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-21",
+  "updatedAt": "2026-11-22",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -4778,7 +4778,7 @@
     },
     {
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-19",
+      "verifiedAt": "2026-11-22",
       "reviewStatus": "approved",
       "externalId": "bizinfo-PBLN_000000000128023",
       "slug": "2026-gimcheon-organic-crop-cultivation-incentive",
@@ -4799,14 +4799,14 @@
       "applicationEnd": null,
       "publishedAt": "2026-11-19",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "정부 등록 안내와 첨부 신청 안내는 12월 1일 마감이지만, 함께 등록된 추진계획은 12월 4일을 신청기한으로 기재했습니다. 기관 원문은 현재 404로 마감일을 확정하지 않았습니다. 농지 소재 읍·면·동 행정복지센터에 접수기한을 확인하세요.",
+      "dateCheckReason": "기관 원문에 다시 접속해 확인한 감문면 신청 안내와 정부 등록 안내는 2026년 12월 1일을 마감일로 기재하지만, 원문에 첨부된 추진계획은 12월 4일을 신청기한으로 기재했습니다. 접수처별 마감일 차이인지 확정되지 않아 날짜 확인 중을 유지합니다. 농지 소재 읍·면·동 행정복지센터에 접수기한을 확인하세요.",
       "support": "친환경농업에 따른 소득 감소와 생산비 차액을 보전하는 재배장려금 지원입니다. 인증별 단가와 농가당 면적 한도는 첨부 안내를 확인하며, 신청 규모에 따라 조정될 수 있습니다.",
       "eligibility": "김천시 거주 농업경영체 등록 농가·농업법인으로 신청 당시 관내 필지의 유기·무농약 인증을 유지해야 합니다. 신청 필지는 12월 31일까지 인증을 유지해야 하며 체납·관외 필지 등 제외 조건은 추진계획을 확인하세요.",
       "application": "농지 소재 읍·면·동 행정복지센터에 신청서와 필지목록 포함 인증서 사본 등을 방문 제출합니다. 마감일을 먼저 확인하세요. 문의: 김천시 대표전화 054-420-6114.",
       "note": "기업마당 공식 등록 안내와 첨부 신청 안내·추진계획에서 사업과 지원내용을 확인했습니다. 게시일은 정부 등록일이며 접수 마감은 자료 간 불일치로 날짜 확인 중입니다.",
       "officialUrl": "https://www.gc.go.kr/portal/bbs/view.do?bIdx=4544893&ptIdx=1807&mId=1202100000",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128023",
-      "sourceHash": "2b4fb1efae99c98f5aa01164ffe7113f140d900efa7799407940a1b42b717496"
+      "sourceHash": "bc9eeeda1d426e5047ccc1aba85fc5133bebcf72e6f15af9158fb45246f5952e"
     },
     {
       "sourceId": "local-government-notices",
