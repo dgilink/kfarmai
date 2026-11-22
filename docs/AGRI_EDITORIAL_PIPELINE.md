@@ -39,6 +39,17 @@ GitHub Actions 06:00 KST
 - 공개는 기존 소유자 댓글 기반 콘텐츠 승인과 별도 공개 승인 이후에만 가능하다.
 - 커뮤니티 Supabase의 key, table, migration, RLS, Auth, Storage는 변경하지 않는다.
 
+
+## 소유자 직접 승인 원고 발행
+
+KFarmAI 자체 조사 원고와 이미지를 소유자가 검토한 뒤 공개를 직접 지시한 경우, 기존 `USER_DIRECT_APPROVAL` 편집 발행 이력을 따른다. 이 절차는 검토가 끝난 원고에 적용한다. GitHub Daily REVIEW 결과의 공개는 위 Gate C/D 절차를 따른다.
+
+1. 승인 범위에서 원고와 이미지 파일의 해시를 검증하고 공식 원문과 접수 상태를 확인한다. 원고 목록, `automation/daily_registry.json`, `sitemap.xml`에서 제목과 slug 중복을 확인한다.
+2. 본문은 `kb/{slug}.html`로 저장한다. 기존 사이트 스타일을 적용하고, 공개 주소와 canonical, 검색 허용, 공유 이미지, Article 메타데이터를 확인한다. 대표 이미지와 인포그래픽에는 각각 `hero_photo`, `infographic` 역할을 지정한다. 목록용 썸네일이 필요하면 대표 이미지에서 만든다.
+3. 레지스트리에 공개 승인 방식 `USER_DIRECT_APPROVAL`, 제목·분류·날짜, 공개 주소, 출처, 이미지 경로, 최종 파일 해시를 기록한다. 사이트맵에 공개 주소를 한 번 추가한다. Pages 빌드가 홈과 농업정보 목록을 생성한다.
+4. Pages 빌드, 보안·SEO 검사, 360px·390px 화면 및 이미지 확인 후 저장소의 정상 반영 절차를 따른다. Pages 실행이 끝나면 공개 주소와 이미지의 HTTP 응답, canonical, 홈과 목록의 노출, 사이트맵을 확인한다.
+5. 배포가 막히면 해당 커밋의 Pages 실행과 실패 단계를 확인한다. 권한 또는 환경 승인이 필요한 경우 기존 GitHub 절차에서 이어간다. 동일 slug는 다시 추가하기 전에 레지스트리와 운영 주소를 대조한다.
+
 ## 검증 주제 공급
 
 - `automation/daily_topic_queue.json`만 Daily REVIEW의 주제 공급원으로 사용한다.

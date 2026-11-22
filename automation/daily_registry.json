@@ -538,6 +538,82 @@
       ],
       "related_badge_asset": "/static/kb/2027-modu-sangsaeng-project-application-related-badge.svg",
       "image_source": "KFarmAI 자체 제작 실사형 이미지 · 실제 촬영 사진 아님"
+    },
+    {
+      "category": "농산물 유통·소비",
+      "date": "2026-11-22",
+      "slug": "kimchi-day-domestic-origin-check-2026",
+      "title": "11월 22일 김치의 날, 김장 재료와 배추김치 원산지 확인법",
+      "url": "https://kfarmai.com/kb/kimchi-day-domestic-origin-check-2026.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "공식 발표·표시 안내 확인",
+      "source_urls": [
+        "https://www.mafra.go.kr/bbs/home/792/611615/download.do",
+        "https://www.naqs.go.kr/hp/contents/contentsTab.do?menuId=MN30559",
+        "https://www.naqs.go.kr/hp/contents/contentsTab.do?menuId=MN40284&upMenuId=MN30559"
+      ],
+      "infographic_assets": [
+        "/static/kb/kimchi-day-domestic-origin-check-2026-infographic.png"
+      ],
+      "image_source": "KFarmAI 자체 제작 연출 이미지",
+      "html_sha256": "ae6842dda8a40ff94df190d06c7fb2834f74c841274ab81a81119efffe76c547",
+      "image_sha256": "7b2bcd7a52872ad04cf34817d60768988b266b58949d28d0ee3dd9a321304c1a"
+    },
+    {
+      "category": "농기계",
+      "date": "2026-11-22",
+      "slug": "wanju-machinery-long-term-rental-precheck-2027",
+      "title": "완주 농기계 장기임대 2차 신청 전 확인할 대상과 서류",
+      "url": "https://kfarmai.com/kb/wanju-machinery-long-term-rental-precheck-2027.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "완주군 공고 확인",
+      "source_urls": [
+        "https://www.wanju.go.kr/atc/planweb/board/view.9is?boardUid=ff8080818a49961a018ab011af3543bc&contentUid=ff808081898ba9ba0189f1c964a2014d&dataUid=4028a602a1770b0f01a1f2cdf6ad426d"
+      ],
+      "infographic_assets": [
+        "/static/kb/wanju-machinery-long-term-rental-precheck-2027-infographic.png"
+      ],
+      "image_source": "KFarmAI 자체 제작 연출 이미지",
+      "html_sha256": "05702f097efe876c80f5494de8fa66e299be4b4d50421029516e354e9481563c",
+      "image_sha256": "f75041f2e61c6dd3e4b12659658c46a7b1a65c6584ea67aa9277ec7ffcee53e9"
+    },
+    {
+      "category": "농업경영",
+      "date": "2026-11-22",
+      "slug": "gimcheon-organic-crop-incentive-field-documents-2026",
+      "title": "김천 친환경농산물 재배장려금, 인증 필지와 방문 서류 확인법",
+      "url": "https://kfarmai.com/kb/gimcheon-organic-crop-incentive-field-documents-2026.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "접수처·대상 확인 · 마감일은 담당기관 확인 필요",
+      "source_urls": [
+        "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128023",
+        "https://hub.kaia.re.kr/organSupportHub.do/view?curPage=&orgKind=ORG_KIND_2&rltdId=136258",
+        "https://kfarmai.com/policy/2026-gimcheon-organic-crop-cultivation-incentive.html"
+      ],
+      "infographic_assets": [
+        "/static/kb/gimcheon-organic-crop-incentive-field-documents-2026-infographic.png"
+      ],
+      "image_source": "KFarmAI 자체 제작 연출 이미지",
+      "html_sha256": "082c8d8453bca7d5bd48df241d7dcce5ea90769bb312bc5f0df0efb59bf163fa",
+      "image_sha256": "f117fc1b59eb8754fb62edab281d5bf6c6ecf60ad40419cf8323e55aeddc6d6f"
+    },
+    {
+      "category": "농업교육",
+      "date": "2026-11-22",
+      "slug": "gokseong-new-year-farmer-training-plan-2027",
+      "title": "곡성군 2027 새해농업인실용교육, 1월 계획과 준비할 질문",
+      "url": "https://kfarmai.com/kb/gokseong-new-year-farmer-training-plan-2027.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "공식 연간계획 기준 · 과정별 날짜·시간·장소 미확정",
+      "source_urls": [
+        "https://www.gokseong.go.kr/kr/board/view.do?bbsId=BBS_000000000000150&menuNo=102001001000&nttId=112503&pageIndex=1"
+      ],
+      "infographic_assets": [
+        "/static/kb/gokseong-new-year-farmer-training-plan-2027-infographic.png"
+      ],
+      "image_source": "KFarmAI 자체 제작 연출 이미지",
+      "html_sha256": "a6edb2098f1a870b04592bcc0117fd1d390042f187facc6717cbfae1cd4a16e7",
+      "image_sha256": "f45366698603ee9adf4fafebe2424fbacedddc7d807f516b3dcaae0ea6206afb"
     }
   ]
 }
