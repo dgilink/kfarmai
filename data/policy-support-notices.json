@@ -145,10 +145,10 @@
     },
     {
       "sourceId": "mafra-official-notices",
-      "externalId": "791-582118",
+      "externalId": "791-582352",
       "slug": "2027-local-agri-field-rnd",
-      "title": "2027년 농업농촌 현장애로 단기해결 기술개발사업 지역주도 문제해결 공모",
-      "summary": "지방정부가 농업 현장 문제를 제안하고 민간 연구팀·농가와 실증하는 R&D 공모입니다.",
+      "title": "2027년 농업농촌 현장애로 단기해결 기술개발사업 지역주도 문제해결 지방정부 공모 연장",
+      "summary": "지방정부 대상 공모 연장이 발표됐습니다. 첨부 추진계획에 연장 전·후 기한이 함께 기재돼 날짜를 확인 중입니다.",
       "region": [
         "전국"
       ],
@@ -160,16 +160,19 @@
       ],
       "agency": "농림축산식품부",
       "applicationStart": null,
-      "applicationEnd": "2026-11-20",
-      "publishedAt": "2026-11-02",
-      "verifiedAt": "2026-11-03",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-23",
+      "verifiedAt": "2026-11-23",
       "support": "지역주도 현장문제 해결형 R&D 7개 과제 선정 예정. 2027년 정부안 26억 2,500만원, 국비:지방비 2:1 매칭. 국회 예산 확정에 따라 변동 가능.",
       "eligibility": "지방정부가 1차 사업 참여 신청 주체입니다. 민간 연구기관·기업·대학·농가 등은 후보 지방정부 확정 이후 지방정부 주도의 컨소시엄 선정·구성 절차에 참여합니다.",
-      "application": "사업 참여 희망 지방정부는 2026년 11월 20일까지 사업 참여 신청서와 지방비 매칭 확약서를 농림축산식품부에 제출. 세부 제출 경로·RFP는 원문 첨부자료 확인.",
-      "note": "이번 기한은 지방정부의 1차 참여 신청 기한입니다. 기업·농가의 직접 신청 기한이 아니며, 접수 시작일은 원문에 명시되지 않았습니다.",
-      "officialUrl": "https://mafra.go.kr/bbs/home/791/611151/download.do",
+      "application": "사업 참여 희망 지방정부가 사업 참여 신청서와 지방비 매칭 확약서를 농림축산식품부에 제출합니다. 연장 공고의 정확한 제출기한과 제출 경로를 담당 부서에 확인하세요. 민간 연구팀의 별도 과제 접수와 지방정부의 1차 참여 신청은 구분됩니다.",
+      "note": "11월 23일 공식 연장 공고와 첨부 추진계획 PDF를 대조했습니다. 이번 신청 주체는 지방정부이며 기업·농가의 직접 신청 공고가 아닙니다. 접수 시작일은 확인되지 않아 유지하지 않았습니다. 2027년 예산은 정부안으로 국회 확정 결과에 따라 달라질 수 있습니다.",
+      "officialUrl": "https://www.mafra.go.kr/bbs/home/791/582352/artclView.do",
       "reviewStatus": "approved",
-      "sourceHash": "806f5b48146fcb4649af90a36a6919f4e504b4d0532069fa033d645e3f8d3d65"
+      "sourceHash": "11f492950404ebadb9eae1c34b561e172313dce1ececbb48b4fc10b92ae8adbd",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "11월 23일 연장 공고 첨부 추진계획의 지방정부 참여 신청 단계와 일정표는 11월 27일을 제시하지만, 같은 신청서·지방비 매칭 확약서 제출 안내에는 기존 11월 20일이 남아 있습니다. 자료 내부의 접수기한이 불일치해 마감일을 확정하지 않았습니다. 농림축산식품부 과학기술정책과에 확인하세요.",
+      "verificationUrl": "https://www.mafra.go.kr/bbs/home/791/611651/download.do"
     },
     {
       "sourceId": "local-government-notices",
@@ -3577,10 +3580,10 @@
       "application": "신청 서류를 한 파일로 압축해 공고 담당자 이메일에 제출합니다. 직인·서명 서류는 PDF를 사용합니다. 문의 063-720-0641.",
       "note": "한국식품산업클러스터진흥원 공고 제2026-75호의 마감 시간은 11월 23일 오후 5시입니다.",
       "officialUrl": "https://www.foodpolis.kr/web/Board/4453/detailView.do",
-      "verifiedAt": "2026-11-15",
+      "verifiedAt": "2026-11-23",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127924",
       "reviewStatus": "approved",
-      "sourceHash": "d4795d02bc745e74056a95512295bcb505ff9915add7691e8af301052f55cb5f"
+      "sourceHash": "673618d4beb473f142d8129acfef11312784874e941c1064c0eabe68e154cfec"
     },
     {
       "sourceId": "local-government-notices",
@@ -5261,6 +5264,68 @@
       "officialUrl": "https://ulsan.go.kr/s/atc/education/1154.ulsan?mId=001006003000000000",
       "verificationUrl": "https://ulsan.go.kr/u/rep/bbs/view.do?bbsId=BBS_0000000000000027&dataId=185274&mId=001004003001000000",
       "sourceHash": "b2891954ca693e25401f4f18edfc9ecc7121b14d61f2e37de018a3973ccd8490"
+    },
+    {
+      "sourceId": "government-support-registry",
+      "externalId": "bizinfo-PBLN_000000000128078",
+      "slug": "2026-korean-wheat-store-promotion",
+      "title": "2026년 국산밀 소비접점 확대 프로모션(우리밀당지도) 참여업체 모집 공고",
+      "summary": "국산밀 메뉴를 판매하는 외식·제과업체에 지도 홍보와 할인비 등을 지원합니다. 11월 26일까지 신청합니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "외식업체",
+        "제과업체"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "한국농수산식품유통공사 전략작물육성단",
+      "applicationStart": "2026-11-19",
+      "applicationEnd": "2026-11-26",
+      "support": "온라인 지도에 매장·메뉴 정보를 등록해 약 1년간 홍보하고, 매장 홍보물을 무상 배포하며 소비자 방문 인증 행사와 연계합니다. 대표 국산밀 메뉴 할인비는 개소당 최대 200만원 한도로 사후 정산합니다.",
+      "eligibility": "식품접객업 영업신고를 마치고 정상 운영 중인 전국 오프라인 외식·제과 매장으로, 국산밀을 원료로 한 빵·과자·국수·만두 등의 메뉴를 상시 조리·판매하는 업체입니다.",
+      "application": "이메일 wheat_soy@at.or.kr로 신청합니다. 문의: 061-931-0777. 제출서류와 할인비 정산 조건은 공식 등록 안내 및 모집공고를 확인하세요.",
+      "note": "기업마당 정부 공식 등록 안내에서 공표 사실·대상·지원내용·접수기간을 확인했습니다. 기관 원문 재접속이 어려워 정부 공식 등록을 출처로 제공합니다. 게시일은 정부 등록일이며 마감 시각은 추정하지 않았습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128078",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128078",
+      "agencyNoticeUrl": "https://www.at.or.kr/article/apko364000/view.action?articleId=53556",
+      "publishedAt": "2026-11-23",
+      "verifiedAt": "2026-11-23",
+      "reviewStatus": "approved",
+      "sourceHash": "33123ca26a964130667a068a8ae8290b368559a3e7d1449f06017df2b2a03e0b"
+    },
+    {
+      "sourceId": "government-support-registry",
+      "externalId": "bizinfo-PBLN_000000000128073",
+      "slug": "2027-jeonbuk-safe-aquaculture-certification",
+      "title": "전북 2027년 안전한 양식장 인증 참여어가 모집 공고",
+      "summary": "전북 양식어가의 수산물 안전성 조사와 안전한 양식장 인증을 지원합니다. 12월 18일 18시까지 방문 접수합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "양식어가",
+        "수산종자생산업"
+      ],
+      "categories": [
+        "인증·검사"
+      ],
+      "agency": "전북특별자치도 수산기술연구소 수산물안전센터",
+      "applicationStart": "2026-11-20",
+      "applicationEnd": "2026-12-18",
+      "applicationEndTime": "18:00",
+      "support": "전북에서 생산하는 양식수산물의 안전성 조사와 안전한 양식장 인증을 지원합니다.",
+      "eligibility": "양식산업발전법에 따른 양식업 면허·허가 또는 수산종자산업육성법에 따른 수산종자생산업 허가를 받은 자입니다.",
+      "application": "전북 군산시 대학로 255 수산기술연구소 수산물안전센터에 방문 신청합니다. 마감일 18시까지 접수한 신청분에 한합니다. 문의: 063-290-6950.",
+      "note": "기업마당 정부 공식 등록 안내에서 기관·대상·지원내용·접수기간·마감 시각을 확인했습니다. 기관 원문 재접속은 제한돼 정부 등록 안내를 함께 제공합니다. 게시일은 정부 등록일입니다.",
+      "officialUrl": "https://www.jeonbuk.go.kr/board/view.jeonbuk?boardId=BBS_0000129&dataSid=673274&menuCd=DOM_000000102002005000",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128073",
+      "publishedAt": "2026-11-23",
+      "verifiedAt": "2026-11-23",
+      "reviewStatus": "approved",
+      "sourceHash": "28e19ae3cc66446817f32a47b3fe365ede7a6d7e69c8c8553526057140a6ea83"
     }
   ]
 }
