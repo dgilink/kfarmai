@@ -139,13 +139,13 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   pageButtons()[0].events.click();
   assert.deepEqual(shown(), cards.slice(60, 80));
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '56건');
+  assert.equal(fields.noticeCount.textContent, '55건');
   assert.equal(shown().length, 20);
   assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '1');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
   assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 114);
   buttons[2].events.click();
-  assert.equal(fields.noticeCount.textContent, '8건');
+  assert.equal(fields.noticeCount.textContent, '9건');
   assert.equal(fields.policyPagination.hidden, true);
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
   buttons[1].events.click();
@@ -188,7 +188,7 @@ test('expired Gochang notice is retained as closed and Dangjin separates applica
 
 test('announced date-check notices have orange static warnings and no invented deadlines', () => {
   const pending = publication.items.filter(item => item.applicationDateStatus === 'checking');
-  assert.equal(pending.length, 8);
+  assert.equal(pending.length, 9);
   for (const item of pending) {
     assert.equal(item.applicationEnd, null);
     assert.ok(item.dateCheckReason);

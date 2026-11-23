@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-22",
+  "updatedAt": "2026-11-23",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -2516,10 +2516,10 @@
     },
     {
       "sourceId": "local-government-notices",
-      "externalId": "nonsan-f2b7344316b3eaacc790582a4e0a0721",
+      "externalId": "nonsan-55d69636dddaad50a1c016d7a0ec9389",
       "slug": "2027-nonsan-young-farmer-leafy-smartfarm-lease",
-      "title": "논산시 2027 청년농업인 스마트팜 사관학교 엽채류 임차인 모집",
-      "summary": "엽채류 재배용 스마트팜 임차인 3명을 모집합니다. 11월 18일 오후 6시까지 접수합니다.",
+      "title": "논산시 2027년도 청년농업인 스마트팜 사관학교(엽채류) 임차인 모집 재공고",
+      "summary": "엽채류 재배용 스마트팜 임차인 1명을 재모집합니다. 공식 안내의 마감 날짜와 요일이 일치하지 않아 접수기한을 확인 중입니다.",
       "region": [
         "충남"
       ],
@@ -2529,19 +2529,20 @@
       "categories": [
         "시설·임대"
       ],
-      "agency": "논산시 농업기술센터 지도정책과",
-      "applicationStart": "2026-11-04",
-      "applicationEnd": "2026-11-18",
-      "publishedAt": "2026-11-03",
-      "verifiedAt": "2026-11-18",
-      "support": "부적면 엽채류 재배용 온실을 3명에게 임대합니다. 기본 계약은 2027년 2월부터 2028년 1월까지이며 공고 조건에 따라 최대 1년 연장할 수 있습니다.",
-      "eligibility": "논산시 거주 또는 계약 전 전입이 가능한 만 18세 이상 45세 미만 청년농으로, 독립경영 예정이거나 독립경영 3년 이하여야 합니다. 시설농업 경력·영농기반·병역 요건과 예외는 첨부 공고문을 확인하세요.",
-      "application": "임대신청서와 영농계획서를 논산시 농업기술센터 단체협력팀에 방문 또는 이메일로 제출합니다. 방문 접수는 평일 09:00~18:00이며, 이메일은 수신 여부를 전화로 확인합니다. 문의 041-746-8321~3.",
-      "note": "서류와 발표 면접으로 선발합니다. 임대료 산정과 시설 공동사용 조건은 첨부 모집계획에 있습니다.",
-      "officialUrl": "https://buchang.nonsan.go.kr/nongup/html/sub04/0401.html?mode=V&no=f2b7344316b3eaacc790582a4e0a0721",
+      "agency": "논산시 농업기술센터 지도정책과 단체협력팀",
+      "applicationStart": "2026-11-20",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-20",
+      "verifiedAt": "2026-11-23",
+      "support": "엽채류 재배용 스마트팜 임차인 1명을 모집합니다. 임대차 계약기간은 2027년 2월부터 2028년 1월까지이며, 공고 조건에 따라 최대 1년 연장할 수 있습니다.",
+      "eligibility": "논산시에 주민등록을 두고 실제 거주하거나 논산시 전입이 가능한 만 18세 이상 45세 미만 청년농업인. 독립경영 예정자 또는 시설농업 경험이 없는 독립경영 3년 이하 청년농업인으로, 본인 명의의 영농기반(스마트팜 창업)이 없고 병역필 또는 병역면제 조건을 충족해야 합니다.",
+      "application": "스마트팜 사관학교 임대신청서와 영농계획서를 논산시 농업기술센터 지도정책과 단체협력팀에 방문 제출합니다. 방문 접수는 토·일요일을 제외한 09:00~18:00입니다. 문의: 041-746-8323. 서류평가와 PPT 면접심사로 선발합니다.",
+      "note": "11월 20일 공식 재공고 본문에서 모집 인원·대상·임대기간·제출방법을 확인했습니다. 이전 공고의 3명 모집·11월 18일 마감 정보는 재공고 1명 모집 내용으로 갱신했으며 기존 KFarmAI 게시 URL은 유지합니다. 이전 공고의 이메일 제출 방법은 재공고 본문에 없어 제외했습니다. 임대료·시설 세부 조건은 첨부 계획 또는 담당 부서에 확인하세요.",
+      "officialUrl": "https://ganggyeong.nonsan.go.kr/nongup/html/sub04/0401.html?mode=V&no=55d69636dddaad50a1c016d7a0ec9389",
       "reviewStatus": "approved",
-      "applicationEndTime": "18:00",
-      "sourceHash": "31b49b2f57e6f10faeaab81e600255b0b856d975c92854f53b6b4a6518f533c2"
+      "sourceHash": "8d7adfea9021589adf54d736534a26111dd05f3863edfad9fa314c1ece202857",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "재공고 원문 제목은 11월 26일까지로 안내하고 본문은 2026년 11월 26일(금)로 기재하지만, 해당 날짜는 목요일입니다. 마감 날짜와 요일이 불일치하며 첨부 모집계획은 재접속 제한으로 확인하지 못해 마감일을 확정하지 않았습니다. 단체협력팀에 정확한 접수기한을 확인하세요."
     },
     {
       "sourceId": "local-government-notices",
