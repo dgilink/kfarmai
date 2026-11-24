@@ -82,7 +82,32 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Wait for uploaded Pages artifact metadata
+        env:
+          PAGES_ARTIFACT_NAME: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+        shell: python
+        run: |
+          import json, os, time, urllib.request
+          url = f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}/artifacts"
+          for attempt in range(12):
+              request = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "KFarmAI-Pages"})
+              with urllib.request.urlopen(request, timeout=15) as response:
+                  artifacts = json.load(response)["artifacts"]
+              matches = [item for item in artifacts if item["name"] == os.environ["PAGES_ARTIFACT_NAME"] and not item["expired"]]
+              if len(matches) == 1:
+                  print("[Phase Pages artifact metadata] PASS")
+                  break
+              if len(matches) > 1:
+                  raise SystemExit("Duplicate Pages artifact metadata")
+              if attempt < 11:
+                  time.sleep(5)
+          else:
+              raise SystemExit("Pages artifact metadata did not become available")
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
