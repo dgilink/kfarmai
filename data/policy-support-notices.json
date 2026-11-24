@@ -3873,9 +3873,9 @@
       "application": "신청서와 확약서, 사업자등록증 사본, 국세·지방세 완납증명서를 평창군청 산림과 산양삼특구팀에 방문 또는 우편으로 제출합니다. 마감 시각까지 도착해야 합니다. 문의 033-330-2429.",
       "note": "평창군 공고 제2026-1687호에 따른 임업용자재 공급업체 모집입니다.",
       "officialUrl": "https://www.pc.go.kr/portal/government/government-notification?noticeMgrNo=42744",
-      "verifiedAt": "2026-11-16",
+      "verifiedAt": "2026-11-24",
       "reviewStatus": "approved",
-      "sourceHash": "d6c45adeab68b1f70b0e44da9701c17ecc35bb9c9bb6032b0fd6c94a9ff04ce3"
+      "sourceHash": "13803b977f0b92792463d7a51f679c039aa2ec350db2611971dbe9f65d970631"
     },
     {
       "sourceId": "local-government-notices",
@@ -5326,6 +5326,339 @@
       "verifiedAt": "2026-11-23",
       "reviewStatus": "approved",
       "sourceHash": "28e19ae3cc66446817f32a47b3fe365ede7a6d7e69c8c8553526057140a6ea83"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128097",
+      "slug": "2027-goheung-vietnam-agri-seafood-promotion",
+      "title": "고흥군 2027년 농수산물 베트남 홍보행사 지원사업 공고",
+      "summary": "고흥 미역과 쌀의 베트남 수출 홍보행사 수행업체를 모집합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "수출기업"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "고흥군 농업정책과",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "행사장 임차·장치비, 홍보비, 판촉요원 인건비, 홍보·증정 상품 관세, 시식비 등을 지원합니다. 총사업비 3천만원이며 출장성 경비 등 제외 비용과 항목별 한도를 확인하세요.",
+      "eligibility": "고흥군 소재 미역 제조업체로 고흥 미역·쌀 수출이 가능하고 현지 유통망·계약·업무협약 등의 조건을 갖춘 수출기업. 확정 지원금의 300% 이상 수출 목표를 이행해야 합니다.",
+      "application": "12월 4일 18시까지 고흥군청 농업정책과에 방문 또는 우편 도착 접수합니다. 문의 061-830-6054.",
+      "note": "고흥군 공고 제2026-1951호와 정부 등록 안내의 대상·지원내용·일정을 대조했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.goheung.go.kr/contentsView.do?pageId=www99&action=V&seq=41623",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128097",
+      "applicationEndTime": "18:00",
+      "sourceHash": "4c051802d056f45ee4c9ce4cf31bb0897c6f94b9ccd45199ca31f3f85f2db480"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128096",
+      "slug": "2026-damyang-poultry-drone-disinfection-operator",
+      "title": "담양군 2026년 동절기 가금농장 드론소독 지원사업 참가 희망업체 접수 공고",
+      "summary": "가금농장 축사 지붕 소독을 수행할 드론 방제업체를 모집합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "중소기업"
+      ],
+      "categories": [
+        "방역"
+      ],
+      "agency": "담양군 축산원예과",
+      "applicationStart": "2026-11-20",
+      "applicationEnd": "2026-11-27",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "2026년 12월~2027년 1월 가금농장 15호에 주 1회 이상 축사 지붕 드론소독을 실시하는 사업입니다. 총사업비는 1천만원입니다.",
+      "eligibility": "초경량비행장치사용사업 등록, 약제탱크 10L 포함 방역용 드론 2대 이상, 무인멀티콥터 1종 조종자 증명 보유 인력 등의 기준을 갖춘 업체. 전남 소재 기업을 우선합니다.",
+      "application": "담양군청 축산원예과 가축방역팀에 방문 또는 우편 도착 접수합니다. 문의 061-380-2762.",
+      "note": "첨부 공고 제2026-1393호 기준 신청자는 방제업체이며 가금농장은 사업 수혜 대상입니다. 정부 등록 안내의 대상 요약과 구분했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.damyang.go.kr/eminwon/searchDetail?notAncmtMgtNo=38413&domainId=DOM_0000001&menuCd=DOM_000000190001002001&contentsSid=2&listType=01",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128096",
+      "applicationEndTime": "18:00",
+      "sourceHash": "36b2a07981f52a548d7f346d055159fc480da21675a9cc6bef8cafb28a80c495"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128099",
+      "slug": "2026-jeju-aquaculture-energy-inverter-round-5",
+      "title": "제주 2026년 양식장 친환경에너지보급사업 인버터 대상자 모집 5차 공고",
+      "summary": "양식장 에너지 절감을 위한 인버터 설치비 지원 대상자를 모집합니다.",
+      "region": [
+        "제주"
+      ],
+      "targets": [
+        "어업인",
+        "어업법인",
+        "생산자단체"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "제주특별자치도 수산정책과",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "용량별 단가기준을 적용한 인버터 실소요 비용을 예산 범위에서 지원합니다. 국비 60%, 지방비 20%, 자부담 20%입니다.",
+      "eligibility": "관련 법령상 어업인·어업법인·생산자단체 등으로 기르는 어업을 경영 중이거나 예정이며 면허·허가·신고 요건을 충족하는 자입니다.",
+      "application": "제주특별자치도 수산정책과에 방문 신청합니다. 문의 064-710-3247.",
+      "note": "공식 공고 제2026-3551호에서 사업과 대상·지원내용을 확인했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.jeju.go.kr/news/news/law/jeju2.htm#A_68410",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128099",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "공식 첨부의 신청기간은 2026년 11월 23일~11월 30일로 기재됐으나 기간을 11일간이라고 병기해 실제 날짜 간 일수와 맞지 않습니다. 시작일은 확인된 11월 23일만 유지하고 정확한 마감일은 수산정책과에 확인하세요.",
+      "sourceHash": "886a7f2796696992aa39090f35b47aac5ff19fb7b03359ea83ac842d8fd8c199"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128106",
+      "slug": "2026-gochang-aquaculture-interest-subsidy-round-5",
+      "title": "고창군 2026년 어업인 경영안정 지원사업 5차 모집 공고",
+      "summary": "등록 양식어업인의 일반영어자금 대출이자 부담을 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "고창군 해양수산과",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": "2026-11-27",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "2026년 납입 대출이자에 대해 1인 1회 최대 100만원을 지원합니다. 정책자금은 제외하며 계정이 여러 개이면 한도 내 합산합니다.",
+      "eligibility": "양식산업발전법 또는 수산종자산업육성법에 따른 면허·허가를 갖추고 어업경영체를 등록한 양식어업인. 우선순위·제외 조건은 공고문을 확인하세요.",
+      "application": "고창군청 해양수산과 수산진흥팀에 방문 접수합니다. 문의 063-560-2643.",
+      "note": "군 공고 제2026-2049호와 정부 등록 안내의 접수기간·지원조건을 대조했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000180&menuCd=DOM_000000102003007000&orderBy=TMP_FIELD4%20DESC,TMP_FIELD1%20DESC&paging=ok&startPage=1&dataSid=838921",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128106",
+      "sourceHash": "f8009c470eb1b42b70ff382441669c142db2368c973e2598937ab9815de4df5f"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128105",
+      "slug": "2027-gunsan-young-fisher-settlement",
+      "title": "군산시 2027년 청년 어촌정착지원 사업 지원대상자 모집 공고",
+      "summary": "창업 초기 청년어업인의 정착을 위해 월 최대 110만원을 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "청년어업인"
+      ],
+      "categories": [
+        "창업"
+      ],
+      "agency": "군산시 어업정책과",
+      "applicationStart": "2026-11-18",
+      "applicationEnd": "2026-12-07",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "독립경영 경력에 따라 1년차 월 110만원, 2년차 월 100만원, 3년차 월 90만원을 수산업 경영비·어가 가계자금으로 지원합니다. 사용 제한을 확인하세요.",
+      "eligibility": "수산업경영 3년 이하의 만 40세 미만 청년어업인. 사업연도 연령·거주지·독립경영·선정 제외 요건은 공고와 시행지침을 확인하세요.",
+      "application": "군산시청 7층 어업정책과 어업정책계에 본인이 방문 신청합니다. 평일 09~18시, 우편·이메일 불가. 문의 063-454-4722.",
+      "note": "공고 제2026-2580호와 정부 등록 안내를 대조했습니다. 시작일은 정부 등록 안내의 신청기간에서 확인했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?pageIndex=5&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=74262&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&cha_dep_code_nm=&initValue=Y&countYn=Y&list_gubun=&not_ancmt_sj=&not_ancmt_cn=&dept_nm=&yyyy=&Key=B_Subject&temp=",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128105",
+      "applicationEndTime": "18:00",
+      "sourceHash": "41f0cb215fd189b06e13cb733e28b69530002e3837077a1490cf59ee4df2e5a0"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128102",
+      "slug": "2026-gunsan-aquaculture-interest-subsidy-round-3",
+      "title": "군산시 2026년 어업인 경영안정 지원사업 3차 모집 공고",
+      "summary": "양식어업인의 일반영어자금 대출이자를 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "군산시 어업정책과",
+      "applicationStart": "2026-11-24",
+      "applicationEnd": "2026-12-10",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "어업경영 운영비에 사용하는 일반영어자금 대출이자 이차보전입니다. 정책자금은 제외하며 지급한도와 우선순위는 첨부 지침을 확인하세요.",
+      "eligibility": "양식산업발전법에 따른 면허·허가 또는 수산종자산업육성법에 따른 허가를 갖추고 어업경영체를 등록한 양식어업인입니다.",
+      "application": "군산시청 어업정책과 양식산업계에 방문 접수합니다. 문의 063-454-2912.",
+      "note": "기관 공고와 첨부 공고·정부 등록 안내에서 11월 24일~12월 10일 일정을 확인했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?pageIndex=&jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=74325&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&cha_dep_code_nm=&initValue=Y&countYn=Y&list_gubun=&not_ancmt_sj=&not_ancmt_cn=&dept_nm=&yyyy=&Key=B_Subject&temp=",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128102",
+      "sourceHash": "23af478651f68f26b2638c851579e5a94c906d9a3b09293f8418319575291777"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128104",
+      "slug": "2026-buan-seafood-processing-distribution-round-3",
+      "title": "부안군 2026년 수산물 가공·유통분야 지원사업 3차 모집 공고",
+      "summary": "수산물 온라인 판매·택배비, 포장재, 가공설비 지원 대상자를 모집합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "어업인",
+        "어업법인",
+        "가공업체"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "부안군 해양수산과",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "온라인 판매 할인비용 최대 30%와 택배비, 수산물·가공품 포장재, 이물선별기·금속검출기·포장설비 등 분야별 지원입니다.",
+      "eligibility": "분야별 어업인·어촌계·영어조합법인·제조가공업체 등이며 등록 대상은 어업경영체 등록이 필요합니다. 세부 요건은 공고문을 확인하세요.",
+      "application": "부안군청 해양수산과 수산식품산업팀에 방문 신청합니다. 문의 063-580-4369, 4489.",
+      "note": "기관 게시물·정부 등록 안내와 첨부 공고에서 사업·지원내용을 확인했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.buan.go.kr/board/view.buan?boardId=BBS_0000054&menuCd=DOM_000000103001003000&paging=ok&startPage=2&dataSid=372136",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128104",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "기관 본문은 2026년 11월 27일(금) 18시까지로 안내하지만 첨부 공고의 접수기간은 11월 27일(월) 18시까지로 기재돼 날짜·요일이 일치하지 않습니다. 확인된 시작일 11월 23일만 유지하며 정확한 마감일은 해양수산과에 확인하세요.",
+      "sourceHash": "62355b3910626465d8be0089e3cd56cc3886a92777f4f8ac76a7b3ea615bb621"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128101",
+      "slug": "2026-uljin-women-fishers-health-check-round-6",
+      "title": "울진군 2026년 여성어업인 특화건강검진 6차 신청 공고",
+      "summary": "울진 거주 여성어업인의 특화건강검진 신청을 받습니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "여성어업인"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "울진군 해양수산과",
+      "applicationStart": "2026-11-20",
+      "applicationEnd": "2026-12-04",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "여성어업인 특화건강검진을 지원합니다. 검진항목·중복검진 제외 조건 등은 첨부 공고를 확인하세요.",
+      "eligibility": "울진군에 거주하는 51세 이상(1975년 12월 31일 이전 출생) 여성어업인으로 어업경영체 등록, 어업인 확인서 또는 맨손·나잠어업 활동 확인 요건 등을 충족해야 합니다.",
+      "application": "울진군청 해양수산과 수산정책팀 또는 남울진민원센터에 신청서와 구비서류를 방문 제출합니다. 문의 054-789-6851.",
+      "note": "기관 원문·정부 등록 안내·첨부 6차 공고의 대상과 일정을 대조했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.uljin.go.kr/index.uljin?menuCd=DOM_000000103002007001&type=view&ancmtMgtNo=36468",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128101",
+      "applicationEndTime": "18:00",
+      "sourceHash": "8beea431a0ae49faa416396f9920498974da363e057026f016efbae94623176b"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128095",
+      "slug": "2027-suncheon-young-fisher-settlement",
+      "title": "순천시 2027년 청년어촌정착지원사업 신청자 모집 공고",
+      "summary": "수산업 독립경영 3년 이하 청년의 어촌 정착을 지원합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "청년어업인"
+      ],
+      "categories": [
+        "창업"
+      ],
+      "agency": "순천시 해양수산과",
+      "applicationStart": "2026-12-09",
+      "applicationEnd": "2026-12-15",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "경력별 1년차 월 110만원, 2년차 월 100만원, 3년차 월 90만원을 지원합니다. 사업 선정·사용처 조건은 시행지침을 확인하세요.",
+      "eligibility": "순천시에 실제 거주하며 주민등록을 둔 사업연도 만 18세 이상~40세 미만 청년(1987.1.1.~2009.12.31. 출생). 어업·양식·수산물 가공유통·해양레저관광업 독립경영 3년 이하 또는 공고가 허용하는 예정자입니다.",
+      "application": "순천만길 513-25 자연생태관 1층 순천시 해양수산과에 방문 접수합니다. 문의 수산자원팀 061-749-3622.",
+      "note": "기관 원문 재접속은 503 오류였으나 정부 공식 등록 안내와 첨부 모집공고·시행지침으로 필수 정보를 검증했습니다. 공고기간 11월 23일~12월 15일과 서류접수 12월 9~15일을 구분했습니다. 게시일은 기업마당 정부 공식 등록일입니다.",
+      "officialUrl": "https://www.suncheon.go.kr/kr/news/0004/0005/0001/?mode=view&seq=64381",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128095",
+      "sourceHash": "be97fe0b9b9fb96b7be99be0f6a9ac96ea2d2cdaac296dcdfac6d378190a3539"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2026-gimcheon-rice-labor-saving-machinery-extra",
+      "slug": "2026-gimcheon-rice-labor-saving-machinery-extra",
+      "title": "김천시 2026년 벼 재배 생력화장비 지원사업 추가 신청 안내",
+      "summary": "벼 재배 농업인·단체의 육묘용 파종기, 종자소독기, 무인보트 구입을 지원합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "농업인",
+        "생산자단체"
+      ],
+      "categories": [
+        "농기계"
+      ],
+      "agency": "김천시 감문면·스마트농업과",
+      "applicationStart": null,
+      "applicationEnd": "2026-11-30",
+      "publishedAt": "2026-11-23",
+      "verifiedAt": "2026-11-24",
+      "support": "사업량 1대, 대당 기준사업비 300만원이며 보조 50%·자부담 50%입니다. 기종별 보조한도는 150만원입니다.",
+      "eligibility": "벼 재배면적 1ha 이상 농업인 또는 구성원 합계 경작면적 10ha 이상 농업인 단체로 2026년 12월 22일까지 정산 가능한 농가. 기존 지원 장비·사후관리 등 제외 요건을 확인하세요.",
+      "application": "11월 30일까지 읍·면·동에 신청합니다. 접수 시작일은 원문에서 확인되지 않았으며 감문면 또는 스마트농업과에 구비서류와 접수방법을 확인하세요.",
+      "note": "기관 본문과 첨부 추가 추진계획에서 사업량·기종·지원비율·마감일을 대조했습니다. 게시일을 접수 시작일로 추정하지 않았습니다.",
+      "officialUrl": "https://www.gc.go.kr/portal/bbs/view.do?bIdx=4545074&ptIdx=1807&mId=1202100000",
+      "reviewStatus": "approved",
+      "sourceHash": "9fefff4f182efc463f07bef0ccf9bc2f6d693edb11e508188ff7033fd335a50c"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2026-chuncheon-rice-nursery-facility-round-3",
+      "slug": "2026-chuncheon-rice-nursery-facility-round-3",
+      "title": "춘천시 2026년 벼 육묘 시설·장비 지원사업 3차 공고",
+      "summary": "못자리 비닐하우스와 육묘운반기 지원 대상자를 재모집합니다.",
+      "region": [
+        "강원"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인",
+        "생산자단체"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "춘천시 농업지원과",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": "2026-11-30",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-24",
+      "support": "못자리 비닐하우스 1개소(기준사업비 850만원), 육묘운반기 1대(180만원)를 지원합니다. 보조 50%·자부담 50%이며 시설 규격과 장비 기준을 확인하세요.",
+      "eligibility": "공고일 현재 주소지와 농지를 춘천시에 두고 벼 재배면적 1ha 이상인 농업인·농업법인·생산자단체 등. 농지 등록·단체 구성·체납과 지원제한 등 세부 요건은 첨부 공고를 확인하세요.",
+      "application": "11월 30일 18시까지 읍·면·동 행정복지센터 등에 직접 제출합니다. 문의 농업지원과 식량작물팀 033-250-3817.",
+      "note": "퇴계동 공식 게시물과 첨부 춘천시 공고 제2026-2666호의 3차 공고문을 대조했습니다. 게시물은 11월 24일, 첨부 공고·신청 시작일은 11월 23일입니다.",
+      "officialUrl": "https://www.chuncheon.go.kr/village/toegye-dong/news/village/?bbsId=BBSMSTR_000000000200&flag=view&nttId=15877",
+      "reviewStatus": "approved",
+      "applicationEndTime": "18:00",
+      "sourceHash": "bde2c4df2600c2f1642931188ed8630555934d78aa0db74114a92781eca6d03c"
     }
   ]
 }
