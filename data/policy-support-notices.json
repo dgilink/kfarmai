@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-23",
+  "updatedAt": "2026-11-24",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -1952,9 +1952,9 @@
       "note": "서귀포시 감귤유통과의 첨부 접수계획과 기업마당 등록 안내에서 접수일을 대조했습니다.",
       "officialUrl": "https://www.seogwipo.go.kr/info/news/notice.htm?page=1&act=view&seq=155830189",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127768",
-      "verifiedAt": "2026-11-10",
+      "verifiedAt": "2026-11-24",
       "reviewStatus": "approved",
-      "sourceHash": "f312560fa0b3d32190d36ec4f4fe18da205521d15904d3a73c23f0558f62aa55"
+      "sourceHash": "394e704d77bcee152404b6f72f90c099ceab859c75ed332843e660e0e96313c8"
     },
     {
       "sourceId": "official-policy-directory",
@@ -2300,7 +2300,7 @@
       "applicationStart": "2026-11-09",
       "applicationEnd": "2026-11-23",
       "publishedAt": "2026-11-09",
-      "verifiedAt": "2026-11-11",
+      "verifiedAt": "2026-11-24",
       "support": "제품개발·시험연구, 장비·포장기계, 포장 디자인·홍보 및 지식재산권 확보를 지원합니다. 잼·즙·청 분야 사업비는 5천만 원(보조 4천만 원, 자부담 1천만 원)이며 장비·기계는 총사업비의 70% 이하입니다.",
       "eligibility": "거창 농산물을 50% 이상 이용해 잼·즙·청(조청 포함)을 생산하는 농업경영체 또는 거창군 농산물가공지원센터 시제품을 바탕으로 창업하려는 농업인·농업법인. 법인은 출자금 1억 원 이상과 1년 이상 운영 실적이 필요합니다.",
       "application": "읍·면 경제산업담당 또는 농업기술센터에 방문 신청합니다. 문의 055-940-8153.",
@@ -2308,7 +2308,7 @@
       "officialUrl": "https://www.geochang.go.kr/00445/00451.web?amode=view&not_ancmt_mgt_no=48061&",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127781",
       "reviewStatus": "approved",
-      "sourceHash": "31fec8822e1c9b32ee261a2f9afe9d6bfcddb4af8d9fe9cef74f12a37105b709"
+      "sourceHash": "169ac34f0b5bcb3980e517970aa561b3e12320bac06f69ca975f64cedef63fbf"
     },
     {
       "sourceId": "local-government-notices",
@@ -2536,16 +2536,16 @@
       "applicationStart": "2026-11-20",
       "applicationEnd": null,
       "publishedAt": "2026-11-20",
-      "verifiedAt": "2026-11-23",
+      "verifiedAt": "2026-11-24",
       "support": "엽채류 재배용 스마트팜 임차인 1명을 모집합니다. 임대차 계약기간은 2027년 2월부터 2028년 1월까지이며, 공고 조건에 따라 최대 1년 연장할 수 있습니다.",
       "eligibility": "논산시에 주민등록을 두고 실제 거주하거나 논산시 전입이 가능한 만 18세 이상 45세 미만 청년농업인. 독립경영 예정자 또는 시설농업 경험이 없는 독립경영 3년 이하 청년농업인으로, 본인 명의의 영농기반(스마트팜 창업)이 없고 병역필 또는 병역면제 조건을 충족해야 합니다.",
       "application": "스마트팜 사관학교 임대신청서와 영농계획서를 논산시 농업기술센터 지도정책과 단체협력팀에 방문 제출합니다. 방문 접수는 토·일요일을 제외한 09:00~18:00입니다. 문의: 041-746-8323. 서류평가와 PPT 면접심사로 선발합니다.",
-      "note": "11월 20일 공식 재공고 본문에서 모집 인원·대상·임대기간·제출방법을 확인했습니다. 이전 공고의 3명 모집·11월 18일 마감 정보는 재공고 1명 모집 내용으로 갱신했으며 기존 KFarmAI 게시 URL은 유지합니다. 이전 공고의 이메일 제출 방법은 재공고 본문에 없어 제외했습니다. 임대료·시설 세부 조건은 첨부 계획 또는 담당 부서에 확인하세요.",
+      "note": "공식 재공고 본문과 첨부 모집계획을 확인했습니다. 기존 3명 모집에서 1명 재모집으로 변경됐으며, 게시글과 첨부의 마감일이 달라 날짜 확인 중을 유지합니다. 제출서류·임대료·시설 공동사용 조건은 첨부 모집계획과 담당 부서에 확인하세요.",
       "officialUrl": "https://ganggyeong.nonsan.go.kr/nongup/html/sub04/0401.html?mode=V&no=55d69636dddaad50a1c016d7a0ec9389",
       "reviewStatus": "approved",
-      "sourceHash": "8d7adfea9021589adf54d736534a26111dd05f3863edfad9fa314c1ece202857",
+      "sourceHash": "34be64f72a047d3cc02bb78ecce56141f5b2b96841a9f5da80c4776dfa34105b",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "재공고 원문 제목은 11월 26일까지로 안내하고 본문은 2026년 11월 26일(금)로 기재하지만, 해당 날짜는 목요일입니다. 마감 날짜와 요일이 불일치하며 첨부 모집계획은 재접속 제한으로 확인하지 못해 마감일을 확정하지 않았습니다. 단체협력팀에 정확한 접수기한을 확인하세요."
+      "dateCheckReason": "재공고 게시글의 제목·본문은 11월 26일까지로 안내하지만, 새로 확인한 첨부 모집계획의 신청기간은 2026년 11월 27일(금)까지로 기재돼 있습니다. 본문의 11월 26일(금)은 실제 목요일과도 일치하지 않습니다. 게시글과 첨부의 마감 날짜가 달라 기한을 확정하지 않았습니다. 단체협력팀에 정확한 접수기한을 확인하세요."
     },
     {
       "sourceId": "local-government-notices",
@@ -3284,9 +3284,9 @@
       "application": "신청서, 사업계획서, 농업경영체 등록확인서와 농축협 발급 신용조사서를 파주시 농업기술센터 농촌산업팀에 제출합니다. 문의 031-940-2936.",
       "note": "토지 구입과 농기계 구입은 시설자금 지원 대상에서 제외됩니다.",
       "officialUrl": "https://agri.paju.go.kr/user/board/BD_board.view.do?bbsCd=2001&q_ctgCd=1018&seq=20261112102835027",
-      "verifiedAt": "2026-11-14",
+      "verifiedAt": "2026-11-24",
       "reviewStatus": "approved",
-      "sourceHash": "032e53255edcb02350ae9c12fa30047bc642a0f42e6c2d06345df74ef9b00a2a"
+      "sourceHash": "d46c6387038e2e38e85b2794798faacf04dfdfffdc0772249760787610a1f3d2"
     },
     {
       "sourceId": "local-government-notices",
