@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-24",
+  "updatedAt": "2026-11-25",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -3313,9 +3313,9 @@
       "application": "공고 첨부의 붙임 3 양식을 작성해 11월 24일까지 공고에 안내된 이메일로 제출합니다. 문의 042-270-6942.",
       "note": "사업 전체 일정은 11월 25일까지이며, 대전광역시 농업기술센터의 신청서 제출 기한은 내부 검토 일정에 따라 11월 24일입니다.",
       "officialUrl": "https://daejeon.go.kr/far/community/NoticeView.do?menuSeq=216&ntatcSeq=1526581350",
-      "verifiedAt": "2026-11-14",
+      "verifiedAt": "2026-11-25",
       "reviewStatus": "approved",
-      "sourceHash": "ef7cb79839abf9abeead517c439ef81cfc3bd78c351e9a5772b20471a2b3cd99"
+      "sourceHash": "3bda70067a25138e12c25cdc4f76cdd54c2da699cf6ac21e73282a9090d182a6"
     },
     {
       "sourceId": "official-policy-directory",
@@ -3402,9 +3402,9 @@
       "application": "공고 첨부 신청서를 작성해 보성군 농업기술센터 기술보급과 소득작물팀에 방문하거나 공고의 이메일로 제출합니다. 이메일 제출 후 전화로 접수 여부를 확인하세요. 문의 061-850-5742.",
       "note": "보성군의 접수 일정입니다. 과제별 사육 조건과 지원 내용을 첨부 계획에서 확인하세요.",
       "officialUrl": "https://www.boseong.go.kr/atec/participation/notice?idx=1160939&mode=view",
-      "verifiedAt": "2026-11-14",
+      "verifiedAt": "2026-11-25",
       "reviewStatus": "approved",
-      "sourceHash": "1a80a5415d99edf2c2efc303b746f72cb2b17e5a43d784c40b6c794a9c9ca428"
+      "sourceHash": "162821cac10b790f4fec2f9ead5c59bd0ebf1161e918f0950196d5113506bd27"
     },
     {
       "sourceId": "official-policy-directory",
@@ -4078,10 +4078,10 @@
       "application": "고성군 농업기술센터 농업기술과 채소특작담당에 신청서와 관련 서류를 방문 제출합니다. 군 대표번호 055-670-2114.",
       "note": "군 첨부 공고와 기업마당 접수 일정을 대조했습니다. 게시일은 기업마당 등록일입니다.",
       "officialUrl": "https://www.goseong.go.kr/board/view.goseong?boardId=BBS_0000015&menuCd=DOM_000000103001014000&paging=ok&startPage=4&dataSid=5840294",
-      "verifiedAt": "2026-11-17",
+      "verifiedAt": "2026-11-25",
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127978",
-      "sourceHash": "0a338d9578e1ee0f2cd093d98ac4d0f5fccf2445556d1b901f248b1713e3336d"
+      "sourceHash": "cd96442645b795271c81e1cb144e6b76dcbf38b86d417409ec6d3de370835ea4"
     },
     {
       "sourceId": "official-policy-directory",
@@ -5659,6 +5659,36 @@
       "reviewStatus": "approved",
       "applicationEndTime": "18:00",
       "sourceHash": "bde2c4df2600c2f1642931188ed8630555934d78aa0db74114a92781eca6d03c"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128088",
+      "slug": "2026-yeoncheon-food-greenbio-business-support-round-2",
+      "title": "연천군 2026년 식품·그린바이오 기업지원 프로그램 2차 수혜기업 모집 공고",
+      "summary": "연천 식품·그린바이오 중소기업의 마케팅, 인증·지식재산권, 디자인·제품고급화와 시제품 제작을 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "중소기업"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "중소벤처기업부·연천군·경기대진테크노파크",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": "2026-11-29",
+      "applicationEndTime": "23:00",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-25",
+      "support": "마케팅, 시험분석·국내외 인증·지식재산권, 디자인·제품고급화, 시제품 제작 등 사업화를 지원합니다. 기업부담금은 매출액 10억원 이상이면 지원금의 10%, 미만이면 5%이며 부가세는 지원에서 제외합니다. 지원한도와 세부 항목은 첨부 공고를 확인하세요.",
+      "eligibility": "연천군에 본사·공장·기업부설연구소 중 1개 이상을 두고 식품산업 및 그린바이오 전후방 제품·기술의 사업화를 추진·준비 중인 중소기업. 중소기업 확인서 발급과 수행지역 과세 납부 사업장 요건 등을 모두 충족해야 합니다. 중복지원·참여제한 등 제외 조건은 공고문을 확인하세요.",
+      "application": "11월 29일 23시까지 RMS 기업지원사업 관리시스템(www.smtech.go.kr/region/rms)으로 온라인 접수합니다. 선정기업은 원본 서류를 별도로 요청받을 수 있습니다. 공고 문의 경기대진테크노파크 031-539-5051, 온라인 접수 문의 1357.",
+      "note": "기업마당 정부 공식 등록 안내와 첨부 경기대진테크노파크 공고 제2026-194호의 HWPX·PDF를 대조했습니다. 기관 원문 직접 접속은 403 오류여서 정부 등록 안내와 첨부 원문으로 검증했습니다. 게시일은 정부 등록일이며 접수 시작일과 구분했습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128088",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128088",
+      "reviewStatus": "approved",
+      "sourceHash": "a6b039529b1146da14b3e384b5fdc0c3166bfbde5de036c51a7855f3c16d87ad"
     }
   ]
 }

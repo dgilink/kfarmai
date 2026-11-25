@@ -40,14 +40,14 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   assert.equal(cards[0].href, '/policy/2026-damyang-poultry-drone-disinfection-operator.html');
   assert.equal(cards[0].dataset.state, 'upcoming');
   assert.equal(cards[1].href, '/policy/2026-gochang-aquaculture-interest-subsidy-round-5.html');
-  assert.equal(cards[2].href, '/policy/2026-chuncheon-rice-nursery-facility-round-3.html');
+  assert.equal(cards[2].href, '/policy/2026-yeoncheon-food-greenbio-business-support-round-2.html');
   assert.equal(cards[1].dataset.state, 'upcoming');
   assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 191);
+  assert.equal(publication.items.length, 192);
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
     const url = `https://kfarmai.com/policy/${item.slug}.html`;
@@ -122,14 +122,14 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '191건');
+  assert.equal(fields.noticeCount.textContent, '192건');
   const shown = () => cards.filter(card => !card.hidden);
   const pageButtons = () => fields.policyPagination.children;
   assert.deepEqual(shown(), cards.slice(0, 20));
   assert.equal(pageButtons()[0].disabled, true);
   pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(20, 40));
-  assert.equal(fields.noticeCount.textContent, '191건');
+  assert.equal(fields.noticeCount.textContent, '192건');
   for (let number = 2; number < 10; number++) pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(180));
   assert.equal(pageButtons().at(-1).disabled, true);
@@ -144,7 +144,7 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   assert.equal(shown().length, 20);
   assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '1');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 124);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 125);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '12건');
   assert.equal(fields.policyPagination.hidden, true);
@@ -159,7 +159,7 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   assert.equal(fields.policyPagination.hidden, true);
   assert.equal(fields.policyEmpty.hidden, false);
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '191건');
+  assert.equal(fields.noticeCount.textContent, '192건');
   assert.deepEqual(shown(), cards.slice(0, 20));
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
