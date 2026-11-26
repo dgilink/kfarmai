@@ -75,3 +75,18 @@ KFarmAI 자체 조사 원고와 이미지를 소유자가 검토한 뒤 공개�
 
 새 Daily workflow와 `github_editorial_gate.py` 변경을 revert하면 기존 Supabase 기반
 Daily 운영 코드로 돌아갈 수 있다. 커뮤니티 데이터와 스키마에는 롤백 작업이 없다.
+
+## 2026-11-27 소유자 상시 승인: 하루 5회 농업정보 편집 발행
+
+기존 `KFarmAI Daily AutoPublish` GitHub Actions의 **REVIEW-only 경로와 Gate C/D**는 그대로 유지한다. `KFARMAI_AUTOPUBLISH_ENABLED` 및 `KFARMAI_REVIEW_PUBLISH_ENABLED`의 보호 조건을 이 승인만으로 변경하거나 무력화하지 않는다. 아래는 이 보호된 REVIEW 작업과 **별개인** ChatGPT 통합 순차발행 편집 작업에 소유자가 부여한 정기 자동 공개 승인 범위이다.
+
+- 05:00 KST: 농업정보 Radar `6ae7c146b4908191b195b79c8a671059`에서 TODAY, 7D, 30D, 60D, 90D 후보를 각각 1건 조사. 최우선 YES는 5개 중 하나의 우선순위이며 다른 PASS 후보 발행을 막지 않는다.
+- 07:00/09:00/11:00/13:00/15:00 KST: 통합 예약 `6af8d51db1f88191bc04eb92e6083dc4`가 각 버킷별 최대 한 건, 총 다섯 건의 **공식 근거 검증 완료 콘텐츠만** 독립적으로 편집·공개한다. 06:00 호출은 인증·권한 점검만 한다. 실제 발행 시각은 보장하지 않는다.
+- 소유자의 상시 승인은 시간표와 *검증을 통과한* 콘텐츠 범위에 대한 공개 지시이다. 원고·이미지가 불충분하거나 공식 출처가 HOLD/충돌/만료된 경우는 승인된 게시물로 간주하지 않고 건너뛴다. 공고 날짜·지원금·지역·대상·농약 처방 등 고위험 주장은 공식 원문을 반드시 재확인한다.
+- 게시 전 오늘 레이더의 KST 날짜+run_id+bucket+topic_id, 공식 HTTPS 근거 2개 이상(서로 독립 기관 또는 문서), 제목과 slug의 중복, 기존 `automation/daily_registry.json`·`kb`·공개 URL 및 예약/검토 항목 중복을 확인한다. 최종 배포 파일의 해시와 권리 증빙을 기록한다.
+- 검증된 한국 국내 실사/적법 공식 이미지를 우선하며 없으면 실사로 가장하지 않는 원본 그래픽으로 대체할 수 있다. 대표 이미지와 별도 인포그래픽, ALT, 모바일 360px·390px, 대비 및 텍스트·공식링크 클릭을 확인한다. 자동 이미지 평가 목표는 개별 자산 85점 이상이다. 오류·권리 불명·이미지 전송 불가 시 공개 금지.
+- 안전한 편집 경로는 별도 작업 브랜치에서 해당 `kb/{slug}.html`, `static/kb/` 대표 이미지/인포그래픽, `automation/daily_registry.json`, `sitemap.xml`만 수정하는 것이다. 누적 인덱스는 기존 Pages 빌드 계약으로 생성한다. PR의 전체 regression·개별 핵심 테스트·빌드·차단기능·diff 검증을 통과한 경우에만 머지하고 Pages 배포 및 비로그인 공개 URL·이미지·목록·canonical·sitemap을 재조회한다. 저장만 한 것은 게시 완료가 아니다.
+- 레지스트리에는 기존 `USER_DIRECT_APPROVAL` 편집 발행 모드를 유지하고, `approval_source: OWNER_STANDING_SCHEDULED_EDITORIAL`, 승인일, 버킷, 원천 자동화 ID, topic_id, 기사/시각자료 SHA256과 공식 근거를 추가 기록한다. 기존 REVIEW Artifact는 이 경로로 재포장하거나 Gate C/D를 우회해 발행하지 않는다.
+- KFarmAI의 정책지원 공고 자동갱신, 회원·커뮤니티·Supabase·RLS·Auth·Secrets, 기존 Pages/REVIEW 워크플로, DGI PICK 및 다른 블로그는 변경 범위 밖이다.
+- 실행 가능 여부의 단일 계약은 `automation/five_slot_editorial_approval.json`에 기록한다. 최초 각 슬롯에서 실제 도메인 공개 재조회가 PASS 될 때까지 설정 완료와 발행 성공을 구분한다.
+
