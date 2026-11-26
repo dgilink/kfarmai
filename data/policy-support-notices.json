@@ -4967,7 +4967,7 @@
     },
     {
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-20",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
       "externalId": "bizinfo-PBLN_000000000128051",
       "slug": "2026-chungnam-local-food-expo-participation",
@@ -4993,7 +4993,7 @@
       "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128051",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128051",
       "applicationEndTime": "18:00",
-      "sourceHash": "8bf4a60fa07560c7180a4b7d984811166f4611a7b9499aa0a8a39b1c6223bec8"
+      "sourceHash": "34a03114aefca0f74e18ebf6a3e7a73cf7874efca266bafebe522e8770e95786"
     },
     {
       "sourceId": "local-government-notices",
@@ -6053,6 +6053,208 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128109",
       "reviewStatus": "approved",
       "sourceHash": "276ccd98bcd86343a317598aee3e64d47ac928a5d862913a33305281e6d70828"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2027-hwaseong-organic-farming-materials",
+      "slug": "2027-hwaseong-organic-farming-materials",
+      "title": "화성시 2027년 유기농업자재 지원사업 신청 공고",
+      "summary": "화성 농업인의 유기농업자재와 녹비종자 구입비 일부를 지원합니다.",
+      "region": [
+        "경기"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·장비"
+      ],
+      "agency": "화성시 농업정책과",
+      "applicationStart": "2026-11-26",
+      "applicationEnd": "2026-12-31",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "유기농업자재·자재원료와 녹비종자 8종 구입비 일부를 보조 50%, 자부담 50%로 지원합니다. 자재·원료의 총 구입비 기준 한도는 유기 200만원/ha, 무농약 150만원/ha, 일반 100만원/ha입니다. 상토는 제외합니다.",
+      "eligibility": "농업경영정보를 등록한 농업인·농업법인. 일반농가 의무교육·인증전환계획서 요건, 토양검정 및 자조금 서류 등은 공고와 지침을 확인하세요.",
+      "application": "농지 소재지 관할 구청·읍·면 산업팀에 신청서와 동의서·서약서·토양검정 등 해당 서류를 제출합니다. 문의 031-5189-3740.",
+      "note": "화성시 공고 제2026-3882호의 기관 본문·모집 공고·시행지침을 대조했습니다. 첨부 작성일 11월 24일, 기관 등록일 11월 26일과 접수 시작일을 구분했습니다.",
+      "officialUrl": "https://www.hscity.go.kr/www/gosi/BD_selectGosiDetail.do?q_notAncmtMgtNo=152446&q_notAncmtSeCode=04",
+      "reviewStatus": "approved",
+      "sourceHash": "cc2b36ab9fce765979c1dd6f219e3c9b25a56fd3dc6d65d5bf9cfc6ba7d82e59"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2027-hwasun-food-manufacturing-integrated-support",
+      "slug": "2027-hwasun-food-manufacturing-integrated-support",
+      "title": "화순군 2027년도 농식품 제조·가공 통합 지원사업 대상자 모집 공고",
+      "summary": "화순군이 농식품 제조·가공시설과 장비 등 통합 지원사업 참여업체를 모집합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "식품제조·가공업체"
+      ],
+      "categories": [
+        "시설·장비"
+      ],
+      "agency": "화순군 농촌활력과",
+      "applicationStart": "2026-11-25",
+      "applicationEnd": "2026-12-10",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "농식품 제조·가공시설 신·증축, 개보수와 기계·장비 등을 지원합니다. 세부사업별 총사업비 한도는 최대 5억~20억원이며 재원은 보조 70%, 자부담 30%입니다. 지원금 액수와 총사업비 한도를 구분해 확인하세요.",
+      "eligibility": "공고일 이전 식품 제조·가공업으로 등록하고 1년 이상 운영한 법인·개인. 법인은 출자금 5천만원 이상, 분야별 매출액·부지 요건 등을 충족해야 합니다.",
+      "application": "읍·면 산업팀에 신청서·사업계획서와 증빙자료를 방문 제출합니다. 이메일·우편 접수는 불가합니다.",
+      "note": "화순군 공고 제2026-1412호의 기관 본문과 첫 번째 첨부 모집 공고를 대조했습니다. 사업별 예산은 심의 결과에 따라 조정될 수 있습니다.",
+      "officialUrl": "https://eminwon.hwasun.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=39602&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,02,03,04,05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "reviewStatus": "approved",
+      "applicationEndTime": "18:00",
+      "sourceHash": "b046d727c72795e7b5ff8250d13ef037b03592bb426b4e50ef4a2112e646ce74"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2027-hwasun-food-enterprise-competitiveness",
+      "slug": "2027-hwasun-food-enterprise-competitiveness",
+      "title": "화순군 2027년도 농식품기업 경쟁력강화 사업 대상자 모집 공고",
+      "summary": "화순군 농식품기업의 연구개발·브랜드·마케팅 등을 지원합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "식품제조·가공업체"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "화순군 농촌활력과",
+      "applicationStart": "2026-11-25",
+      "applicationEnd": "2026-12-10",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "연구개발, 브랜드·포장재, 마케팅, 온라인 네트워크 구축을 지원합니다. 개소당 총사업비 4천만원 이내이며 보조 70%, 자부담 30%입니다. 항목별 편성 상한을 확인하세요.",
+      "eligibility": "식품 제조·가공업으로 등록하고 1년 이상 운영한 법인·개인, 전년도 매출액 20억원 미만 등 공고 요건 충족 업체. 법인은 총 출자금 5천만원 이상이어야 합니다.",
+      "application": "읍·면 산업팀에 신청서와 사업계획서·증빙자료를 제출합니다.",
+      "note": "동일 기관 공고의 두 번째 첨부인 경쟁력강화 사업 공고를 확인했습니다. 통합 시설사업과 지원 목적·요건이 다른 별도 사업입니다.",
+      "officialUrl": "https://eminwon.hwasun.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=39602&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,02,03,04,05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "reviewStatus": "approved",
+      "applicationEndTime": "18:00",
+      "sourceHash": "121d0e57c75c7d9f4e50b9eba19addbff34b315fbc840cee914260b705bc17c8"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2027-hwasun-brine-recycling-facility",
+      "slug": "2027-hwasun-brine-recycling-facility",
+      "title": "화순군 2027년도 절임염수 재활용 설비 구축 지원사업 대상자 모집 공고",
+      "summary": "화순군 김치·절임배추 제조업체의 절임염수 재활용 설비 구축을 지원합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "김치제조업체",
+        "절임배추제조업체"
+      ],
+      "categories": [
+        "시설·장비"
+      ],
+      "agency": "화순군 농촌활력과",
+      "applicationStart": "2026-11-25",
+      "applicationEnd": "2026-12-10",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "이물 제거·정밀 정화 등 절임염수 재활용 설비 신규 구축을 지원합니다. 생산규모별 총사업비는 개소당 7,500만~4억5천만원이며 재원비율은 보조 70%, 자부담 30%입니다.",
+      "eligibility": "공고일 이전 등록한 김치·절임배추 제조 중소기업 이하 업체. 1년 이상 운영실적, 법인 출자금 5천만원 이상, 부지·임차·재산권 등 공고 요건을 충족해야 합니다.",
+      "application": "읍·면 산업팀에 신청서와 계획서·증빙자료를 방문 제출합니다. 이메일·우편 접수는 불가합니다.",
+      "note": "동일 기관 공고의 세 번째 첨부인 절임염수 재활용 설비 구축 모집 공고를 확인했습니다. 규모별 금액은 보조금 지급액이 아닌 총사업비 기준입니다.",
+      "officialUrl": "https://eminwon.hwasun.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=39602&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,02,03,04,05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "reviewStatus": "approved",
+      "applicationEndTime": "18:00",
+      "sourceHash": "fe9bcb49477b3681f7e0ca371b2dbf2b454a30a9237e6717261f78f9342071fb"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2026-hampyeong-fishery-fuel-subsidy-round-3",
+      "slug": "2026-hampyeong-fishery-fuel-subsidy-round-3",
+      "title": "함평군 2026년 어업용 면세유 유가 연동 보조금 지원사업 모집 공고(3차)",
+      "summary": "함평 어업인의 10~11월 면세휘발유 인상분 보조금 신청을 받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "함평군 농어촌공동체과 해양수산팀",
+      "applicationStart": "2026-11-26",
+      "applicationEnd": "2026-12-09",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "2026년 10~11월 사용한 어업용 면세휘발유의 유가 인상분을 정액 지원합니다. 개별 지급액과 산정기준은 담당기관에 확인하세요.",
+      "eligibility": "함평군 관내 어업용 면세유류카드를 발급받은 어선·관리선으로 어선 등록, 어업허가 또는 관리선 지정 요건 등을 충족한 어업인.",
+      "application": "주소지 읍·면에 신청서, 어업허가·면허 증빙, 신분증·통장 사본, 동의서 등 구비서류를 방문 제출합니다. 문의 061-320-2125.",
+      "note": "기관 본문과 함평군 공고 제2026-1389호를 대조했습니다. 4~9월 사용분을 대상으로 한 기존 5차 공고와 지원기간이 다른 모집입니다. 첨부 총예산 표기는 내부 수치가 맞지 않아 개별 지원금으로 옮기지 않았습니다.",
+      "officialUrl": "https://www.hampyeong.go.kr/pg/GosiDetail.do?SEQ=33055&pageId=www273&listGubun=&notAncmtSeCode=01,02,03,04&search_Type=&search_Text=&pageIndex=1",
+      "reviewStatus": "approved",
+      "sourceHash": "f5ea8ecc9db6663705344c7ee72ea1dc51c8a15557a083ba9286953c6223cdd3"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2026-jincheon-agri-food-export-certification",
+      "slug": "2026-jincheon-agri-food-export-certification",
+      "title": "진천군 2026년 충북 농식품 수출 인증·통관·검역 지원사업 잔여예산 신청 안내",
+      "summary": "충북 농식품기업의 수출 인증·통관·검역 지원사업 잔여예산 신청을 안내합니다.",
+      "region": [
+        "충북"
+      ],
+      "targets": [
+        "농식품 수출기업"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "진천군 축산유통과·충청북도",
+      "applicationStart": "2026-11-26",
+      "applicationEnd": "2026-12-15",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "수출 통관·검역 관련 상표등록, 원료검토, 영양성분검사, 외국어 라벨과 서류 컨설팅 및 해외인증 신규·갱신 비용 등을 업체당 최대 500만원, 공급가액의 80%로 지원합니다. 해외지사화 지원은 제외합니다.",
+      "eligibility": "충북 도내 농식품 생산기업으로 진천군 안내 대상 기업. 2026년 1월 1일 이후 추진한 사업도 예산 범위 내 신청 가능합니다.",
+      "application": "충북글로벌마케팅시스템에서 온라인으로 신청합니다. 예산 소진 시 조기 마감되므로 남은 예산과 증빙 요건을 확인하세요.",
+      "note": "진천군 공식 본문의 잔여예산 신청기간·지원대상·금액을 기준으로 확인했습니다. 연초 전체 사업의 기간과 구분했으며 첨부 PDF는 텍스트 추출이 되지 않아 본문에서 확인되지 않은 조건은 추가하지 않았습니다.",
+      "officialUrl": "https://www.jincheon.go.kr/home/sub.do?menukey=2908&mode=view&no=1095852432",
+      "reviewStatus": "approved",
+      "sourceHash": "5364d9889f03991ea5b163d4d0851b0fadb8bc450a6bce41e79039cece2bb675"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128147",
+      "slug": "2026-jeonbuk-food-startup-promotion-video",
+      "title": "전북 2026년 식품기업 창업프로그램 제품·서비스 홍보 영상 제작 수혜기업 모집",
+      "summary": "전북 식품기업 창업프로그램 수혜기업의 제품·서비스 홍보영상 제작을 지원합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "식품기업 창업프로그램 수혜기업"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "전북바이오융합산업진흥원",
+      "applicationStart": "2026-11-25",
+      "applicationEnd": "2026-12-01",
+      "publishedAt": "2026-11-26",
+      "verifiedAt": "2026-11-26",
+      "support": "기업별 브랜드와 제품 특성에 맞춘 스토리 구성·촬영·편집을 통해 온라인 마케팅과 투자유치에 활용할 제품·서비스 홍보영상을 제작 지원합니다.",
+      "eligibility": "2026년 식품기업 창업프로그램 지원사업 수혜기업. 기존 프로그램 참여 요건과 제출서류를 공고에서 확인하세요.",
+      "application": "신청서와 사업계획서 등 공고 서류를 jin1968@jif.re.kr로 제출합니다. 문의 창업일자리팀 063-210-6566.",
+      "note": "기업마당 정부 공식 등록 안내에서 대상·지원내용·접수기간·접수처를 확인했습니다. 첨부 PDF는 텍스트 추출이 되지 않아 정확한 마감 시간과 선정 수는 단정하지 않았습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128147",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128147",
+      "sourceHash": "504319f170a4ccd9d046f945c53f1737cab02e1b7ed823c965018897ec1401e3"
     }
   ]
 }
