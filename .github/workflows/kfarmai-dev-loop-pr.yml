@@ -38,18 +38,6 @@ jobs:
           path: ${{ runner.temp }}/kfarmai-dev-loop-v1-report.json
           if-no-files-found: warn
           retention-days: 7
- 
-      - name: Bundle PR-only source for local debugging
-        if: always() && github.event.pull_request.number == 41
-        run: tar -czf "$RUNNER_TEMP/kfarmai-pr41-src.tgz" --exclude=.git --exclude=node_modules .
-      - name: Save PR-only source bundle
-        if: always() && github.event.pull_request.number == 41
-        uses: actions/upload-artifact@v4
-        with:
-          name: kfarmai-pr41-src
-          path: ${{ runner.temp }}/kfarmai-pr41-src.tgz
-          if-no-files-found: error
-          retention-days: 1
 
   review-provider-fixture:
     name: Read-only daily REVIEW provider E2E
