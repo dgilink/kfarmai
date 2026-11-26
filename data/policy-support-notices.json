@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-25",
+  "updatedAt": "2026-11-26",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -686,7 +686,7 @@
       "categories": [
         "친환경"
       ],
-      "verifiedAt": "2026-11-05",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
       "externalId": "gyeongju-338616",
       "slug": "2027-gyeongju-organic-fertilizer-extra",
@@ -701,7 +701,7 @@
       "application": "농지소재지 읍면동 행정복지센터 산업팀 또는 생활지원팀에 신청.",
       "note": "등록 예정자의 등록 완료 시점과 공급 조건·필요서류는 농지소재지 행정복지센터 및 첨부 지침에서 확인하세요.",
       "officialUrl": "https://www.gyeongju.go.kr/open_content/ko/page.do?mnu_uid=2912&pageNo=1&pageOrder=0&pagePrvNxt=1&pageRef=0&parm_bod_uid=338616&parm_mnu_uid=0&srchBgpUid=-1&srchColumn=&srchEDate=9999-12-31&srchEnable=1&srchKeyword=&srchSDate=1960-01-01&srchVoteType=-1&step=258",
-      "sourceHash": "c7ae0113a05575babecec9b2f62dd1ad207548c954f5add38387defcc6de3e1e"
+      "sourceHash": "c29e21aadcdb33d7657e593f3550aa307373d5804b78ffb331abaf36bf5047d2"
     },
     {
       "sourceId": "local-government-notices",
@@ -2041,9 +2041,9 @@
       "note": "완주군 경제센터가 제공한 군산시 최종 공고 안내와 기업마당 등록 일정이 일치합니다.",
       "officialUrl": "https://www.wanju.go.kr/economy/board/post/view.do?boardUid=ff8080819a7af892019a8f5be3c50121&menuUid=ff8080819a7af892019a7b02f8200027&postUid=4028a602a177089101a1c423d5b814cd",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127817",
-      "verifiedAt": "2026-11-10",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
-      "sourceHash": "71ca1a63e297a7553b179279b2ef0a33a136f07703c9c21f2f3ad7517e4aa4d0"
+      "sourceHash": "10d9eb43c246ebdd964ea22350641ce5fb4fada7f534e0294f770617c0c7a8c2"
     },
     {
       "sourceId": "official-policy-directory",
@@ -2101,9 +2101,9 @@
       "note": "익산시 공고 제2026-2937호입니다. 게시일은 공식 등록일이며, 접수기간과 제출처를 완주군 경제센터 게시본과 대조했습니다.",
       "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127596",
       "verificationUrl": "https://www.wanju.go.kr/economy/board/post/view.do?boardUid=ff8080819a7af892019a8f5be3c50121&menuUid=ff8080819a7af892019a7b02d50d0023&page=1&postUid=4028a602a177089101a18ba98dde5007",
-      "verifiedAt": "2026-11-10",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
-      "sourceHash": "c167a04ea62c3d3f8be4d27121c0d9b43e630eb0d87d908c546672d13a344e99"
+      "sourceHash": "526cc27202c2fca116750a0ac715e005e7d8abf3faf374b2928c3c5637998e8e"
     },
     {
       "sourceId": "local-government-notices",
@@ -3813,9 +3813,9 @@
       "application": "신청서, 사업자등록증, 지방세·국세 완납증명서를 원주시농업기술센터 농정과 농산지원팀에 방문 제출하거나 팩스 033-737-4829로 보냅니다. 문의 033-737-4122.",
       "note": "원주시 공고 제2026-3105호의 공급업체 모집 일정입니다.",
       "officialUrl": "https://www.wonju.go.kr/www/selectBbsNttView.do?bbsNo=140&key=216&nttNo=495894",
-      "verifiedAt": "2026-11-16",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
-      "sourceHash": "02fb7f92eedf5f6c56d73e0bc098ee7944617f8c24e4234fb1ae3e49658281ab"
+      "sourceHash": "d1d2be0e7b977b2d6487c39ff4d08152a0df33ccab8cbe0efc6e780a5f7578e9"
     },
     {
       "sourceId": "local-government-notices",
@@ -4167,10 +4167,10 @@
       "application": "주소지 읍·면사무소에 융자신청서와 사업계획서 등을 방문 제출합니다. 문의 055-580-4402.",
       "note": "기업마당에 첨부된 함안군농업기술센터 공고 제2026-66호의 자금별 조건을 확인했습니다.",
       "officialUrl": "https://www.haman.go.kr/00960/00962.web?amode=view&not_ancmt_mgt_no=43466",
-      "verifiedAt": "2026-11-17",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127971",
-      "sourceHash": "a639430585ae09126285588e1cf7d553d20b211d30180a62683496ae93279ff5"
+      "sourceHash": "4a4f35e5450948e40502f78c07f3bd32293d32732b5e686b1ddb2b9b86953e5e"
     },
     {
       "sourceId": "official-policy-directory",
@@ -4997,7 +4997,7 @@
     },
     {
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-20",
+      "verifiedAt": "2026-11-26",
       "reviewStatus": "approved",
       "externalId": "bizinfo-PBLN_000000000128046",
       "slug": "2026-gyeongbuk-oasis-market-additional",
@@ -5023,7 +5023,7 @@
       "note": "게시일은 기업마당 정부 공식 등록일입니다. 공식 등록 안내와 첨부 공고문을 대조했으며, 접수일과 게시일은 구분했습니다. 기관 공고(경상북도경제진흥원 vid=2500)는 503 오류여서 정부 등록 안내와 첨부 추가모집 공고로 검증했습니다. 예산 소진 시 조기 마감될 수 있습니다.",
       "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128046",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128046",
-      "sourceHash": "3569b046aa60c51ad779154a309038a3fdc20a42c32a4d308960190088943345"
+      "sourceHash": "3242ec3a0120bdd032bb03d93acca21342ca18ef2224cd390e0d4a9f5b4efb8b"
     },
     {
       "sourceId": "local-government-notices",
@@ -5991,6 +5991,68 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128110",
       "reviewStatus": "approved",
       "sourceHash": "71f4cf1d1216e7234fee56b484ae33b39b017e0d0e65e6c928b92ca9dcbe1f5e"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "yeosu-youthcenter-4266",
+      "slug": "2026-yeosu-young-smartfarm-council-recruitment",
+      "title": "여수시 청년 스마트팜 협의체 참여 청년농업인 모집 공고",
+      "summary": "여수 스마트농업 정책과 청년 정착을 함께 논의할 청년·예비농업인을 모집합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "청년농업인",
+        "예비농업인"
+      ],
+      "categories": [
+        "교육·컨설팅"
+      ],
+      "agency": "여수시 농업정책과 식량원예팀",
+      "applicationStart": "2026-11-26",
+      "applicationEnd": "2026-12-15",
+      "publishedAt": "2026-11-25",
+      "verifiedAt": "2026-11-26",
+      "support": "여수시 청년 스마트팜 협의체에 영농주체로 참여할 청년농업인 4명 내외를 선정합니다. 스마트농업 정책·기술지원·농지임대 등 관련 기관과 협력하는 참여 모집이며, 별도 참여수당은 지급하지 않습니다.",
+      "eligibility": "여수시에 거주하며 스마트팜을 운영하는 만 18~45세 청년농업인 또는 여수시에 정착해 스마트팜 운영을 계획하는 같은 연령의 청년. 실무경력·전문성, 관련 단체 활동, 협의체 참여 의지와 역할 수행 가능 여부 등을 심사합니다.",
+      "application": "여수시청 농업정책과 식량원예팀(주동1길 32)에 신청서, 주민등록등본, 해당자 경영체·법인·교육 증빙과 동의서 등을 방문 제출합니다. 문의 061-659-4421.",
+      "note": "여수시청년지원센터 공식 게시물과 첨부 여수시 공고 제2026-3590호를 대조했습니다. 접수 시작일은 본문·첨부의 모집기간에서 확인했으며 게시일과 구분했습니다.",
+      "officialUrl": "https://www.yeosu.go.kr/youthcenter/community/notice?idx=4266&mode=view&page=51",
+      "reviewStatus": "approved",
+      "sourceHash": "481a96507816c402b99b305c25d2ae3977e709321929feaf0d88bf546d3b39bf"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000128109",
+      "slug": "2027-domestic-forest-products-public-home-shopping",
+      "title": "2027년 국산 임산물 판로 확대를 위한 공영홈쇼핑 방송입점 지원사업 업체 모집 공고",
+      "summary": "국산 임산물 생산·가공업체 등의 공영홈쇼핑 방송 송출과 홍보 동영상 제작을 지원합니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "임업인",
+        "생산자단체",
+        "소기업",
+        "사회적기업"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "산림청·산림조합중앙회 임산물유통본부",
+      "applicationStart": "2026-11-24",
+      "applicationEnd": "2026-12-04",
+      "applicationEndTime": "18:00",
+      "publishedAt": "2026-11-25",
+      "verifiedAt": "2026-11-26",
+      "support": "공영홈쇼핑 생방송·심야재방송 각 1회 송출비용과 방송용 홍보 동영상 제작비 전부 또는 일부를 지원합니다. 16개 품목을 선정하며 판매수수료와 업체 부담·제외 비용은 첨부 공고를 확인하세요.",
+      "eligibility": "법정 임산물 소득원 지원 품목을 재배·생산하거나 이를 원료로 가공품을 생산하는 임업인·생산자단체, 해당 가공품 생산 소기업·사회적기업, 등록 목재생산업체 등. 판매 가능한 완제품·공급능력, 가공식품 HACCP·국산 원료 요건, 동일 업체 1품목 등 조건을 확인하세요.",
+      "application": "12월 4일 18시까지 nfcf2130@naver.com으로 공고의 필수서류와 상품기술서를 파일로 제출합니다. 메일 제목은 공고가 정한 형식을 사용하세요. 문의 산림조합중앙회 임산물유통본부 031-812-8747.",
+      "note": "기업마당 정부 공식 등록 안내와 첨부 모집공고에서 대상·지원내용·접수기간을 확인했습니다. 기관 공고일과 접수 시작일은 11월 24일, 정부 등록일은 11월 25일로 구분했습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128109",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128109",
+      "reviewStatus": "approved",
+      "sourceHash": "276ccd98bcd86343a317598aee3e64d47ac928a5d862913a33305281e6d70828"
     }
   ]
 }
