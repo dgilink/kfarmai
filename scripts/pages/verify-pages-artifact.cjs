@@ -203,8 +203,9 @@ if (exists('data/policy-support-notices.json')) {
           url.pathname === '/bbs/board.php' && url.search === '?bo_id=notice&wr_id=1213';
         const isFoodpolisNotice = url.origin === 'https://www.foodpolis.kr' &&
           url.pathname === '/web/Board/4453/detailView.do' && !url.search && !url.hash;
+        const isNatureRfpNotice = url.href === 'https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=202611251758391c68fe98-ce21-44f3-97a4-80696c7c441a';
         return url.protocol === 'https:' && !url.username && !url.password &&
-          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice || isJeonbukAgriNotice || isFoodpolisNotice);
+          (/\.go\.kr$|\.gov\.kr$/.test(url.hostname) || ['bojo.go.kr', 'agrix.go.kr'].includes(url.hostname) || isYecheonNotice || isJeonbukAgriNotice || isFoodpolisNotice || isNatureRfpNotice);
       } catch { return false; }
     };
     if (publication.schemaVersion !== 1 || !Array.isArray(items) || items.some(item => {

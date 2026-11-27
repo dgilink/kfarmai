@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-26",
+  "updatedAt": "2026-11-27",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -2684,14 +2684,14 @@
       "applicationStart": null,
       "applicationEnd": "2026-11-26",
       "publishedAt": "2026-11-12",
-      "verifiedAt": "2026-11-12",
+      "verifiedAt": "2026-11-27",
       "support": "혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비 구입비 일부를 지원합니다.",
       "eligibility": "농업경영정보를 등록한 농업경영체가 신청할 수 있습니다. 신청인 경영정보에 등록된 농지에 한해 지원합니다.",
       "application": "농지 소재지 관할 읍·면 주민행복센터에 신청합니다.",
       "note": "11월 26일은 고수면 공지 기준입니다. 접수 시작일은 해당 공지에 명시되지 않았습니다.",
       "officialUrl": "https://www.gochang.go.kr/board/view.gochang?menuCd=DOM_000000107005000000&boardId=BBS_0000062&dataSid=838152",
       "reviewStatus": "approved",
-      "sourceHash": "3e3853cfbe37354c24e2321426f9de19713820e32377a7b5d44e27d532a52868"
+      "sourceHash": "02c75895cd629382f056b95cfe7b985f8bb11522ac4de612676491938a3459b2"
     },
     {
       "sourceId": "local-government-notices",
@@ -4352,9 +4352,9 @@
       "application": "신청서·계획서·증빙자료를 주소지 읍·면·동 행정복지센터에 제출합니다. 주소와 사업장이 다르면 사업장 관할 센터에 제출합니다. 문의 055-359-7156.",
       "note": "밀양시 농업기술센터 공고 제2026-44호의 수요조사입니다. 실제 사업 선정 및 교부 일정은 추후 안내를 확인하세요.",
       "officialUrl": "https://www.miryang.go.kr/web/eMiryangMinwonView.do?mnNo=20903000000&nmmIdx=61542",
-      "verifiedAt": "2026-11-17",
+      "verifiedAt": "2026-11-27",
       "reviewStatus": "approved",
-      "sourceHash": "b4d9da5b9f46221f18f70aa620c9112d42c59a335588da8546950755d6893750"
+      "sourceHash": "7b8a195dbb5186f8bef92b386a8173c4218ed935691bc004292ee5a9ccd6b657"
     },
     {
       "sourceId": "local-government-notices",
@@ -5292,9 +5292,9 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128078",
       "agencyNoticeUrl": "https://www.at.or.kr/article/apko364000/view.action?articleId=53556",
       "publishedAt": "2026-11-23",
-      "verifiedAt": "2026-11-23",
+      "verifiedAt": "2026-11-27",
       "reviewStatus": "approved",
-      "sourceHash": "33123ca26a964130667a068a8ae8290b368559a3e7d1449f06017df2b2a03e0b"
+      "sourceHash": "5e240933724713c56b30a09b2c6a1715611ea8267f13c29a232af557925eb673"
     },
     {
       "sourceId": "government-support-registry",
@@ -6255,6 +6255,37 @@
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128147",
       "sourceHash": "504319f170a4ccd9d046f945c53f1737cab02e1b7ed823c965018897ec1401e3"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "ccei-nature-rfp-39277",
+      "slug": "2027-gyeongbuk-nature-bio-rfp-demand-survey",
+      "title": "2027년도 네이처 생명산업 기술개발사업 RFP 수요조사 공고",
+      "summary": "경북 기업·대학·연구소 등의 식품소재·종자·미생물·곤충 등 바이오 기술개발 수요를 조사합니다.",
+      "region": [
+        "경북"
+      ],
+      "targets": [
+        "기업",
+        "대학",
+        "연구소"
+      ],
+      "categories": [
+        "교육·컨설팅"
+      ],
+      "agency": "경북바이오산업연구원 전략기획실",
+      "applicationStart": "2026-11-18",
+      "applicationEnd": "2026-11-30",
+      "applicationEndTime": "17:00",
+      "publishedAt": "2026-11-18",
+      "verifiedAt": "2026-11-27",
+      "support": "2027년 신규 과제 발굴을 위한 기술수요 제안서 접수입니다. 식품소재·기능성식품·종자·미생물·곤충 등을 포함한 바이오 분야를 대상으로 합니다. 계획상 과제별 지원규모는 7,500만원 내외이나 이번 수요조사는 지원 대상 선정이나 지원금 지급을 확정하는 절차가 아닙니다.",
+      "eligibility": "사업에 관심이나 참여 의사가 있는 경북 내 기업·대학·연구소 등. 주관연구개발기관은 경북에 사업장을 두고 사업공고일 기준 창업 1년 이상인 기업이어야 합니다.",
+      "application": "수요조사서를 11월 30일 17시까지 leesh7154@gib.re.kr로 제출합니다. 문의 경북바이오산업연구원 전략기획실 054-850-6978. 기간 후 제출, 사업 성격에 맞지 않는 제안 등은 활용 대상에서 제외될 수 있습니다.",
+      "note": "창조경제혁신센터 공식 배포 첨부의 경북바이오산업연구원 공고를 직접 확인했습니다. 게시일은 첨부 공고의 발령일인 11월 18일을 기준으로 표시했으며 파일 업로드 시각과 구분했습니다. 제출 자료는 신규지원 과제 발굴의 참고자료로 사용되며 이의신청 절차는 없습니다.",
+      "officialUrl": "https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=202611251758391c68fe98-ce21-44f3-97a4-80696c7c441a",
+      "reviewStatus": "approved",
+      "sourceHash": "6011f9290382ac73aa9f14d4ab08fe9528794024c08edaa354630f79863e139f"
     }
   ]
 }
