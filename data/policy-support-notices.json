@@ -4626,7 +4626,7 @@
     },
     {
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-19",
+      "verifiedAt": "2026-11-27",
       "reviewStatus": "approved",
       "externalId": "buan-372046",
       "slug": "2026-buan-young-farmer-rd-startup-round-3",
@@ -4654,7 +4654,7 @@
       "application": "부안군 농업기술센터 농촌지원과 농업인력육성팀에 방문 접수합니다. 신청서, 단체현황, 사업계획서와 유형별 증빙을 제출하며 문의는 063-580-3837입니다.",
       "note": "기관 게시물과 첨부 제3차 모집 공고에서 접수기간·마감 시각·대상 및 사업규모를 대조했습니다. 사업 추진 시기와 신청기간은 별개입니다.",
       "officialUrl": "https://www.buan.go.kr/jbares/board/view.buan?boardId=BBS_0000147&dataSid=372046&menuCd=DOM_000000906001000000&paging=ok&startPage=1",
-      "sourceHash": "552e12237a35f746e0263aa7b92c13676ac79873392abb052b54a901ce826927"
+      "sourceHash": "bcab4a9ebd836dc93173c47418b27668d707ea9b5e854698938ab1d9f4fc77b6"
     },
     {
       "sourceId": "local-government-notices",
@@ -5376,7 +5376,7 @@
       "applicationStart": "2026-11-20",
       "applicationEnd": "2026-11-27",
       "publishedAt": "2026-11-24",
-      "verifiedAt": "2026-11-24",
+      "verifiedAt": "2026-11-27",
       "support": "2026년 12월~2027년 1월 가금농장 15호에 주 1회 이상 축사 지붕 드론소독을 실시하는 사업입니다. 총사업비는 1천만원입니다.",
       "eligibility": "초경량비행장치사용사업 등록, 약제탱크 10L 포함 방역용 드론 2대 이상, 무인멀티콥터 1종 조종자 증명 보유 인력 등의 기준을 갖춘 업체. 전남 소재 기업을 우선합니다.",
       "application": "담양군청 축산원예과 가축방역팀에 방문 또는 우편 도착 접수합니다. 문의 061-380-2762.",
@@ -5385,7 +5385,7 @@
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128096",
       "applicationEndTime": "18:00",
-      "sourceHash": "36b2a07981f52a548d7f346d055159fc480da21675a9cc6bef8cafb28a80c495"
+      "sourceHash": "99d80113efd3f99a7c4772217ec6c2e6c8565733e95a728e19e36f1a55f72065"
     },
     {
       "sourceId": "official-policy-directory",
@@ -6286,6 +6286,97 @@
       "officialUrl": "https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=202611251758391c68fe98-ce21-44f3-97a4-80696c7c441a",
       "reviewStatus": "approved",
       "sourceHash": "6011f9290382ac73aa9f14d4ab08fe9528794024c08edaa354630f79863e139f"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2027-chungnam-nongsarang-lunar-new-year-promotion",
+      "slug": "2027-chungnam-nongsarang-lunar-new-year-promotion",
+      "title": "2027년 농사랑 설 명절 기획전 참여농가 및 경영체 모집",
+      "summary": "충남 농가·경영체의 설 명절 온라인 판매와 홍보를 지원합니다.",
+      "region": [
+        "충남"
+      ],
+      "targets": [
+        "농가",
+        "농식품 제조·가공업체",
+        "생산 경영체"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "충남경제진흥원",
+      "applicationStart": null,
+      "applicationEnd": "2026-12-08",
+      "applicationEndTime": "16:00",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-27",
+      "support": "농사랑 자체몰·제휴몰과 대기업 임직원 전용관 등 설 명절 기획전 판매·홍보를 지원합니다. 통합 홍보물 제작, 제휴몰 연계 기획전, 광고·판촉 등을 예산 범위 내 지원하며 150개사 내외를 모집합니다. 오프라인 직거래장터는 협의 후 별도 안내 예정입니다.",
+      "eligibility": "생산지·거주지가 충남인 농가, 충남산 농산물을 원부재료로 사용하는 제조·가공업체, 충남 농특산물 생산 경영체와 도내 제조 중소기업 등. 단순 도소매 업체는 제외하며 모집기간 내 농사랑 입점 승인과 필수 서류 제출 등 요건을 충족해야 합니다.",
+      "application": "12월 8일 16시까지 참가신청서·개인정보 동의서·상품등록 제안서를 cepa5678@naver.com으로 제출합니다. 문의 041-404-1371. 온라인 판매기간은 2027년 1월 4일~2월 5일 예정입니다.",
+      "note": "기관 사업공고와 첨부 공고 제2026-264호를 확인했습니다. 접수 시작은 ‘공고일로부터’이나 첨부에 11월만 기재되어 정확한 시작일은 비워두었습니다. 목록 게시일은 공식 자료를 확인해 KFarmAI에 등록한 날짜이며 원문 공고일로 추정하지 않았습니다.",
+      "officialUrl": "https://www.cnsp.or.kr/project/view.do?seq=1008&pn=1",
+      "reviewStatus": "approved",
+      "sourceHash": "84bec99af5b0dff69ae55d89ba2cf92c6ea0ca9c986b6b04b423a09cb07c2a41"
+    },
+    {
+      "sourceId": "local-government-notices",
+      "externalId": "2027-jeju-young-fisher-settlement",
+      "slug": "2027-jeju-young-fisher-settlement",
+      "title": "제주특별자치도 2027년 청년어촌정착지원 사업 대상자 모집 공고",
+      "summary": "제주 청년 수산업 경영자·예정자의 어촌 정착을 지원합니다.",
+      "region": [
+        "제주"
+      ],
+      "targets": [
+        "청년어업인",
+        "수산업 창업예정자"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "제주특별자치도 수산정책과",
+      "applicationStart": "2026-11-27",
+      "applicationEnd": "2026-12-16",
+      "applicationEndTime": "18:00",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-27",
+      "support": "수산업 경력에 따라 1년차 월 110만원, 2년차 월 100만원, 3년차 월 90만원의 정착지원금을 지원합니다. 사용 가능 항목과 지급 중단·제외 조건 등은 공고를 확인하세요.",
+      "eligibility": "사업 시행연도 기준 만 18세 이상~40세 미만, 수산업경영 3년 이하인 독립경영자 또는 예정자 등. 제주도 실제 거주와 주민등록, 병역 등 공통·분야별 조건을 충족해야 합니다. 독립경영 예정자는 기반을 마련한 후 지원금 신청 전일까지 제주도로 주소를 이전해야 합니다.",
+      "application": "12월 16일 18시까지 사업신청서·계획서와 경영체·면허·허가 등 해당 증빙을 제주도 수산정책과에 본인이 직접 방문 제출합니다. 문의 064-710-3215.",
+      "note": "제주특별자치도 공고 제2026-3641호와 공식 배포 첨부에서 대상·거주·경력·지원액·접수기간을 대조했습니다. 3년차 기준은 첨부의 2024년 등록자를 확인했습니다.",
+      "officialUrl": "https://www.jeju.go.kr/news/news/law/jeju2.htm#A_68522",
+      "reviewStatus": "approved",
+      "sourceHash": "ad03f4ea04d7401e019e54146265e8edf37e9d98b60554dcc7be730992310c0e"
+    },
+    {
+      "sourceId": "official-policy-directory",
+      "externalId": "bizinfo-PBLN_000000000124484",
+      "slug": "2026-vietnam-distribution-center-export-support",
+      "title": "2026년 베트남 복합형 거점 물류센터(DC) 지원사업 이용업체 수시 모집 공고",
+      "summary": "베트남 진출 농식품 수출업체의 거점 물류센터 이용료를 지원합니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "농림축산식품 수출업체"
+      ],
+      "categories": [
+        "경영·판로"
+      ],
+      "agency": "농림축산식품부·한국농수산식품유통공사",
+      "applicationStart": "2026-07-16",
+      "applicationEnd": "2026-12-31",
+      "applicationEndTime": "18:00",
+      "publishedAt": "2026-07-20",
+      "verifiedAt": "2026-11-27",
+      "support": "품목 특성에 따라 물류 서비스 이용료의 50~90%를 지원하며 업체당 최소 500만원~최대 5천만원을 배정합니다. 세부 지원항목·배정·정산 조건은 공고와 담당기관에 확인하세요.",
+      "eligibility": "베트남으로 한국 농림축산식품을 수출하는 업체. 참가 신청서, 사업자등록증, 계좌 사본 및 무역통계 제공 동의 등 공고 요건을 충족해야 합니다.",
+      "application": "aT 수출종합지원시스템의 해당 사업에서 온라인으로 신청합니다. 문의 신시장개척부 061-931-0994, newmarket@at.or.kr.",
+      "note": "기업마당 정부 등록 안내에서 대상·지원내용·7월 20일 등록일을 확인했습니다. 접수기간과 12월 31일 18시 마감은 aT 공식 사업 상세(사업번호 8210)에서 대조했습니다.",
+      "officialUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000124484",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000124484",
+      "sourceHash": "f19236c3e15ad5f3a10f0e40ea620b6d95463030e9ba85d5f09e4afaa2c8e142"
     }
   ]
 }

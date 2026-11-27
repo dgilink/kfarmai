@@ -16,8 +16,8 @@ test('static notice list shows the newest publication dates first', () => {
   const expected = [...publication.items].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
-  assert.equal(listedSlugs[0], '2026-jeonbuk-food-startup-promotion-video');
-  assert.equal(listedSlugs[1], '2026-hampyeong-fishery-fuel-subsidy-round-3');
+  assert.equal(listedSlugs[0], '2027-chungnam-nongsarang-lunar-new-year-promotion');
+  assert.equal(listedSlugs[1], '2027-jeju-young-fisher-settlement');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -37,17 +37,17 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   const cards = root.children[0].children;
   assert.equal(cards.length, 3);
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
-  assert.equal(cards[0].href, '/policy/2026-jeonbuk-food-startup-promotion-video.html');
-  assert.equal(cards[0].dataset.state, 'upcoming');
-  assert.equal(cards[1].href, '/policy/2026-hampyeong-fishery-fuel-subsidy-round-3.html');
-  assert.equal(cards[2].href, '/policy/2027-hwasun-food-manufacturing-integrated-support.html');
+  assert.equal(cards[0].href, '/policy/2027-chungnam-nongsarang-lunar-new-year-promotion.html');
+  assert.equal(cards[0].dataset.state, 'unknown');
+  assert.equal(cards[1].href, '/policy/2027-jeju-young-fisher-settlement.html');
+  assert.equal(cards[2].href, '/policy/2026-jeonbuk-food-startup-promotion-video.html');
   assert.equal(cards[1].dataset.state, 'upcoming');
   assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 212);
+  assert.equal(publication.items.length, 215);
   assert.equal(publication.items.find(item=>item.slug==='2027-gyeongbuk-nature-bio-rfp-demand-survey').officialUrl, 'https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=202611251758391c68fe98-ce21-44f3-97a4-80696c7c441a');
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
@@ -58,7 +58,8 @@ test('only reviewed official notices have one discoverable static detail each', 
     ))).digest('hex');
     assert.equal(item.reviewStatus, 'approved');
     assert.equal(item.sourceHash, digest);
-    if (item.slug !== '2027-gyeongbuk-nature-bio-rfp-demand-survey') assert.match(item.officialUrl, /^https:\/\/(?:[^/]+\.(?:go|gov)\.kr\/|www\.ycg\.kr\/open\.content\/ko\/administrative\/news\/announcement\/\?id=\d+(?:&|$)|www\.jvada\.or\.kr\/bbs\/board\.php\?bo_id=notice&wr_id=1213$|www\.foodpolis\.kr\/web\/Board\/4453\/detailView\.do$)/);
+    if (item.slug === '2027-chungnam-nongsarang-lunar-new-year-promotion') assert.equal(item.officialUrl, 'https://www.cnsp.or.kr/project/view.do?seq=1008&pn=1');
+    else if (item.slug !== '2027-gyeongbuk-nature-bio-rfp-demand-survey') assert.match(item.officialUrl, /^https:\/\/(?:[^/]+\.(?:go|gov)\.kr\/|www\.ycg\.kr\/open\.content\/ko\/administrative\/news\/announcement\/\?id=\d+(?:&|$)|www\.jvada\.or\.kr\/bbs\/board\.php\?bo_id=notice&wr_id=1213$|www\.foodpolis\.kr\/web\/Board\/4453\/detailView\.do$)/);
     assert.ok(index.includes(`/policy/${item.slug}.html`));
     assert.ok(html.includes(`<link rel="canonical" href="${url}">`));
     assert.ok(html.includes(item.title));
@@ -123,14 +124,14 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '212건');
+  assert.equal(fields.noticeCount.textContent, '215건');
   const shown = () => cards.filter(card => !card.hidden);
   const pageButtons = () => fields.policyPagination.children;
   assert.deepEqual(shown(), cards.slice(0, 20));
   assert.equal(pageButtons()[0].disabled, true);
   pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(20, 40));
-  assert.equal(fields.noticeCount.textContent, '212건');
+  assert.equal(fields.noticeCount.textContent, '215건');
   for (let number = 2; number < 11; number++) pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(200));
   assert.equal(pageButtons().at(-1).disabled, true);
@@ -141,11 +142,11 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   pageButtons()[0].events.click();
   assert.deepEqual(shown(), cards.slice(60, 80));
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '55건');
+  assert.equal(fields.noticeCount.textContent, '57건');
   assert.equal(shown().length, 20);
   assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '1');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 23);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 145);
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 24);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 146);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '12건');
   assert.equal(fields.policyPagination.hidden, true);
@@ -160,7 +161,7 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   assert.equal(fields.policyPagination.hidden, true);
   assert.equal(fields.policyEmpty.hidden, false);
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '212건');
+  assert.equal(fields.noticeCount.textContent, '215건');
   assert.deepEqual(shown(), cards.slice(0, 20));
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
@@ -247,6 +248,8 @@ test('date exception preserves approval, official URL and hash checks and requir
     {officialUrl:'https://www.foodpolis.kr/web/Board/4454/detailView.do'},
     {officialUrl:'https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=other'},
     {officialUrl:'https://ccei.creativekorea.or.kr/custom/notice_one.do?seq=39277'},
+    {officialUrl:'https://www.cnsp.or.kr/project/view.do?seq=1009&pn=1'},
+    {officialUrl:'https://www.cnsp.or.kr/project/view.do?seq=1008&pn=2'},
     {dateCheckReason:''}, {applicationDateStatus:undefined}
   ]) {
     const item=rehash({...candidate,...overrides});
