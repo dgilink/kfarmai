@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "approval_kind": "OWNER_STANDING_SCHEDULED_EDITORIAL",
+  "approval_date_kst": "2026-11-27",
+  "authorized_by": "owner_instruction_in_chat",
+  "mode": "FIVE_SLOT_KFARMAI_EDITORIAL",
+  "source_automation_id": "6ae7c146b4908191b195b79c8a671059",
+  "executor_automation_id": "6af8d51db1f88191bc04eb92e6083dc4",
+  "timezone": "Asia/Seoul",
+  "slots": [
+    {
+      "time": "07:00",
+      "bucket": "TODAY"
+    },
+    {
+      "time": "09:00",
+      "bucket": "7D"
+    },
+    {
+      "time": "11:00",
+      "bucket": "30D"
+    },
+    {
+      "time": "13:00",
+      "bucket": "60D"
+    },
+    {
+      "time": "15:00",
+      "bucket": "90D"
+    }
+  ],
+  "maximum_publications_per_day": 5,
+  "maximum_per_bucket_per_day": 1,
+  "verified_topics_only": true,
+  "required_gates": [
+    "SOURCE_PRIMARY_OFFICIAL",
+    "DATE_TIME_SCOPE_FACT_CHECK",
+    "NO_DUPLICATE_POST_DRAFT_RESERVATION",
+    "MEDIA_ORIGINAL_OR_RIGHTS_VERIFIED",
+    "MOBILE_360_390",
+    "ACCESSIBILITY_ALT_LINKS",
+    "SECURITY_SECRET_LEAK_CHECK",
+    "STAGED_DIFF_AND_BUILD_TESTS",
+    "GITHUB_PAGES_DEPLOY_SUCCESS",
+    "PUBLIC_ANONYMOUS_URL_READ_BACK"
+  ],
+  "permitted_paths": [
+    "kb/",
+    "static/kb/",
+    "automation/daily_registry.json",
+    "sitemap.xml"
+  ],
+  "disallowed_paths": [
+    "supabase/",
+    "migrations/",
+    "api/",
+    "community/"
+  ],
+  "legacy_daily_review_only_unchanged": true,
+  "legacy_review_gate_c_d_unchanged": true,
+  "requires_human_intervention_when": [
+    "HOLD",
+    "EXPIRED",
+    "SOURCE_CONFLICT",
+    "MEDIA_BLOCKED",
+    "QA_FAILURE",
+    "DEPLOY_FAILED"
+  ],
+  "status": "APPROVED_CONTRACT_NOT_PROOF_OF_PUBLICATION"
+}
