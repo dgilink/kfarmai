@@ -17,7 +17,7 @@ test('static notice list shows the newest publication dates first', () => {
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
   assert.equal(listedSlugs[0], '2027-chungnam-nongsarang-lunar-new-year-promotion');
-  assert.equal(listedSlugs[1], '2027-jeju-young-fisher-settlement');
+  assert.equal(listedSlugs[1], '2027-geoje-young-fisher-settlement');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -39,15 +39,15 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
   assert.equal(cards[0].href, '/policy/2027-chungnam-nongsarang-lunar-new-year-promotion.html');
   assert.equal(cards[0].dataset.state, 'unknown');
-  assert.equal(cards[1].href, '/policy/2027-jeju-young-fisher-settlement.html');
-  assert.equal(cards[2].href, '/policy/2026-jeonbuk-food-startup-promotion-video.html');
+  assert.equal(cards[1].href, '/policy/2027-geoje-young-fisher-settlement.html');
+  assert.equal(cards[2].href, '/policy/2027-hwasun-agricultural-sorting-facility.html');
   assert.equal(cards[1].dataset.state, 'upcoming');
-  assert.equal(cards[2].dataset.state, 'upcoming');
+  assert.equal(cards[2].dataset.state, 'unknown');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 215);
+  assert.equal(publication.items.length, 227);
   assert.equal(publication.items.find(item=>item.slug==='2027-gyeongbuk-nature-bio-rfp-demand-survey').officialUrl, 'https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=202611251758391c68fe98-ce21-44f3-97a4-80696c7c441a');
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
@@ -124,31 +124,32 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '215건');
+  assert.equal(fields.noticeCount.textContent, '227건');
   const shown = () => cards.filter(card => !card.hidden);
   const pageButtons = () => fields.policyPagination.children;
   assert.deepEqual(shown(), cards.slice(0, 20));
   assert.equal(pageButtons()[0].disabled, true);
   pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(20, 40));
-  assert.equal(fields.noticeCount.textContent, '215건');
-  for (let number = 2; number < 11; number++) pageButtons().at(-1).events.click();
-  assert.deepEqual(shown(), cards.slice(200));
+  assert.equal(fields.noticeCount.textContent, '227건');
+  for (let number = 2; number < 12; number++) pageButtons().at(-1).events.click();
+  assert.deepEqual(shown(), cards.slice(220));
   assert.equal(pageButtons().at(-1).disabled, true);
-  assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '11');
-  pageButtons().find(button => button.textContent === '7').events.click();
+  assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '12');
+  pageButtons().find(button => button.textContent === '8').events.click();
+  pageButtons().find(button => button.textContent === '6').events.click();
   pageButtons().find(button => button.textContent === '5').events.click();
   assert.deepEqual(shown(), cards.slice(80, 100));
   pageButtons()[0].events.click();
   assert.deepEqual(shown(), cards.slice(60, 80));
   buttons[1].events.click();
-  assert.equal(fields.noticeCount.textContent, '57건');
+  assert.equal(fields.noticeCount.textContent, '58건');
   assert.equal(shown().length, 20);
   assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '1');
-  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 24);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 146);
+  assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 25);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 155);
   buttons[2].events.click();
-  assert.equal(fields.noticeCount.textContent, '12건');
+  assert.equal(fields.noticeCount.textContent, '14건');
   assert.equal(fields.policyPagination.hidden, true);
   assert.ok(cards.filter(card => !card.hidden).every(card => card.dataset.state === 'checking'));
   buttons[1].events.click();
@@ -161,7 +162,7 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   assert.equal(fields.policyPagination.hidden, true);
   assert.equal(fields.policyEmpty.hidden, false);
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '215건');
+  assert.equal(fields.noticeCount.textContent, '227건');
   assert.deepEqual(shown(), cards.slice(0, 20));
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
@@ -191,7 +192,7 @@ test('expired Gochang notice is retained as closed and Dangjin separates applica
 
 test('announced date-check notices have orange static warnings and no invented deadlines', () => {
   const pending = publication.items.filter(item => item.applicationDateStatus === 'checking');
-  assert.equal(pending.length, 12);
+  assert.equal(pending.length, 14);
   for (const item of pending) {
     assert.equal(item.applicationEnd, null);
     assert.ok(item.dateCheckReason);
@@ -290,4 +291,39 @@ test('public artifact verifier allows only explicit date exceptions with visible
     fs.writeFileSync(detail,fs.readFileSync(detail,'utf8').replace('<strong class="policy-date-unverified">날짜 확인 중</strong>',''));
     assert.notEqual(verify().status,0,'date warning must remain visible');
   } finally { fs.rmSync(scratch,{recursive:true,force:true}); }
+});
+
+// November 28 review: distinguish actual deadlines from discovery-site dates and workflow milestones.
+test('November 28 source review preserves closed notices and isolates conflicting dates', () => {
+  const bySlug = slug => publication.items.find(item => item.slug === slug);
+  const shinan = bySlug('2026-shinan-salt-packaging-support');
+  assert.equal(shinan.applicationStart, '2026-11-16');
+  assert.equal(shinan.applicationEnd, '2026-11-19');
+  for (const slug of ['2027-gumi-organic-fertilizer-extra', '2027-gunsan-flour-rice-production-complex',
+    '2026-ganghwa-smartfarm-ict-round-2', '2027-cheorwon-rural-convergence-loan',
+    '2027-iksan-flour-rice-production', '2027-yanggu-organic-fertilizer-change',
+    '2027-mokpo-young-fisheries-settlement', '2027-yeosu-young-fisheries-settlement',
+    '2027-mafra-women-farmers-health-screening-agency-reannouncement',
+    '2026-buyeo-organic-forest-produce-incentive', '2026-gochang-aquaculture-interest-subsidy-round-5', shinan.slug]) {
+    const card = index.split(`href="/policy/${slug}.html"`)[1].split('</article>')[0];
+    assert.match(card, /class="policy-live-status">마감<\/span>/);
+  }
+  const hwasun = bySlug('2027-hwasun-agricultural-sorting-facility');
+  assert.equal(hwasun.applicationStart, null);
+  assert.equal(hwasun.applicationEnd, '2026-12-14');
+  assert.equal(hwasun.applicationDateStatus, undefined);
+  for (const [slug, start, evidence] of [
+    ['2027-goheung-horticulture-programs', null, /2025년.*2026년/],
+    ['2027-hadong-successor-farmer-loan-extension', '2026-11-19', /12월 16일.*12월 15일/]
+  ]) {
+    const item = bySlug(slug);
+    assert.equal(item.applicationDateStatus, 'checking');
+    assert.equal(item.applicationStart, start);
+    assert.equal(item.applicationEnd, null);
+    assert.equal(item.applicationEndTime, undefined);
+    assert.match(item.dateCheckReason, evidence);
+  }
+  const kimhae = bySlug('2027-gimhae-young-farmer-custom-startup');
+  assert.equal(kimhae.verificationUrl, 'https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128172');
+  assert.equal(bySlug('2027-haman-young-farmer-custom-startup').applicationEndTime, '18:00');
 });

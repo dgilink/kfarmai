@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-27",
+  "updatedAt": "2026-11-28",
   "items": [
     {
       "sourceId": "mafra-guideline-file",
@@ -169,10 +169,10 @@
       "note": "11월 23일 공식 연장 공고와 첨부 추진계획 PDF를 대조했습니다. 이번 신청 주체는 지방정부이며 기업·농가의 직접 신청 공고가 아닙니다. 접수 시작일은 확인되지 않아 유지하지 않았습니다. 2027년 예산은 정부안으로 국회 확정 결과에 따라 달라질 수 있습니다.",
       "officialUrl": "https://www.mafra.go.kr/bbs/home/791/582352/artclView.do",
       "reviewStatus": "approved",
-      "sourceHash": "11f492950404ebadb9eae1c34b561e172313dce1ececbb48b4fc10b92ae8adbd",
       "applicationDateStatus": "checking",
       "dateCheckReason": "11월 23일 연장 공고 첨부 추진계획의 지방정부 참여 신청 단계와 일정표는 11월 27일을 제시하지만, 같은 신청서·지방비 매칭 확약서 제출 안내에는 기존 11월 20일이 남아 있습니다. 자료 내부의 접수기한이 불일치해 마감일을 확정하지 않았습니다. 농림축산식품부 과학기술정책과에 확인하세요.",
-      "verificationUrl": "https://www.mafra.go.kr/bbs/home/791/611651/download.do"
+      "verificationUrl": "https://www.mafra.go.kr/bbs/home/791/611651/download.do",
+      "sourceHash": "11f492950404ebadb9eae1c34b561e172313dce1ececbb48b4fc10b92ae8adbd"
     },
     {
       "sourceId": "local-government-notices",
@@ -433,8 +433,8 @@
       "note": "공고기간(10.26.~11.12.)과 실제 접수기간(11.9.~11.12.)을 구분했습니다. 발표심사는 11.18. 예정이며, 임대·매도 조건과 영농시설 조성 부담은 첨부 계획을 확인하세요.",
       "officialUrl": "https://www.dangjin.go.kr/cop/bbs/BBSMSTR_000000000066/selectBoardArticle.do?bbsId=BBSMSTR_000000000066&nttId=1136310",
       "reviewStatus": "approved",
-      "sourceHash": "2066e4737fa3b8bd55679e9167b19a4ae4faabd65221ff92691648cc50b1b5a4",
-      "applicationEndTime": "17:00"
+      "applicationEndTime": "17:00",
+      "sourceHash": "2066e4737fa3b8bd55679e9167b19a4ae4faabd65221ff92691648cc50b1b5a4"
     },
     {
       "sourceId": "local-government-notices",
@@ -900,14 +900,14 @@
       "applicationStart": "2026-11-09",
       "applicationEnd": "2026-11-27",
       "publishedAt": "2026-11-06",
-      "verifiedAt": "2026-11-07",
+      "verifiedAt": "2026-11-28",
       "support": "유기질비료 3종과 부숙유기질비료 2종 지원. 부숙유기질비료는 10a당 2,000kg을 초과할 수 없습니다.",
       "eligibility": "현재 농업경영체를 등록한 농업인 및 법인.",
       "application": "농지 소재지 읍·면·동 행정복지센터 방문 신청. 문의: 진미동 054-480-7784.",
       "note": "세부 품목은 혼합유박·혼합유기질·유기복합비료와 가축분퇴비·퇴비입니다. 지원단가·제출서류는 담당기관에 확인하세요.",
       "officialUrl": "https://www.gumi.go.kr/jinmi/board/post/view.do?bcIdx=1&idx=844332&mid=0201000000",
       "reviewStatus": "approved",
-      "sourceHash": "f9f394b72439c9fc0485c223204c3529c6e04dede3bb3a03fc05ac95cea317fb"
+      "sourceHash": "948d04f9f8e34e85db42b54a6de5c7f8c1fa7b73133cccd0c128dac2e0b9118f"
     },
     {
       "sourceId": "local-government-notices",
@@ -1165,9 +1165,9 @@
       "application": "군산시 농업기술센터 농업정책과에 신청합니다. 제출서류는 사업지침을 확인하세요. 문의 063-454-2842.",
       "note": "군산시 농업기술센터 농업정책과 공고 제2026-78호와 첨부 공고문을 확인했습니다.",
       "officialUrl": "https://eminwon.gunsan.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=74095&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01%2C02%2C03%2C04%2C05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
-      "verifiedAt": "2026-11-08",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
-      "sourceHash": "59099fff0a5ee8863190aaae922ee93ad586a176ecfe61f5bf19aa8866a6e98f"
+      "sourceHash": "c4b63cdbb9fa2e5de51b17bbf186c25676fdda64235a480acf383ae96f6ce16e"
     },
     {
       "sourceId": "local-government-notices",
@@ -1984,8 +1984,8 @@
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127771",
       "verifiedAt": "2026-11-20",
       "reviewStatus": "approved",
-      "sourceHash": "9bbf67d3ca350a5ee56b380eb66860b1a8e6a545a169cf48a7e8f45caddd4ce2",
-      "applicationEndTime": "18:00"
+      "applicationEndTime": "18:00",
+      "sourceHash": "9bbf67d3ca350a5ee56b380eb66860b1a8e6a545a169cf48a7e8f45caddd4ce2"
     },
     {
       "sourceId": "official-policy-directory",
@@ -2543,9 +2543,9 @@
       "note": "공식 재공고 본문과 첨부 모집계획을 확인했습니다. 기존 3명 모집에서 1명 재모집으로 변경됐으며, 게시글과 첨부의 마감일이 달라 날짜 확인 중을 유지합니다. 제출서류·임대료·시설 공동사용 조건은 첨부 모집계획과 담당 부서에 확인하세요.",
       "officialUrl": "https://ganggyeong.nonsan.go.kr/nongup/html/sub04/0401.html?mode=V&no=55d69636dddaad50a1c016d7a0ec9389",
       "reviewStatus": "approved",
-      "sourceHash": "34be64f72a047d3cc02bb78ecce56141f5b2b96841a9f5da80c4776dfa34105b",
       "applicationDateStatus": "checking",
-      "dateCheckReason": "재공고 게시글의 제목·본문은 11월 26일까지로 안내하지만, 새로 확인한 첨부 모집계획의 신청기간은 2026년 11월 27일(금)까지로 기재돼 있습니다. 본문의 11월 26일(금)은 실제 목요일과도 일치하지 않습니다. 게시글과 첨부의 마감 날짜가 달라 기한을 확정하지 않았습니다. 단체협력팀에 정확한 접수기한을 확인하세요."
+      "dateCheckReason": "재공고 게시글의 제목·본문은 11월 26일까지로 안내하지만, 새로 확인한 첨부 모집계획의 신청기간은 2026년 11월 27일(금)까지로 기재돼 있습니다. 본문의 11월 26일(금)은 실제 목요일과도 일치하지 않습니다. 게시글과 첨부의 마감 날짜가 달라 기한을 확정하지 않았습니다. 단체협력팀에 정확한 접수기한을 확인하세요.",
+      "sourceHash": "34be64f72a047d3cc02bb78ecce56141f5b2b96841a9f5da80c4776dfa34105b"
     },
     {
       "sourceId": "local-government-notices",
@@ -3111,9 +3111,9 @@
       "note": "접수 시작일은 춘포면 안내에 명시되지 않았습니다.",
       "officialUrl": "https://www.iksan.go.kr/town/board/post/view.do?boardUid=ff8080819a57232e019a582b3f2e0482&codeUids=ff80808197c01f9101980bbea9d476a2&menuUid=ff808081975e28f701978ad4d4c4489a&postUid=4028a611a15d032801a1c2dcbd5b7d8a",
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-13",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
-      "sourceHash": "b7ddd9021418fa082e1b5a0f5206d76a7497db59e756c0b3ccebaeb76359ffcb"
+      "sourceHash": "be8697567c12831f6632f6e129522df294b22eb2c3ea5be5270cb9c069415b91"
     },
     {
       "externalId": "iksan-4028a611a15d032801a1a029e69d617a",
@@ -3197,9 +3197,9 @@
       "note": "농업기술센터 안내는 변경신청 일정입니다. 변경 범위와 구비서류는 접수처에 확인하세요.",
       "officialUrl": "https://www.yanggu.go.kr/farm/user_sub?bcd=notice&bk=XDOLI261109092145394&bt=rd&gfnc=farm&mu_idx=420",
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-13",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
-      "sourceHash": "623d75ab54d47a0e860f8ce19846e9ef1206089c8eb44c39f828e70f424d0989"
+      "sourceHash": "f434763941abb5766a2f8f2913a99e3335bbd80d6b8692ab486b5782d89f58b0"
     },
     {
       "sourceId": "official-policy-directory",
@@ -3726,9 +3726,9 @@
       "note": "목포시 고시공고와 기업마당 공식 등록 안내를 대조했습니다.",
       "officialUrl": "https://www.mokpo.go.kr/www/mokpo_news/notification/public_notice?idx=55504&mode=view",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127815",
-      "verifiedAt": "2026-11-16",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
-      "sourceHash": "8772b76a27ddb1ad4e038870a8efd2832c4e20bdf6eedc5f3aa0d1fcafc3501a"
+      "sourceHash": "ee83998f935d64168751532daab1b388c486fb8c3545ad30f955a7028adf0c57"
     },
     {
       "sourceId": "local-government-notices",
@@ -3755,9 +3755,9 @@
       "application": "동 지역 대상자는 여수시 수산경영과에, 읍·면 지역 대상자는 해당 읍·면사무소에 방문 신청합니다. 문의 061-659-3909.",
       "note": "여수시청년지원센터가 게시한 모집 안내의 신청기간을 반영했습니다.",
       "officialUrl": "https://www.yeosu.go.kr/youthcenter/community/notice?idx=4208&mode=view",
-      "verifiedAt": "2026-11-16",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
-      "sourceHash": "2216dc2af318fdc47a01285c5017f4788b29c902a116a4e585ff4f0b816d1218"
+      "sourceHash": "7d7426f0e9b1d32e6daf95ef133402114dfc938a798bcd971ef9334bb3f290bf"
     },
     {
       "sourceId": "local-government-notices",
@@ -4381,9 +4381,9 @@
       "application": "농림축산식품부 농촌여성정책과에 공고에 첨부된 지원신청서와 업무수행계획서 등을 우편 또는 이메일로 제출합니다. 이메일 제출 후에는 전화로 확인합니다. 문의 044-201-1796 또는 1797.",
       "note": "농림축산식품부 공고 제2026-592호의 관리기관 선정 재공고입니다.",
       "officialUrl": "https://www.mafra.go.kr/bbs/home/791/582295/artclView.do",
-      "verifiedAt": "2026-11-17",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
-      "sourceHash": "e28a396af0ffda60ff59112d8a5518ce8cb112171eb8022d2f60049ea0ed3580"
+      "sourceHash": "1861e466dc1663f63513c58e8135c03529c107b61823ce7c456eff676db5a199"
     },
     {
       "sourceId": "local-government-notices",
@@ -4596,7 +4596,7 @@
     },
     {
       "sourceId": "local-government-notices",
-      "verifiedAt": "2026-11-19",
+      "verifiedAt": "2026-11-28",
       "reviewStatus": "approved",
       "region": [
         "충남"
@@ -4622,7 +4622,7 @@
       "note": "기업마당 제목에는 2027년으로 표시돼 있지만 기관 원문(공고 제2026-2202호)과 첨부 추진계획은 모두 2026년 사업입니다. 기관 원문 기준으로 제목·사업연도를 표기했습니다. 접수기간은 기관·첨부·정부 등록 안내가 일치합니다.",
       "officialUrl": "https://www.buyeo.go.kr/html/kr/news/news_040202.html?mode=V&mng_no=2411050",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127999",
-      "sourceHash": "263c8c9f1013abfb782c2021171f331061e87828aeefd332e59e76dc1714e58e"
+      "sourceHash": "d98739fa5a00c84b9236561a292bfc57a62e3936901e5eadd2cc4c67dceafaeb"
     },
     {
       "sourceId": "local-government-notices",
@@ -5439,7 +5439,7 @@
       "applicationStart": "2026-11-23",
       "applicationEnd": "2026-11-27",
       "publishedAt": "2026-11-24",
-      "verifiedAt": "2026-11-24",
+      "verifiedAt": "2026-11-28",
       "support": "2026년 납입 대출이자에 대해 1인 1회 최대 100만원을 지원합니다. 정책자금은 제외하며 계정이 여러 개이면 한도 내 합산합니다.",
       "eligibility": "양식산업발전법 또는 수산종자산업육성법에 따른 면허·허가를 갖추고 어업경영체를 등록한 양식어업인. 우선순위·제외 조건은 공고문을 확인하세요.",
       "application": "고창군청 해양수산과 수산진흥팀에 방문 접수합니다. 문의 063-560-2643.",
@@ -5447,7 +5447,7 @@
       "officialUrl": "https://www.gochang.go.kr/board/view.gochang?boardId=BBS_0000180&menuCd=DOM_000000102003007000&orderBy=TMP_FIELD4%20DESC,TMP_FIELD1%20DESC&paging=ok&startPage=1&dataSid=838921",
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128106",
-      "sourceHash": "f8009c470eb1b42b70ff382441669c142db2368c973e2598937ab9815de4df5f"
+      "sourceHash": "31babede5f4ea4e5ee24c33e691cbdea2c0e09ebe669979608977cb78983b1bb"
     },
     {
       "sourceId": "official-policy-directory",
@@ -6377,6 +6377,365 @@
       "reviewStatus": "approved",
       "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000124484",
       "sourceHash": "f19236c3e15ad5f3a10f0e40ea620b6d95463030e9ba85d5f09e4afaa2c8e142"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-haman-young-farmer-custom-startup",
+      "slug": "2027-haman-young-farmer-custom-startup",
+      "title": "2027년 함안군 청년창업농 맞춤형 지원사업 신청 공고",
+      "summary": "청년농업인의 생산기반·가공·창농 아이디어 사업 신청을 받습니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·임대",
+        "유통·가공"
+      ],
+      "agency": "함안군 농업기술센터",
+      "applicationStart": "2026-11-24",
+      "applicationEnd": "2026-12-22",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "시설농업·노지농업·체험 및 가공·기타 창농 분야 지원. 분야별 총사업비 기준은 시설농업 6억 원, 노지·체험·가공 3억 원, 기타 창농 2억 원 내외이며 지원비율은 50%입니다. 총사업비와 실제 보조금액은 다릅니다.",
+      "eligibility": "신청일 기준 관내 거주 18세 이상 50세 미만 청년농업인 및 요건을 갖춘 농업법인. 법인 구성원 연령·농업인 요건과 중복지원 제한은 시행지침 확인.",
+      "application": "함안군 농업기술센터 농업정책과 농업인육성담당 방문 접수. 문의 055-580-4414.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.haman.go.kr/00960/00962.web?amode=view&not_ancmt_mgt_no=43553&cpage=4",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128177",
+      "applicationEndTime": "18:00",
+      "sourceHash": "62937e721dc58963d3ef4c1bd5dfb23f75681eec792caacbc3ac79f21282c46f"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-gimhae-young-farmer-custom-startup",
+      "slug": "2027-gimhae-young-farmer-custom-startup",
+      "title": "2027년 김해시 청년창업농 맞춤형 지원사업 공모계획 공고",
+      "summary": "청년농업인의 생산기반과 농업 창업을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·임대",
+        "유통·가공"
+      ],
+      "agency": "김해시",
+      "applicationStart": "2026-11-25",
+      "applicationEnd": "2026-12-16",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "시설농업·노지농업·체험 및 가공·기타 창농 분야 지원. 분야별 총사업비는 시설농업 6억 원, 노지·체험·가공 3억 원, 기타 창농 2억 원 내외이며 보조 50%, 자부담 50% 기준입니다. 총사업비를 전액 지원하는 사업이 아닙니다.",
+      "eligibility": "관내 거주 18세 이상 50세 미만 청년농업인 및 지원요건을 갖춘 영농조합법인·농업회사법인. 구성원 연령, 자부담 확보 및 중복사업 제한은 공고·시행지침 확인.",
+      "application": "김해시 농업정책과 농촌인력복지팀 방문 접수(전하로198번길 102). 문의 055-350-4053.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.gimhae.go.kr/03360/00023/00029.web?amode=view&not_ancmt_mgt_no=111619&cpage=4&section=01",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128172",
+      "sourceHash": "e1c4730c2c1241520ff5adce7fe6ba00e103aa0c46a4197bc9c995f5b79c8475"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-geoje-young-fisher-settlement",
+      "slug": "2027-geoje-young-fisher-settlement",
+      "title": "2027년 거제시 청년어촌 정착지원사업 신청 공고",
+      "summary": "창업 초기 청년어업인의 어촌 정착을 지원합니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "거제시",
+      "applicationStart": "2026-11-27",
+      "applicationEnd": "2026-12-10",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "수산업 경영비 및 어가 가계자금 지원. 독립경영 1년차 월 110만 원, 2년차 100만 원, 3년차 90만 원을 2027년 예산 범위에서 지급합니다.",
+      "eligibility": "거제시에 수산업 경영기반을 두고 실제 거주하는 만 18세 이상 40세 미만, 수산업 독립경영 3년 이하 청년어업인 등. 병역·소득·업종별 예정자 요건과 연령 연장 예외는 공고 확인.",
+      "application": "거제시청 어촌발전과 어촌활력팀 방문 접수. 문의 055-639-4206.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.geoje.go.kr/index.geoje?menuCd=DOM_000008902001002001&m=D&idx=71373&startPage=1&searchType=&keyword=&DEP_NM=&NOT_ANCMT_SJ=&NOT_ANCMT_CN=",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128173",
+      "sourceHash": "2a1487b3ef9aa9129ca805a47b536a8e2c3d85e920bc562ab826648f31ad6d1d"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-jindo-marine-fisheries-programs",
+      "slug": "2027-jindo-marine-fisheries-programs",
+      "title": "2027년 진도군 해양수산사업 모집 공고",
+      "summary": "어업인과 수산업 단체를 대상으로 해양수산사업 23종을 모집합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인",
+        "어업인단체"
+      ],
+      "categories": [
+        "시설·임대",
+        "유통·가공"
+      ],
+      "agency": "진도군",
+      "applicationStart": "2026-12-08",
+      "applicationEnd": "2026-12-17",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "해양수산사업 23종(국비 7종·시비 7종·군비 9종). 어선사고 예방시스템, 친환경 에너지 절감장비, 인증부표, 수산동물 질병예방 백신, 수산종자산업 육성 등으로 사업별 지원조건이 다릅니다.",
+      "eligibility": "수협, 어업법인·어촌계 등 어업인 단체, 어업경영체 및 어업인 등. 사업별 신청 자격·자부담·구비서류는 개별 시행지침 확인.",
+      "application": "진도군 수산지원과 또는 읍·면 방문 접수. 진도군 대표전화 061-544-2181.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.jindo.go.kr/home/gosi/general.cs?act=view&notAncmtMgtNo=26451&searchCondition=&searchKeyword=&pageIndex=3",
+      "reviewStatus": "approved",
+      "verificationUrl": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128163",
+      "sourceHash": "095bb565b0e0a80d898952b17ac24bcd98a957376bfd5dedcc51ce9b6d836f89"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-shinan-marine-fisheries-round-1-change",
+      "slug": "2027-shinan-marine-fisheries-round-1-change",
+      "title": "2027년 신안군 해양수산사업 1차 공모 변경 공고",
+      "summary": "해양수산사업 1차 공모를 52종으로 변경해 신청을 받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인",
+        "어업인단체"
+      ],
+      "categories": [
+        "시설·임대",
+        "유통·가공"
+      ],
+      "agency": "신안군",
+      "applicationStart": "2026-11-23",
+      "applicationEnd": "2026-12-18",
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-28",
+      "support": "2027년 해양수산사업 1차 공모를 56종에서 52종으로 변경합니다. 공모 사업비는 36,219백만 원이며 개별 신청자 지원금액이 아닙니다. 사업별 규모·조건은 첨부 공모내역 확인.",
+      "eligibility": "해양수산사업 참여를 희망하는 신안군 어업인 등. 사업별 세부 자격은 첨부 공모내역과 시행지침 확인.",
+      "application": "주소지 읍·면사무소 수산팀·농수산팀 방문 신청. 해양수산과 문의 061-240-8404.",
+      "note": "2027년 최종 예산 배정 등에 따라 사업량·사업비가 변경될 수 있습니다. 변경 공모내역을 확인하세요.",
+      "officialUrl": "https://www.shinan.go.kr/home/www/openinfo/participation_07/participation_07_04/show/40398?page=2",
+      "reviewStatus": "approved",
+      "sourceHash": "7f6fb7f8fe10fd2eaf1e2d2981de3a7e6dcf51e164e04593eb242f9d01e894e2"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2026-shinan-salt-packaging-support",
+      "slug": "2026-shinan-salt-packaging-support",
+      "title": "2026년 신안군 천일염 포장재 지원사업 공모",
+      "summary": "천일염 포장재 구입 지원 공모입니다. 공식 접수기간은 11월 16~19일로 마감됐습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인",
+        "생산자단체"
+      ],
+      "categories": [
+        "유통·가공"
+      ],
+      "agency": "신안군",
+      "applicationStart": "2026-11-16",
+      "applicationEnd": "2026-11-19",
+      "publishedAt": "2026-11-16",
+      "verifiedAt": "2026-11-28",
+      "support": "천일염 2중코팅 포대형(10kg) 및 일반 PP포대형(20kg) 포장재 지원. 공모 규모는 1종 205백만 원이며 품목별 보조비율·단가·최소 신청수량은 안내사항과 지침 확인.",
+      "eligibility": "관내 천일염 생산 허가를 받은 생산자·생산자단체 등으로 품목별 자격을 충족한 자. 거주지·체납·법인 운영실적 등 제외 요건은 지침 확인.",
+      "application": "각 읍·면사무소 수산팀·농수산팀·천일염팀 방문 신청. 천일염지원과 문의 061-240-8558.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.shinan.go.kr/home/www/openinfo/participation_07/participation_07_04/show/40337?page=5",
+      "reviewStatus": "approved",
+      "sourceHash": "169da7b10f247276677b73243b80cb160391abef38e21aa6c8330c24a4ad17c5"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-shinan-young-fisher-settlement",
+      "slug": "2027-shinan-young-fisher-settlement",
+      "title": "2027년 신안군 청년어촌정착지원사업 대상자 모집 공고",
+      "summary": "신규 창업 청년어업인의 초기 어촌 정착을 지원합니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "어업인"
+      ],
+      "categories": [
+        "복지"
+      ],
+      "agency": "신안군",
+      "applicationStart": "2026-11-20",
+      "applicationEnd": "2026-12-09",
+      "publishedAt": "2026-11-20",
+      "verifiedAt": "2026-11-28",
+      "support": "독립경영 1년차 월 110만 원, 2년차 100만 원, 3년차 90만 원의 정착지원금을 예산 범위에서 지원합니다. 예산이 부족하면 연말 이전에도 지원이 중단될 수 있습니다.",
+      "eligibility": "만 40세 미만 수산업경영 3년 이하 귀어인·후계어업경영인·현지 거주 청년어업인 중 신규 창업자 또는 예정자. 출생연도, 거주·병역·소득·업종별 요건은 시행지침 확인.",
+      "application": "주소지 읍·면사무소 수산팀·농수산팀에 신청서와 계획서 등 제출. 인구정책과 문의 061-240-4127.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.shinan.go.kr/home/www/openinfo/participation_07/participation_07_04/show/40373?page=3",
+      "reviewStatus": "approved",
+      "sourceHash": "978123d606019394844bfa82507a7b4b9eb3c37bfda11af5e420e92e1225fd71"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-goheung-horticulture-programs",
+      "slug": "2027-goheung-horticulture-programs",
+      "title": "2027년 고흥군 원예특작분야 사업신청·접수 공고",
+      "summary": "농업인과 농업법인을 대상으로 원예특작 지원사업 25종을 공고했습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "고흥군",
+      "applicationStart": null,
+      "applicationEnd": null,
+      "publishedAt": "2026-11-24",
+      "verifiedAt": "2026-11-28",
+      "support": "과수 7종, 시설원예 9종, 노지채소 9종 등 원예특작분야 지원사업 25종. 세부 지원품목·사업비·자부담은 각 사업 지침을 확인하세요.",
+      "eligibility": "고흥군 내 농업경영체를 등록한 농업인 및 농업법인. 면적·소득·중복지원 제한 등 개별 사업별 자격은 사업 지침 확인.",
+      "application": "사업대상지 읍·면사무소 산업팀 신청. 농업정책과 문의 061-830-5384.",
+      "note": "2027년 예산 확정 결과에 따라 일부 사업이 조정될 수 있습니다.",
+      "officialUrl": "https://eminwon.goheung.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=41661&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,02,03,04,05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "reviewStatus": "approved",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "기관 본문의 신청 시작일은 2025년 12월 1일로 기재돼 있으나 첨부 공고문은 2026년 12월 1일로 기재했습니다. 공고기간 일수 표기도 서로 달라 접수 일정을 확정하지 않았습니다. 농업정책과 또는 사업대상지 읍·면 산업팀에 정확한 신청기간을 확인하세요.",
+      "sourceHash": "396f2075900915bab864bb1c9fd1292870d4a047230b5b88662bc1810a826f39"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-hwasun-agricultural-sorting-facility",
+      "slug": "2027-hwasun-agricultural-sorting-facility",
+      "title": "2027년 화순군 농산물 선별시설 지원사업 신청 공고",
+      "summary": "농산물 선별기와 선별장 시설 지원 신청을 받습니다.",
+      "region": [
+        "전남"
+      ],
+      "targets": [
+        "농업인",
+        "농업법인"
+      ],
+      "categories": [
+        "시설·임대",
+        "유통·가공"
+      ],
+      "agency": "화순군",
+      "applicationStart": null,
+      "applicationEnd": "2026-12-14",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "농산물 선별기 구입·노후 선별기 교체 및 선별장 신축 지원. 3개소 내외, 개소당 총사업비 2억 원 이하이며 보조 50%, 자부담 50%입니다.",
+      "eligibility": "농업경영체 등록 농업인 및 생산자단체 등. 농산물 생산에 직접 참여하지 않는 농협·유통사업자는 제외하며 부지 확보·법인 운영실적·자부담 요건은 지침 확인.",
+      "application": "2026년 12월 14일까지 읍·면 행정복지센터에 신청서 등 관련 서류 제출. 화순군 농촌활력과 공고·첨부 지침 확인.",
+      "note": "신청 시작일은 원문에 명시되지 않아 추정하지 않았습니다. 첨부의 2027년 1~2월 사업 절차 일정과 별개로 기관 본문은 신청기한을 2026년 12월 14일로 안내합니다.",
+      "officialUrl": "https://eminwon.hwasun.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=39615&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,02,03,04,05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "reviewStatus": "approved",
+      "sourceHash": "33e1c748abf1023fa8326ad108767c33086983c4c3d97db6d0f753a9132e119b"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2027-hadong-successor-farmer-loan-extension",
+      "slug": "2027-hadong-successor-farmer-loan-extension",
+      "title": "2027년 상반기 하동군 후계농업경영인 육성자금 연장 신청 공고",
+      "summary": "기존에 배정받은 후계농 육성자금의 대출기한 연장을 신청받습니다.",
+      "region": [
+        "경남"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "자금·융자"
+      ],
+      "agency": "하동군 농업기술센터",
+      "applicationStart": "2026-11-19",
+      "applicationEnd": null,
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "2026년 하반기 후계농업경영인 육성자금의 미실행 배정액에 대해 타당성 심사를 거쳐 대출기한을 2027년 6월 30일까지 연장합니다. 신규 보조금 지급이 아닙니다.",
+      "eligibility": "2025·2026년 청년농업인영농정착지원사업 및 후계농업경영인 육성사업 선정자 중 2026년 하반기 육성자금 신규·재배정자. 하반기 연장배정·추가배정 대상자는 제외.",
+      "application": "농축산과 농업혁신 부서 방문 또는 우편 접수(하동군 적량면 한옥정길 91). 필수 연장 신청서와 필요 시 수정 영농계획서 등 제출.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://eminwon.hadong.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=45644&homepage_pbs_yn=Y&subCheck=Y",
+      "reviewStatus": "approved",
+      "applicationDateStatus": "checking",
+      "dateCheckReason": "기관 본문과 첨부의 신청기간은 12월 16일까지로 안내하지만, 같은 첨부 평가 절차의 신청서 접수 단계는 12월 15일까지로 기재돼 있습니다. 마감일을 확정하지 않고 첨부에서 확인된 시작일 11월 19일만 유지했습니다. 하동군 농축산과 농업혁신 부서에 정확한 접수기한을 확인하세요.",
+      "sourceHash": "af127070bc30ac48d4f2c24606053f2bfa9ed7e6cdacd0bf7a1ce21fb57db1bd"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2026-jangsu-young-farmer-fruit-vegetable-smartfarm-lease",
+      "slug": "2026-jangsu-young-farmer-fruit-vegetable-smartfarm-lease",
+      "title": "장수군 청년농업인 유치 임대형 스마트팜 과채동 입주자 모집 공고",
+      "summary": "과채류 재배용 임대형 스마트팜 입주자를 모집합니다.",
+      "region": [
+        "전북"
+      ],
+      "targets": [
+        "농업인"
+      ],
+      "categories": [
+        "시설·임대"
+      ],
+      "agency": "장수군",
+      "applicationStart": "2026-11-27",
+      "applicationEnd": "2026-12-16",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "과채류 재배용 임대형 스마트팜 6팀 12명 모집. 임대기간은 계약일부터 3년이며 사용료는 공유재산 평정가격의 연 1% 기준입니다. 구획별 모집인원·재배작물 제한은 공고 확인.",
+      "eligibility": "공고일 전일 기준 장수군에 주소를 두고 실제 거주하는 대한민국 국적의 18세 이상인 사람. 구획별 구성요건에 따라 팀 단위로 신청하며 영농 의무·제외 대상은 공고 확인.",
+      "application": "본인 및 팀원이 장수군 스마트팜지원센터(장수읍 발방골길 7)에 방문 접수. 평일 09~18시, 우편·팩스·이메일 불가. 농촌지원과 스마트팜운영팀 063-350-2849.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://eminwon.jangsu.go.kr/emwp/gov/mogaha/ntis/web/ofr/action/OfrAction.do?jndinm=OfrNotAncmtEJB&context=NTIS&method=selectOfrNotAncmt&methodnm=selectOfrNotAncmtRegst&not_ancmt_mgt_no=33371&homepage_pbs_yn=Y&subCheck=Y&ofr_pageSize=10&not_ancmt_se_code=01,02,03,04,05&title=%EA%B3%A0%EC%8B%9C%EA%B3%B5%EA%B3%A0&initValue=Y&countYn=Y&Key=B_Subject",
+      "reviewStatus": "approved",
+      "applicationEndTime": "18:00",
+      "sourceHash": "d0dd750266207aa492053a3f2d3401f07b176a83d39ab8538e16a8024f0e9a11"
+    },
+    {
+      "sourceId": "official-notice-review",
+      "externalId": "2026-mafra-food-industry-information-analysis-agency",
+      "slug": "2026-mafra-food-industry-information-analysis-agency",
+      "title": "식품산업 정보분석 전문기관 선정 공고",
+      "summary": "식품산업 정보와 통계를 분석할 전문기관을 지정하기 위해 신청을 받습니다.",
+      "region": [
+        "전국"
+      ],
+      "targets": [
+        "기관·단체",
+        "법인"
+      ],
+      "categories": [
+        "연구개발"
+      ],
+      "agency": "농림축산식품부",
+      "applicationStart": "2026-11-27",
+      "applicationEnd": "2026-12-16",
+      "publishedAt": "2026-11-27",
+      "verifiedAt": "2026-11-28",
+      "support": "식품산업과 농업 간 연계, 국내외 식품산업·소비 현황 및 전통식품 관련 정보분석 등을 수행할 전문기관 지정. 공고에서 개별 보조금 지급액을 제시한 사업은 아닙니다.",
+      "eligibility": "식품산업 정보분석을 효율적으로 추진할 전문인력과 조사·연구능력 등을 갖춘 식품산업 정보·통계 관련 기관·단체 또는 법인. 구체적인 인력·시설·실적 요건은 첨부 확인.",
+      "application": "농림축산식품부 푸드테크정책과 우편 또는 이메일 접수. 우편은 기한 내 도착, 이메일은 제출 후 전화 확인 필요. 문의 044-201-2117. 접수 주소·이메일 및 서류는 공식 공고 확인.",
+      "note": "신청 전 공식 공고와 첨부 지침에서 세부 요건·제출서류 및 변경사항을 확인하세요.",
+      "officialUrl": "https://www.mafra.go.kr/bbs/home/791/582397/artclView.do",
+      "reviewStatus": "approved",
+      "sourceHash": "a558e538829c41e25193a5af32fc16f53b484c480479540eafee654d3de0105a"
     }
   ]
 }
