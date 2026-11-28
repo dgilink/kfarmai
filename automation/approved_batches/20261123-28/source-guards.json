@@ -168,7 +168,11 @@
         "모집을 취소합니다",
         "사업이 취소되었습니다",
         "조기 마감되었습니다"
-      ]
+      ],
+      "timeout_evidence": {
+        "file": "corn-source-evidence.json",
+        "sha256": "097ee151f1c47420107ac379cf93a689c0c3f6803a41197d25da0d20fc7fb1a0"
+      }
     }
   ],
   "safety": [

@@ -1,5 +1,5 @@
 import copy
-from datetime import timedelta
+from datetime import datetime, timedelta
 import importlib.util
 from pathlib import Path
 import tempfile
@@ -80,6 +80,36 @@ class ApprovedBatchTests(unittest.TestCase):
         with patch.object(batch, 'read', return_value=guard), patch.object(batch, 'fetch', return_value=(b'changed', 'utf-8')):
             with self.assertRaises(ValueError):
                 batch.source_check(self.manifest['items'][0])
+
+    def test_official_browser_evidence_is_bounded_and_not_live(self):
+        row = next(x for x in self.manifest['items'] if x['id'] == 'corn')
+        class Frozen(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return datetime.fromisoformat('2026-11-30T12:00:00+09:00')
+        error = batch.urllib.error.URLError(TimeoutError('connection timeout'))
+        with patch.object(batch, 'datetime', Frozen), patch.object(batch, 'fetch', side_effect=error):
+            result = batch.source_check(row)
+            self.assertFalse(result[0]['live_fetch'])
+            self.assertEqual(result[0]['mode'], 'APPROVAL_BROWSER_EVIDENCE_AFTER_TIMEOUT')
+
+    def test_expired_browser_evidence_cannot_release(self):
+        row = next(x for x in self.manifest['items'] if x['id'] == 'corn')
+        class Frozen(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return datetime.fromisoformat('2026-12-01T01:00:00+09:00')
+        with patch.object(batch, 'datetime', Frozen), patch.object(batch, 'fetch',
+                side_effect=batch.urllib.error.URLError(TimeoutError('timeout'))):
+            with self.assertRaises(ValueError):
+                batch.source_check(row)
+
+    def test_http_denial_never_uses_browser_fallback(self):
+        row = next(x for x in self.manifest['items'] if x['id'] == 'corn')
+        error = batch.urllib.error.HTTPError(row['url'], 403, 'Forbidden', {}, None)
+        with patch.object(batch, 'fetch', side_effect=error):
+            with self.assertRaises(batch.urllib.error.HTTPError):
+                batch.source_check(row)
 
     def test_materialization_preserves_approved_bytes_and_refuses_repeat(self):
         with tempfile.TemporaryDirectory(prefix='kfarmai-batch-test-') as tmp:

@@ -12,6 +12,7 @@ import re
 import subprocess
 import time
 import urllib.request
+import urllib.error
 
 ROOT = Path(__file__).resolve().parents[1]
 BATCH = ROOT / 'automation/approved_batches/20261123-28'
@@ -129,7 +130,27 @@ def source_check(row):
     guards = read(BATCH / 'source-guards.json')[row['id']]
     results = []
     for guard in guards:
-        raw, charset = fetch(guard['url'])
+        try:
+            raw, charset = fetch(guard['url'])
+        except urllib.error.URLError as error:
+            # One municipal origin times out from hosted runners, while Ego Lite
+            # can reach it. This bounded evidence is NOT a successful live fetch.
+            fallback = guard.get('timeout_evidence')
+            if not fallback or not isinstance(error.reason, TimeoutError):
+                raise
+            proof_path = confined(fallback['file'])
+            proof = read(proof_path)
+            now = datetime.now(KST)
+            if (sha(proof_path) != fallback['sha256'] or proof['source_id'] != row['id']
+                    or proof['source_url'] != guard['url']
+                    or proof['confirmed_phrases'] != guard['required']
+                    or not date(proof['verified_at']) <= now < date(proof['expires_at'])
+                    or now-date(proof['verified_at']) > timedelta(hours=72)):
+                raise ValueError('Expired/invalid official browser verification evidence')
+            results.append({'url': guard['url'], 'mode': 'APPROVAL_BROWSER_EVIDENCE_AFTER_TIMEOUT',
+                            'verified_at': proof['verified_at'], 'attempted_at': now.isoformat(),
+                            'body_sha256': proof['body_sha256'], 'live_fetch': False})
+            continue
         text = html.unescape(re.sub(r'<[^>]+>', ' ', raw.decode(charset, errors='replace')))
         normalized = re.sub(r'\s+', '', text)
         if not all(re.sub(r'\s+', '', phrase) in normalized for phrase in guard['required']):
@@ -247,8 +268,9 @@ def main():
     state = read(BATCH / 'state.json')
     if args.check_sources:
         for row in manifest['items']:
-            source_check(row)
-            print('SOURCE_PASS ' + row['id'])
+            checks = source_check(row)
+            mode = 'BOUNDED_BROWSER_EVIDENCE' if any(c.get('live_fetch') is False for c in checks) else 'LIVE'
+            print('SOURCE_PASS ' + row['id'] + ' ' + mode, flush=True)
         return
     now = datetime.now(KST)
     if args.release and now >= date(manifest['window_end']) and os.environ.get('GITHUB_REPOSITORY') == 'dgilink/kfarmai':
@@ -256,6 +278,14 @@ def main():
         print('APPROVED_WINDOW_EXPIRED_WORKFLOW_DISABLED')
         return
     row, reason = choose(manifest, read(ROOT / 'automation/daily_registry.json'), state, now)
+    if args.release and reason == 'MINIMUM_SPACING':
+        ready_at = max(date(x['verified_at']) for x in state['releases']) + timedelta(minutes=30)
+        delay = (ready_at-now).total_seconds()
+        if 0 < delay <= 600:
+            # Absorb normal Pages latency without dropping every second slot.
+            time.sleep(delay)
+            now = datetime.now(KST)
+            row, reason = choose(manifest, read(ROOT / 'automation/daily_registry.json'), state, now)
     if not args.release or row is None:
         print(json.dumps({'status': reason, 'next': row['slug'] if row else None,
                           'approval': APPROVAL, 'approved_count': 17}))

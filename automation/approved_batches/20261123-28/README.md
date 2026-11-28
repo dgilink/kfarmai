@@ -30,6 +30,12 @@ all 17 or at the December 3 expiry check.
 1. Verify explicit approval, the full immutable content hash set and release window.
 2. Check registry, source files and sitemap for duplicates. Check current official
    source facts and readable attachment hashes. Source changes or errors stop release.
+   Exception: the Kimhae corn notice times out from hosted runners. Its official
+   page was rechecked in Ego Lite at 2026-11-28 14:04 KST, including price, deadline
+   and quantity restriction. Only a connection timeout may use this hashed browser
+   evidence, only until December 1 00:00 KST and at most 72 hours after verification.
+   A changed response, HTTP rejection, or expired evidence still blocks release.
+   Receipts label this fallback and never call it a successful live recheck.
 3. Copy exact approved bytes to kb/static, update the registry and sitemap, then run
    the existing Pages build, security verifier, SEO tests and git diff check.
 4. Commit and push only selected article/assets, registry/sitemap and state. Dispatch
@@ -59,6 +65,9 @@ this approval manifest, future manuscripts, source guards, and receipts do not.
 - JavaScript regression: 88 tests, 83 passed / 5 existing baseline failures.
   Existing failures concern legacy thumbnail contracts, favicon contracts and the
   existing KB search contract. The dedicated Pages security verifier passes.
+- Hosted Pages Python audit retains 7 existing static-hero errors (419 tests,
+  98 skipped); the previous baseline deployment has the same errors. Local Python
+  includes the installed image dependency and passes as recorded above.
 
 The original research-day records were not located. Topic-to-day/bucket attribution
 uses the owner's 30-topic list, not a reconstructed historical search log.
