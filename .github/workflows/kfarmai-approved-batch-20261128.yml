@@ -1,0 +1,58 @@
+name: KFarmAI approved November batch schedule
+
+on:
+  schedule:
+    # Slots start at 09:00 KST. Offset polling avoids the busy top of the hour.
+    - cron: '7,37 0-14 29,30 11 *'
+    - cron: '7,37 0-14 1,2 12 *'
+    - cron: '7 0 3 12 *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kfarmai-approved-batch-20261128
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.repository == 'dgilink/kfarmai' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Configure release author
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      - name: Validate release safety contracts
+        run: |
+          python -m unittest discover -s tests -p test_approved_batch_schedule.py
+          node --test tests/approved-batch-photo.test.cjs
+      - name: Recheck official sources for manual activation
+        if: github.event_name == 'workflow_dispatch'
+        run: python automation/publish_approved_batch.py --check-sources
+      - name: Release at most one approved article
+        run: python automation/publish_approved_batch.py --release
+      - name: Preserve schedule and public verification receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: approved-batch-${{ github.run_id }}
+          path: automation/approved_batches/20261123-28/state.json

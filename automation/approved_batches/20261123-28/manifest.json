@@ -1,0 +1,882 @@
+{
+  "schema_version": 1,
+  "batch_id": "20261123-28",
+  "repository": "dgilink/kfarmai",
+  "approval_id": "review-20261128-fc4ae41e30ff4239",
+  "approved_candidate_set_sha256": "fc4ae41e30ff423966af7e324820635c5f1cf67da391fe0713d070128b0d334a",
+  "content_approved_at": "2026-11-28T04:46:05.196759+00:00",
+  "publish_approved_at": "2026-11-28T04:46:05.196759+00:00",
+  "approval_evidence": "Owner conversation instruction: 승인할게 게시 배포해. Applies to the 17 reviewed candidates; 3 duplicate holds excluded.",
+  "publication_mode": "USER_DIRECT_APPROVAL",
+  "daily_limit": 5,
+  "minimum_spacing_minutes": 30,
+  "window_start": "2026-11-29T00:00:00+09:00",
+  "window_end": "2026-12-03T00:00:00+09:00",
+  "assets": [
+    {
+      "file": "content/static/css/editorial-review.css",
+      "sha256": "c39c5435c64e5026dfc16456da276b559bcbccaab7dd29fafb99529c475bfca1"
+    },
+    {
+      "file": "content/static/kfarmai-logo-horizontal.png",
+      "sha256": "b6fadfad5d04d8d5c9c3c1997dc7a7d028becbea707011245a0a1d75419a51eb"
+    }
+  ],
+  "items": [
+    {
+      "id": "meister",
+      "research_date": "2026-11-25",
+      "bucket": "7D",
+      "slug": "jeonbuk-agricultural-meister-2027-course-application",
+      "title": "전북농업마이스터대학 모집｜2년 과정과 청년농 1년 과정 비교",
+      "html_sha256": "7e8e418b1d3dbb476163695caf0d678e75b19da47ef779f8f77b402c0a9ec832",
+      "photos": [
+        {
+          "file": "static/kb/jeonbuk-agricultural-meister-2027-course-application-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "오이 농장의 기술 현장 방문 참고 사진",
+          "caption": "오이 농장의 기술 현장 방문 참고 사진. 전북농업마이스터대학 수업 현장은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000809344&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-04-17",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "1d2b02107930a8f58636714e2e170dcc4a1f0f0c5080ab027dc55fc9af2e8836",
+          "source_sha256": "e03fba91504808309037558516668eb5161d6d1e338db9c52b96be2af6d2eec2",
+          "width": 1280,
+          "height": 720
+        }
+      ],
+      "sources": [
+        {
+          "id": "meister-original",
+          "url": "https://agriacademy.jeonbuk.go.kr/bbs/board.php?bo_table=ad_04_01&wr_id=518",
+          "title": "전북 농식품인력개발원 > 공지사항 > 제10기 전북농업마이스터대학 신입생 모집 안내(청년농CEO과정 포함)",
+          "snapshot_sha256": "7d7926f230282671881974023d56918fde8d96c057d216363121ef8519060a98"
+        },
+        {
+          "id": "meister-detail",
+          "url": "https://agriacademy.jeonbuk.go.kr/ai/ad_04_01/518.html",
+          "title": "제10기 전북농업마이스터대학 신입생 모집 안내(청년농CEO과정 포함) | 공지사항 | 전북특별자치도 농식품인력개발원",
+          "snapshot_sha256": "98e8101b5c07d4b33d71d53b5a78e1bc4b594311b92d7df792611b2ea99fc922"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/tomato-ai-nuti-fertigation-onfarm-check.html"
+      ],
+      "deadline": "2026-11-30",
+      "idempotency_key": "2026-11-25/7D/jeonbuk-agricultural-meister-2027-course-application",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/jeonbuk-agricultural-meister-2027-course-application.html",
+      "url": "https://kfarmai.com/kb/jeonbuk-agricultural-meister-2027-course-application.html",
+      "not_before": "2026-11-29T09:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "gimje",
+      "research_date": "2026-11-27",
+      "bucket": "7D",
+      "slug": "gimje-food-processing-training-cost-practice-2026",
+      "title": "김제 농산물 가공교육｜11월 30일 마감, 원가표를 준비해 가세요",
+      "html_sha256": "64a0fa7f369283645322aff82ce602fcf4343df6fbf2297bc09df934952adeca",
+      "photos": [
+        {
+          "file": "static/kb/gimje-food-processing-training-cost-practice-2026-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "진주 농산물 가공상품 참고 사진",
+          "caption": "진주 농산물 가공상품 참고 사진. 김제 교육 실습제품이 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000814262&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-11-22",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "0f923222ace5841a3611cdd0ef2aaea964151ae33ca6bea8aef05a825d4333dc",
+          "source_sha256": "52fd95ff5e684ca1b8a2ae5820ad4da40501042ca7fc60ae319c08a2a089b3c0",
+          "width": 1280,
+          "height": 867
+        }
+      ],
+      "sources": [
+        {
+          "id": "gimje",
+          "url": "https://www.gimje.go.kr/agro/board/view.gimje?boardId=BBS_0000027&menuCd=DOM_000000903001000000&dataSid=376435",
+          "title": "농업소식 > 공지사항 | 김제시 농업기술센터",
+          "snapshot_sha256": "9eed361aebab6e62500bc94faa798295d605137f2189877019eb5747d3a58743"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/guri-farm-produce-logistics-support-2026.html"
+      ],
+      "deadline": "2026-11-30T17:00:00+09:00",
+      "idempotency_key": "2026-11-27/7D/gimje-food-processing-training-cost-practice-2026",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/gimje-food-processing-training-cost-practice-2026.html",
+      "url": "https://kfarmai.com/kb/gimje-food-processing-training-cost-practice-2026.html",
+      "not_before": "2026-11-29T09:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "cucumber",
+      "research_date": "2026-11-26",
+      "bucket": "7D",
+      "slug": "chungbuk-smartfarm-cucumber-training-december-2026",
+      "title": "스마트팜 오이 재배교육｜진천 3명 배정과 교육 전 데이터 준비",
+      "html_sha256": "c0c519fe23440720c25fe03974ba9d4629bf4733ebed8d77a0ed202575b592c5",
+      "photos": [
+        {
+          "file": "static/kb/chungbuk-smartfarm-cucumber-training-december-2026-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "오이 재배 현장 방문 참고 사진",
+          "caption": "오이 재배 현장 방문 참고 사진. 12월 교육·견학 장소의 사진은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000809344&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-04-17",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "1d2b02107930a8f58636714e2e170dcc4a1f0f0c5080ab027dc55fc9af2e8836",
+          "source_sha256": "e03fba91504808309037558516668eb5161d6d1e338db9c52b96be2af6d2eec2",
+          "width": 1280,
+          "height": 720
+        }
+      ],
+      "sources": [
+        {
+          "id": "cucumber",
+          "url": "https://www.jincheon.go.kr/jcact/sub.do?menukey=657&mode=view&no=1095327629",
+          "title": "열린마당 > 공지사항 상세보기: [충북도농업기술원 주관] 스마트팜 오이 재배 기술 교육 신청자 모집 | 농업기술센터",
+          "snapshot_sha256": "9caac246957db3b72d4548e6565c5bb2d67bb5b5827850ea0586c31a0b46857d"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/tomato-ai-nuti-fertigation-onfarm-check.html",
+        "https://kfarmai.com/kb/greenhouse-irrigation-precheck.html"
+      ],
+      "deadline": "2026-12-03",
+      "idempotency_key": "2026-11-26/7D/chungbuk-smartfarm-cucumber-training-december-2026",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/chungbuk-smartfarm-cucumber-training-december-2026.html",
+      "url": "https://kfarmai.com/kb/chungbuk-smartfarm-cucumber-training-december-2026.html",
+      "not_before": "2026-11-29T10:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "jinju",
+      "research_date": "2026-11-26",
+      "bucket": "30D",
+      "slug": "jinju-greenhouse-virus-damage-special-loan-2026",
+      "title": "진주 시설채소 피해농가 특별융자｜연 1% 대출의 상환계획 점검",
+      "html_sha256": "d99a03c0be8c04072e65db9091d1a8a281550db838169c7bd37aa813441ae1ae",
+      "photos": [
+        {
+          "file": "static/kb/jinju-greenhouse-virus-damage-special-loan-2026-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "시설 토마토와 양액장치 참고 사진",
+          "caption": "시설 토마토와 양액장치 참고 사진. 진주 바이러스 피해 농장 사진은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000814310&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-11-25",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "f51ac4c9f7fc7d5cc66f031f560be8bca88de91a6267b040288ae43254d26a36",
+          "source_sha256": "13ac300fd57fcbc8b3115f371b6e19d3c3a4451218083fb9074cea6a3b61bbbc",
+          "width": 1200,
+          "height": 675
+        }
+      ],
+      "sources": [
+        {
+          "id": "jinju-original",
+          "url": "https://www.jinju.go.kr/00130/02730/05586.web?amode=view&not_ancmt_mgt_no=66243",
+          "title": "상세보기 | 홈 > 시정소식 > 알림마당 > 고시/공고 - 진주시 농업기금 융자 특별지원 계획 공고",
+          "snapshot_sha256": "fe227dc55c21704308c5d35a1b4a740e659b300bad3b351317d9663f9f3aaa4b"
+        },
+        {
+          "id": "jinju",
+          "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128121",
+          "title": "기업마당>정책정보>지원사업 공고",
+          "snapshot_sha256": "a214444b649adcd9a6cecbf544be52c62939d284e200e37922e0d82e5710c44d"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/winter-tomato-condensation-morning-care.html"
+      ],
+      "deadline": "2026-12-08",
+      "idempotency_key": "2026-11-26/30D/jinju-greenhouse-virus-damage-special-loan-2026",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/jinju-greenhouse-virus-damage-special-loan-2026.html",
+      "url": "https://kfarmai.com/kb/jinju-greenhouse-virus-damage-special-loan-2026.html",
+      "not_before": "2026-11-29T10:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "ped",
+      "research_date": "2026-11-27",
+      "bucket": "TODAY",
+      "slug": "winter-ped-pig-farm-biosecurity-checklist-2026",
+      "title": "돼지유행성설사 겨울 차단방역｜차량·장화·분만사 동선 점검",
+      "html_sha256": "9e82e9ec4db49b299d6d9be1590c0c49a47148889e4c4701b12f584b91b9af9e",
+      "photos": [
+        {
+          "file": "static/kb/winter-ped-pig-farm-biosecurity-checklist-2026-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "돈사 외부 설비 참고 사진",
+          "caption": "돈사 외부 설비 참고 사진. PED 발생 농장이나 소독 작업 사진은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000810805&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-05-24",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "5799d7d75f4341f7d602b84ac425524d93fb0c5d5329b9d4369c776a813d4a05",
+          "source_sha256": "8cef0a78fe2484cf1faa244587f87b520958412a76d2c4a8fd42e56414028ee5",
+          "width": 591,
+          "height": 413
+        }
+      ],
+      "sources": [
+        {
+          "id": "ped",
+          "url": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjM4NCUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+          "title": "농림축산식품부 > 알림소식 > 보도자료",
+          "snapshot_sha256": "c30be6dc591a8eb21503467e2bcc70faabc86061233901d573a1121bce73b619"
+        },
+        {
+          "id": "ped-prev",
+          "url": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU3MjI2NyUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+          "title": "농림축산식품부 > 알림소식 > 보도자료",
+          "snapshot_sha256": "0438e08e333f9583631b666ff233df4e2d83658c350203d8c6cda7853424a2f2"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/winter-agri-machinery-storage-inspection-jeungpyeong.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-27/TODAY/winter-ped-pig-farm-biosecurity-checklist-2026",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/winter-ped-pig-farm-biosecurity-checklist-2026.html",
+      "url": "https://kfarmai.com/kb/winter-ped-pig-farm-biosecurity-checklist-2026.html",
+      "not_before": "2026-11-29T11:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "kitchen",
+      "research_date": "2026-11-23",
+      "bucket": "60D",
+      "slug": "jeonnam-gwangju-shared-kitchen-startup-2027",
+      "title": "전남광주 공유주방 3기｜50회 이용권으로 시제품·원가 검증하기",
+      "html_sha256": "486c0e0c9d0ff8f2887f37bf386d8ff10bc03412b0c2a53489a0ba2de6d54363",
+      "photos": [
+        {
+          "file": "static/kb/jeonnam-gwangju-shared-kitchen-startup-2027-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "지역 농산물 가공상품인 양평 느타리버섯포 참고 사진",
+          "caption": "지역 농산물 가공상품인 양평 느타리버섯포 참고 사진. 전남광주 공유주방 생산품은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000814262&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-11-22",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "506399187bc733e01e93fcaba5158277b7c41caba761ca96f02ddd9cd44155ea",
+          "source_sha256": "fa290bdf2a93277f9179f2866f2d3c2356e5b715e695cb26f8f355b8e3f813a0",
+          "width": 799,
+          "height": 546
+        }
+      ],
+      "sources": [
+        {
+          "id": "kitchen",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000813738&mode=view&prgId=day_farmlcltinfoEntry",
+          "title": "전남광주농업기술센터 농식품가공창업보육센터, 창업거점 인기",
+          "snapshot_sha256": "5c405f037eba6cafb482d5c369313de1dde74e0af1d46b79ff974143ae96709c"
+        },
+        {
+          "id": "kitchen-lead",
+          "url": "https://career.cdu.ac.kr/mod/board/view.do?MID=CRR_03020000&DOC_NO=179429288510811&page=1",
+          "title": "초당대학교 취창업지원센터",
+          "snapshot_sha256": "ac5f6454b3e9cfa2c8df86328e02eb27bf0872baff2ea7f6e2db3e3ac787c3a0"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/guri-farm-produce-logistics-support-2026.html"
+      ],
+      "deadline": "2026-12-11T16:00:00+09:00",
+      "idempotency_key": "2026-11-23/60D/jeonnam-gwangju-shared-kitchen-startup-2027",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/jeonnam-gwangju-shared-kitchen-startup-2027.html",
+      "url": "https://kfarmai.com/kb/jeonnam-gwangju-shared-kitchen-startup-2027.html",
+      "not_before": "2026-11-30T09:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "yeosu",
+      "research_date": "2026-11-27",
+      "bucket": "30D",
+      "slug": "yeosu-biodegradable-mulch-2027-cost-selection",
+      "title": "여수 생분해성 멀칭필름 지원｜자부담과 작기 적합성 함께 비교",
+      "html_sha256": "872201356e53b523bfe08b9c7f49e00d9f5f789eb80556b96af5bd9b643a4a6b",
+      "photos": [
+        {
+          "file": "static/kb/yeosu-biodegradable-mulch-2027-cost-selection-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "피복 재배 참고 사진",
+          "caption": "피복 재배 참고 사진. 사진 속 필름의 생분해 인증·여수 지원 자격은 확인되지 않았습니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000807902&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-02-28",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "b36b4377a1851a9cd9fcd4392fce1385e0050123f71b14218dc233843950bdca",
+          "source_sha256": "28efa602ef9fd4f6adf9101ada01672f23922e78c9ae04eb4fea9869b36cc02d",
+          "width": 1204,
+          "height": 960
+        }
+      ],
+      "sources": [
+        {
+          "id": "yeosu",
+          "url": "https://www.yeosu.go.kr/agr/notice/agr_notice?idx=585180&mode=view",
+          "title": "「2027년도 밭작물 생분해 필름 지원사업 신청」 안내",
+          "snapshot_sha256": "867622d08ed74c6d2e40974923d25f472b82aad133ddc1baab14b78506d95f8e"
+        },
+        {
+          "id": "photo-mulch",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000808446&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "농촌진흥청, 내구성‧생분해성 높인 새 멀칭필름 개발 박차",
+          "snapshot_sha256": "3f8bd23e0f1bc931867f908d6043e2086b594df9bb575d37809eba3c6a21fa80"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/2027-organic-agri-input-support.html"
+      ],
+      "deadline": "2026-12-11",
+      "idempotency_key": "2026-11-27/30D/yeosu-biodegradable-mulch-2027-cost-selection",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/yeosu-biodegradable-mulch-2027-cost-selection.html",
+      "url": "https://kfarmai.com/kb/yeosu-biodegradable-mulch-2027-cost-selection.html",
+      "not_before": "2026-11-30T09:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "haman",
+      "research_date": "2026-11-23",
+      "bucket": "30D",
+      "slug": "haman-orchard-modernization-2027-cost-documents",
+      "title": "함안 과수시설 현대화｜자부담 50%와 견적서 준비 순서",
+      "html_sha256": "00385090fcd348c196b3d31876a0b26ede297cb1d9266c701c3346d65eaed76a",
+      "photos": [
+        {
+          "file": "static/kb/haman-orchard-modernization-2027-cost-documents-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "경북 영천의 포도 재배시설 참고 사진",
+          "caption": "경북 영천의 포도 재배시설 참고 사진. 함안 지원사업 현장 사진은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000813029&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-09-17",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "40bb2fb0544ccf16a6e110277349e1ca875ce1028c9ec36baee3f21e3fcb9b8a",
+          "source_sha256": "6354825d7b33114ba6bbe4debfa8d4fb9639ba50a0d60e5ca8bf2841803ad619",
+          "width": 1200,
+          "height": 675
+        }
+      ],
+      "sources": [
+        {
+          "id": "haman-original",
+          "url": "https://www.haman.go.kr/00960/00962.web?amode=view&not_ancmt_mgt_no=43476&cpage=4",
+          "title": "HOME > 함안소식 > 고시/공고 - 2027년 과수 고품질 시설현대화사업 신청 안내",
+          "snapshot_sha256": "e567a20cf5f3f82faabe54ad1e81f40ea5d6f4f1874cd1247fff8b1686fa81ae"
+        },
+        {
+          "id": "haman",
+          "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128058",
+          "title": "기업마당>정책정보>지원사업 공고",
+          "snapshot_sha256": "de6bde240d382d7241d6ff565e73e1fda471a300c9af55d5c52d7b8bb0d04045"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/grape-orchard-postharvest-soil-test-guide.html"
+      ],
+      "deadline": "2026-12-18",
+      "idempotency_key": "2026-11-23/30D/haman-orchard-modernization-2027-cost-documents",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/haman-orchard-modernization-2027-cost-documents.html",
+      "url": "https://kfarmai.com/kb/haman-orchard-modernization-2027-cost-documents.html",
+      "not_before": "2026-11-30T10:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "corn",
+      "research_date": "2026-11-24",
+      "bucket": "60D",
+      "slug": "waxy-corn-seed-2027-order-price-delivery",
+      "title": "2027 찰옥수수 종자 공급｜김해 신청 기한·1kg 단위·수령 일정",
+      "html_sha256": "bacac4709569be398c51d36b3ba942dc78017cbccda222c3d6750cc67c3b38b6",
+      "photos": [
+        {
+          "file": "static/kb/waxy-corn-seed-2027-order-price-delivery-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "농촌진흥청 찰옥5호 이삭 참고 사진",
+          "caption": "농촌진흥청 찰옥5호 이삭 참고 사진. 이번 공급 안내의 미백2호·미흑찰·흑점2호 사진이 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000812098&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-07-16",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "332d5c1af21f21091672519a221343c2cbd75560857aff4a2144e8755960a889",
+          "source_sha256": "570bdee4b0f3a7fa5afc134baffa431334eea2b3420f6f4426868c09808568fb",
+          "width": 861,
+          "height": 728
+        }
+      ],
+      "sources": [
+        {
+          "id": "corn",
+          "url": "https://www.gimhae.go.kr/00954/01200/04199.web?gcode=1171&idx=2597834&amode=view&cpage=1",
+          "title": "한림면 공지사항 | 김해시 > [종합소식]2027년 강원특별자치도산 옥수수 종자 신청 안내",
+          "snapshot_sha256": "05445488215772bd5b9443b738c200159ad1aba0ee238bc035b8689ab8654dfc"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/2027-rice-certified-seed-selection-application.html"
+      ],
+      "deadline": "2026-12-18",
+      "idempotency_key": "2026-11-24/60D/waxy-corn-seed-2027-order-price-delivery",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/waxy-corn-seed-2027-order-price-delivery.html",
+      "url": "https://kfarmai.com/kb/waxy-corn-seed-2027-order-price-delivery.html",
+      "not_before": "2026-11-30T10:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "safety",
+      "research_date": "2026-11-25",
+      "bucket": "60D",
+      "slug": "gyeonggi-farm-safety-manager-2027-application",
+      "title": "2027 경기 농작업안전관리자 모집｜자격·현장업무·계약기간 확인",
+      "html_sha256": "e0f5c2e40acaa569fdc77e9976ceb0502ba04492e87c976cfaa013548a1011df",
+      "photos": [
+        {
+          "file": "static/kb/gyeonggi-farm-safety-manager-2027-application-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "육묘시설 주변의 방초·동선 관리 참고 사진",
+          "caption": "육묘시설 주변의 방초·동선 관리 참고 사진. 이번 안전관리자 채용 현장은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000811852&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-07-01",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "56f66b1c62a6288cb775a06c6787192ec4079b0d3a57b4768d9dd4de248bc358",
+          "source_sha256": "ce674217ee8c274a868cf3446c19861dad9b22c52409a8f0ba2bab1c4d0e8ef5",
+          "width": 1280,
+          "height": 853
+        }
+      ],
+      "sources": [
+        {
+          "id": "safety",
+          "url": "https://nongup.gg.go.kr/noti/35?c_pid=131304",
+          "title": "채용정보 | 경기도농업기술원",
+          "snapshot_sha256": "615097068549813efdb3b476ed9fd94413ac0d752140c7749cb575dc760aa27c"
+        },
+        {
+          "id": "photo-safety-work",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000810947&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "농촌진흥청 ‘찾아가는 안전관리’, 농작업 재해·폭염 피해 줄어",
+          "snapshot_sha256": "18d75c2b44606d5461a9e76da655633f000c504356c2e807e85d84d36186fa33"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/winter-agri-machinery-storage-inspection-jeungpyeong.html"
+      ],
+      "deadline": "2026-12-22T18:00:00+09:00",
+      "idempotency_key": "2026-11-25/60D/gyeonggi-farm-safety-manager-2027-application",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/gyeonggi-farm-safety-manager-2027-application.html",
+      "url": "https://kfarmai.com/kb/gyeonggi-farm-safety-manager-2027-application.html",
+      "not_before": "2026-11-30T11:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "isaki",
+      "research_date": "2026-11-24",
+      "bucket": "7D",
+      "slug": "ai-isaki-farming-question-photo-verification-guide",
+      "title": "AI 이삭이 활용법｜작물 사진과 재배기록으로 질문을 구체화하기",
+      "html_sha256": "ccd7a1f6a0126d982ba45484fca62f024051a3ac9c515124a1e8db5b0bf40792",
+      "photos": [
+        {
+          "file": "static/kb/ai-isaki-farming-question-photo-verification-guide-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "농업 AI 활용 참고 사진: 토마토 재배와 AI-뉴티 양액장치",
+          "caption": "농업 AI 활용 참고 사진: 토마토 재배와 AI-뉴티 양액장치. AI 이삭이 앱·행사 현장 사진은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000814310&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-11-25",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "f51ac4c9f7fc7d5cc66f031f560be8bca88de91a6267b040288ae43254d26a36",
+          "source_sha256": "13ac300fd57fcbc8b3115f371b6e19d3c3a4451218083fb9074cea6a3b61bbbc",
+          "width": 1200,
+          "height": 675
+        }
+      ],
+      "sources": [
+        {
+          "id": "photo-isaki",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000814296&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "농촌진흥청, 정부혁신 박람회서 농사 도우미 ‘AI 이삭이’ 첫선",
+          "snapshot_sha256": "62452786cf22afe82c066327964795c4e46e47532b18498e744f21b94020d2e2"
+        },
+        {
+          "id": "isaki2",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000813271&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "“내 손안의 인공지능(AI) 농사 전문가” 농촌진흥청, ‘AI 이삭이’ 2.0 공개",
+          "snapshot_sha256": "038e93a7e0972b98aea2c993394ea573b538f8924302f092220722c04802c553"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/tomato-ai-nuti-fertigation-onfarm-check.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-24/7D/ai-isaki-farming-question-photo-verification-guide",
+      "decision": "행사 종료. 앱 상담의 입력·검증 방법으로 전환하여 기존 토마토 제어 기술 글과 검색 의도를 분리.",
+      "file": "content/kb/ai-isaki-farming-question-photo-verification-guide.html",
+      "url": "https://kfarmai.com/kb/ai-isaki-farming-question-photo-verification-guide.html",
+      "not_before": "2026-12-01T09:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "trace",
+      "research_date": "2026-11-27",
+      "bucket": "60D",
+      "slug": "livestock-traceability-false-label-2027-checklist",
+      "title": "축산물 이력번호 거짓표시 처벌 강화｜2027년 1월 전 판매 점검표",
+      "html_sha256": "92533786fd759e6edfbfd09d39dff128267efc293c18d2cb5646f6957a77bd6b",
+      "photos": [
+        {
+          "file": "static/kb/livestock-traceability-false-label-2027-checklist-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "돼지고기 삼겹살 참고 사진",
+          "caption": "돼지고기 삼겹살 참고 사진. 이력번호 표시 모범 사례나 위반 제품을 나타내지 않습니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000813289&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-10-02",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "5a5bbf03e172299ee86e84b244172435070e83359e19e527893849a7e4bbd046",
+          "source_sha256": "fd933a4a9ac25fe0a91741c502b65d97bf5c2cbd3335a3bd4d9b45d415220339",
+          "width": 304,
+          "height": 202
+        }
+      ],
+      "sources": [
+        {
+          "id": "trace",
+          "url": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjIxOSUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+          "title": "농림축산식품부 > 알림소식 > 보도자료",
+          "snapshot_sha256": "b5a408fe0a79af0c0d20225a40020d7fe47d8afcccf690657b01befe78eef9c8"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/guri-farm-produce-logistics-support-2026.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-27/60D/livestock-traceability-false-label-2027-checklist",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/livestock-traceability-false-label-2027-checklist.html",
+      "url": "https://kfarmai.com/kb/livestock-traceability-false-label-2027-checklist.html",
+      "not_before": "2026-12-01T09:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "chungnam",
+      "research_date": "2026-11-23",
+      "bucket": "7D",
+      "slug": "chungnam-antenna-shop-next-round-product-preparation",
+      "title": "충남 안테나숍 입점 준비｜판매가보다 먼저 계산할 납품·정산 조건",
+      "html_sha256": "5656cce52578b5606f1c4895bc1dca73d37a38ea4eca2eb16a6a03bb4ae1beb9",
+      "photos": [
+        {
+          "file": "static/kb/chungnam-antenna-shop-next-round-product-preparation-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "천안 농산물 가공상품인 배·생강청 참고 사진",
+          "caption": "천안 농산물 가공상품인 배·생강청 참고 사진. 이번 입점품평회 참가·선정 상품이라는 뜻은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000814262&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-11-22",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "792dd76ba586f1c04dff10809dbedeb809849ba3eaf0d4052ab375e44761d5ee",
+          "source_sha256": "f13e39b1866c915aef5a2d3fa58b659b65de35468817e8735d4e0464fa65b142",
+          "width": 448,
+          "height": 268
+        }
+      ],
+      "sources": [
+        {
+          "id": "chungnam-original",
+          "url": "https://www.cnsp.or.kr/project/view.do?seq=1002&pn=1",
+          "title": "충청남도 중소기업 통합지원시스템",
+          "snapshot_sha256": "3f7a20bc48d9ef0f5d099932dafdaafe611322777c80264f8e13698978d6e314"
+        },
+        {
+          "id": "chungnam",
+          "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127932",
+          "title": "기업마당>정책정보>지원사업 공고",
+          "snapshot_sha256": "205ff12e6dacf42d085d6a0e0e642c2cc838cdff6ea3612d2d925409a8724089"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/guri-farm-produce-logistics-support-2026.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-23/7D/chungnam-antenna-shop-next-round-product-preparation",
+      "decision": "11/27 접수 종료. 동일 구간 안에서 주제를 유지하되 다음 모집 준비·정산 계산으로 전환. 신규 모집일 추정 금지.",
+      "file": "content/kb/chungnam-antenna-shop-next-round-product-preparation.html",
+      "url": "https://kfarmai.com/kb/chungnam-antenna-shop-next-round-product-preparation.html",
+      "not_before": "2026-12-01T10:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "wonju",
+      "research_date": "2026-11-26",
+      "bucket": "60D",
+      "slug": "wonju-rural-women-farmer-training-next-round-checklist",
+      "title": "원주 농촌여성·농업인 교육｜마감 후 다음 신청을 준비하는 비교표",
+      "html_sha256": "578e760581d59a2a8e468fb26993a1becebdd587398ccfea6a51a7e275c4b92c",
+      "photos": [
+        {
+          "file": "static/kb/wonju-rural-women-farmer-training-next-round-checklist-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "쌀을 활용한 가공상품 참고 사진",
+          "caption": "쌀을 활용한 가공상품 참고 사진. 원주 교육의 실습 결과물이나 제공 품목은 아닙니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000814262&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-11-22",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "a8dc35df173263a2dac84bb0bca6e500fca69345a59de7d8ca25a8b7fe19a095",
+          "source_sha256": "c51ae88b522225eef3ebaffa5a145b747146d36cada8596909439535d1fd7d01",
+          "width": 687,
+          "height": 449
+        }
+      ],
+      "sources": [
+        {
+          "id": "wonju",
+          "url": "https://www.wonju.go.kr/wjatc/selectBbsNttView.do?nttNo=494893&bbsNo=48&key=3489",
+          "title": "공지사항 - 열린마당 -농업기술센터",
+          "snapshot_sha256": "a20091654c2934996632c6ac522c883a707d0ecd7fb1e4b4be5aabdce56f90aa"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/winter-agri-machinery-storage-inspection-jeungpyeong.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-26/60D/wonju-rural-women-farmer-training-next-round-checklist",
+      "decision": "11/27 종료. 개인·마을 신청 구분과 다음 교육 준비로 전환. 추가 접수 미확인 명시.",
+      "file": "content/kb/wonju-rural-women-farmer-training-next-round-checklist.html",
+      "url": "https://kfarmai.com/kb/wonju-rural-women-farmer-training-next-round-checklist.html",
+      "not_before": "2026-12-01T10:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "potato",
+      "research_date": "2026-11-25",
+      "bucket": "90D",
+      "slug": "spring-potato-seed-sprouting-calendar-2027",
+      "title": "봄감자 그늘 싹틔우기｜파종 20~30일 전부터 거꾸로 짜는 준비표",
+      "html_sha256": "d4968b39153df37bf9bfe1f69b8b61bd23c8fdd2aba6bb4bad603db7ca5a1096",
+      "photos": [
+        {
+          "file": "static/kb/spring-potato-seed-sprouting-calendar-2027-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "씨감자를 펼쳐 그늘 싹틔우기하는 참고 사진",
+          "caption": "씨감자를 펼쳐 그늘 싹틔우기하는 참고 사진.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000807551&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-02-09",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "bf6bddab31fd868f27530ab00eebb2fc5829eea5251b003dbed29d55188d640b",
+          "source_sha256": "7b92aac44910a23121412fa8d2d00c484b30321cb60ab05de6f4786507fe9e22",
+          "width": 477,
+          "height": 321
+        },
+        {
+          "file": "static/kb/spring-potato-seed-sprouting-calendar-2027-photo-2.webp",
+          "role": "inline_photo",
+          "alt": "씨감자를 통풍 가능한 상자에 담아 관리하는 참고 사진",
+          "caption": "씨감자를 통풍 가능한 상자에 담아 관리하는 참고 사진.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000807551&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-02-09",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "603e8df93af501d67ff3484e29bf603661a1179156ecde13cc1a1219faf1c2f6",
+          "source_sha256": "5da9a49b757f5c07551cdc5262727fa1c997991c5de05925159d453fe2d41e68",
+          "width": 1280,
+          "height": 960
+        }
+      ],
+      "sources": [
+        {
+          "id": "photo-potato-new",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000807551&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "봄재배 씨감자, 이렇게 관리하세요",
+          "snapshot_sha256": "356514354417c41c9ee470edef287c0a31dea236a9642505afbdfeffcff73eba"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/2027-rice-certified-seed-selection-application.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-25/90D/spring-potato-seed-sprouting-calendar-2027",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/spring-potato-seed-sprouting-calendar-2027.html",
+      "url": "https://kfarmai.com/kb/spring-potato-seed-sprouting-calendar-2027.html",
+      "not_before": "2026-12-01T11:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "pepper",
+      "research_date": "2026-11-26",
+      "bucket": "90D",
+      "slug": "open-field-pepper-seedling-calendar-2027",
+      "title": "2027 노지고추 파종·육묘｜아주심기 날짜에서 70~80일 거꾸로",
+      "html_sha256": "253eeaf2556c38edae506aff001c5afabbd0f2954746a1ed56417fb80f74152f",
+      "photos": [
+        {
+          "file": "static/kb/open-field-pepper-seedling-calendar-2027-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "육묘시설 외부 위생·방초 관리 참고 사진",
+          "caption": "육묘시설 외부 위생·방초 관리 참고 사진. 특정 고추 육묘 농장의 2027년 현황을 나타내지 않습니다.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000811852&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-07-01",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "56f66b1c62a6288cb775a06c6787192ec4079b0d3a57b4768d9dd4de248bc358",
+          "source_sha256": "ce674217ee8c274a868cf3446c19861dad9b22c52409a8f0ba2bab1c4d0e8ef5",
+          "width": 1280,
+          "height": 853
+        }
+      ],
+      "sources": [
+        {
+          "id": "pepper-guide",
+          "url": "https://www.nongsaro.go.kr/portal/ps/psb/psbl/workScheduleDtl.ps?menuId=PS00087&cntntsNo=30600",
+          "title": "고추(보통재배) | 농사로",
+          "snapshot_sha256": "85f587525d3f46ebf49e7b56c8381b7fe96f4d1644c212a4a5e4077fff8c63a4"
+        },
+        {
+          "id": "pepper",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000807767&mode=view&prgId=day_farmlcltinfoEntry",
+          "title": "고추 육묘기, 빠른 예찰과 조기방제 위해 황색끈끈이트랩 설치!",
+          "snapshot_sha256": "ab13e068958232f57d72b6e9e546055c87df07e90f64a13a2012200fa7bfda7a"
+        },
+        {
+          "id": "photo-pepper-new",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000809121&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "고추, 아주심기 시기 저온 노출 기간 길수록 생육 ‘뚝’",
+          "snapshot_sha256": "ecb4632a0249d1906a7c006eb1cdca785804be1709042524a17434cb95a57de5"
+        },
+        {
+          "id": "photo-seedling",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000811852&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "고온기 육묘장 병해충 확산 우려, 시설 안팎 관리 강화해야",
+          "snapshot_sha256": "e2097cc159884698793bfb870e469463994247013d0a0c025fa4c95219f1b7b4"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/greenhouse-irrigation-precheck.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-26/90D/open-field-pepper-seedling-calendar-2027",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/open-field-pepper-seedling-calendar-2027.html",
+      "url": "https://kfarmai.com/kb/open-field-pepper-seedling-calendar-2027.html",
+      "not_before": "2026-12-02T09:00:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    },
+    {
+      "id": "garlic",
+      "research_date": "2026-11-27",
+      "bucket": "90D",
+      "slug": "garlic-onion-spring-regrowth-field-observation",
+      "title": "마늘·양파 생육재생기｜달력보다 지온·배수·새뿌리를 먼저 확인",
+      "html_sha256": "616011efaa6fe13c5a6701217fbbe4f9b975eb0a3def23c94d9468a195928cfd",
+      "photos": [
+        {
+          "file": "static/kb/garlic-onion-spring-regrowth-field-observation-photo-1.webp",
+          "role": "hero_photo",
+          "alt": "마늘·양파 생육재생기 관리 참고 사진",
+          "caption": "마늘·양파 생육재생기 관리 참고 사진.",
+          "credit": "농촌진흥청",
+          "source_url": "https://www.rda.go.kr/board/board.do?dataNo=100000807902&mode=view&prgId=day_farmprmninfoEntry",
+          "license": "공공누리 제1유형: 출처표시",
+          "source_release_date": "2026-02-28",
+          "shooting_date": null,
+          "transform": "비율 유지 크기 축소·WebP 변환",
+          "sha256": "b36b4377a1851a9cd9fcd4392fce1385e0050123f71b14218dc233843950bdca",
+          "source_sha256": "28efa602ef9fd4f6adf9101ada01672f23922e78c9ae04eb4fea9869b36cc02d",
+          "width": 1204,
+          "height": 960
+        }
+      ],
+      "sources": [
+        {
+          "id": "photo-garlic",
+          "url": "https://www.rda.go.kr/board/board.do?dataNo=100000807902&mode=view&prgId=day_farmprmninfoEntry",
+          "title": "마늘, 양파 생육 재생기 ‘기습 한파 대비, 양수분 관리 신경 써야’",
+          "snapshot_sha256": "a331a620031ddd39f7503ced4d055badaefdb1cd7b1b266b5a3eeb354f6c47d9"
+        }
+      ],
+      "related_urls": [
+        "https://kfarmai.com/kb/late-garlic-planting-winter-care.html",
+        "https://kfarmai.com/kb/onion-winter-care-downy-mildew.html"
+      ],
+      "deadline": null,
+      "idempotency_key": "2026-11-27/90D/garlic-onion-spring-regrowth-field-observation",
+      "decision": "원래 주제 유지",
+      "file": "content/kb/garlic-onion-spring-regrowth-field-observation.html",
+      "url": "https://kfarmai.com/kb/garlic-onion-spring-regrowth-field-observation.html",
+      "not_before": "2026-12-02T09:30:00+09:00",
+      "status": "SCHEDULED",
+      "category": "농업정보"
+    }
+  ]
+}

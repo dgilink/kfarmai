@@ -75,7 +75,11 @@ function selectListPhoto(root, articlePath, html) {
   // Never fetch remote URLs or use an arbitrary first image / infographic.
   const markup = html.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '');
   const candidates = [...markup.matchAll(/<img\b[^>]*>/gi)].flatMap(([tag]) => {
-    const source = tag.match(/\ssrc\s*=\s*["']([^"']+)["']/i)?.[1];
+    const rawSource = tag.match(/\ssrc\s*=\s*["']([^"']+)["']/i)?.[1];
+    // Reviewed portable HTML uses ../static from /kb/. Resolve only this exact
+    // local prefix; the existing raster allowlist still rejects traversal/URLs.
+    const source = rawSource?.startsWith('../static/kb/')
+      ? rawSource.slice(2) : rawSource;
     const role = tag.match(/\sdata-media-role\s*=\s*["']([^"']+)["']/i)?.[1];
     const photoRole = role ? ['hero_photo', 'inline_photo'].includes(role) :
       Object.values(reviewedPhotos).includes(source) || /-photo(?:-|\.)/.test(source || '');

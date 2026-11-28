@@ -1,0 +1,275 @@
+{
+  "meister": [
+    {
+      "url": "https://agriacademy.jeonbuk.go.kr/bbs/board.php?bo_table=ad_04_01&wr_id=518",
+      "required": [
+        "제10기 전북농업마이스터대학",
+        "11. 30.(월)",
+        "280명",
+        "480시간"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ]
+    }
+  ],
+  "gimje": [
+    {
+      "url": "https://www.gimje.go.kr/agro/board/view.gimje?boardId=BBS_0000027&menuCd=DOM_000000903001000000&dataSid=376435",
+      "required": [
+        "2026년 농산물 가공 역량 강화 교육(2)",
+        "11. 30. 17:00",
+        "10명"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ],
+      "attachments": [
+        {
+          "url": "https://www.gimje.go.kr/agro/board/download.gimje?boardId=BBS_0000027&menuCd=DOM_000000903001000000&paging=ok&startPage=1&dataSid=376435&command=update&fileSid=212154",
+          "sha256": "b686c0b175c2a17a0059037977b6961e104ebe0194181cec87fc6957af7ec91e",
+          "bytes": 87231
+        },
+        {
+          "url": "https://www.gimje.go.kr/agro/board/download.gimje?boardId=BBS_0000027&menuCd=DOM_000000903001000000&paging=ok&startPage=1&dataSid=376435&command=update&fileSid=212155",
+          "sha256": "6c2a12dd4248babf295f3ea06901bcadbd26ff2cb73ca7102528f14107a67982",
+          "bytes": 79325
+        }
+      ]
+    }
+  ],
+  "cucumber": [
+    {
+      "url": "https://www.jincheon.go.kr/jcact/sub.do?menukey=657&mode=view&no=1095327629",
+      "required": [
+        "스마트팜 오이 재배 기술",
+        "12월 3일",
+        "진천군 3명"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ],
+      "attachments": [
+        {
+          "url": "https://www.jincheon.go.kr/jcact/board/download.do?menukey=657&fno=123344&bid=00000183&did=00109532",
+          "sha256": "90a8ec54b81d9927c6995b77e544234664cad8ab4dffc8e0ba0934ca194ee290",
+          "bytes": 2694760
+        }
+      ]
+    }
+  ],
+  "jinju": [
+    {
+      "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128121",
+      "required": [
+        "진주시",
+        "2026.11.25",
+        "2026.12.08",
+        "융자"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ],
+      "attachments": []
+    }
+  ],
+  "ped": [
+    {
+      "url": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjM4NCUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+      "required": [
+        "돼지유행성설사",
+        "858두",
+        "9.9%",
+        "41.6%"
+      ],
+      "forbidden": []
+    }
+  ],
+  "kitchen": [
+    {
+      "url": "https://www.rda.go.kr/board/board.do?dataNo=100000813738&mode=view&prgId=day_farmlcltinfoEntry",
+      "required": [
+        "제3기 공유주방 창업팀",
+        "12월 11일 오후 4시",
+        "50회",
+        "2027년 1월 4일"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ],
+      "attachments": [
+        {
+          "url": "https://career.cdu.ac.kr/mod/board/downloadFile.do?FILE_NO=179429432334877&TRGET_NO=179429288510811&MID=CRR_03020000",
+          "sha256": "a8cbce4631a233b2ce1f86707c7447b4e21279da050e2c4ba10c73df51d205b3",
+          "bytes": 1723904
+        }
+      ]
+    }
+  ],
+  "yeosu": [
+    {
+      "url": "https://www.yeosu.go.kr/agr/notice/agr_notice?idx=585180&mode=view",
+      "required": [
+        "2027년도 밭작물 생분해 필름",
+        "12. 11.(금)",
+        "63,000천원",
+        "25,200"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ],
+      "attachments": [
+        {
+          "url": "https://www.yeosu.go.kr/ybscript.io/common/file_download/585180/365713/2027%EB%85%84%EB%8F%84%20%EB%B0%AD%EC%9E%91%EB%AC%BC%20%EC%83%9D%EB%B6%84%ED%95%B4%20%ED%95%84%EB%A6%84%20%EC%A7%80%EC%9B%90%EC%82%AC%EC%97%85%20%EC%8B%9C%ED%96%89%EC%A7%80%EC%B9%A8.hwpx?pkey=cA75yGHKZ",
+          "sha256": "a355c5705cc507822282f00bbb113731dace3bf81e099b731d5eb0c0b90b82d0",
+          "bytes": 675068
+        }
+      ]
+    }
+  ],
+  "haman": [
+    {
+      "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128058",
+      "required": [
+        "2027년 과수 고품질 시설현대화사업",
+        "2026.12.18",
+        "농업경영정보"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ],
+      "attachments": []
+    }
+  ],
+  "corn": [
+    {
+      "url": "https://www.gimhae.go.kr/00954/01200/04199.web?gcode=1171&idx=2597834&amode=view&cpage=1",
+      "required": [
+        "2027년",
+        "12. 18.(금)",
+        "31,000원/kg",
+        "150%"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ]
+    }
+  ],
+  "safety": [
+    {
+      "url": "https://nongup.gg.go.kr/noti/35?c_pid=131304",
+      "required": [
+        "2027년 농작업안전관리자",
+        "2026. 12. 22.(화)",
+        "2,785,000"
+      ],
+      "forbidden": [
+        "모집을 취소합니다",
+        "사업이 취소되었습니다",
+        "조기 마감되었습니다"
+      ]
+    }
+  ],
+  "isaki": [
+    {
+      "url": "https://www.rda.go.kr/board/board.do?dataNo=100000814296&mode=view&prgId=day_farmprmninfoEntry",
+      "required": [
+        "AI 이삭이",
+        "25일부터 27일까지",
+        "농촌진흥청"
+      ],
+      "forbidden": []
+    }
+  ],
+  "trace": [
+    {
+      "url": "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjIxOSUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+      "required": [
+        "이력번호",
+        "27.1.8",
+        "1천만원"
+      ],
+      "forbidden": []
+    }
+  ],
+  "chungnam": [
+    {
+      "url": "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000127932",
+      "required": [
+        "안테나숍",
+        "2026.11.27",
+        "충남 농촌융복합산업 인증"
+      ],
+      "forbidden": [],
+      "attachments": []
+    }
+  ],
+  "wonju": [
+    {
+      "url": "https://www.wonju.go.kr/wjatc/selectBbsNttView.do?nttNo=494893&bbsNo=48&key=3489",
+      "required": [
+        "2027년 농촌여성 실용교육",
+        "11. 27.",
+        "2027. 1. 6."
+      ],
+      "forbidden": [],
+      "attachments": [
+        {
+          "url": "https://www.wonju.go.kr/wjatc/downloadBbsFile.do?key=3489&atchmnflNo=428960",
+          "sha256": "75a72c939095b63633b93838611593edd99cf53f5258e710801a1102d71699ca",
+          "bytes": 149504
+        }
+      ]
+    }
+  ],
+  "potato": [
+    {
+      "url": "https://www.rda.go.kr/board/board.do?dataNo=100000807551&mode=view&prgId=day_farmprmninfoEntry",
+      "required": [
+        "씨감자",
+        "20~30일",
+        "15~20도",
+        "80~90%"
+      ],
+      "forbidden": []
+    }
+  ],
+  "pepper": [
+    {
+      "url": "https://www.nongsaro.go.kr/portal/ps/psb/psbl/workScheduleDtl.ps?menuId=PS00087&cntntsNo=30600",
+      "required": [
+        "고추(보통재배)",
+        "70~80일",
+        "반촉성재배"
+      ],
+      "forbidden": []
+    }
+  ],
+  "garlic": [
+    {
+      "url": "https://www.rda.go.kr/board/board.do?dataNo=100000807902&mode=view&prgId=day_farmprmninfoEntry",
+      "required": [
+        "마늘, 양파 생육 재생기",
+        "4도",
+        "기습 한파"
+      ],
+      "forbidden": []
+    }
+  ]
+}
