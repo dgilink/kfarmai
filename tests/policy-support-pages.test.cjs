@@ -17,7 +17,7 @@ test('static notice list shows the newest publication dates first', () => {
     b.publishedAt.localeCompare(a.publishedAt) || (a.applicationEnd || '9999-12-31').localeCompare(b.applicationEnd || '9999-12-31'));
   assert.deepEqual(listedSlugs, expected.map(item => item.slug));
   assert.equal(listedSlugs[0], '2027-chungnam-nongsarang-lunar-new-year-promotion');
-  assert.equal(listedSlugs[1], '2027-geoje-young-fisher-settlement');
+  assert.equal(listedSlugs[1], '2027-muan-agricultural-sorting-facility');
 });
 
 test('home policy preview uses approved, unexpired notices with safe detail links', async () => {
@@ -39,15 +39,15 @@ test('home policy preview uses approved, unexpired notices with safe detail link
   assert.ok(cards.every(card => /^\/policy\/[a-z0-9-]+\.html$/.test(card.href)));
   assert.equal(cards[0].href, '/policy/2027-chungnam-nongsarang-lunar-new-year-promotion.html');
   assert.equal(cards[0].dataset.state, 'unknown');
-  assert.equal(cards[1].href, '/policy/2027-geoje-young-fisher-settlement.html');
-  assert.equal(cards[2].href, '/policy/2027-hwasun-agricultural-sorting-facility.html');
+  assert.equal(cards[1].href, '/policy/2027-muan-agricultural-sorting-facility.html');
+  assert.equal(cards[2].href, '/policy/2026-shinan-regional-smartfarm-young-farmer-extra.html');
   assert.equal(cards[1].dataset.state, 'upcoming');
-  assert.equal(cards[2].dataset.state, 'unknown');
+  assert.equal(cards[2].dataset.state, 'upcoming');
   assert.doesNotMatch(read('static/js/policy-home.js'), /innerHTML|BOJO_OPEN_API_KEY/);
 });
 
 test('only reviewed official notices have one discoverable static detail each', () => {
-  assert.equal(publication.items.length, 227);
+  assert.equal(publication.items.length, 233);
   assert.equal(publication.items.find(item=>item.slug==='2027-gyeongbuk-nature-bio-rfp-demand-survey').officialUrl, 'https://ccei.creativekorea.or.kr/json/common/fileDown.download?uuid=202611251758391c68fe98-ce21-44f3-97a4-80696c7c441a');
   assert.equal(new Set(publication.items.map(item => item.slug)).size, publication.items.length);
   for (const item of publication.items) {
@@ -124,14 +124,14 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   vm.runInNewContext(read('static/js/policy-support.js'), {document, Date:class extends Date {
     static now() { return now; }
   }});
-  assert.equal(fields.noticeCount.textContent, '227건');
+  assert.equal(fields.noticeCount.textContent, '233건');
   const shown = () => cards.filter(card => !card.hidden);
   const pageButtons = () => fields.policyPagination.children;
   assert.deepEqual(shown(), cards.slice(0, 20));
   assert.equal(pageButtons()[0].disabled, true);
   pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(20, 40));
-  assert.equal(fields.noticeCount.textContent, '227건');
+  assert.equal(fields.noticeCount.textContent, '233건');
   for (let number = 2; number < 12; number++) pageButtons().at(-1).events.click();
   assert.deepEqual(shown(), cards.slice(220));
   assert.equal(pageButtons().at(-1).disabled, true);
@@ -147,7 +147,7 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   assert.equal(shown().length, 20);
   assert.equal(pageButtons().find(button => button['aria-current'] === 'page').textContent, '1');
   assert.equal(cards.filter(card => card.dataset.state === 'unknown').length, 25);
-  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 155);
+  assert.equal(cards.filter(card => card.statusLabel.textContent === '접수예정').length, 161);
   buttons[2].events.click();
   assert.equal(fields.noticeCount.textContent, '14건');
   assert.equal(fields.policyPagination.hidden, true);
@@ -162,7 +162,7 @@ test('policy pages preserve filter and deadline behavior across the full list', 
   assert.equal(fields.policyPagination.hidden, true);
   assert.equal(fields.policyEmpty.hidden, false);
   fields.resetButton.events.click();
-  assert.equal(fields.noticeCount.textContent, '227건');
+  assert.equal(fields.noticeCount.textContent, '233건');
   assert.deepEqual(shown(), cards.slice(0, 20));
   const timed = cards.find(card => card.dataset.endTime === '17:00');
   now = Date.parse('2026-11-12T07:59:00Z');
