@@ -716,6 +716,85 @@
       "image_source": "농촌진흥청 국립농업과학원 · 공공누리 제1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000806383&mode=view&prgId=day_farmprmninfoEntry",
       "html_sha256": "d1dce422a950ffba4dba138ccf3ba275b477ed1db7668761545eae6d13c12b88",
       "image_sha256": "aea507d936e7d2af4cfec323bb65209d13c311476cac80de51bf69f85cf0d234"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-28",
+      "slug": "2026-korea-fruit-expo-domestic-varieties-field-guide",
+      "title": "2026 과일산업대전｜국산 신품종을 볼 때 농가가 확인할 세 가지",
+      "url": "https://kfarmai.com/kb/2026-korea-fruit-expo-domestic-varieties-field-guide.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "11월 29일까지 · 대전 제2전시장 3·4홀",
+      "source_urls": [
+        "https://www.korea.kr/briefing/pressReleaseView.do?newsId=156791227",
+        "https://www.kfruit.or.kr/",
+        "https://www.rda.go.kr/board/board.do?dataNo=100000814126&mode=view&prgId=day_farmprmninfoEntry"
+      ],
+      "infographic_assets": [
+        "/static/kb/2026-korea-fruit-expo-domestic-varieties-field-guide-infographic-1.png"
+      ],
+      "image_source": "농식품부 · 공공누리 1유형 / https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjM5MyUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+      "html_sha256": "0b0b63bc84e0d9df3f8bfef04c3ed556886caf6dd6e3bd99bcf22bc14aadc619",
+      "image_sha256": "419ae2813829d2759ff3c1296f81e5408e15438ce0d69418f7cb7cd99d6411a9"
+    },
+    {
+      "category": "농업정책",
+      "date": "2026-11-28",
+      "slug": "guri-farm-produce-logistics-support-2026",
+      "title": "구리시 농산물 물류비｜배 포장재·채소 운반비 증빙 정리법",
+      "url": "https://kfarmai.com/kb/guri-farm-produce-logistics-support-2026.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "12월 1~8일 방문 접수 예정",
+      "source_urls": [
+        "https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000128009",
+        "https://www.rda.go.kr/board/board.do?dataNo=100000813279&mode=view&prgId=day_farmprmninfoEntry"
+      ],
+      "infographic_assets": [
+        "/static/kb/guri-farm-produce-logistics-support-2026-infographic-1.png"
+      ],
+      "image_source": "농촌진흥청 · 공공누리 1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000813279&mode=view&prgId=day_farmprmninfoEntry",
+      "html_sha256": "0ae6afa9bc30b408abcbef2fb48b2762393aa2c8fd8ce4a20b710c698888844e",
+      "image_sha256": "41ec96555920ea325ffdc94466cbd90383494545b99d058678eaae0aa1dc0002"
+    },
+    {
+      "category": "농업정책",
+      "date": "2026-11-28",
+      "slug": "2027-farm-worker-minimum-wage-payroll-records",
+      "title": "2027 농업 고용 최저임금 10,700원｜농번기 임금 계산과 시간 기록",
+      "url": "https://kfarmai.com/kb/2027-farm-worker-minimum-wage-payroll-records.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "2027년 고용노동부 결정 고시",
+      "source_urls": [
+        "https://moel.go.kr/info/lawinfo/instruction/view.do?bbs_seq=20260800150",
+        "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=19744",
+        "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1029727975",
+        "https://www.dangjin.go.kr/cop/bbs/BBSMSTR_000000000014/selectBoardArticle.do?nttId=1131092"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-farm-worker-minimum-wage-payroll-records-infographic-1.png"
+      ],
+      "image_source": "당진시 · 공공누리 1유형 / https://www.dangjin.go.kr/cop/bbs/BBSMSTR_000000000014/selectBoardArticle.do?nttId=1131092",
+      "html_sha256": "d00080bea34afbe0397d9c13ae256c0a388e6b3560fd7c3303bbc304d7a68c24",
+      "image_sha256": "d6ac30a0d55491aecda60a7fe4058f9448f7b9753dee3cf18c603d551062e42c"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-28",
+      "slug": "watermelon-native-honeybee-greenhouse-pollination-planning",
+      "title": "시설수박 토종벌 수분｜660㎡ 기준과 개화·온도 확인법",
+      "url": "https://kfarmai.com/kb/watermelon-native-honeybee-greenhouse-pollination-planning.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "농촌진흥청 2026년 기술자료 기반",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000808100&mode=view&prgId=day_farmprmninfoEntry",
+        "https://www.rda.go.kr/fileDownLoadDw.do?boardId=farmprmninfo&dataNo=100000808100&sortNo=1"
+      ],
+      "infographic_assets": [
+        "/static/kb/watermelon-native-honeybee-greenhouse-pollination-planning-infographic-1.png"
+      ],
+      "image_source": "농촌진흥청 · 공공누리 1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000808100&mode=view&prgId=day_farmprmninfoEntry",
+      "html_sha256": "54ae5d60eff30ba066ce861537745d95c99e94fab68510bfa0cc560715673126",
+      "image_sha256": "8d11de5dcc37aca4b91fb7254f14a55a84d301d18a3ff1ead67792664f9d59ea"
     }
   ]
 }
