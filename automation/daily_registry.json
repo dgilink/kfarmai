@@ -614,6 +614,108 @@
       "image_source": "KFarmAI 자체 제작 연출 이미지",
       "html_sha256": "a6edb2098f1a870b04592bcc0117fd1d390042f187facc6717cbfae1cd4a16e7",
       "image_sha256": "f45366698603ee9adf4fafebe2424fbacedddc7d807f516b3dcaae0ea6206afb"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-28",
+      "slug": "2027-rice-certified-seed-selection-application",
+      "title": "2027 벼 정부보급종 신청｜지역 배정 품종과 수매 기준 확인법",
+      "url": "https://kfarmai.com/kb/2027-rice-certified-seed-selection-application.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "시·도 단위 접수 중 · 전국 잔량 접수 별도",
+      "source_urls": [
+        "https://www.mafra.go.kr/home/5109/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGaG9tZSUyRjc5MiUyRjU4MjMzMiUyRmFydGNsVmlldy5kbyUzRg%3D%3D",
+        "https://www.seed.go.kr/seed/index.do"
+      ],
+      "infographic_assets": [
+        "/static/kb/2027-rice-certified-seed-selection-application-infographic-1.png",
+        "/static/kb/2027-rice-certified-seed-selection-application-infographic-2.png"
+      ],
+      "image_source": "Salamander724, Wikimedia Commons · 퍼블릭 도메인 / https://commons.wikimedia.org/wiki/File:Korean_Rice_Paddy_Field.jpg",
+      "html_sha256": "70118ea78c4dd116b9e0d78d38cd12b3d36466dcb51f68cd112f18acebbde058",
+      "image_sha256": "94682ef023998b12ee5415b6722ae3831c7f7aa567b8cadf6968fc141f75c9ff"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-28",
+      "slug": "grape-orchard-postharvest-soil-test-guide",
+      "title": "포도 수확 후 토양검정｜석회·퇴비를 더 주기 전에 볼 4가지",
+      "url": "https://kfarmai.com/kb/grape-orchard-postharvest-soil-test-guide.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "공식 현장 조사 기반 · 필지별 처방 확인",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000814298&mode=view&prgId=day_farmprmninfoEntry",
+        "https://www.rda.go.kr/board/board.do?dataNo=100000814107&mode=view&prgId=day_farmprmninfoEntry",
+        "https://www.nongsaro.go.kr/portal/ps/psz/psza/contentSub.ps?cntntsNo=269222&menuId=PS00077"
+      ],
+      "infographic_assets": [
+        "/static/kb/grape-orchard-postharvest-soil-test-guide-infographic-1.png",
+        "/static/kb/grape-orchard-postharvest-soil-test-guide-infographic-2.png"
+      ],
+      "image_source": "농촌진흥청 · 공공누리 제1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000813029&mode=view&prgId=day_farmprmninfoEntry",
+      "html_sha256": "755afc0137184773057b1c34c203e81d4f46ef86ddb13d2724b8568aafecc341",
+      "image_sha256": "6354825d7b33114ba6bbe4debfa8d4fb9639ba50a0d60e5ca8bf2841803ad619"
+    },
+    {
+      "category": "스마트팜",
+      "date": "2026-11-28",
+      "slug": "tomato-ai-nuti-fertigation-onfarm-check",
+      "title": "토마토 AI-뉴티 실증 98.5%의 의미와 양액 자동화 도입 전 점검",
+      "url": "https://kfarmai.com/kb/tomato-ai-nuti-fertigation-onfarm-check.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "현장 실증 발표 · 2027 보급계획",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000814310&mode=view&prgId=day_farmprmninfoEntry",
+        "https://www.rda.go.kr/middlePopOpenPopNongsaroDBView.do?no=2181"
+      ],
+      "infographic_assets": [
+        "/static/kb/tomato-ai-nuti-fertigation-onfarm-check-infographic-1.png",
+        "/static/kb/tomato-ai-nuti-fertigation-onfarm-check-infographic-2.png"
+      ],
+      "image_source": "농촌진흥청 · 공공누리 제1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000814310&mode=view&prgId=day_farmprmninfoEntry",
+      "html_sha256": "c82ddeadfde343f16285e7f1732b9c7556ed0cc2954cafe66f5b783f6dbc6e32",
+      "image_sha256": "13ac300fd57fcbc8b3115f371b6e19d3c3a4451218083fb9074cea6a3b61bbbc"
+    },
+    {
+      "category": "재배노하우",
+      "date": "2026-11-28",
+      "slug": "winter-forage-drainage-rolling-field-guide",
+      "title": "사료작물 파종이 늦었다면｜겨울 전 배수·눌러주기와 봄 보완 파종",
+      "url": "https://kfarmai.com/kb/winter-forage-drainage-rolling-field-guide.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "겨울 전 점검 · 해빙 후 생육 재확인",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000814313&mode=view&prgId=day_farmprmninfoEntry",
+        "https://www.rda.go.kr/middlePopOpenPopNongsaroDBView.do?no=1253"
+      ],
+      "infographic_assets": [
+        "/static/kb/winter-forage-drainage-rolling-field-guide-infographic-1.png",
+        "/static/kb/winter-forage-drainage-rolling-field-guide-infographic-2.png"
+      ],
+      "image_source": "농촌진흥청 국립축산과학원 · 공공누리 제1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000814313&mode=view&prgId=day_farmprmninfoEntry",
+      "html_sha256": "9243962b947ed33ac59043dbdb179b37f8363176f5cb20473ef1adbf9b1a9cf6",
+      "image_sha256": "5241b4ee5fbfb916b2a3631fd492336f275f0eace6d292be62a061a7c546df3b"
+    },
+    {
+      "category": "농업정보",
+      "date": "2026-11-28",
+      "slug": "winter-agri-machinery-storage-inspection-jeungpyeong",
+      "title": "겨울철 농기계 보관 전 점검표｜경운기·트랙터와 증평 정비교육",
+      "url": "https://kfarmai.com/kb/winter-agri-machinery-storage-inspection-jeungpyeong.html",
+      "publication_mode": "USER_DIRECT_APPROVAL",
+      "publication_status": "전국 보관 점검 · 증평 교육 12월 1일 시작",
+      "source_urls": [
+        "https://www.rda.go.kr/board/board.do?dataNo=100000806383&mode=view&prgId=day_farmprmninfoEntry",
+        "https://jp.go.kr/kor/cop/bbs/BBSMSTR_000000000135/selectBoardArticle.do?nttId=B00000063483xm4nI5cr",
+        "https://m.korea.kr/multi/visualNewsView.do?newsId=148956279"
+      ],
+      "infographic_assets": [
+        "/static/kb/winter-agri-machinery-storage-inspection-jeungpyeong-infographic-1.png",
+        "/static/kb/winter-agri-machinery-storage-inspection-jeungpyeong-infographic-2.png"
+      ],
+      "image_source": "농촌진흥청 국립농업과학원 · 공공누리 제1유형 / https://www.rda.go.kr/board/board.do?dataNo=100000806383&mode=view&prgId=day_farmprmninfoEntry",
+      "html_sha256": "d1dce422a950ffba4dba138ccf3ba275b477ed1db7668761545eae6d13c12b88",
+      "image_sha256": "aea507d936e7d2af4cfec323bb65209d13c311476cac80de51bf69f85cf0d234"
     }
   ]
 }
